@@ -3,7 +3,7 @@ package com.agentecon.price;
 public class ExpSearchPrice extends AdaptablePrice {
 
 	public static final double MAX_ADAPTION_FACTOR = 0.5;
-	public static final double MIN_ADAPTION_FACTOR = 0.005;
+	public static final double MIN_ADAPTION_FACTOR = 0.001;
 
 	private double speed;
 	private double delta;

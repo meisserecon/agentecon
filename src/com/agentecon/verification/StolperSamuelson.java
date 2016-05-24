@@ -15,6 +15,11 @@ import com.agentecon.sim.config.ProductionWeights;
 import com.agentecon.sim.config.SimConfig;
 
 public class StolperSamuelson {
+	
+	public static final Good PIZZA = new Good("Pizza");
+	public static final Good FONDUE = new Good("Fondue");
+	public static final Good IT_HOUR = new Good("Italian man-hours");
+	public static final Good CH_HOUR = new Good("Swiss man-hours");
 
 	protected static final int HOURS_PER_DAY = 24;
 	protected static final int CONSUMERS_PER_TYPE = 100;
@@ -30,13 +35,16 @@ public class StolperSamuelson {
 	public StolperSamuelson() {
 		this(LOW);
 	}
+	
+	public StolperSamuelson(double fonduePreference) {
+		this(fonduePreference, ProductionWeights.DEFAULT_WEIGHTS);
+	}
 
-	public StolperSamuelson(double low) {
-		this.inputs = new Good[] { new Good("Italian man-hours"), new Good("Swiss man-hours") };
-		this.outputs = new Good[] { new Good("Pizza"), new Good("Fondue") };
-		this.prodWeights = new ProductionWeights(inputs, outputs);
-		this.consWeights = new ConsumptionWeights(inputs, outputs, HOURS_PER_DAY - ConsumptionWeights.TIME_WEIGHT - low, low);
-		// PriceFactory.NORMALIZED_GOOD = outputs[0];
+	public StolperSamuelson(double fonduePref, double[] prodWeights) {
+		this.inputs = new Good[] { IT_HOUR, CH_HOUR };
+		this.outputs = new Good[] { PIZZA, FONDUE };
+		this.prodWeights = new ProductionWeights(inputs, prodWeights, outputs);
+		this.consWeights = new ConsumptionWeights(inputs, outputs, HOURS_PER_DAY - ConsumptionWeights.TIME_WEIGHT - fonduePref, fonduePref);
 	}
 
 	public StolperSamuelson(int size) {
