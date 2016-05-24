@@ -3,7 +3,6 @@ package com.agentecon.events;
 import com.agentecon.agent.Endowment;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.decisions.CogsDividend;
-import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IProductionFunction;
@@ -19,10 +18,6 @@ public class FirmEvent extends SimEvent {
 	protected IProductionFunction prodFun;
 	protected PriceConfig priceParams;
 	
-	public FirmEvent(int card, String type, Endowment end, IProductionFunction prodFun) {
-		this(card, type, end, prodFun, PriceConfig.DEFAULT);
-	}
-
 	public FirmEvent(int card, String type, Endowment end, IProductionFunction prodFun, PriceConfig priceParams) {
 		super(0, card);
 		this.end = end;

@@ -15,15 +15,14 @@ import com.agentecon.api.SimulationConfig;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.IPublicCompany;
 import com.agentecon.finance.IShareholder;
-import com.agentecon.finance.StockMarket;
 import com.agentecon.finance.Ticker;
 import com.agentecon.firm.Producer;
-import com.agentecon.firm.decisions.EExplorationMode;
 import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.verification.ExplorationScenario;
+import com.agentecon.verification.HeuristicsComparison;
 import com.agentecon.world.World;
 
 // The world
@@ -37,19 +36,14 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private Queue<SimEvent> events;
 	private SimulationListeners listeners;
 	private World world;
-	private StockMarket stocks;
 
 	static {
 		// Disabled because too slow on app engine
 		// Simulation.class.getClassLoader().setDefaultAssertionStatus(true);
 	}
 
-//	public Simulation() {
-//		this(new IncreasingWiggle() ); 
-//	}
-	
 	public Simulation() {
-		this(new ExplorationScenario(0.5));
+		this(new HeuristicsComparison(0.5));
 	}
 
 	public Simulation(IConfiguration metaConfig) {
@@ -62,7 +56,6 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		this.events = this.config.createEventQueue();
 		this.listeners = new SimulationListeners();
 		this.world = new World(config.getSeed(), listeners);
-		this.stocks = new StockMarket(world);
 		this.day = 0;
 	}
 	
@@ -112,9 +105,9 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		for (; day < target; day++) {
 			processEvents(day); //  must happen before daily endowments
 			world.prepareDay(day);
-			stocks.trade(day);
-			RepeatedMarket market = new RepeatedMarket(world, listeners);
-			market.iterate(day, config.getIntradayIterations());
+			DailyMarket market = new DailyMarket(world, listeners);
+			market.distributeDividendsEqually(day, world.getAgents());
+			market.trade(day);
 			for (Producer firm : world.getFirms().getAllFirms()) {
 				firm.produce(day);
 			}
@@ -177,7 +170,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 
 	@Override
 	public IMarket getStockMarket() {
-		return stocks;
+		throw new AbstractMethodError();
 	}
 
 	@Override

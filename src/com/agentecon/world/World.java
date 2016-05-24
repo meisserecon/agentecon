@@ -6,20 +6,15 @@ import java.util.Random;
 
 import com.agentecon.api.IAgent;
 import com.agentecon.consumer.Consumer;
-import com.agentecon.finance.Portfolio;
-import com.agentecon.finance.Position;
 import com.agentecon.firm.Producer;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
 import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
-import com.agentecon.sim.config.SimConfig;
 
 public class World implements IWorld {
 
 	private int day;
 	private Random rand;
-	private Agents agents, backup;
+	private Agents agents;
 	private long randomBaseSeed;
 	private SimulationListeners listeners;
 
@@ -74,8 +69,6 @@ public class World implements IWorld {
 	}
 
 	public void finishDay(int day) {
-		IStock inheritedMoney = new Stock(SimConfig.MONEY);
-		Portfolio inheritance = new Portfolio(inheritedMoney);
 		Collection<Consumer> consumers = agents.getAllConsumers();
 		Iterator<Consumer> iter = consumers.iterator();
 		double util = 0.0;
@@ -83,29 +76,8 @@ public class World implements IWorld {
 			Consumer c = iter.next();
 			assert c.isAlive();
 			util += c.consume();
-			c.age(inheritance);
 		}
-		for (Position pos: inheritance.getPositions()){
-			agents.getCompany(pos.getTicker()).inherit(pos);
-		}
-		if (inheritedMoney.getAmount() > 0) {
-			agents.getRandomConsumer().getMoney().absorb(inheritedMoney);
-		}
-
 		listeners.notifyDayEnded(day, util / consumers.size());
-	}
-
-	public void startTransaction() {
-		this.backup = agents.duplicate();
-	}
-
-	public void commitTransaction() {
-		this.backup = null;
-	}
-
-	public void abortTransaction() {
-		assert backup != null;
-		this.agents = backup;
 	}
 
 	public Agents getAgents() {

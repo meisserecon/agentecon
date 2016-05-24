@@ -8,11 +8,9 @@ import org.junit.Test;
 
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.production.CobbDouglasProduction;
-import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.good.Good;
 import com.agentecon.good.Inventory;
 import com.agentecon.good.Stock;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.stats.Numbers;
 
 public class ProdFunTest {
@@ -32,15 +30,6 @@ public class ProdFunTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testLog() {
-		LogProdFun f1 = new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0));
-		Inventory inv = new Inventory(new Stock(SWISSTIME, 30.3683d));
-		f1.produce(inv);
-		System.out.println(inv.getStock(FONDUE));
-		assert Math.abs(inv.getStock(FONDUE).getAmount() - 35.458) < 0.001;
-	}
-	
 	@Test
 	public void testCobbDouglas() {
 		CobbDouglasProduction f1 = new CobbDouglasProduction(FONDUE, new Weight(SWISSTIME, 0.4), new Weight(ITALTIME, 0.5));

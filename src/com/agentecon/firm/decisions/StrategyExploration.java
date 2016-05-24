@@ -28,7 +28,8 @@ public class StrategyExploration implements IFirmDecisions {
 	public double calcDividend(IFinancials metrics) {
 		double c = mode.selectCosts(metrics);
 		double r = mode.selectRevenue(metrics, laborshare);
-		return fr * r + calcFc() * c;
+		double d = fr * r + calcFc() * c;
+		return d;
 	}
 
 	protected double calcFc() {

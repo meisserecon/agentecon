@@ -4,9 +4,9 @@ package com.agentecon.firm;
 
 import java.util.Arrays;
 
+import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
 import com.agentecon.api.IFirm;
-import com.agentecon.finance.PublicCompany;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.IPriceProvider;
@@ -15,9 +15,11 @@ import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.metric.FirmListeners;
+import com.agentecon.metric.IFirmListener;
 import com.agentecon.price.IPriceFactory;
 
-public class Producer extends PublicCompany implements IFirm {
+public class Producer extends Agent implements IFirm {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -25,6 +27,7 @@ public class Producer extends PublicCompany implements IFirm {
 
 	protected IPriceFactory prices;
 	private IFirmDecisions strategy;
+	private FirmListeners monitor;
 
 	public Producer(String type, Endowment end, IProductionFunction prod, IPriceFactory prices) {
 		this(type, end, prod, prices, new DifferentialDividend());
@@ -34,6 +37,7 @@ public class Producer extends PublicCompany implements IFirm {
 		super(type, end);
 		this.prod = prod;
 		this.prices = prices;
+		this.monitor = new FirmListeners();
 		this.setStrategy(strategy);
 
 		Good[] inputs = prod.getInput();
@@ -43,6 +47,11 @@ public class Producer extends PublicCompany implements IFirm {
 		}
 		IStock outStock = getStock(prod.getOutput());
 		this.output = createOutputFactor(prices, outStock);
+	}
+	
+	@Override
+	public void addFirmMonitor(IFirmListener arg0) {
+		this.monitor.add(arg0);
 	}
 
 	public void setStrategy(IFirmDecisions strategy) {
@@ -110,8 +119,8 @@ public class Producer extends PublicCompany implements IFirm {
 			inputAmounts[i] = inputs[i].getStock().duplicate();
 		}
 		double produced = prod.produce(getInventory());
-		monitor.notifyProduced(this, getType(), inputAmounts, new Stock(output.getGood(), produced));
-		monitor.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
+		monitor.notifyProduced(getType(), inputAmounts, new Stock(output.getGood(), produced));
+		monitor.reportResults(output.getVolume(), cogs, produced * output.getPrice() - cogs);
 		return produced;
 	}
 
@@ -119,10 +128,17 @@ public class Producer extends PublicCompany implements IFirm {
 		return output.getGood();
 	}
 	
-	@Override
+	public void payDividends(int day, IStock wallet) {
+		double dividend = calculateDividends(day);
+		if (dividend > 0){
+			monitor.reportDividend(dividend);
+			wallet.transfer(getMoney(), dividend);
+		}
+	}
+	
 	protected double calculateDividends(int day) {
 		IStock wallet = getMoney();
-		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(new Financials(wallet, inputs, output) {
+		double dividend = Math.min(wallet.getAmount() / 2, strategy.calcDividend(new Financials(wallet, inputs, output) {
 
 			@Override
 			public double getIdealCogs() {

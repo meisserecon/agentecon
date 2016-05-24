@@ -19,29 +19,26 @@ import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.stats.Numbers;
 
-public class ExplorationScenario implements IConfiguration {
+public class SimpleExplorationScenario implements IConfiguration {
 
 	public static final EExplorationMode[] DISCUSSED = new EExplorationMode[] { EExplorationMode.IDEAL_COST, EExplorationMode.EXPECTED, EExplorationMode.KNOWN };
 
-	public static final int DAYS = 2000;
+	public static final int DAYS = 5000;
 
 	private static final double MIN = -5.0;
 	private static final double MAX = 5.0;
 	private static final double INCREMENT = 0.01;
-	
+
 	private static final double RETURNS_TO_SCALE = 0.7;
-	
-	protected static final double STEP = 0.1;
-	protected static final double STEPSTEP = 0.05;
 
 	private double fr;
 	private EExplorationMode mode;
 
-	public ExplorationScenario(EExplorationMode mode) {
+	public SimpleExplorationScenario(EExplorationMode mode) {
 		this(mode, MIN);
 	}
 
-	public ExplorationScenario(EExplorationMode mode, double fr) {
+	public SimpleExplorationScenario(EExplorationMode mode, double fr) {
 		this.mode = mode;
 		this.fr = fr - INCREMENT;
 	}
@@ -49,31 +46,20 @@ public class ExplorationScenario implements IConfiguration {
 	@Override
 	public SimulationConfig createNextConfig() {
 		fr += INCREMENT;
-		StolperSamuelson scenario = new StolperSamuelson() {
+		StolperSamuelson scenario = new StolperSamuelson(1) {
 
-			@Override
-			protected void addSpecialEvents(SimConfig config) {
-				double val = HIGH;
-				double step = STEP;
-				for (int i = 1000; i < DAYS; i += 250) {
-					val -= step;
-					step += STEPSTEP;
-					super.updatePrefs(config, i, val);
-				}
-			}
-			
 			@Override
 			protected int getRandomSeed() {
 				return (int) (fr * 10000);
 			}
 
 			@Override
-			protected void addFirms(PriceConfig pricing, SimConfig config, double ret) {
+			protected void addFirms(PriceConfig pricing, SimConfig config, double returnsToScale) {
 				for (int i = 0; i < outputs.length; i++) {
 					Endowment end = new Endowment(new IStock[] { new Stock(SimConfig.MONEY, 1000) }, new IStock[] {});
 					for (int f = 0; f < FIRMS_PER_TYPE; f++) {
 						final int number = f;
-						IProductionFunction prodfun = prodWeights.createProdFun(i, ret);
+						IProductionFunction prodfun = prodWeights.createProdFun(i, returnsToScale);
 						config.addEvent(new FirmEvent(1, "firm_" + i, end, prodfun, pricing) {
 							protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf) {
 								final IFirmDecisions strategy = createStrategy(number);
@@ -81,7 +67,7 @@ public class ExplorationScenario implements IConfiguration {
 							}
 
 							private IFirmDecisions createStrategy(int type) {
-								return ExplorationScenario.this.createStrategy();
+								return SimpleExplorationScenario.this.createStrategy();
 							}
 						});
 					}
@@ -108,11 +94,11 @@ public class ExplorationScenario implements IConfiguration {
 
 	public static void main(String[] args) {
 		ArrayList<Simulation> sims = new ArrayList<Simulation>();
-		ExplorationScenario ref = new ExplorationScenario(EExplorationMode.EXPECTED);
+		SimpleExplorationScenario ref = new SimpleExplorationScenario(EExplorationMode.EXPECTED);
 		System.out.print("b_R\t");
 		for (EExplorationMode mode : DISCUSSED) {
 			System.out.print(mode + "\t");
-			sims.add(new Simulation(new ExplorationScenario(mode)));
+			sims.add(new Simulation(new SimpleExplorationScenario(mode)));
 		}
 		System.out.println();
 		while (!sims.isEmpty()) {

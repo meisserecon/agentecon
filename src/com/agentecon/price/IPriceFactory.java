@@ -2,8 +2,6 @@
 
 package com.agentecon.price;
 
-import java.util.Random;
-
 import com.agentecon.good.Good;
 
 public interface IPriceFactory {

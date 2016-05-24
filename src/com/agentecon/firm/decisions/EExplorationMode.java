@@ -1,16 +1,15 @@
 package com.agentecon.firm.decisions;
 
 public enum EExplorationMode {
-
-	IDEAL_COST, IDEAL_COST2, EXPECTED, PLANNED, KNOWN, PAIRED;
-
+	
+	IDEAL_COST, IDEAL_COST2, EXPECTED, KNOWN, PAIRED;
+	
 	public double selectCosts(IFinancials metrics) {
 		switch (this) {
 		default:
 		case IDEAL_COST2:
 		case IDEAL_COST:
 			return metrics.getIdealCogs();
-		case PLANNED:
 		case EXPECTED:
 			return metrics.getPlannedCogs();
 		case KNOWN:
@@ -23,8 +22,6 @@ public enum EExplorationMode {
 	public double selectRevenue(IFinancials metrics, double laborshare) {
 		switch (this) {
 		default:
-		case PLANNED:
-			return metrics.getPlannedCogs()/laborshare;
 		case IDEAL_COST:
 		case EXPECTED:
 		case PAIRED:

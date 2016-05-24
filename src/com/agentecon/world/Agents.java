@@ -8,11 +8,8 @@ import java.util.Random;
 
 import com.agentecon.api.IAgent;
 import com.agentecon.consumer.Consumer;
-import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.IPublicCompany;
 import com.agentecon.finance.IShareholder;
-import com.agentecon.finance.IStockMarketParticipant;
-import com.agentecon.finance.MarketMaker;
 import com.agentecon.finance.Ticker;
 import com.agentecon.firm.Producer;
 import com.agentecon.metric.ISimulationListener;
@@ -27,8 +24,6 @@ public class Agents implements IConsumers, IFirms {
 
 	private ArrayList<Producer> firms;
 	private ArrayList<Consumer> consumers;
-	private ArrayList<Fundamentalist> fundies;
-	private ArrayList<MarketMaker> marketMakers;
 	private ArrayList<IShareholder> shareholders;
 
 	private ISimulationListener listeners;
@@ -43,8 +38,6 @@ public class Agents implements IConsumers, IFirms {
 		this.consumers = new ArrayList<>();
 		this.shareholders = new ArrayList<>();
 		this.firms = new ArrayList<>();
-		this.marketMakers = new ArrayList<>();
-		this.fundies = new ArrayList<>();
 		for (IAgent a : all) {
 			if (a.isAlive()) {
 				add(a);
@@ -64,18 +57,6 @@ public class Agents implements IConsumers, IFirms {
 		return consumers;
 	}
 
-	public Collection<IStockMarketParticipant> getRandomStockMarketParticipants() {
-		ArrayList<IStockMarketParticipant> list = new ArrayList<>();
-		list.addAll(consumers);
-		list.addAll(fundies);
-		Collections.shuffle(list, getRand()); // OPTIMIZABLE in case of cardinality < size
-		return list;
-	}
-
-	public Collection<MarketMaker> getAllMarketMakers() {
-		return marketMakers;
-	}
-
 	public IPublicCompany getCompany(Ticker ticker) {
 		return publicCompanies.get(ticker);
 	}
@@ -88,12 +69,6 @@ public class Agents implements IConsumers, IFirms {
 		}
 		if (agent instanceof IShareholder) {
 			shareholders.add((IShareholder) agent);
-		}
-		if (agent instanceof Fundamentalist) {
-			fundies.add((Fundamentalist) agent);
-		}
-		if (agent instanceof MarketMaker) {
-			marketMakers.add((MarketMaker) agent);
 		}
 		if (agent instanceof Producer) {
 			firms.add((Producer) agent);

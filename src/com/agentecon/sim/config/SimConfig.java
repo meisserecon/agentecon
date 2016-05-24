@@ -12,24 +12,14 @@ import com.agentecon.good.Good;
 
 public class SimConfig extends SimulationConfig {
 	
-	private static final int DEFAULT_WOBBLES = 0;
-	
 	public static final Good MONEY = new Good("Taler");
 
-	private int wobbles;
-	
 	public SimConfig(int rounds) {
 		super(rounds);
-		this.wobbles = DEFAULT_WOBBLES;
 	}
 	
 	public SimConfig(int rounds, int seed) {
-		this(rounds, seed, DEFAULT_WOBBLES);
-	}
-	
-	public SimConfig(int rounds, int seed, int wobbles) {
 		super(rounds, seed);
-		this.wobbles = wobbles;
 	}
 	
 	public Queue<SimEvent> createEventQueue() {
@@ -38,10 +28,6 @@ public class SimConfig extends SimulationConfig {
 			queue.add((SimEvent) e);
 		}
 		return queue;
-	}
-	
-	public int getIntradayIterations() {
-		return wobbles;
 	}
 	
 }
