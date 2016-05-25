@@ -2,18 +2,11 @@ package com.agentecon.verification;
 
 import java.util.ArrayList;
 
-import com.agentecon.agent.Endowment;
 import com.agentecon.api.SimulationConfig;
-import com.agentecon.events.FirmEvent;
-import com.agentecon.firm.Producer;
 import com.agentecon.firm.decisions.EExplorationMode;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.decisions.StrategyExploration;
-import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
 import com.agentecon.price.PriceConfig;
-import com.agentecon.price.PriceFactory;
 import com.agentecon.sim.Simulation;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
@@ -68,24 +61,8 @@ public class ExplorationScenario implements IConfiguration {
 			}
 
 			@Override
-			protected void addFirms(PriceConfig pricing, SimConfig config, double ret) {
-				for (int i = 0; i < outputs.length; i++) {
-					Endowment end = new Endowment(new IStock[] { new Stock(SimConfig.MONEY, 1000) }, new IStock[] {});
-					for (int f = 0; f < FIRMS_PER_TYPE; f++) {
-						final int number = f;
-						IProductionFunction prodfun = prodWeights.createProdFun(i, ret);
-						config.addEvent(new FirmEvent(1, "firm_" + i, end, prodfun, pricing) {
-							protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf) {
-								final IFirmDecisions strategy = createStrategy(number);
-								return createFirm(type, end, prodFun, pf, strategy);
-							}
-
-							private IFirmDecisions createStrategy(int type) {
-								return ExplorationScenario.this.createStrategy();
-							}
-						});
-					}
-				}
+			protected IFirmDecisions getDividendStrategy(double laborShare) {
+				return ExplorationScenario.this.createStrategy(laborShare);
 			}
 
 		};
@@ -97,13 +74,13 @@ public class ExplorationScenario implements IConfiguration {
 		return Numbers.isSmaller(fr, MAX);
 	}
 
-	protected IFirmDecisions createStrategy() {
-		return new StrategyExploration(RETURNS_TO_SCALE, fr, mode);
+	protected IFirmDecisions createStrategy(double laborShare) {
+		return new StrategyExploration(laborShare, fr, mode);
 	}
 
 	@Override
 	public String getComment() {
-		return createStrategy().toString();
+		return createStrategy(RETURNS_TO_SCALE).toString();
 	}
 
 	public static void main(String[] args) {

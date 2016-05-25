@@ -15,10 +15,6 @@ import com.agentecon.price.IPriceFactory;
 
 public class SensorFirm extends Producer {
 	
-	public SensorFirm(String type, Endowment end, IProductionFunction prod, IPriceFactory prices) {
-		super(type, end, prod, prices);
-	}
-
 	public SensorFirm(String type, Endowment end, IProductionFunction prod, IPriceFactory prices, IFirmDecisions strategy) {
 		super(type, end, prod, prices, strategy);
 	}
@@ -41,11 +37,6 @@ public class SensorFirm extends Producer {
 		} else {
 			return new SensorOutputFactor(stock, price);
 		}
-	}
-	
-	@Override
-	public SensorFirm createNextGeneration(Endowment end, IProductionFunction prod){
-		return new SensorFirm(getType(), end, prod, prices);
 	}
 	
 	@Override

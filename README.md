@@ -1,4 +1,4 @@
-# Seemingly Equivalent Heuristics (#ExplorationChart)
+# Seemingly Equivalent Heuristics
 
 This branch contains the code for the paper "Seemingly Equivalent Firm Decision Heuristics" presented at CEF 2016.
 

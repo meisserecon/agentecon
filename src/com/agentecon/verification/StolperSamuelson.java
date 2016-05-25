@@ -5,16 +5,19 @@ import com.agentecon.consumer.LogUtil;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.UpdatePreferencesEvent;
+import com.agentecon.firm.Producer;
+import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
 import com.agentecon.price.PriceConfig;
+import com.agentecon.price.PriceFactory;
 import com.agentecon.sim.config.ConsumptionWeights;
 import com.agentecon.sim.config.ProductionWeights;
 import com.agentecon.sim.config.SimConfig;
 
-public class StolperSamuelson {
+public abstract class StolperSamuelson {
 	
 	public static final Good PIZZA = new Good("Pizza");
 	public static final Good FONDUE = new Good("Fondue");
@@ -103,9 +106,18 @@ public class StolperSamuelson {
 		for (int i = 0; i < outputs.length; i++) {
 			Endowment end = new Endowment(new IStock[] { new Stock(SimConfig.MONEY, 1000) }, new IStock[] {});
 			IProductionFunction prodfun = prodWeights.createProdFun(i, returnsToScale);
-			config.addEvent(new FirmEvent(FIRMS_PER_TYPE, "firm_" + i, end, prodfun, pricing));
+			config.addEvent(new FirmEvent(FIRMS_PER_TYPE, "firm_" + i, end, prodfun, pricing){
+
+				@Override
+				protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf) {
+					return createFirm(type, end, prodFun, pf, getDividendStrategy(returnsToScale));
+				}
+				
+			});
 		}
 	}
+
+	protected abstract IFirmDecisions getDividendStrategy(double returnsToScale);
 
 	public Good[] getOutputs() {
 		return outputs;

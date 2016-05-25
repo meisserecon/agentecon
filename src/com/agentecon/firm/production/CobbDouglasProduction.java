@@ -36,12 +36,12 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 
 	@Override
 	public double produce(Inventory inventory) {
-		double production = 1.0;
+		double production = constantFactor;
 		for (Weight input : inputs) {
 			IStock in = inventory.getStock(input.good);
 			production *= Math.pow(in.consume(), input.weight);
 		}
-		production = Math.max(constantFactor * production, 1.0);
+		production = Math.max(production, 1.0);
 		inventory.getStock(getOutput()).add(production);
 		return production;
 	}

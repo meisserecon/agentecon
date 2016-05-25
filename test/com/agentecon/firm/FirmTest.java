@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Weight;
+import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.good.Good;
@@ -58,7 +59,7 @@ public class FirmTest {
 				}
 			}
 			
-		});
+		}, new DifferentialDividend());
 		firm.offer(new IPriceMakerMarket() {
 			
 			@Override
@@ -105,7 +106,7 @@ public class FirmTest {
 				}
 			}
 			
-		});
+		}, new DifferentialDividend());
 		firm.offer(new IPriceMakerMarket() {
 			
 			@Override

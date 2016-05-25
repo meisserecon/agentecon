@@ -7,7 +7,6 @@ import java.util.Arrays;
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
 import com.agentecon.api.IFirm;
-import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.IPriceProvider;
 import com.agentecon.firm.production.IProductionFunction;
@@ -28,10 +27,6 @@ public class Producer extends Agent implements IFirm {
 	protected IPriceFactory prices;
 	private IFirmDecisions strategy;
 	private FirmListeners monitor;
-
-	public Producer(String type, Endowment end, IProductionFunction prod, IPriceFactory prices) {
-		this(type, end, prod, prices, new DifferentialDividend());
-	}
 
 	public Producer(String type, Endowment end, IProductionFunction prod, IPriceFactory prices, IFirmDecisions strategy) {
 		super(type, end);
@@ -171,10 +166,6 @@ public class Producer extends Agent implements IFirm {
 
 	public double getOutputPrice() {
 		return output.getPrice();
-	}
-
-	public Producer createNextGeneration(Endowment end, IProductionFunction prod) {
-		return new Producer(getType(), end, prod, prices, strategy);
 	}
 
 	public Factor getFactor(Good good) {
