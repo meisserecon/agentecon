@@ -18,9 +18,9 @@ public class ExplorationScenario implements IConfiguration {
 
 	public static final int DAYS = 2000;
 
-	private static final double MIN = -5.0;
+	private static final double MIN = -0.0;
 	private static final double MAX = 5.0;
-	private static final double INCREMENT = 0.01;
+	private static final double INCREMENT = 0.05;
 	
 	private static final double RETURNS_TO_SCALE = 0.7;
 	
@@ -28,6 +28,7 @@ public class ExplorationScenario implements IConfiguration {
 	protected static final double STEPSTEP = 0.05;
 
 	private double fr;
+	StolperSamuelson conf;
 	private EExplorationMode mode;
 
 	public ExplorationScenario(EExplorationMode mode) {
@@ -42,7 +43,7 @@ public class ExplorationScenario implements IConfiguration {
 	@Override
 	public SimulationConfig createNextConfig() {
 		fr += INCREMENT;
-		StolperSamuelson scenario = new StolperSamuelson() {
+		this.conf = new StolperSamuelson() {
 
 			@Override
 			protected void addSpecialEvents(SimConfig config) {
@@ -66,7 +67,7 @@ public class ExplorationScenario implements IConfiguration {
 			}
 
 		};
-		return scenario.createConfiguration(new PriceConfig(false, false), DAYS, RETURNS_TO_SCALE);
+		return conf.createConfiguration(new PriceConfig(true, true), DAYS, RETURNS_TO_SCALE);
 	}
 
 	@Override

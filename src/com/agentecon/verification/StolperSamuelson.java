@@ -124,7 +124,7 @@ public abstract class StolperSamuelson {
 	}
 
 	public Good[] getInputs() {
-		return outputs;
+		return inputs;
 	}
 
 }

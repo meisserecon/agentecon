@@ -24,6 +24,7 @@ public class SimpleExplorationScenario implements IConfiguration {
 	private static final double RETURNS_TO_SCALE = 0.7;
 
 	private double fr;
+	StolperSamuelson conf;
 	private EExplorationMode mode;
 
 	public SimpleExplorationScenario(EExplorationMode mode) {
@@ -38,7 +39,7 @@ public class SimpleExplorationScenario implements IConfiguration {
 	@Override
 	public SimulationConfig createNextConfig() {
 		fr += INCREMENT;
-		StolperSamuelson scenario = new StolperSamuelson(1) {
+		this.conf = new StolperSamuelson(1) {
 
 			@Override
 			protected int getRandomSeed() {
@@ -51,7 +52,7 @@ public class SimpleExplorationScenario implements IConfiguration {
 			}
 
 		};
-		return scenario.createConfiguration(new PriceConfig(false, false), DAYS, RETURNS_TO_SCALE);
+		return conf.createConfiguration(new PriceConfig(true, true), DAYS, RETURNS_TO_SCALE);
 	}
 
 	@Override
@@ -82,10 +83,10 @@ public class SimpleExplorationScenario implements IConfiguration {
 			ref.createNextConfig();
 			System.out.print(ref.fr + "\t");
 			for (Simulation sim : sims) {
-				UtilityStats stats = new UtilityStats(500);
+				ProductionStats stats = new ProductionStats(500);
 				sim.addListener(stats);
 				sim.run();
-				System.out.print(stats.getUtility() + "\t");
+				System.out.print(stats.getInput1Volume() * StolperSamuelson.FIRMS_PER_TYPE + "\t");
 				sim = (Simulation) sim.getNext();
 				if (sim != null) {
 					next.add(sim);
