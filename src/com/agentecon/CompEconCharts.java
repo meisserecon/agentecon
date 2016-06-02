@@ -10,6 +10,7 @@ import com.agentecon.sim.IConfiguration;
 import com.agentecon.sim.SimConfig;
 import com.agentecon.sim.Simulation;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.verification.ParameterExploration2;
 import com.agentecon.verification.Result;
 import com.agentecon.verification.StolperSamuelson;
 
@@ -20,7 +21,7 @@ public class CompEconCharts implements IConfiguration {
 
 	public static boolean ENABLE_NORMALIZATION = true;
 
-	private int figure = 8;
+	private int figure = 3;
 
 	@Override
 	public SimulationConfig createNextConfig() {
@@ -34,9 +35,7 @@ public class CompEconCharts implements IConfiguration {
 		case 8:
 			return createChartConfig(new PriceConfig(true, EPrice.EXPSEARCH), 2500, true);
 		case 9:
-			SimulationConfig sc = createChartConfig(new PriceConfig(true, EPrice.CONSTANTPERCENTAGE), 2500, true);
-//			sc.setSeed(52);
-			return sc;
+			return createChartConfig(new PriceConfig(true, EPrice.CONSTANTPERCENTAGE), 2500, true);
 		case 10:
 			return createChartConfig(new PriceConfig(false, EPrice.EXPSEARCH), 2500, true);
 		case 11:
@@ -137,8 +136,8 @@ public class CompEconCharts implements IConfiguration {
 		}
 		System.out.println("\n***************** ACCURACY BENCHMARK *****************");
 		System.out.println(charts.createAccuracyBenchmark());
-		// System.out.println("\n***************** PARAMETER EXPLORATION *****************");
-		// System.out.println(new ParameterExploration(1.0, 5.0, 0.1).run());
+		System.out.println("\n***************** PARAMETER EXPLORATION *****************");
+		new ParameterExploration2().run();
 	}
 
 }

@@ -19,7 +19,8 @@ public class ParameterExploration2 {
 	}
 
 	public String run() {
-		String table = "delta\tdelta_high\talpha\tPizza Price\tPizza Amount\tFondue Price\tFondue Amount\tItalian Wage\tSwiss Hours Worked\tItalian Wage\tSwiss Hours Worked\tDeviation";		System.out.println(table);
+		String table = "delta\tdelta_high\talpha\tPizza Price\tPizza Amount\tFondue Price\tFondue Amount\tItalian Wage\tSwiss Hours Worked\tItalian Wage\tSwiss Hours Worked\tDeviation";
+		System.out.println(table);
 		for (double retToScale = 0.1; retToScale <= 0.701; retToScale += 0.05) {
 			for (double share = 0.1; share <= 0.5001; share += 0.1) {
 				for (double pref = 1.0; pref <= 9.001; pref += 0.5) {
