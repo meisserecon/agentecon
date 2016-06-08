@@ -1,4 +1,4 @@
-delta	delta_high	alpha	Agent-based Pp/Pf	Solver Pp/Pf	Agent-based Pp/Ws	Solver Pp/Ws	Agent-based Pizzas	Solver Pizzas
+delta	delta_high	alpha	Pizza Price	Pizza Amount	Fondue Price	Fondue Amount	Italian Wage	Swiss Hours Worked	Italian Wage	Swiss Hours Worked	Deviation
 0.1	0.01	1	32.794	123.33	3.952	97.771	3.255	22.974	3.531	103.644	0.004327
 0.1	0.01	1.5	31.231	122.52	5.878	102.039	3.291	27.879	3.536	98.463	0.004842
 0.1	0.01	2	29.61	121.671	7.796	105.312	3.324	32.874	3.536	93.37	0.004870

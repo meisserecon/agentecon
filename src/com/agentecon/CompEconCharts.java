@@ -134,7 +134,8 @@ public class CompEconCharts implements IConfiguration {
 			System.out.println("\n***************** " + charts.getComment() + " *****************");
 			System.out.println(result);
 		}
-		System.out.println("\n***************** ACCURACY BENCHMARK *****************");
+		ENABLE_NORMALIZATION = true;
+		System.out.println("\n********** ACCURACY BENCHMARK (with normalization enabled, first two rows differ vs paper) ********");
 		System.out.println(charts.createAccuracyBenchmark());
 		System.out.println("\n***************** PARAMETER EXPLORATION *****************");
 		new ParameterExploration2().run();

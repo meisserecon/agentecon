@@ -125,7 +125,7 @@ public class Consumer extends Agent implements IConsumer {
 			for (IOffer offer : offers) {
 				IStock s = inv.getStock(offer.getGood());
 				double difference = allocs[pos] - s.getAmount();
-				if (difference > Numbers.EPSILON) {
+				if (difference > Numbers.EPSILON && getMoney().getAmount() > Numbers.EPSILON) {
 					assert offer.getGood() != soldGood;
 					offer.accept(getMoney(), s, difference);
 					spendings += difference * offer.getPrice().getPrice();
