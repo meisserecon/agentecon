@@ -83,10 +83,10 @@ public class SimpleExplorationScenario implements IConfiguration {
 			ref.createNextConfig();
 			System.out.print(ref.fr + "\t");
 			for (Simulation sim : sims) {
-				ProductionStats stats = new ProductionStats(500);
+				ProductionStats stats = new ProductionStats(ref.conf.inputs[0], 500);
 				sim.addListener(stats);
 				sim.run();
-				System.out.print(stats.getInput1Volume() * StolperSamuelson.FIRMS_PER_TYPE + "\t");
+				System.out.print(stats.getInputVolume() * StolperSamuelson.FIRMS_PER_TYPE + "\t");
 				sim = (Simulation) sim.getNext();
 				if (sim != null) {
 					next.add(sim);

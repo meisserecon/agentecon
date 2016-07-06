@@ -2,6 +2,7 @@ package com.agentecon.verification;
 
 import com.agentecon.api.IFirm;
 import com.agentecon.finance.IPublicCompany;
+import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.metric.IFirmListener;
 import com.agentecon.metric.SimulationListenerAdapter;
@@ -11,9 +12,11 @@ class ProductionStats extends SimulationListenerAdapter implements IFirmListener
 
 	private AccumulatingAverage inputsUsed;
 	private int startDay;
+	private Good good;
 
-	public ProductionStats(int startDay) {
+	public ProductionStats(Good good, int startDay) {
 		this.startDay = startDay;
+		this.good = good;
 	}
 
 	@Override
@@ -30,14 +33,18 @@ class ProductionStats extends SimulationListenerAdapter implements IFirmListener
 		}
 	}
 
-	public double getInput1Volume() {
-		return inputsUsed.getWrapped().getAverage();
+	public double getInputVolume() {
+		return inputsUsed == null ? 0.0 : inputsUsed.getWrapped().getAverage();
 	}
 
 	@Override
 	public void notifyProduced(IPublicCompany inst, String producer, IStock[] inputs, IStock output) {
 		if (inputsUsed != null) {
-			inputsUsed.add(inputs[0].getAmount());
+			for (IStock input: inputs){
+				if (input.getGood().equals(good)){
+					inputsUsed.add(input.getAmount());
+				}
+			}
 		}
 	}
 

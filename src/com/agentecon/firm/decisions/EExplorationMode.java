@@ -19,7 +19,7 @@ public enum EExplorationMode {
 		}
 	}
 
-	public double selectRevenue(IFinancials metrics, double laborshare) {
+	public double selectRevenue(IFinancials metrics) {
 		switch (this) {
 		default:
 		case IDEAL_COST:

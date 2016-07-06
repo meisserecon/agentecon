@@ -8,6 +8,10 @@ public class StrategyExploration implements IFirmDecisions {
 
 	private double laborshare, br;
 	private EExplorationMode mode;
+	
+	public StrategyExploration(double laborshare){
+		this(laborshare, 1 - laborshare, EExplorationMode.EXPECTED);
+	}
 
 	public StrategyExploration(double laborshare, double fr, EExplorationMode mode) {
 		this.laborshare = laborshare;
@@ -27,7 +31,7 @@ public class StrategyExploration implements IFirmDecisions {
 	@Override
 	public double calcDividend(IFinancials metrics) {
 		double c = mode.selectCosts(metrics);
-		double r = mode.selectRevenue(metrics, laborshare);
+		double r = mode.selectRevenue(metrics);
 		double d = br * r + calcBc() * c;
 		return d;
 	}
