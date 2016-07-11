@@ -1,5 +1,7 @@
 package com.agentecon.events;
 
+import java.util.Random;
+
 import com.agentecon.agent.Endowment;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.decisions.IFirmDecisions;
@@ -28,11 +30,11 @@ public abstract class FirmEvent extends SimEvent {
 	public void execute(IWorld sim) {
 		PriceFactory pf = new PriceFactory(sim.getRand(), priceParams);
 		for (int i = 0; i < getCardinality(); i++) {
-			sim.add(createFirm(type, end, prodFun, pf));
+			sim.add(createFirm(type, end, prodFun, pf, sim.getRand()));
 		}
 	}
 	
-	protected abstract Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf);
+	protected abstract Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, Random random);
 
 	protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, IFirmDecisions strategy) {
 		if (priceParams.isSensor()) {

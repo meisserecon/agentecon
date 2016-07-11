@@ -28,7 +28,7 @@ public abstract class Financials implements IFinancials {
 		}
 		return cogs;
 	}
-
+	
 	@Override
 	public double getLatestRevenue() {
 		return output.getVolume();

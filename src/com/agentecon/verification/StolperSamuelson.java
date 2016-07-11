@@ -1,5 +1,7 @@
 package com.agentecon.verification;
 
+import java.util.Random;
+
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.LogUtil;
 import com.agentecon.events.ConsumerEvent;
@@ -74,7 +76,7 @@ public abstract class StolperSamuelson {
 	}
 	
 	protected int getRandomSeed(){
-		return 25;
+		return 21;
 	}
 
 	protected void addSpecialEvents(SimConfig config) {
@@ -109,7 +111,7 @@ public abstract class StolperSamuelson {
 			config.addEvent(new FirmEvent(FIRMS_PER_TYPE, "firm_" + i, end, prodfun, pricing){
 
 				@Override
-				protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf) {
+				protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, Random rand) {
 					return createFirm(type, end, prodFun, pf, getDividendStrategy(returnsToScale));
 				}
 				
