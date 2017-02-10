@@ -1,21 +1,23 @@
-package com.agentecon.verification;
+package com.agentecon;
 
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.decisions.StrategyExploration;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.sim.Simulation;
 import com.agentecon.stats.Numbers;
+import com.agentecon.verification.EquilibriumTest;
+import com.agentecon.verification.PriceMetric;
+import com.agentecon.verification.Result;
+import com.agentecon.verification.StolperSamuelson;
 
 /**
- * Produces output ParameterExploration2.out
- * 
  * @author Luzius
  */
-public class ParameterExploration2 {
+public class ReturnsToScaleTable {
 
 	private PriceConfig config;
 
-	public ParameterExploration2() {
+	public ReturnsToScaleTable() {
 		this.config = new PriceConfig(true, true);
 	}
 
@@ -64,7 +66,7 @@ public class ParameterExploration2 {
 	}
 
 	public static void main(String[] args) {
-		new ParameterExploration2().run();
+		new ReturnsToScaleTable().run();
 	}
 
 }

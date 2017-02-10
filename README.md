@@ -1,13 +1,25 @@
-# Seemingly Equivalent Heuristics
+# Seemingly Equivalent Firm Decision Heuristics
 
-This branch contains the code for the paper "Seemingly Equivalent Firm Decision Heuristics" presented at CEF 2016.
+### Documentation for branch StrategyExploration
 
-Run [com.agentecon.verification.ExplorationScenario](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/SimpleExplorationScenario.java) to get the raw data.
+This branch contains the code for the paper "Seemingly Equivalent Firm Decision Heuristics" initially presented at CEF 2016 and later refined and submitted to the Internation Journal of Microsimulation.
 
-It compares three different heuristics for calculating dividend payments.
+Visit [my website](http://meissereconomics.com/2016/06/28/Heuristics.html) to download the CEF 2016 version of the paper and the presentation slides. I will also link to the Journal version once it is published.
 
-My recommendation is to use
+To reproduce the various findings of the model, run the following classes:
 
-d = (1-l) E[R]
+- [StabilityProfiles](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/StabilityProfiles.java) to obtain output [StabilityProfiles.out](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/StabilityProfiles.out) which constitutes the raw data of the three stability profiles in the paper.
+- [TimeSeries](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/TimeSeries.java) to obtain output [StabilityProfiles.out](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/TimeSeries.out) which contains the raw data for the time series of the discussed individual simulation runs.
+- [ParameterExploration2](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/ParameterExploration2.java) to get [ParameterExploration2.out](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/ParameterExploration2.out), which shows that the simulation stays reasonably stable for returns to scale up to 0.9
+- [HeuristicsCompetition](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/HeuristicsCompetition.java) to get [HeuristicsCompetition.out](https://github.com/meisserecon/agentecon/blob/StrategyExploration/src/com/agentecon/verification/HeuristicsCompetition.out), which represents the microconsistency test that shows that there is an incentive to deviate.
 
-with l being labor share, and E[R] today's expected revenues given price belief and goods for sale.
+
+###General instructions
+
+In order to modify and run the model yourself, you should follow these steps:
+
+1. Make sure a git client is installed. I am using SourceTree: https://www.sourcetreeapp.com/
+2. Make sure an IDE for Java is installed. I am using eclipse for Java EE developers, obtainable from https://eclipse.org/downloads/ .
+3. Add this repository (https://github.com/meissereconomics/agentecon.git) and checkout the right branch.
+4. Import the project to eclipse. In case you are using a different IDE, make sure to add jar\agenteconinterface.jar to the classpath.
+5. Run the class you are interested in.

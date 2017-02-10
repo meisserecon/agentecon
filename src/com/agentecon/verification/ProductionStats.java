@@ -8,7 +8,7 @@ import com.agentecon.metric.IFirmListener;
 import com.agentecon.metric.SimulationListenerAdapter;
 import com.agentecon.util.AccumulatingAverage;
 
-class ProductionStats extends SimulationListenerAdapter implements IFirmListener {
+public class ProductionStats extends SimulationListenerAdapter implements IFirmListener {
 
 	private AccumulatingAverage inputsUsed;
 	private int startDay;
@@ -17,6 +17,10 @@ class ProductionStats extends SimulationListenerAdapter implements IFirmListener
 	public ProductionStats(Good good, int startDay) {
 		this.startDay = startDay;
 		this.good = good;
+	}
+
+	public ProductionStats(int start) {
+		this(null, start);
 	}
 
 	@Override
@@ -41,6 +45,10 @@ class ProductionStats extends SimulationListenerAdapter implements IFirmListener
 	public void notifyProduced(IPublicCompany inst, String producer, IStock[] inputs, IStock output) {
 		if (inputsUsed != null) {
 			for (IStock input: inputs){
+				if (good == null){
+					// if unspecified, just take the first input good encountered
+					good = input.getGood();
+				}
 				if (input.getGood().equals(good)){
 					inputsUsed.add(input.getAmount());
 				}

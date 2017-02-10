@@ -26,9 +26,9 @@ public abstract class StolperSamuelson {
 	public static final Good IT_HOUR = new Good("Italian man-hours");
 	public static final Good CH_HOUR = new Good("Swiss man-hours");
 
-	protected static final int HOURS_PER_DAY = 24;
-	protected static final int CONSUMERS_PER_TYPE = 100;
-	protected static final int FIRMS_PER_TYPE = 10;
+	public static final int HOURS_PER_DAY = 24;
+	public static final int CONSUMERS_PER_TYPE = 100;
+	public static final int FIRMS_PER_TYPE = 10;
 
 	protected static final double LOW = 3.0;
 	protected static final double HIGH = HOURS_PER_DAY - ConsumptionWeights.TIME_WEIGHT - LOW;
@@ -112,11 +112,17 @@ public abstract class StolperSamuelson {
 
 				@Override
 				protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, Random rand) {
-					return createFirm(type, end, prodFun, pf, getDividendStrategy(returnsToScale));
+					IFirmDecisions strategy = getDividendStrategy(returnsToScale);
+					Producer prod = createFirm(type, end, prodFun, pf, strategy);
+					notifyFirmCreated(prod, strategy);
+					return prod;
 				}
 				
 			});
 		}
+	}
+
+	protected void notifyFirmCreated(Producer prod, IFirmDecisions strategy) {
 	}
 
 	protected abstract IFirmDecisions getDividendStrategy(double returnsToScale);

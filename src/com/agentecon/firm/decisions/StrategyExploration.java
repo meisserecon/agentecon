@@ -10,13 +10,13 @@ public class StrategyExploration implements IFirmDecisions {
 	private EExplorationMode mode;
 	
 	public StrategyExploration(double laborshare){
-		this(laborshare, 1 - laborshare, EExplorationMode.EXPECTED);
+		this(laborshare, 1 - laborshare, EExplorationMode.PLANNED);
 	}
 
-	public StrategyExploration(double laborshare, double fr, EExplorationMode mode) {
+	public StrategyExploration(double laborshare, double br, EExplorationMode mode) {
 		this.laborshare = laborshare;
 		this.mode = mode;
-		this.br = fr;
+		this.br = br;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class StrategyExploration implements IFirmDecisions {
 	}
 
 	public String toString() {
-		return mode + " exploration\t" + Numbers.toString(br) + "\t" + Numbers.toString(calcBc());
+		return mode + " heuristic with b_R=" + Numbers.toString(br) + " and b_C=" + Numbers.toString(calcBc());
 	}
 
 }

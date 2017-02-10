@@ -26,7 +26,7 @@ public class AdaptiveProfitTest {
 	private ProfitStats profits;
 
 	public AdaptiveProfitTest() {
-		this.stats = new ProductionStats(StolperSamuelson.IT_HOUR, STEPS / 2) {
+		this.stats = new ProductionStats(STEPS / 2) {
 			@Override
 			public void notifyFirmCreated(IFirm firm) {
 			}
@@ -38,17 +38,15 @@ public class AdaptiveProfitTest {
 		};
 	}
 
-	public Simulation createSimulation(final int seed) {
-		return new Simulation(new StolperSamuelson(3.0, new double[] { 0.25, 0.75 }) {
-
-			private final int COUNT = StolperSamuelson.FIRMS_PER_TYPE;
+	public Simulation createSimulation(final int seed, final int count) {
+		return new Simulation(new StolperSamuelson(1) { // 3.0, new double[] { 0.25, 0.75 }) {
 
 			protected void addFirms(PriceConfig pricing, SimConfig config, double returnsToScale) {
 				for (int i = 0; i < outputs.length; i++) {
-					final int typeIndex = i;
+					final int firmNumber = i;
 					Endowment end = new Endowment(new IStock[] { new Stock(SimConfig.MONEY, 1000) }, new IStock[] {});
 					IProductionFunction prodfun = prodWeights.createProdFun(i, returnsToScale);
-					config.addEvent(new FirmEvent(FIRMS_PER_TYPE - COUNT, "firm_" + i, end, prodfun, pricing) {
+					config.addEvent(new FirmEvent(FIRMS_PER_TYPE - count, "firm_" + i, end, prodfun, pricing) {
 
 						@Override
 						protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, Random random) {
@@ -56,13 +54,13 @@ public class AdaptiveProfitTest {
 						}
 
 					});
-					config.addEvent(new FirmEvent(COUNT, "firm_" + i, end, prodfun, pricing) {
+					config.addEvent(new FirmEvent(count, "firm_" + i, end, prodfun, pricing) {
 
 						@Override
 						protected Producer createFirm(String type, Endowment end, IProductionFunction prodFun, PriceFactory pf, Random random) {
 							// Producer f = createFirm(type, end, prodFun, pf, getDividendStrategy(returnsToScale));
-							Producer f = createFirm(type, end, prodFun, pf, new ProfitInterpolation(0.98, EExplorationMode.KNOWN, random.nextLong()));
-							if (typeIndex == 0) {
+							Producer f = createFirm(type, end, prodFun, pf, new ProfitInterpolation(0.95, EExplorationMode.KNOWN, random.nextLong()));
+							if (firmNumber == 0) {
 								f.addFirmMonitor(profits);
 								f.addFirmMonitor(stats);
 							}
@@ -82,11 +80,11 @@ public class AdaptiveProfitTest {
 			protected int getRandomSeed() {
 				return seed;
 			}
-		}.createConfiguration(new PriceConfig(true, true), STEPS, 0.5));
+		}.createConfiguration(new PriceConfig(true, true), STEPS, ExplorationScenario.RETURNS_TO_SCALE));
 	}
 
-	public void run(int seed) {
-		Simulation sim = createSimulation(seed);
+	public void run(int seed, int count) {
+		Simulation sim = createSimulation(seed, count);
 		sim.addListener(stats);
 		sim.addListener(profits);
 		sim.run();
@@ -94,9 +92,9 @@ public class AdaptiveProfitTest {
 	}
 
 	public static void main(String[] args) {
-		// 21.10681171296724 96.83961760567955
-		for (int i = 0; i < 1; i++) {
-			new AdaptiveProfitTest().run(3124 + i);
+		// 80.7325211814418		31.59939850258466	
+		for (int i = 10; i <= StolperSamuelson.FIRMS_PER_TYPE; i++) {
+			new AdaptiveProfitTest().run(3124, i);
 			System.out.println();
 		}
 	}

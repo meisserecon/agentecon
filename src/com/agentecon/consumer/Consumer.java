@@ -19,7 +19,7 @@ import com.agentecon.stats.Numbers;
 
 public class Consumer extends Agent implements IConsumer {
 	
-	private static final double SPENDING_FRACTION = 0.1;
+	private static final double SPENDING_FRACTION = 1.0;
 
 	protected Good soldGood;
 	private IUtility utility;

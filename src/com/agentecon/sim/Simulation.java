@@ -21,7 +21,6 @@ import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
-import com.agentecon.verification.ExplorationScenario;
 import com.agentecon.verification.HeuristicsComparison;
 import com.agentecon.world.World;
 

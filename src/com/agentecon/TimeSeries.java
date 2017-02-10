@@ -1,4 +1,4 @@
-package com.agentecon.verification;
+package com.agentecon;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,12 +13,12 @@ import com.agentecon.sim.Simulation;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 
-public class PriceTimeSeries extends SimulationListenerAdapter implements IMarketListener {
+public class TimeSeries extends SimulationListenerAdapter implements IMarketListener {
 
 	private Good[] goods;
 	private HashMap<Good, Average> prices;
 
-	public PriceTimeSeries(String comment, Good... goods) {
+	public TimeSeries(String comment, Good... goods) {
 		this.goods = goods;
 		this.prices = new InstantiatingHashMap<Good, Average>() {
 
@@ -27,14 +27,15 @@ public class PriceTimeSeries extends SimulationListenerAdapter implements IMarke
 				return new Average();
 			}
 		};
+		System.out.println(comment + "\t");
 		System.out.print("Day");
 		for (Good g : goods) {
 			System.out.print("\t" + g + " price\t" + g + " volume");
 		}
-		System.out.println("\t" + comment);
+		System.out.println();
 	}
 
-	public PriceTimeSeries(String comment, Good[] inputs, Good[] outputs) {
+	public TimeSeries(String comment, Good[] inputs, Good[] outputs) {
 		this(comment, merge(inputs, outputs));
 	}
 
@@ -80,24 +81,33 @@ public class PriceTimeSeries extends SimulationListenerAdapter implements IMarke
 		notifyTradesCancelled();
 	}
 
-//	public static void main(String[] args) {
-//		// Optimum is 70.7946 utility with 808.433 labor https://www.wolframalpha.com/input/?i=maximize(10+*+ln+(1+%2B+(h%2F10)%5E0.7))+%2B+14+*+ln+(25+-+h%2F100))
-////		EExplorationMode mode = EExplorationMode.IDEAL_COST; 	double br = 0.27539 low and double br = 0.2754 high
-//		EExplorationMode mode = EExplorationMode.KNOWN; 	double br = 1.5;
-//		SimpleExplorationScenario scenario = new SimpleExplorationScenario(mode, br);
-//		Simulation sim = new Simulation(scenario.createNextConfig());
-//		sim.addListener(new PriceTimeSeries("Mode " + mode + " with br=" + br + " on " + new Date(), scenario.conf.getInputs(), scenario.conf.getOutputs()));
-//		sim.finish();
-//	}
+	// public static void main(String[] args) {
+	// // Optimum is 70.7946 utility with 808.433 labor https://www.wolframalpha.com/input/?i=maximize(10+*+ln+(1+%2B+(h%2F10)%5E0.7))+%2B+14+*+ln+(25+-+h%2F100))
+	//// EExplorationMode mode = EExplorationMode.IDEAL_COST; double br = 0.27539 low and double br = 0.2754 high
+	// EExplorationMode mode = EExplorationMode.KNOWN; double br = 1.5;
+	// SimpleExplorationScenario scenario = new SimpleExplorationScenario(mode, br);
+	// Simulation sim = new Simulation(scenario.createNextConfig());
+	// sim.addListener(new PriceTimeSeries("Mode " + mode + " with br=" + br + " on " + new Date(), scenario.conf.getInputs(), scenario.conf.getOutputs()));
+	// sim.finish();
+	// }
 	
-	public static void main(String[] args) {
-		// Optimum is 70.7946 utility with 808.433 labor https://www.wolframalpha.com/input/?i=maximize(10+*+ln+(1+%2B+(h%2F10)%5E0.7))+%2B+14+*+ln+(25+-+h%2F100))
-//		EExplorationMode mode = EExplorationMode.IDEAL_COST; 	double br = 0.27539 low and double br = 0.2754 high
-		EExplorationMode mode = EExplorationMode.KNOWN; 	double br = 0.0;
-		ExplorationScenario scenario = new ExplorationScenario(mode, br);
+	private static void printFigure(EExplorationMode mode, double br){
+		StabilityProfiles scenario = new StabilityProfiles(mode, br);
 		Simulation sim = new Simulation(scenario.createNextConfig());
-		sim.addListener(new PriceTimeSeries("Mode " + mode + " with br=" + br + " on " + new Date(), scenario.conf.getInputs(), scenario.conf.getOutputs()));
+		sim.addListener(new TimeSeries("Mode " + mode + " with br=" + br + " on " + new Date(), scenario.conf.getInputs(), scenario.conf.getOutputs()));
 		sim.finish();
+		System.out.println();
+	}
+	
+	// Prints the time series shown in the paper
+	public static void main(String[] args) {
+		printFigure(EExplorationMode.KNOWN, 0.999);	// figure 1
+		printFigure(EExplorationMode.KNOWN, 1.0);	// figure 1
+		printFigure(EExplorationMode.KNOWN, 1.001);	// figure 1
+		printFigure(EExplorationMode.KNOWN, -1.0);	// figure 3
+		printFigure(EExplorationMode.PLANNED, 0.7);	// figure 6
+		printFigure(EExplorationMode.PLANNED, 1.41);	// figure 7
+		printFigure(EExplorationMode.PLANNED, -0.1105);	// figure 8
 	}
 
 }

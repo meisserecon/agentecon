@@ -27,7 +27,7 @@ public class ProfitInterpolation implements IFirmDecisions {
 		covariance.add(size, profits);
 		double correlation = covariance.getCorrelation();
 		System.out.println(profits + "\t" + size + "\t" + correlation);
-		return profits - size / 200 * (correlation + 2*(rand.nextDouble() - 0.5));
+		return profits - size / 200 * (correlation + 0*(rand.nextDouble() - 0.5));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.agentecon.verification;
+package com.agentecon;
 
 import java.util.ArrayList;
 
@@ -10,10 +10,12 @@ import com.agentecon.price.PriceConfig;
 import com.agentecon.sim.Simulation;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.stats.Numbers;
+import com.agentecon.verification.ProductionStats;
+import com.agentecon.verification.StolperSamuelson;
 
-public class SimpleExplorationScenario implements IConfiguration {
+public class StabilityProfiles implements IConfiguration {
 
-	public static final EExplorationMode[] DISCUSSED = new EExplorationMode[] { EExplorationMode.IDEAL_COST, EExplorationMode.EXPECTED, EExplorationMode.KNOWN };
+	public static final EExplorationMode[] DISCUSSED = new EExplorationMode[] { EExplorationMode.OPTIMAL_COST, EExplorationMode.PLANNED, EExplorationMode.KNOWN };
 
 	public static final int DAYS = 5000;
 
@@ -27,11 +29,11 @@ public class SimpleExplorationScenario implements IConfiguration {
 	StolperSamuelson conf;
 	private EExplorationMode mode;
 
-	public SimpleExplorationScenario(EExplorationMode mode) {
+	public StabilityProfiles(EExplorationMode mode) {
 		this(mode, MIN);
 	}
 
-	public SimpleExplorationScenario(EExplorationMode mode, double fr) {
+	public StabilityProfiles(EExplorationMode mode, double fr) {
 		this.mode = mode;
 		this.fr = fr - INCREMENT;
 	}
@@ -48,7 +50,7 @@ public class SimpleExplorationScenario implements IConfiguration {
 
 			@Override
 			protected IFirmDecisions getDividendStrategy(double laborShare) {
-				return SimpleExplorationScenario.this.createStrategy(laborShare);
+				return StabilityProfiles.this.createStrategy(laborShare);
 			}
 
 		};
@@ -71,11 +73,11 @@ public class SimpleExplorationScenario implements IConfiguration {
 
 	public static void main(String[] args) {
 		ArrayList<Simulation> sims = new ArrayList<Simulation>();
-		SimpleExplorationScenario ref = new SimpleExplorationScenario(EExplorationMode.EXPECTED);
+		StabilityProfiles ref = new StabilityProfiles(EExplorationMode.PLANNED);
 		System.out.print("b_R\t");
 		for (EExplorationMode mode : DISCUSSED) {
 			System.out.print(mode + "\t");
-			sims.add(new Simulation(new SimpleExplorationScenario(mode)));
+			sims.add(new Simulation(new StabilityProfiles(mode)));
 		}
 		System.out.println();
 		while (!sims.isEmpty()) {
@@ -83,7 +85,7 @@ public class SimpleExplorationScenario implements IConfiguration {
 			ref.createNextConfig();
 			System.out.print(ref.fr + "\t");
 			for (Simulation sim : sims) {
-				ProductionStats stats = new ProductionStats(ref.conf.inputs[0], 500);
+				ProductionStats stats = new ProductionStats(ref.conf.getInputs()[0], 500);
 				sim.addListener(stats);
 				sim.run();
 				System.out.print(stats.getInputVolume() * StolperSamuelson.FIRMS_PER_TYPE + "\t");
