@@ -7,7 +7,6 @@ import com.agentecon.agent.AgentRef;
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.ReincarnatingConsumer;
 import com.agentecon.good.Good;
-import com.agentecon.sim.config.IUtilityFactory;
 import com.agentecon.util.Average;
 import com.agentecon.world.IWorld;
 

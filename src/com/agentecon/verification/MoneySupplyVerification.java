@@ -1,4 +1,4 @@
-package com.agentecon.sim.config;
+package com.agentecon.verification;
 
 import com.agentecon.api.IAgent;
 import com.agentecon.stats.Numbers;

@@ -1,6 +1,6 @@
 // Created on Jun 23, 2015 by Luzius Meisser
 
-package com.agentecon.configurations;
+package com.agentecon.verification;
 
 import java.util.ArrayList;
 import java.util.Collections;

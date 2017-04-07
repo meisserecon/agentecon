@@ -184,5 +184,5 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	public IPublicCompany getListedCompany(Ticker ticker) {
 		return world.getAgents().getCompany(ticker);
 	}
-
+	
 }

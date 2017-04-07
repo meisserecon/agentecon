@@ -1,4 +1,4 @@
-package com.agentecon.sim.config;
+package com.agentecon.events;
 
 import com.agentecon.consumer.IUtility;
 

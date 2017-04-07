@@ -74,8 +74,8 @@ public class SavingConsumerConfiguration extends CobbDougConfiguration {
 		int iter = 0;
 		while (sim != null) {
 			System.out.println("******** ITERATION " + iter++ + " **********");
-			PriceMetric metric1 = new PriceMetric(ReincarnatingConsumer.START, SHOCK);
-			PriceMetric metric2 = new PriceMetric(SHOCK, ROUNDS);
+			PriceMetric metric1 = new PriceMetric(ReincarnatingConsumer.START, SHOCK, false);
+			PriceMetric metric2 = new PriceMetric(SHOCK, ROUNDS, false);
 			PricePrinter pp = new PricePrinter(ReincarnatingConsumer.START, ROUNDS);
 			sim.addListener(metric1);
 			sim.addListener(metric2);
