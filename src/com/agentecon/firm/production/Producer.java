@@ -1,15 +1,16 @@
 // Created by Luzius on Apr 28, 2014
 
-package com.agentecon.firm;
+package com.agentecon.firm.production;
 
 import java.util.Arrays;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.IFirm;
+import com.agentecon.firm.Factor;
+import com.agentecon.firm.Financials;
+import com.agentecon.firm.InputFactor;
+import com.agentecon.firm.OutputFactor;
 import com.agentecon.firm.decisions.IFirmDecisions;
-import com.agentecon.firm.production.IPriceProvider;
-import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
@@ -17,8 +18,11 @@ import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.metric.FirmListeners;
 import com.agentecon.metric.IFirmListener;
 import com.agentecon.price.IPriceFactory;
+import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProductionFunction;
 
-public class Producer extends Agent implements IFirm {
+public class Producer extends Agent implements IProducer {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -97,6 +101,11 @@ public class Producer extends Agent implements IFirm {
 		if (getMoney().getAmount() > 100) {
 			f.createOffers(market, getMoney(), 1);
 		}
+	}
+	
+	@Override
+	public void notifyMarketClosed() {
+		adaptPrices();
 	}
 
 	public void adaptPrices() {

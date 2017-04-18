@@ -50,7 +50,7 @@ public class Consumer extends Agent implements IConsumer {
 		this.utility = utility;
 	}
 
-	public void maximizeUtility(IPriceTakerMarket market) {
+	public void trade(IPriceTakerMarket market) {
 		Inventory inv = getInventory();
 		inv = inv.hideRelative(getMoney().getGood(), 1.00 - SPENDING_FRACTION);
 		trade(inv, market);

@@ -3,11 +3,12 @@ package com.agentecon.sim;
 import java.util.Collection;
 
 import com.agentecon.consumer.Consumer;
-import com.agentecon.firm.Producer;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
 import com.agentecon.market.Market;
 import com.agentecon.metric.SimulationListeners;
+import com.agentecon.production.IProducer;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.Agents;
 import com.agentecon.world.World;
@@ -24,8 +25,8 @@ public class DailyMarket {
 
 	public void distributeDividendsEqually(int day, Agents ags) {
 		IStock wallet = new Stock(SimConfig.MONEY);
-		for (Producer firm : ags.getAllFirms()) {
-			firm.payDividends(day, wallet);
+		for (IProducer firm : ags.getAllFirms()) {
+			((Producer)firm).payDividends(day, wallet);
 		}
 		Collection<Consumer> consumers = ags.getAllConsumers();
 		double dividend = wallet.getAmount() / consumers.size();
@@ -38,18 +39,18 @@ public class DailyMarket {
 	}
 	
 	public void trade(int day) {
-		Collection<Producer> firms = world.getFirms().getRandomFirms();
+		Collection<IProducer> firms = world.getFirms().getRandomFirms();
 		Collection<Consumer> cons = world.getConsumers().getRandomConsumers();
 		Market market = new Market(world.getRand());
 		listeners.notifyMarketOpened(market);
-		for (Producer firm : firms) {
+		for (IProducer firm : firms) {
 			firm.offer(market);
 		}
 		for (Consumer c : cons) {
-			c.maximizeUtility(market);
+			c.trade(market);
 		}
-		for (Producer firm : firms) {
-			firm.adaptPrices();
+		for (IProducer firm : firms) {
+			firm.notifyMarketClosed();
 		}
 		listeners.notifyMarketClosed(market, true);
 	}

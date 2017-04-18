@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import com.agentecon.api.IFirm;
 import com.agentecon.finance.IPublicCompany;
-import com.agentecon.firm.Producer;
 import com.agentecon.firm.production.CobbDouglasProduction;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.metric.IFirmListener;

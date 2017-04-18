@@ -58,7 +58,7 @@ public class ConsumerTest {
 		LogUtil utilFun = new LogUtil(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
 		Consumer cons = new Consumer("dummy", createEndowment(), utilFun);
 		cons.collectDailyEndowment();
-		cons.maximizeUtility(new IPriceTakerMarket() {
+		cons.trade(new IPriceTakerMarket() {
 
 			private IOffer ask = createAsk();
 			private IOffer bid = createBid();
@@ -92,7 +92,7 @@ public class ConsumerTest {
 		LogUtil utilFun = new LogUtil(new Weight(PIZZA, 8), new Weight(ITALTIME, 14));
 		Consumer cons = new Consumer("dummy", createEndowment2(), utilFun);
 		cons.collectDailyEndowment();
-		cons.maximizeUtility(new IPriceTakerMarket() {
+		cons.trade(new IPriceTakerMarket() {
 
 			private IOffer ask = new Ask(new Stock(MONEY), new Stock(PIZZA, 1000), new Price(FONDUE, 1.0), 1000);
 			private IOffer bid = new Bid(new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);

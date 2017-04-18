@@ -5,16 +5,16 @@ import java.util.Random;
 import com.agentecon.agent.Endowment;
 import com.agentecon.api.IFirm;
 import com.agentecon.events.FirmEvent;
-import com.agentecon.firm.Producer;
 import com.agentecon.firm.decisions.EExplorationMode;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.decisions.ProfitInterpolation;
 import com.agentecon.firm.decisions.StrategyExploration;
-import com.agentecon.firm.production.IProductionFunction;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.price.PriceFactory;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.sim.Simulation;
 import com.agentecon.sim.config.SimConfig;
 

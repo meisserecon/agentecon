@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
+import com.agentecon.agent.Agent;
 import com.agentecon.api.IAgent;
 import com.agentecon.consumer.Consumer;
-import com.agentecon.firm.Producer;
 import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
+import com.agentecon.production.IProducer;
 
 public class World implements IWorld {
 
@@ -31,11 +32,8 @@ public class World implements IWorld {
 	}
 
 	public void handoutEndowments() {
-		for (Consumer c : agents.getAllConsumers()) {
+		for (IAgent c : agents.getAllAgents()) {
 			c.collectDailyEndowment();
-		}
-		for (Producer f : agents.getAllFirms()) {
-			f.collectDailyEndowment();
 		}
 	}
 

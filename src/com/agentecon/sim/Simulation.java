@@ -16,9 +16,10 @@ import com.agentecon.events.SimEvent;
 import com.agentecon.finance.IPublicCompany;
 import com.agentecon.finance.IShareholder;
 import com.agentecon.finance.Ticker;
-import com.agentecon.firm.Producer;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
+import com.agentecon.production.IProducer;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.verification.HeuristicsComparison;
@@ -107,7 +108,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			DailyMarket market = new DailyMarket(world, listeners);
 			market.distributeDividendsEqually(day, world.getAgents());
 			market.trade(day);
-			for (Producer firm : world.getFirms().getAllFirms()) {
+			for (IProducer firm : world.getFirms().getAllFirms()) {
 				firm.produce(day);
 			}
 			world.finishDay(day);

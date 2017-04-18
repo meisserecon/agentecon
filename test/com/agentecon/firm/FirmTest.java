@@ -10,7 +10,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
-import com.agentecon.firm.production.IProductionFunction;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.good.Good;
 import com.agentecon.good.Inventory;
 import com.agentecon.good.Stock;
@@ -20,6 +20,7 @@ import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.HardcodedPrice;
 import com.agentecon.price.IPrice;
 import com.agentecon.price.IPriceFactory;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.stats.Numbers;
 
 public class FirmTest {

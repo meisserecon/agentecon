@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.agentecon.consumer.Weight;
 import com.agentecon.good.Good;
+import com.agentecon.production.IProductionFunction;
 
 public abstract class AbstractProductionFunction implements IProductionFunction {
 

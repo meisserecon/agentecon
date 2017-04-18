@@ -4,6 +4,7 @@ import com.agentecon.consumer.Weight;
 import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
 import com.agentecon.good.Inventory;
+import com.agentecon.production.IPriceProvider;
 
 public class CobbDouglasProduction extends AbstractProductionFunction {
 

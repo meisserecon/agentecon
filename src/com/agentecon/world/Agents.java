@@ -11,8 +11,9 @@ import com.agentecon.consumer.Consumer;
 import com.agentecon.finance.IPublicCompany;
 import com.agentecon.finance.IShareholder;
 import com.agentecon.finance.Ticker;
-import com.agentecon.firm.Producer;
+import com.agentecon.firm.production.Producer;
 import com.agentecon.metric.ISimulationListener;
+import com.agentecon.production.IProducer;
 
 public class Agents implements IConsumers, IFirms {
 
@@ -22,7 +23,7 @@ public class Agents implements IConsumers, IFirms {
 	private ArrayList<IAgent> all;
 	private HashMap<Ticker, IPublicCompany> publicCompanies;
 
-	private ArrayList<Producer> firms;
+	private ArrayList<IProducer> firms;
 	private ArrayList<Consumer> consumers;
 	private ArrayList<IShareholder> shareholders;
 
@@ -49,7 +50,11 @@ public class Agents implements IConsumers, IFirms {
 		this.seed = seed;
 	}
 	
-	public Collection<Producer> getAllFirms() {
+	public Collection<IAgent> getAllAgents(){
+		return all;
+	}
+	
+	public Collection<IProducer> getAllFirms() {
 		return firms;
 	}
 
@@ -100,11 +105,11 @@ public class Agents implements IConsumers, IFirms {
 		}
 	}
 
-	public Collection<Producer> getRandomFirms() {
+	public Collection<IProducer> getRandomFirms() {
 		return getRandomFirms(-1);
 	}
 
-	public Collection<Producer> getRandomFirms(int cardinality) {
+	public Collection<IProducer> getRandomFirms(int cardinality) {
 		Collections.shuffle(firms, getRand());
 		if (cardinality < 0 || cardinality >= firms.size()) {
 			return firms;
