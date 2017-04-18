@@ -7,7 +7,7 @@ public interface IProducer extends IFirm {
 	
 	public void offer(IPriceMakerMarket market);
 	
-	public double produce(int day);
+	public void produce();
 	
 	public void notifyMarketClosed();
 

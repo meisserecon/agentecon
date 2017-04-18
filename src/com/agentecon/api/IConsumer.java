@@ -2,13 +2,15 @@
 
 package com.agentecon.api;
 
-public interface IConsumer extends IAgent {
-	
-	public double getTotalExperiencedUtility();
+import com.agentecon.finance.IStockMarketParticipant;
+
+public interface IConsumer extends IAgent, IStockMarketParticipant {
 	
 	public int getAge();
 	
 	public boolean isRetired();
+	
+	public void collectDailyEndowment();
 	
 	public void addListener(IConsumerListener listener);
 
