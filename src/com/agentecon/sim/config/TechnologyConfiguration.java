@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.api.SimulationConfig;
+import com.agentecon.consumer.Consumer;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.SimEvent;
@@ -12,6 +13,7 @@ import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.good.Good;
 import com.agentecon.good.Stock;
 import com.agentecon.price.PriceConfig;
+import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.Simulation;
 import com.agentecon.verification.PriceMetric;
 import com.agentecon.world.IWorld;
@@ -30,7 +32,7 @@ public class TechnologyConfiguration implements IConfiguration {
 	protected Good[] inputs, outputs;
 
 	public TechnologyConfiguration(int seed) {
-		this(FIRMS_PER_TYPE, CONSUMERS_PER_TYPE, 5, 5, seed);
+		this(FIRMS_PER_TYPE, CONSUMERS_PER_TYPE, 3, 3, seed);
 	}
 
 	public TechnologyConfiguration(int firmsPerType, int consumersPerType, int consumerTypes, int firmTypes, int seed) {
@@ -77,9 +79,19 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addConsumers(ArrayList<SimEvent> config, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
+			final int typeNumber = i;
 			String name = "Consumer " + i;
 			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
-			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)));
+			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)) {
+				@Override
+				protected Consumer createConsumer() {
+					if (typeNumber == 3) {
+						return new Consumer(type, ROUNDS, end, utilFun.create(count++));
+					} else {
+						return new Consumer(type, end, utilFun.create(count++));
+					}
+				}
+			});
 		}
 	}
 
@@ -97,6 +109,8 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	public static void main(String[] args) {
 		Simulation sim = new Simulation(new TechnologyConfiguration(13));
+		ConsumerRanking ranking = new ConsumerRanking();
+		sim.addListener(ranking);
 		PriceMetric metric1 = new PriceMetric(1000);
 		// PricePrinter pp = new PricePrinter(ReincarnatingConsumer.START,
 		// ROUNDS);
@@ -104,6 +118,7 @@ public class TechnologyConfiguration implements IConfiguration {
 		// sim.addListener(pp);
 		sim.finish();
 		metric1.printResult(System.out);
+		ranking.print(System.out);
 	}
 
 }

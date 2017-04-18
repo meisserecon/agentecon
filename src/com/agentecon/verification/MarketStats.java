@@ -62,7 +62,7 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 	private ArrayList<Good> toPrint = new ArrayList<>();
 
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyDayEnded(int day, double utility) {
 		Average indexPoints = new Average();
 		HashMap<Good, Average> sectorIndices = new InstantiatingHashMap<Good, Average>() {
 

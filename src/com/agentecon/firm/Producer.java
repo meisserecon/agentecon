@@ -5,7 +5,6 @@ package com.agentecon.firm;
 import java.util.Arrays;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.IFirm;
 import com.agentecon.finance.PublicCompany;
 import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFirmDecisions;
@@ -17,8 +16,9 @@ import com.agentecon.good.IStock;
 import com.agentecon.good.Stock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.IPriceFactory;
+import com.agentecon.production.IProducer;
 
-public class Producer extends PublicCompany implements IFirm {
+public class Producer extends PublicCompany implements IProducer {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -95,6 +95,10 @@ public class Producer extends PublicCompany implements IFirm {
 			f.createOffers(market, getMoney(), 1);
 		}
 	}
+	
+	public void notifyMarketClosed(){
+		adaptPrices();
+	}
 
 	public void adaptPrices() {
 		for (InputFactor input : inputs) {
@@ -103,7 +107,7 @@ public class Producer extends PublicCompany implements IFirm {
 		output.adaptPrice();
 	}
 
-	public double produce(int day) {
+	public void produce() {
 		IStock[] inputAmounts = new IStock[inputs.length];
 		double cogs = 0.0;
 		for (int i = 0; i < inputs.length; i++) {
@@ -113,7 +117,6 @@ public class Producer extends PublicCompany implements IFirm {
 		double produced = prod.produce(getInventory());
 		monitor.notifyProduced(this, getType(), inputAmounts, new Stock(output.getGood(), produced));
 		monitor.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
-		return produced;
 	}
 
 	public Good getGood() {

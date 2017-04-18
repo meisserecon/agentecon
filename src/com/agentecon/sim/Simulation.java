@@ -21,8 +21,8 @@ import com.agentecon.firm.Producer;
 import com.agentecon.metric.ISimulationListener;
 import com.agentecon.metric.SimulationListeners;
 import com.agentecon.sim.config.IConfiguration;
-import com.agentecon.sim.config.SavingConsumerConfiguration;
 import com.agentecon.sim.config.SimConfig;
+import com.agentecon.sim.config.TechnologyConfiguration;
 import com.agentecon.world.World;
 
 // The world
@@ -38,13 +38,8 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private World world;
 	private StockMarket stocks;
 
-	static {
-		// Disabled because too slow on app engine
-		// Simulation.class.getClassLoader().setDefaultAssertionStatus(true);
-	}
-
 	public Simulation() {
-		this(new SavingConsumerConfiguration());
+		this(new TechnologyConfiguration(1313));
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
@@ -111,7 +106,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
 			market.iterate(day, config.getIntradayIterations());
 			for (Producer firm : world.getFirms().getAllFirms()) {
-				firm.produce(day);
+				firm.produce();
 			}
 			world.finishDay(day);
 		}

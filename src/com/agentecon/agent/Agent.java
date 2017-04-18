@@ -1,5 +1,6 @@
 package com.agentecon.agent;
 
+import com.agentecon.api.AgentRef;
 import com.agentecon.api.IAgent;
 import com.agentecon.good.Good;
 import com.agentecon.good.IStock;
@@ -28,7 +29,7 @@ public abstract class Agent implements IAgent, Cloneable {
 		assert type != null;
 	}
 
-	public AgentRef getRef(){
+	public AgentRef getReference(){
 		return ref;
 	}
 	

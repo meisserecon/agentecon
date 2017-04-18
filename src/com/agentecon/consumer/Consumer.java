@@ -26,9 +26,9 @@ public class Consumer extends Agent implements IConsumer, IStockMarketParticipan
 	private int age, maxAge;
 	protected Good soldGood;
 	private IUtility utility;
-	private double lifetimeUtility;
 	private TradingPortfolio portfolio;
 	private MovingAverage dailySpendings;
+	private double savingsTarget;
 	private ConsumerListeners listeners;
 
 	public Consumer(String type, Endowment end, IUtility utility) {
@@ -57,8 +57,6 @@ public class Consumer extends Agent implements IConsumer, IStockMarketParticipan
 		this.utility = utility;
 	}
 
-	private double savingsTarget;
-
 	public void managePortfolio(IStockMarket stocks) {
 		if (isMortal()) {
 			if (isRetired()) {
@@ -67,17 +65,24 @@ public class Consumer extends Agent implements IConsumer, IStockMarketParticipan
 				listeners.notifyDivested(this, amount);
 			} else {
 				double invest = dailySpendings.getAverage() / maxAge * (maxAge - getRetirementAge());
-				double dividendIncome = portfolio.getLatestDividendIncome();
-				if (dividendIncome < invest) {
-					savingsTarget = invest - dividendIncome;
-					invest = Math.min(getMoney().getAmount(), invest);
-				} else {
-					savingsTarget = 0.0;
-				}
-				double amount = portfolio.invest(stocks, invest);
-				listeners.notifyInvested(this, amount);
+				invest(stocks, invest);
 			}
+		} else {
+			double invest = dailySpendings.getAverage() * 0.2;
+			invest(stocks, invest);
 		}
+	}
+
+	private void invest(IStockMarket stocks, double invest) {
+		double dividendIncome = portfolio.getLatestDividendIncome();
+		if (dividendIncome < invest) {
+			savingsTarget = invest - dividendIncome;
+			invest = Math.min(getMoney().getAmount(), invest);
+		} else {
+			savingsTarget = 0.0;
+		}
+		double amount = portfolio.invest(stocks, invest);
+		listeners.notifyInvested(this, amount);
 	}
 
 	public void maximizeUtility(IPriceTakerMarket market) {
@@ -148,14 +153,11 @@ public class Consumer extends Agent implements IConsumer, IStockMarketParticipan
 	}
 
 	public final double consume() {
-		return doConsume(getInventory());
-	}
-
-	protected double doConsume(Inventory inv) {
+		Inventory inv = getInventory();
 		double u = utility.consume(inv.getAll());
+		listeners.notifyConsuming(this, getAge(), getInventory(), u);
 		assert!Double.isNaN(u);
 		assert u >= 0.0;
-		lifetimeUtility += u;
 		return u;
 	}
 
@@ -190,11 +192,6 @@ public class Consumer extends Agent implements IConsumer, IStockMarketParticipan
 		klon.dailySpendings = dailySpendings.clone();
 		klon.portfolio = portfolio.clone(klon.getMoney());
 		return klon;
-	}
-
-	@Override
-	public double getTotalExperiencedUtility() {
-		return lifetimeUtility;
 	}
 
 	@Override
