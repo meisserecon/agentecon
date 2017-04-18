@@ -4,7 +4,6 @@ package com.agentecon.runner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import com.agentecon.api.ISimulation;
-import com.agentecon.data.WebUtil;
+import com.agentecon.github.WebUtil;
 
 public class SimulationLoader extends ClassLoader {
 
@@ -22,15 +21,18 @@ public class SimulationLoader extends ClassLoader {
 
 	private static final int ENDING_LEN = ".class".length();
 
+	private String name;
 	private Checksum checksum;
 	private HashMap<String, byte[]> data;
 
 	public SimulationLoader(Path jarFile) throws IOException {
 		this(Files.readAllBytes(jarFile));
+		this.name = "Local Simulation";
 	}
 	
-	public SimulationLoader(URL url) throws SocketTimeoutException, IOException{
+	public SimulationLoader(String tag, URL url) throws SocketTimeoutException, IOException{
 		this(WebUtil.readData(url));
+		this.name = tag; 
 	}
 	
 	public SimulationLoader(byte[] jarData) {
@@ -89,26 +91,14 @@ public class SimulationLoader extends ClassLoader {
 	}
 
 	public String findName() {
-		try {
-			Class<?> c = loadSimClass();
-			Field f = c.getField("NAME");
-			return (String) f.get(null);
-		} catch (NoSuchFieldException e) {
-			throw new java.lang.RuntimeException(e);
-		} catch (SecurityException e) {
-			throw new java.lang.RuntimeException(e);
-		} catch (IllegalArgumentException e) {
-			throw new java.lang.RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new java.lang.RuntimeException(e);
-		}
+		return name;
 	}
 
-	public ISimulation load() {
+	public ISimulation load() throws IOException {
 		try {
 			return (ISimulation) loadClass(SIM_CLASS).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new IOException("Failed to load simulation " + name , e);
 		}
 	}
 

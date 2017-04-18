@@ -149,13 +149,15 @@ public class SimulationRunner {
 				ps.println(c.getTopCorrelations(true));
 				ps.println(c.getTopCorrelations(false));
 			}
+		} catch (NoSuchMethodError | AbstractMethodError e){
+			System.out.println("Aborted with error " + e);
 		} finally {
 			System.setOut(oldOut);
 			System.setErr(oldErr);
 		}
 	}
 
-	public Chart[] getCharts(long simId) {
+	public Chart[] getCharts(String simId) {
 		ArrayList<Chart> charts = new ArrayList<>();
 		for (SimStats stat : stats) {
 			for (Chart ch : stat.getCharts(simId)) {

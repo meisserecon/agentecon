@@ -77,7 +77,7 @@ public class Demographics extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		return Arrays.asList(new Chart(simId, "Population", "Retired, working and total population", retired, working, population),
 				new Chart(simId, "Dependency Ratio", "Retirees per workers", dependency), new Chart(simId, "Utility", "Accumulated life-time utility on day of death", getUtilityData()));
 	}

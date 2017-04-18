@@ -5,20 +5,22 @@ package com.agentecon.data;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
+import com.agentecon.github.GitSimulationHandle;
+import com.agentecon.json.Persistable;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.runner.Checksum;
 import com.agentecon.runner.SimulationRunner;
 
-public class SimulationInfo {
+public class SimulationInfo extends Persistable {
 
 	private static final int MAX_OUTPUT_LEN = 10000;
 
-	private long id;
-	private long[] chartids;
+	private int[] chartids;
 	private int serverVersion;
 
 	private String hash;
 	private String name;
+	private String author;
 	private String description;
 	private String sourceUrl;
 
@@ -27,30 +29,42 @@ public class SimulationInfo {
 
 	private String output;
 
-	private SimulationInfo(long id) {
-		this.id = id;
-		this.chartids = new long[] {};
+	public SimulationInfo(Checksum checksum, String name, FileTime date) {
+		this(checksum);
+		this.name = name;
+		this.author = "Unknown";
+		this.description = "Generated from local jar file on " + date;
+		this.sourceUrl = "";
+	}
+
+	public SimulationInfo(Checksum checksum, GitSimulationHandle handle) {
+		this(checksum);
+		this.name = handle.getName();
+		this.description = handle.getDescription() + ", " + handle.getDate();
+		this.author = handle.getAuthor();
+		this.sourceUrl = handle.getSourceUrl();
+	}
+
+	private SimulationInfo(Checksum checksum) {
+		this.chartids = new int[] {};
 		this.serverVersion = SimulationRunner.VERSION;
 		this.lastRunEnded = 0;
 		this.lastRunStarted = 0;
 		this.lastProgress = 0;
-	}
-	
-	public SimulationInfo(Checksum checksum, String name, FileTime date){
-		this(checksum.generateId());
-		this.name = name;
-		this.description = "Generated from local jar file on " + date;
 		this.hash = checksum.toString();
-		this.sourceUrl = "";
 	}
 
-	public SimulationInfo(GitSimulationHandle handle) {
-		this(handle.getId());
-		this.name = handle.getName();
-		this.hash = handle.getHash();
-		this.sourceUrl = handle.getSourceUrl();
-		this.description = handle.getDescription();
+	public boolean hasChecksum(Checksum checksum) {
+		return hash.equals(checksum.toString());
 	}
+
+	// public SimulationInfo(GitSimulationHandle handle) {
+	// this(handle.getId());
+	// this.name = handle.getName();
+	// this.hash = handle.getHash();
+	// this.sourceUrl = handle.getSourceUrl();
+	// this.description = handle.getDescription();
+	// }
 
 	public String getName() {
 		return name;
@@ -86,7 +100,7 @@ public class SimulationInfo {
 		return lastRunEnded;
 	}
 
-	public long[] getChartIds() {
+	public int[] getChartIds() {
 		return chartids;
 	}
 
@@ -108,21 +122,18 @@ public class SimulationInfo {
 		long diff = System.currentTimeMillis() - lastProgress;
 		return diff < 10 * 60 * 1000;
 	}
-
-	public long[] recycleChartIds(Chart[] charts) {
-		long[] toDel = new long[] {};
-		if (this.chartids != null) {
-			if (chartids.length > charts.length) {
-				toDel = new long[chartids.length - charts.length];
-				System.arraycopy(chartids, charts.length, toDel, 0, toDel.length);
-				long[] newIds = new long[charts.length];
-				System.arraycopy(chartids, 0, newIds, 0, newIds.length);
-				this.chartids = newIds;
-			}
-			assert charts.length >= chartids.length; // TODO: delete old charts
-			for (int i = 0; i < charts.length && i < chartids.length; i++) {
-				charts[i].initId(chartids[i]);
-			}
+	
+	public int[] recycleChartIds(int[] existing, Chart[] charts) {
+		int[] toDel = new int[] {};
+		if (existing.length > charts.length) {
+			toDel = new int[existing.length - charts.length];
+			System.arraycopy(existing, charts.length, toDel, 0, toDel.length);
+			int[] newIds = new int[charts.length];
+			System.arraycopy(existing, 0, newIds, 0, newIds.length);
+			existing = newIds;
+		}
+		for (int i = 0; i < charts.length && i < existing.length; i++) {
+			charts[i].setId(existing[i]);
 		}
 		return toDel;
 	}
@@ -148,10 +159,10 @@ public class SimulationInfo {
 		this.currentRound = day;
 		this.lastProgress = System.currentTimeMillis();
 		if (this.chartids == null) {
-			this.chartids = new long[] {};
+			this.chartids = new int[] {};
 		}
 		if (charts.length > chartids.length) {
-			long[] ids = new long[charts.length];
+			int[] ids = new int[charts.length];
 			System.arraycopy(chartids, 0, ids, 0, chartids.length);
 			for (int i = chartids.length; i < charts.length; i++) {
 				ids[i] = charts[i].getId();
@@ -159,11 +170,11 @@ public class SimulationInfo {
 			this.chartids = ids;
 		}
 	}
-	
-	public boolean hasError(){
+
+	public boolean hasError() {
 		return output != null && output.startsWith("Error while accessing");
 	}
-	
+
 	public void notifyEnded(String output, Chart... charts) {
 		notifyProgress(rounds, output, charts);
 		this.lastRunEnded = lastProgress;
@@ -173,8 +184,13 @@ public class SimulationInfo {
 		return output;
 	}
 
-	public long getId() {
-		return id;
+	@Override
+	public boolean equals(Object o) {
+		return ((SimulationInfo) o).hash.equals(hash);
+	}
+
+	public String getHash() {
+		return hash;
 	}
 
 }

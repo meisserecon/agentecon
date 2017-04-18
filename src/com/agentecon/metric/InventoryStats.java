@@ -142,7 +142,7 @@ public class InventoryStats extends SimStats {
 
 	}
 
-	public Collection<Chart> getCharts(long parentId) {
+	public Collection<Chart> getCharts(String parentId) {
 		ArrayList<Chart> charts = new ArrayList<>();
 		charts.add(new Chart(parentId, "Firm Inventory", "Average firm inventory after trading, but before production and consumption", firmInv.values()));
 		charts.add(new Chart(parentId, "Consumer Inventory", "Average consumer inventory after trading, but before production and consumption", consumerInv.values()));

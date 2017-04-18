@@ -97,7 +97,7 @@ public class OwnershipStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		ArrayList<Chart> charts = new ArrayList<>();
 		for (Map.Entry<String, HashMap<String, TimeSeries>> owned : structure.entrySet()) {
 			Collection<TimeSeries> ts = owned.getValue().values();

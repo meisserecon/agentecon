@@ -9,26 +9,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Chart {
+import com.agentecon.json.Persistable;
 
-	private Long id;
+public class Chart extends Persistable {
 
-	private long parentSimulation;
+	private String parentSimulation;
 
 	private String name;
 	private String subtitle;
 	private String stacking;
 	private List<TimeSeriesData> data = new ArrayList<TimeSeriesData>();
 
-	@SuppressWarnings("unused")
-	private Chart() {
-	}
-
-	public Chart(long parentSim, String name, String subtitle, TimeSeries... series) {
+	public Chart(String parentSim, String name, String subtitle, TimeSeries... series) {
 		this(parentSim, name, subtitle, Arrays.asList(series));
 	}
 
-	public Chart(long parentSim, String name, String subtitle, Collection<? extends TimeSeries> series) {
+	public Chart(String parentSim, String name, String subtitle, Collection<? extends TimeSeries> series) {
 		this.name = name;
 		this.parentSimulation = parentSim;
 		this.subtitle = subtitle;
@@ -39,7 +35,7 @@ public class Chart {
 			}
 		}
 	}
-
+	
 	public void setStacking(String option) {
 		this.stacking = option;
 	}
@@ -52,7 +48,7 @@ public class Chart {
 		return name;
 	}
 
-	public long getParent() {
+	public String getParent() {
 		return parentSimulation;
 	}
 
@@ -79,18 +75,6 @@ public class Chart {
 			});
 		}
 		return data;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void initId(long id) {
-		if (this.id == null) {
-			this.id = id;
-		} else {
-			assert this.id == id;
-		}
 	}
 
 	public boolean hasContent() {

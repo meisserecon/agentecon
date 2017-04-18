@@ -47,7 +47,7 @@ public class MonetaryStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		Chart ch = new Chart(simId, "Cash", "Overnight cash holdings by agent type", AveragingTimeSeries.unwrap(cashByType.values()));
 		ch.setStacking("normal");
 		return Collections.singleton(ch);

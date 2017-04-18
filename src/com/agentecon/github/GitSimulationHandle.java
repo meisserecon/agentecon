@@ -1,4 +1,4 @@
-package com.agentecon.data;
+package com.agentecon.github;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -37,17 +37,9 @@ public class GitSimulationHandle {
 		return date;
 	}
 
-	public long getId() {
-		return toId(sha);
-	}
-
-	public static long toId(String sha) {
-		return sha.hashCode();
-	}
-
 	public URL getSimulationURL() {
 		try {
-			return new URL("http://github.com/" + owner + "/" + repo + "/raw/" + sha + "/jar/simulation.jar");
+			return new URL("https://github.com/" + owner + "/" + repo + "/raw/" + sha + "/jar/simulation.jar");
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
@@ -57,17 +49,9 @@ public class GitSimulationHandle {
 		return "https://github.com/" + owner + "/" + repo + "/tree/" + name;
 	}
 
+	@Override
 	public String toString(){
 		return name;
 	}
 
-	public String getHash() {
-		return sha;
-	}
-	
-	public String getPermanentId(){
-		// assume only master is dynamic, tags do not change
-		return name.equals("master") ? sha : name;
-	}
-	
 }

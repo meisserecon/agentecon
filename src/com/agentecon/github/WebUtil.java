@@ -1,4 +1,4 @@
-package com.agentecon.data;
+package com.agentecon.github;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class WebUtil {
 					// to allow requests at all
 					conn.setRequestProperty("User-Agent", "agentecon.com");
 					// to increase rate limit, see https://api.github.com/rate_limit?access_token=e255edf51ccbe47b4a3745710f3e4000b5a0192a
-					conn.setRequestProperty("Authorization", "token e255edf51ccbe47b4a3745710f3e4000b5a0192a");
+					conn.setRequestProperty("Authorization", "token d27fcf0624764787025bc3b7e4bfc3ddc82e8af1");
 				}
 				try (InputStream stream = conn.getInputStream()) {
 					String first = new String(readData(stream));

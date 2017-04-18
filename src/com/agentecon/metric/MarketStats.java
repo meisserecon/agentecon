@@ -134,7 +134,7 @@ public class MarketStats extends SimStats implements IMarketListener {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		ArrayList<TimeSeries> price = new ArrayList<>(prices.values());
 		boolean useIndex = prices.size() > 2;
 		if (volume != null && useIndex) {

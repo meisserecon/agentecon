@@ -54,7 +54,7 @@ public class ProductionStats extends SimStats {
 		}
 	}
 
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		ArrayList<Chart> charts = new ArrayList<>();
 		for (Map.Entry<Good, ArrayList<FirmProductivityMonitor>> e : firmsByGood.entrySet()) {
 			ArrayList<FirmProductivityMonitor> list = e.getValue();

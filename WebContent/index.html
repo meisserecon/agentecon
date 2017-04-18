@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Agentecon</title>
-<script type="text/javascript" src="/js/base.js"></script>
-<link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap.css">
-<link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css">
-<link type="text/css" rel="stylesheet" href="/css/style.css">
+<title>Meisser Economics - Simulation List</title>
+<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
+<link type="text/css" rel="stylesheet" href="css/style.css">
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -15,46 +15,27 @@
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
 				</button>
 				<a class="brand" href="/">Agentecon</a>
-				<!--             <div class="nav-collapse collapse pull-right"> -->
-				<!--                 <a href="javascript:void(0);" class="btn" id="signinButton">Sign in</a> -->
-				<!--             </div> -->
 			</div>
 		</div>
 	</div>
-
-	<!-- <h1>Hello App Engine! -2</h1> -->
-
-	<!--     <table> -->
-	<!--       <tr> -->
-	<!--         <td colspan="2" style="font-weight:bold;">Available Servlets:</td>         -->
-	<!--       </tr> -->
-	<!--       <tr> -->
-	<!--         <td><a href="agenteconfront">AgenteconFront</a></td> -->
-	<!--       </tr> -->
-	<!--       <tr> -->
-	<!--         <td><a href="http://localhost:8888/_ah/api/explorer">API Explorer on Localhost</a></td> -->
-	<!--       </tr> -->
-	<!--     </table> -->
 
 	<div class="container">
 
 		<h1>List of Simulations</h1>
 
-		<div id="simlist">Loading available tags from github, can take ten seconds...</div>
+		<div id="simlist">Loading available simulations...</div>
 
-		<script type="text/javascript">
-			function init() {
-				var temp = window.location.host;
-				var prot = 'https';
-				if (temp.indexOf('127.') == 0) {
-					prot = 'http';
-				} else if (temp.indexOf('agentecon.com') >= 0) {
-					temp = 'agenteconomics.appspot.com';
+		<script>
+			$.getJSON("data/SimulationList-1.json", function(data) {
+				document.getElementById('simlist').innerHTML = "Found " + data.sims.length + " simulations:";
+				for (var i = 0; i < data.sims.length; i++) {
+					var sim = data.sims[i];
+					var element = document.createElement('div');
+					element.innerHTML = '<a href=sim.html?id=' + sim.id + '>' + sim.name + '</a>' + ' by ' + sim.author + ' from ' + sim.date + ' - ' + sim.description;
+					document.getElementById('simlist').appendChild(element);
 				}
-				google.devrel.samples.hello.init(prot + '://' + temp + '/_ah/api');
-			}
+			});
 		</script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<script src="https://apis.google.com/js/client.js?onload=init"></script>
 
 	</div>

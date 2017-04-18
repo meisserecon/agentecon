@@ -8,7 +8,7 @@ import com.agentecon.metric.series.TimeSeries;
 
 public abstract class SimStats extends SimulationListenerAdapter {
 
-	public abstract Collection<? extends Chart> getCharts(long simId);
+	public abstract Collection<? extends Chart> getCharts(String simId);
 
 	public void notifySimStarting(ISimulation sim) {
 		sim.addListener(this);

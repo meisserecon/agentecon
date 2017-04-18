@@ -35,7 +35,7 @@ public class SingleFirmStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		ArrayList<Chart> charts = new ArrayList<>();
 		for (FirmTimeSeries ts: data.values()){
 			charts.add(ts.createChart(simId));
@@ -57,7 +57,7 @@ public class SingleFirmStats extends SimStats {
 			firm.addFirmMonitor(this);
 		}
 
-		public Chart createChart(long simId) {
+		public Chart createChart(String simId) {
 			return new Chart(simId, name, "Results of a single firm", Arrays.asList(revenue, cogs, cash, dividends));
 		}
 

@@ -38,7 +38,11 @@ public class DividendStats extends SimStats {
 				
 				@Override
 				public void reportDividend(IPublicCompany comp, double amount) {
-					DividendStats.this.reportDividend(comp.getType(), amount);
+					if (comp == null){
+						DividendStats.this.reportDividend(firm.getType(), amount);
+					} else {
+						DividendStats.this.reportDividend(comp.getType(), amount);
+					}
 				}
 				
 				@Override
@@ -63,7 +67,7 @@ public class DividendStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		return Collections.singleton(new Chart(simId, "Dividends", "Average daily dividend per firm type", AveragingTimeSeries.unwrap(dividends.values())));
 	}
 

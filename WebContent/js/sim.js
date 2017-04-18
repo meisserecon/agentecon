@@ -14,89 +14,66 @@ agentecon.front.listsim = function(sim) {
 };
 
 agentecon.front.getHandle = function(id) {
-	gapi.client.simApi.getHandle({
-		'id' : id
-	}).execute(
-			function(resp) {
-				if (resp.code) {
-					window.alert(resp.message);
-				} else {
-					var title;
-					var progress = resp.completionPercent;
-					if (progress < 100) {
-						title = resp.name + " - " + resp.completionPercent + "% complete";
-						// setTimeout(function() {
-						// agentecon.front.getHandle(id);
-						// }, 3000);
-					} else {
-						title = resp.name;
-					}
-					document.getElementById('handle').innerHTML = '<h1>' + title + '</h1>';
-					document.getElementById('desc').innerHTML = 'Commit comment: ' + resp.description;
-					document.getElementById('sourcelink').innerHTML = 'Feel free to <a href="' + resp.sourceUrl
-							+ '" target="_blank">browse this simulation\'s source code</a> on github or download and run it yourself.';
+	$.getJSON("data/SimulationInfo-" + id + ".json", function(resp) {
+		title = resp.name;
+		document.getElementById('handle').innerHTML = '<h1>' + title + '</h1>';
+		document.getElementById('desc').innerHTML = 'Commit comment: ' + resp.description;
+		document.getElementById('sourcelink').innerHTML = 'Feel free to <a href="' + resp.sourceUrl
+				+ '" target="_blank">browse this simulation\'s source code</a> on github or download and run it yourself.';
 
-					if (resp.chartIds) {
-						for (var i = 0; i < resp.chartIds.length; i++) {
-							var chid = resp.chartIds[i];
-							if ($('#' + chid).length == 0) {
-								$('#charts').append('<div id="' + chid + '" style="min-width: 310px; max-width: 1210px; height: 400px; margin: 0 auto"></div>');
-							}
-						}
-
-						agentecon.front.chartids = resp.chartIds;
-						for (var i = 0; i < resp.chartIds.length; i++) {
-							// agentecon.front.drawChart(resp.chartIds[i], "Loading...", "Loading...", []);
-							agentecon.front.loadChart(resp.chartIds[i]);
-						}
-					}
-
-					document.getElementById('output').innerHTML = '<pre>' + resp.output + '</pre>';
+		if (resp.chartids) {
+			for (var i = 0; i < resp.chartids.length; i++) {
+				var chid = resp.chartids[i];
+				if ($('#' + chid).length == 0) {
+					$('#charts').append('<div id="' + chid + '" style="min-width: 310px; max-width: 1210px; height: 400px; margin: 0 auto"></div>');
 				}
-			});
+			}
+
+			agentecon.front.chartids = resp.chartids;
+			for (var i = 0; i < resp.chartids.length; i++) {
+				agentecon.front.loadChart(resp.chartids[i]);
+			}
+		}
+
+		document.getElementById('output').innerHTML = '<pre>' + resp.output + '</pre>';
+	});
 };
 
 agentecon.front.loadChart = function(id) {
-	gapi.client.simApi.getChart({
-		'id' : id
-	}).execute(function(resp) {
-		if (resp.code) {
-			window.alert(resp.message);
-		} else {
-			var prep = [];
-			curColor = 8;
-			for (var i = 0; i < resp.data.length; i++) {
+	$.getJSON("data/Chart-" + id + ".json", function(resp) {
+		var prep = [];
+		curColor = 8;
+		for (var i = 0; i < resp.data.length; i++) {
+			prep.push({
+				name : resp.data[i].name,
+				pointStart : resp.data[i].start,
+				data : resp.data[i].values,
+				color : Highcharts.getOptions().colors[curColor],
+				visible : i < 2,
+			// events : {
+			// hide : function() {
+			// agentecon.front.setVisible(this.name, false);
+			// },
+			// show : function() {
+			// agentecon.front.setVisible(this.name, true);
+			// }
+			// },
+			});
+			if (resp.data[i].hasOwnProperty('minmax')) {
 				prep.push({
-					name : resp.data[i].name,
-					pointStart : resp.data[i].start,
-					data : resp.data[i].values,
+					name : 'Range',
+					data : resp.data[i].minMax,
+					type : 'arearange',
+					lineWidth : 0,
+					linkedTo : ':previous',
 					color : Highcharts.getOptions().colors[curColor],
-					visible : i < 2,
-				// events : {
-				// hide : function() {
-				// agentecon.front.setVisible(this.name, false);
-				// },
-				// show : function() {
-				// agentecon.front.setVisible(this.name, true);
-				// }
-				// },
+					fillOpacity : 0.5,
+				// zIndex : 0
 				});
-				if (resp.data[i].hasOwnProperty('minMax')) {
-					prep.push({
-						name : 'Range',
-						data : resp.data[i].minMax,
-						type : 'arearange',
-						lineWidth : 0,
-						linkedTo : ':previous',
-						color : Highcharts.getOptions().colors[curColor],
-						fillOpacity : 0.5,
-					// zIndex : 0
-					});
-				}
-				curColor++;
 			}
-			agentecon.front.drawChart(id, resp.name, resp.subtitle, prep, resp.stacking);
+			curColor++;
 		}
+		agentecon.front.drawChart(id, resp.name, resp.subtitle, prep, resp.stacking);
 	});
 };
 
@@ -135,23 +112,23 @@ agentecon.front.removePlotLine = function() {
 	}
 }
 
-//agentecon.front.setExtremes = function(dataMin, dataMax, min, max) {
-//	for (var i = 0; i < agentecon.front.chartids.length; i++) {
-//		var chart = $('#' + agentecon.front.chartids[i]).highcharts();
-//		extr = chart.xAxis[0].getExtremes();
-//		min2 = min;
-//		max2 = max;
-//		if (extr.dataMin > min2) {
-//			min2 = extr.dataMin;
-//		}
-//		if (extr.dataMax < max2) {
-//			max2 = extr.dataMax;
-//		}
-//		if (extr.min != min2 || extr.max != max2) {
-//			chart.xAxis[0].setExtremes(min, max2);
-//		}
-//	}
-//}
+// agentecon.front.setExtremes = function(dataMin, dataMax, min, max) {
+// for (var i = 0; i < agentecon.front.chartids.length; i++) {
+// var chart = $('#' + agentecon.front.chartids[i]).highcharts();
+// extr = chart.xAxis[0].getExtremes();
+// min2 = min;
+// max2 = max;
+// if (extr.dataMin > min2) {
+// min2 = extr.dataMin;
+// }
+// if (extr.dataMax < max2) {
+// max2 = extr.dataMax;
+// }
+// if (extr.min != min2 || extr.max != max2) {
+// chart.xAxis[0].setExtremes(min, max2);
+// }
+// }
+// }
 
 agentecon.front.drawChart = function(id, title, subtitle, chartdata, stacking) {
 	var elem = $('#' + id);
@@ -190,14 +167,14 @@ agentecon.front.drawChart = function(id, title, subtitle, chartdata, stacking) {
 				}
 			},
 
-//			xAxis : {
-//				events : {
-//					afterSetExtremes : function(event) {
-//						var extr = this.getExtremes();
-//						agentecon.front.setExtremes(extr.dataMin, extr.dataMax, event.min, event.max);
-//					}
-//				}
-//			},
+			// xAxis : {
+			// events : {
+			// afterSetExtremes : function(event) {
+			// var extr = this.getExtremes();
+			// agentecon.front.setExtremes(extr.dataMin, extr.dataMax, event.min, event.max);
+			// }
+			// }
+			// },
 
 			series : chartdata,
 
@@ -225,18 +202,4 @@ agentecon.front.drawChart = function(id, title, subtitle, chartdata, stacking) {
 		}
 		elem.highcharts(chart);
 	}
-};
-
-/**
- * Initializes the application.
- */
-agentecon.front.init = function(apiRoot, id) {
-	var apisToLoad = 1; // must match number of calls to gapi.client.load()
-	agentecon.front.simid = id;
-	var callback = function() {
-		if (--apisToLoad == 0) {
-			agentecon.front.getHandle(id);
-		}
-	}
-	gapi.client.load('simApi', 'v1', callback, apiRoot);
 };

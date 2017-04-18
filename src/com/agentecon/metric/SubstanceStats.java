@@ -76,7 +76,7 @@ public class SubstanceStats extends SimStats {
 	}
 
 	@Override
-	public Collection<? extends Chart> getCharts(long simId) {
+	public Collection<? extends Chart> getCharts(String simId) {
 		return Arrays.asList(new Chart(simId, "Financial Sector Value", "Outer: Combined market cap of all financial firms. Inner: non-financial shares they own.", innerValue, outerValue),
 				new Chart(simId, "Financial Sector Real Value ", "Real outer value (i.e. outer value divided by consumer price index)", realOuterValue),
 				new Chart(simId, "Financial Sector Value Ratio", "Outer: Combined market cap of all financial firms. Inner: non-financial shares they own.", valueRatio));
