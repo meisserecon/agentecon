@@ -1,10 +1,11 @@
-# Mastering Agent-Based Economics, #Smoothing
+# Mastering Agent-Based Economics
 
-This configuration is part of the master's thesis [Mastering Agent-Based Economics](http://master.agentecon.com/thesis.pdf).
+This is the master branch of the agent-based model created by Luzius Meisser.
 
-Results can be browsed online on http://master.agentecon.com/sim.html?id=Smoothing
+There are branches for different configurations of the base simulation.
 
-Run class com.agentecon.sim.config.SavingConsumerConfiguration to get [output.txt](https://github.com/kronrod/agentecon/blob/Smoothing/src/com/agentecon/sim/config/output.txt) which can be used to generate charts [smoothing2.pdf](https://github.com/kronrod/agentecon/blob/Smoothing/chart/smoothing2.pdf) and [pizzaincarnation.pdf](https://github.com/kronrod/agentecon/blob/Smoothing/chart/pizzaincarnation.pdf).
+Releases that correspond to formal papers come with their own DOI. So far, there is one, namely:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.580607.svg)](https://doi.org/10.5281/zenodo.580607)
 
 ###General instructions
 
