@@ -1,10 +1,10 @@
 package com.agentecon.firm;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.Price;
 import com.agentecon.price.IPrice;
 
 public class InputFactor extends Factor {

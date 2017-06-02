@@ -1,12 +1,14 @@
 package com.agentecon.events;
 
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.metric.IFirmListener;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
 import com.agentecon.util.Average;
 
-public class FirstDayProduction implements IFirmListener {
+public class FirstDayProduction implements IProducerListener {
 
 	private int count;
 	private Average avg;
@@ -18,7 +20,7 @@ public class FirstDayProduction implements IFirmListener {
 	}
 
 	@Override
-	public void notifyProduced(IPublicCompany comp, String producer, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, String producer, IStock[] inputs, IStock output) {
 		if (count > 0) {
 			assert this.output == null || this.output.equals(output.getGood());
 			assert output.getAmount() < 100;
@@ -26,10 +28,6 @@ public class FirstDayProduction implements IFirmListener {
 			this.avg.add(output.getAmount());
 			count--;
 		}
-	}
-
-	@Override
-	public void reportDividend(IPublicCompany comp, double amount) {
 	}
 
 	public Good getGood() {
@@ -41,7 +39,7 @@ public class FirstDayProduction implements IFirmListener {
 	}
 
 	@Override
-	public void reportResults(IPublicCompany comp, double revenue, double cogs, double profits) {
+	public void reportResults(IProducer comp, double revenue, double cogs, double profits) {
 	}
 
 }

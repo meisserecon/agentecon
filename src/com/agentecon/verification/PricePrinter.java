@@ -3,11 +3,11 @@ package com.agentecon.verification;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.agentecon.api.IMarket;
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.metric.IMarketListener;
-import com.agentecon.metric.SimulationListenerAdapter;
+import com.agentecon.goods.Good;
+import com.agentecon.market.IMarket;
+import com.agentecon.market.IMarketListener;
+import com.agentecon.market.Price;
+import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 

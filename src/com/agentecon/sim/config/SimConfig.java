@@ -5,10 +5,10 @@ package com.agentecon.sim.config;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import com.agentecon.api.Event;
-import com.agentecon.api.SimulationConfig;
 import com.agentecon.events.SimEvent;
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
+import com.agentecon.sim.Event;
+import com.agentecon.sim.SimulationConfig;
 
 public class SimConfig extends SimulationConfig {
 	

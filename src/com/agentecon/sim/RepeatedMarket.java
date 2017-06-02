@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.api.Price;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.firm.Producer;
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
+import com.agentecon.market.IMarketListener;
 import com.agentecon.market.Market;
-import com.agentecon.metric.IMarketListener;
-import com.agentecon.metric.SimulationListeners;
+import com.agentecon.market.Price;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.world.World;

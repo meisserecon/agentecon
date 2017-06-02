@@ -2,7 +2,7 @@
 
 package com.agentecon.price;
 
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class HardcodedPrice implements IPrice {
 	

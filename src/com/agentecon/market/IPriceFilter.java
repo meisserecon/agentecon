@@ -2,7 +2,7 @@
 
 package com.agentecon.market;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public interface IPriceFilter {
 

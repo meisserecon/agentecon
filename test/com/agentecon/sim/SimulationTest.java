@@ -2,8 +2,6 @@ package com.agentecon.sim;
 
 import org.junit.Test;
 
-import com.agentecon.metric.SimulationListenerAdapter;
-
 public class SimulationTest extends SimulationListenerAdapter {
 	
 	@Test

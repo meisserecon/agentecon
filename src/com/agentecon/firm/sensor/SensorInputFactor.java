@@ -2,11 +2,11 @@
 
 package com.agentecon.firm.sensor;
 
-import com.agentecon.api.Price;
 import com.agentecon.firm.InputFactor;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.Price;
 import com.agentecon.price.IPrice;
 
 public class SensorInputFactor extends InputFactor {

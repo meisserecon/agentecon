@@ -4,13 +4,19 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Portfolio;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Stock;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.util.Average;
 
-public class MarketMaker extends PublicCompany implements IShareholder, Cloneable {
+public class MarketMaker extends Firm implements IShareholder, Cloneable {
 
 	private static final int MARKET_MAKER_CASH = 1000;
 
@@ -18,14 +24,18 @@ public class MarketMaker extends PublicCompany implements IShareholder, Cloneabl
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
-	public MarketMaker(Collection<IPublicCompany> comps) {
+	public MarketMaker(Collection<IFirm> comps) {
 		super("Market Maker", new Endowment(new IStock[] { new Stock(SimConfig.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
 		this.portfolio = new Portfolio(getMoney());
 		this.reserve = 0.0;
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();
-		for (IPublicCompany pc : comps) {
+		for (IFirm pc : comps) {
 			addPosition(pc.getShareRegister().createPosition());
 		}
+	}
+
+	@Override
+	public void managePortfolio(IStockMarket dsm) {
 	}
 
 	public void postOffers(IStockMarket dsm) {
@@ -94,5 +104,4 @@ public class MarketMaker extends PublicCompany implements IShareholder, Cloneabl
 	public String toString() {
 		return getMoney() + ", holding " + getAvgHoldings() + ", price index: " + getIndex().toFullString() + ", dividend " + getShareRegister().getAverageDividend();
 	}
-
 }

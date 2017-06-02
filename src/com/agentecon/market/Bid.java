@@ -2,9 +2,8 @@
 
 package com.agentecon.market;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.IStock;
-import com.agentecon.stats.Numbers;
+import com.agentecon.goods.IStock;
+import com.agentecon.util.Numbers;
 
 public class Bid extends AbstractOffer {
 	

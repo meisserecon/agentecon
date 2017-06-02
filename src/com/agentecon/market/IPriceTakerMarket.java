@@ -4,7 +4,7 @@ package com.agentecon.market;
 
 import java.util.Collection;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 
 public interface IPriceTakerMarket {

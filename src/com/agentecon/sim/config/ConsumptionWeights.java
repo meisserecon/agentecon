@@ -4,7 +4,7 @@ import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtil;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.IUtilityFactory;
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class ConsumptionWeights {
 

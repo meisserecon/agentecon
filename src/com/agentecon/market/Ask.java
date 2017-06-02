@@ -2,8 +2,7 @@
 
 package com.agentecon.market;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 
 public class Ask extends AbstractOffer {
 

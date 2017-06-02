@@ -4,12 +4,12 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.agentecon.api.AgentRef;
-import com.agentecon.api.IAgent;
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IConsumerListener;
-import com.agentecon.good.Inventory;
-import com.agentecon.metric.SimulationListenerAdapter;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IConsumerListener;
+import com.agentecon.goods.Inventory;
+import com.agentecon.sim.AgentRef;
+import com.agentecon.sim.IAgent;
+import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 
 public class ConsumerRanking extends SimulationListenerAdapter {

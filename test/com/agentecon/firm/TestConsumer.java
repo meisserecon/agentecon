@@ -2,11 +2,11 @@
 
 package com.agentecon.firm;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.Market;
+import com.agentecon.market.Price;
 import com.agentecon.sim.config.SimConfig;
 
 public class TestConsumer {

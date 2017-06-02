@@ -1,9 +1,9 @@
 package com.agentecon.firm;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
+import com.agentecon.market.Price;
 import com.agentecon.price.IPrice;
 
 public class OutputFactor extends Factor {

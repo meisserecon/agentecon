@@ -2,7 +2,7 @@
 
 package com.agentecon.events;
 
-import com.agentecon.api.Event;
+import com.agentecon.sim.Event;
 import com.agentecon.world.IWorld;
 
 public abstract class SimEvent extends Event {

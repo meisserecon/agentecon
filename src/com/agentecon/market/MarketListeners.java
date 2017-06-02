@@ -1,9 +1,7 @@
 package com.agentecon.market;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.metric.AbstractListenerList;
-import com.agentecon.metric.IMarketListener;
+import com.agentecon.goods.Good;
+import com.agentecon.util.AbstractListenerList;
 
 public class MarketListeners extends AbstractListenerList<IMarketListener> implements IMarketListener {
 

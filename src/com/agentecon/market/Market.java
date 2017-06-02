@@ -7,10 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.agentecon.api.IMarket;
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.metric.IMarketListener;
+import com.agentecon.goods.Good;
 import com.agentecon.util.InstantiatingHashMap;
 
 public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {

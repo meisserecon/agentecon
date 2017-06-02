@@ -1,8 +1,10 @@
 package com.agentecon.finance;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.IStock;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
+import com.agentecon.market.Price;
 
 public class AskFin extends Ask {
 

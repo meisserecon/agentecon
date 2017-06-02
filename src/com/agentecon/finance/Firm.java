@@ -2,17 +2,20 @@ package com.agentecon.finance;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
-import com.agentecon.good.IStock;
-import com.agentecon.metric.FirmListeners;
-import com.agentecon.metric.IFirmListener;
+import com.agentecon.firm.FirmListeners;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
+import com.agentecon.goods.IStock;
 
-public abstract class PublicCompany extends Agent implements IPublicCompany {
+public abstract class Firm extends Agent implements IFirm {
 
 	private Ticker ticker;
 	private ShareRegister register;
-	protected FirmListeners monitor;
+	private FirmListeners monitor;
 	
-	public PublicCompany(String type, Endowment end) {
+	public Firm(String type, Endowment end) {
 		super(type, end);
 		this.ticker = new Ticker(type, getAgentId());
 		this.register = new ShareRegister(ticker, getDividendWallet());

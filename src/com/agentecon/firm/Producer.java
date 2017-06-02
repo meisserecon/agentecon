@@ -5,20 +5,22 @@ package com.agentecon.firm;
 import java.util.Arrays;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.finance.PublicCompany;
+import com.agentecon.finance.Firm;
 import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IPriceProvider;
 import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.IPriceFactory;
 import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
+import com.agentecon.production.ProducerListeners;
 
-public class Producer extends PublicCompany implements IProducer {
+public class Producer extends Firm implements IProducer {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -26,6 +28,8 @@ public class Producer extends PublicCompany implements IProducer {
 
 	protected IPriceFactory prices;
 	private IFirmDecisions strategy;
+	
+	private ProducerListeners listeners;
 
 	public Producer(String type, Endowment end, IProductionFunction prod, IPriceFactory prices) {
 		this(type, end, prod, prices, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction)prod).getTotalWeight()));
@@ -44,6 +48,12 @@ public class Producer extends PublicCompany implements IProducer {
 		}
 		IStock outStock = getStock(prod.getOutput());
 		this.output = createOutputFactor(prices, outStock);
+		this.listeners = new ProducerListeners();
+	}
+	
+	@Override
+	public void addProducerMonitor(IProducerListener listener) {
+		this.listeners.add(listener);
 	}
 
 	public void setStrategy(IFirmDecisions strategy) {
@@ -115,8 +125,8 @@ public class Producer extends PublicCompany implements IProducer {
 			inputAmounts[i] = inputs[i].getStock().duplicate();
 		}
 		double produced = prod.produce(getInventory());
-		monitor.notifyProduced(this, getType(), inputAmounts, new Stock(output.getGood(), produced));
-		monitor.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
+		listeners.notifyProduced(this, getType(), inputAmounts, new Stock(output.getGood(), produced));
+		listeners.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
 	}
 
 	public Good getGood() {

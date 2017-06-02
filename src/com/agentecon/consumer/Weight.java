@@ -2,7 +2,7 @@
 
 package com.agentecon.consumer;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class Weight {
 	

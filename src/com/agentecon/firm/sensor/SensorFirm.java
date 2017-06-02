@@ -8,7 +8,7 @@ import com.agentecon.firm.InputFactor;
 import com.agentecon.firm.OutputFactor;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.price.HardcodedPrice;
 import com.agentecon.price.IPrice;
 import com.agentecon.price.IPriceFactory;

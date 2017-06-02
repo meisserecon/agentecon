@@ -5,7 +5,7 @@ package com.agentecon.market;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class BestPriceMarket extends AbstractMarket {
 

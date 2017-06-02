@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class RandomChoiceMarket extends AbstractMarket {
 

@@ -1,7 +1,7 @@
 package com.agentecon.verification;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.stats.Numbers;
+import com.agentecon.sim.IAgent;
+import com.agentecon.util.Numbers;
 import com.agentecon.world.Agents;
 
 public class MoneySupplyVerification {

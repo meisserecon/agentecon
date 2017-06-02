@@ -3,7 +3,7 @@ package com.agentecon.sim.config;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class ProductionWeights {
 

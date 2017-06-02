@@ -1,10 +1,10 @@
 package com.agentecon.agent;
 
-import com.agentecon.api.AgentRef;
-import com.agentecon.api.IAgent;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.sim.AgentRef;
+import com.agentecon.sim.IAgent;
 import com.agentecon.sim.config.SimConfig;
 
 public abstract class Agent implements IAgent, Cloneable {

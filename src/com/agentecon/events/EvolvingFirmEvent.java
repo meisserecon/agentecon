@@ -7,8 +7,8 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.firm.sensor.SensorFirm;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.price.PriceFactory;
 import com.agentecon.util.Average;
@@ -35,7 +35,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 	private void initListener() {
 		this.prod = new FirstDayProduction(firms.size());
 		for (Producer firm : firms) {
-			firm.addFirmMonitor(prod);
+			firm.addProducerMonitor(prod);
 		}
 	}
 

@@ -5,21 +5,19 @@ package com.agentecon.sim;
 import java.util.Collection;
 import java.util.Queue;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IFirm;
-import com.agentecon.api.IIteratedSimulation;
-import com.agentecon.api.IMarket;
-import com.agentecon.api.ISimulation;
-import com.agentecon.api.SimulationConfig;
+import com.agentecon.IIteratedSimulation;
+import com.agentecon.ISimulation;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.events.SimEvent;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.finance.IShareholder;
 import com.agentecon.finance.StockMarket;
-import com.agentecon.finance.Ticker;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
-import com.agentecon.metric.ISimulationListener;
-import com.agentecon.metric.SimulationListeners;
+import com.agentecon.firm.Ticker;
+import com.agentecon.market.IMarket;
+import com.agentecon.sim.IAgent;
+import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.sim.config.TechnologyConfiguration;
@@ -144,7 +142,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	}
 	
 	@Override
-	public Collection<? extends IPublicCompany> getListedCompanies() {
+	public Collection<? extends IFirm> getListedCompanies() {
 		return world.getAgents().getPublicCompanies();
 	}
 
@@ -172,11 +170,11 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 
 	@Override
 	public Collection<? extends IShareholder> getShareHolders() {
-		return world.getAgents().getShareHolders();
+		return world.getAgents().getShareholders();
 	}
 
 	@Override
-	public IPublicCompany getListedCompany(Ticker ticker) {
+	public IFirm getListedCompany(Ticker ticker) {
 		return world.getAgents().getCompany(ticker);
 	}
 	

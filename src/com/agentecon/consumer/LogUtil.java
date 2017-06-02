@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.sim.config.SimConfig;
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class LogUtil extends AbstractWeightedUtil implements IUtility {
 

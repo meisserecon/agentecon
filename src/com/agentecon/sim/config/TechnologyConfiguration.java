@@ -3,18 +3,18 @@ package com.agentecon.sim.config;
 import java.util.ArrayList;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.SimulationConfig;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.Good;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Stock;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.Simulation;
+import com.agentecon.sim.SimulationConfig;
 import com.agentecon.verification.PriceMetric;
 import com.agentecon.world.IWorld;
 

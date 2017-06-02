@@ -7,16 +7,15 @@ import java.util.HashMap;
 import java.util.Random;
 
 import com.agentecon.agent.Agent;
-import com.agentecon.api.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.finance.Fundamentalist;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.finance.IShareholder;
-import com.agentecon.finance.IStockMarketParticipant;
 import com.agentecon.finance.MarketMaker;
-import com.agentecon.finance.Ticker;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
-import com.agentecon.metric.ISimulationListener;
+import com.agentecon.firm.Ticker;
+import com.agentecon.sim.IAgent;
+import com.agentecon.sim.ISimulationListener;
 
 public class Agents implements IConsumers, IFirms {
 
@@ -24,7 +23,7 @@ public class Agents implements IConsumers, IFirms {
 	private Random rand;
 
 	private ArrayList<IAgent> all;
-	private HashMap<Ticker, IPublicCompany> publicCompanies;
+	private HashMap<Ticker, IFirm> publicCompanies;
 
 	private ArrayList<Producer> firms;
 	private ArrayList<Consumer> consumers;
@@ -53,10 +52,11 @@ public class Agents implements IConsumers, IFirms {
 				listeners.notifyAgentDied(a);
 			}
 		}
-		this.listeners = listeners; // must be at the end to avoid unnecessary notifications
+		this.listeners = listeners; // must be at the end to avoid unnecessary
+									// notifications
 		this.seed = seed;
 	}
-	
+
 	public Collection<Producer> getAllFirms() {
 		return firms;
 	}
@@ -65,27 +65,19 @@ public class Agents implements IConsumers, IFirms {
 		return consumers;
 	}
 
-	public Collection<IStockMarketParticipant> getRandomStockMarketParticipants() {
-		ArrayList<IStockMarketParticipant> list = new ArrayList<>();
-		list.addAll(consumers);
-		list.addAll(fundies);
-		Collections.shuffle(list, getRand()); // OPTIMIZABLE in case of cardinality < size
-		return list;
-	}
-
 	public Collection<MarketMaker> getRandomizedMarketMakers() {
 		Collections.shuffle(marketMakers, getRand());
 		return marketMakers;
 	}
 
-	public IPublicCompany getCompany(Ticker ticker) {
+	public IFirm getCompany(Ticker ticker) {
 		return publicCompanies.get(ticker);
 	}
 
 	public void add(IAgent agent) {
 		all.add(agent);
-		if (agent instanceof IPublicCompany) {
-			IPublicCompany pc = (IPublicCompany) agent;
+		if (agent instanceof IFirm) {
+			IFirm pc = (IFirm) agent;
 			publicCompanies.put(pc.getTicker(), pc);
 		}
 		if (agent instanceof IShareholder) {
@@ -119,7 +111,8 @@ public class Agents implements IConsumers, IFirms {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Consumer> getRandomConsumers(int cardinality) {
-		Collections.shuffle(consumers, getRand()); // OPTIMIZABLE in case of cardinality < size
+		Collections.shuffle(consumers, getRand()); // OPTIMIZABLE in case of
+													// cardinality < size
 		if (cardinality == -1 || cardinality >= consumers.size()) {
 			return (Collection<Consumer>) consumers.clone();
 		} else {
@@ -152,15 +145,21 @@ public class Agents implements IConsumers, IFirms {
 		return rand;
 	}
 
-	public Collection<IPublicCompany> getPublicCompanies() {
+	public Collection<IFirm> getPublicCompanies() {
 		return publicCompanies.values();
 	}
 
-	public Collection<? extends IShareholder> getShareHolders() {
+	public Collection<? extends IShareholder> getShareholders() {
 		return shareholders;
 	}
-	
-	public Agents renew(long seed){
+
+	@SuppressWarnings("unchecked")
+	public Collection<IShareholder> getRandomShareholders() {
+		Collections.shuffle(shareholders, getRand()); 
+		return (Collection<IShareholder>) shareholders.clone();
+	}
+
+	public Agents renew(long seed) {
 		return new Agents(listeners, seed, all);
 	}
 
@@ -168,7 +167,7 @@ public class Agents implements IConsumers, IFirms {
 		preserveRand();
 		assert rand == null;
 		ArrayList<IAgent> allDup = new ArrayList<>(all.size());
-		for (IAgent a: all){
+		for (IAgent a : all) {
 			allDup.add(a.clone());
 		}
 		return new Agents(listeners, seed, allDup);
@@ -187,8 +186,8 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public void refreshReferences() {
-		for (IAgent a: all){
-			((Agent)a).refreshRef();
+		for (IAgent a : all) {
+			((Agent) a).refreshRef();
 		}
 	}
 

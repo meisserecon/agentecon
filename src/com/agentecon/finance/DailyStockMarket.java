@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import com.agentecon.good.IStock;
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.BestPriceMarket;
 import com.agentecon.market.Bid;

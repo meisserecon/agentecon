@@ -9,11 +9,11 @@ import org.junit.Test;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.LogProdFun;
-import com.agentecon.good.Good;
-import com.agentecon.good.Inventory;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Stock;
 import com.agentecon.sim.config.SimConfig;
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class ProdFunTest {
 	

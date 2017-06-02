@@ -1,8 +1,10 @@
 package com.agentecon.finance;
 
-import com.agentecon.good.IStock;
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Position;
+import com.agentecon.goods.IStock;
 import com.agentecon.price.ExpSearchPrice;
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class MarketMakerPrice {
 	

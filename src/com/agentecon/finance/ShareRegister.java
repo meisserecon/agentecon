@@ -3,10 +3,13 @@ package com.agentecon.finance;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.agentecon.good.IStock;
+import com.agentecon.firm.IRegister;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.Bid;
-import com.agentecon.stats.Numbers;
 import com.agentecon.util.MovingAverage;
+import com.agentecon.util.Numbers;
 
 public class ShareRegister implements IRegister {
 	

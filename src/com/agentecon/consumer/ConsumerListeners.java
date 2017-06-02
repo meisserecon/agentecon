@@ -1,9 +1,7 @@
 package com.agentecon.consumer;
 
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IConsumerListener;
-import com.agentecon.good.Inventory;
-import com.agentecon.metric.AbstractListenerList;
+import com.agentecon.goods.Inventory;
+import com.agentecon.util.AbstractListenerList;
 
 public class ConsumerListeners extends AbstractListenerList<IConsumerListener> implements IConsumerListener {
 

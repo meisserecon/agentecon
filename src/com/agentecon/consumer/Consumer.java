@@ -6,22 +6,20 @@ import java.util.Collection;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IConsumerListener;
-import com.agentecon.finance.IStockMarket;
-import com.agentecon.finance.IStockMarketParticipant;
-import com.agentecon.finance.Portfolio;
 import com.agentecon.finance.TradingPortfolio;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Portfolio;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
-import com.agentecon.stats.Numbers;
 import com.agentecon.util.MovingAverage;
+import com.agentecon.util.Numbers;
 
-public class Consumer extends Agent implements IConsumer, IStockMarketParticipant {
+public class Consumer extends Agent implements IConsumer, IShareholder {
 
 	private int age, maxAge;
 	protected Good soldGood;

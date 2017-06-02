@@ -6,12 +6,12 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.IAgent;
-import com.agentecon.api.IConsumer;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.LogUtil;
-import com.agentecon.good.Stock;
-import com.agentecon.metric.ISimulationListener;
+import com.agentecon.goods.Stock;
+import com.agentecon.sim.IAgent;
+import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.Agents;
 import com.agentecon.world.IConsumers;

@@ -9,28 +9,28 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.Price;
 import com.agentecon.consumer.Weight;
-import com.agentecon.finance.IPublicCompany;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.firm.production.LogProdFun;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Market;
-import com.agentecon.metric.IFirmListener;
+import com.agentecon.market.Price;
 import com.agentecon.price.HardcodedPrice;
 import com.agentecon.price.IPrice;
 import com.agentecon.price.IPriceFactory;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.price.PriceFactory;
-import com.agentecon.stats.Numbers;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
+import com.agentecon.util.Numbers;
 
 public class FirmTest {
 	
@@ -161,18 +161,14 @@ public class FirmTest {
 
 	private double produce(Producer firm) {
 		final double[] production = new double[1];
-		firm.addFirmMonitor(new IFirmListener() {
+		firm.addProducerMonitor(new IProducerListener() {
 			
 			@Override
-			public void reportResults(IPublicCompany inst, double revenue, double cogs, double expectedProfits) {
+			public void reportResults(IProducer inst, double revenue, double cogs, double expectedProfits) {
 			}
 			
 			@Override
-			public void reportDividend(IPublicCompany inst, double amount) {
-			}
-			
-			@Override
-			public void notifyProduced(IPublicCompany inst, String producer, IStock[] inputs, IStock output) {
+			public void notifyProduced(IProducer inst, String producer, IStock[] inputs, IStock output) {
 				production[0] = output.getAmount();
 			}
 		});
