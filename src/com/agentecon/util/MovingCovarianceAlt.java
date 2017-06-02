@@ -1,26 +1,27 @@
 package com.agentecon.util;
 
+/**
+ * Covariance based on Cov(X,Y) = E[XY] - E[X]*E[Y]
+ */
 public class MovingCovarianceAlt {
 	
-	private double factor;
 	private MovingAverage x, y;
-	private double xy;
+	private MovingAverage xy;
 	
 	public MovingCovarianceAlt(double factor){
-		this.factor = factor;
 		this.x = new MovingAverage(factor);
 		this.y = new MovingAverage(factor);
-		this.xy = 0.0;
+		this.xy = new MovingAverage(factor);
 	}
 	
 	public void add(double x, double y){
 		this.x.add(x);
 		this.y.add(y);
-		this.xy = (1-factor) * x * y + factor * xy;
+		this.xy.add(x * y);
 	}
 	
 	public double getCovariance(){
-		return xy - x.getAverage() * y.getAverage();
+		return xy.getAverage() - x.getAverage() * y.getAverage();
 	}
 	
 	public double getCorrelation(){

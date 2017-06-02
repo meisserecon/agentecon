@@ -1,7 +1,5 @@
 package com.agentecon.util;
 
-import com.agentecon.stats.Numbers;
-
 public class AccumulatingAverage {
 
 	private double weight;

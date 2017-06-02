@@ -4,8 +4,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.agentecon.stats.Numbers;
-
 public class AverageTest {
 
 	@Test

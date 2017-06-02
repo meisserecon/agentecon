@@ -1,6 +1,6 @@
 package com.agentecon.production;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public interface IPriceProvider {
 
