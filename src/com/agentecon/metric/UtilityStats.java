@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.runner.OverallStats;

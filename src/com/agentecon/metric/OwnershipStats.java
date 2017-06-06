@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.ISimulation;
-import com.agentecon.finance.IShareholder;
-import com.agentecon.finance.Portfolio;
-import com.agentecon.finance.Position;
+import com.agentecon.ISimulation;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.Portfolio;
+import com.agentecon.firm.Position;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
 import com.agentecon.metric.series.TimeSeries;

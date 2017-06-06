@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.agentecon.api.IFirm;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.good.IStock;
+import com.agentecon.agent.IAgent;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
+import com.agentecon.goods.IStock;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
 
 public class SingleFirmStats extends SimStats {
 
@@ -26,24 +29,24 @@ public class SingleFirmStats extends SimStats {
 	}
 
 	@Override
-	public void notifyFirmCreated(IFirm firm) {
-		if (data.containsKey(firm.getType())) {
+	public void notifyAgentCreated(IAgent firm) {
+		if (data.containsKey(firm.getName())) {
 			// skip
-		} else {
-			data.put(firm.getType(), new FirmTimeSeries(firm));
+		} else if (firm instanceof IFirm) {
+			data.put(firm.getName(), new FirmTimeSeries((IFirm) firm));
 		}
 	}
 
 	@Override
 	public Collection<? extends Chart> getCharts(String simId) {
 		ArrayList<Chart> charts = new ArrayList<>();
-		for (FirmTimeSeries ts: data.values()){
+		for (FirmTimeSeries ts : data.values()) {
 			charts.add(ts.createChart(simId));
 		}
 		return charts;
 	}
 
-	class FirmTimeSeries implements IFirmListener {
+	class FirmTimeSeries implements IFirmListener, IProducerListener {
 
 		private String name;
 		private TimeSeries dividends, cogs, revenue, cash;
@@ -58,26 +61,29 @@ public class SingleFirmStats extends SimStats {
 		}
 
 		public Chart createChart(String simId) {
-			return new Chart(simId, name, "Results of a single firm", Arrays.asList(revenue, cogs, cash, dividends));
+			if (cogs.isInteresting()) {
+				return new Chart(simId, name, "Results for producer " + name, Arrays.asList(revenue, cogs, cash, dividends));
+			} else {
+				return new Chart(simId, name, "Results for firm " + name, Arrays.asList(cash, dividends));
+			}
 		}
 
 		@Override
-		public void notifyProduced(IPublicCompany comp, String producer, IStock[] inputs, IStock output) {
-		}
-
-		@Override
-		public void reportDividend(IPublicCompany comp, double amount) {
+		public void reportDividend(IFirm comp, double amount) {
 			this.dividends.set(day, amount);
 			this.cash.set(day, comp.getMoney().getAmount());
 		}
 
 		@Override
-		public void reportResults(IPublicCompany comp, double revenue, double cogs, double profits) {
+		public void reportResults(IProducer comp, double revenue, double cogs, double profits) {
 			this.cogs.set(day, cogs);
 			this.revenue.set(day, revenue);
 		}
+
+		@Override
+		public void notifyProduced(IProducer inst, String producer, IStock[] inputs, IStock output) {
+		}
 	}
-	
 
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {

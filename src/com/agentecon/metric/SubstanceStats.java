@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IFirm;
-import com.agentecon.api.ISimulation;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.finance.IShareholder;
-import com.agentecon.finance.Position;
+import com.agentecon.ISimulation;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.Position;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 
@@ -41,13 +40,13 @@ public class SubstanceStats extends SimStats {
 			double outerValue = 0.0;
 			double innerValue = 0.0;
 			for (IShareholder holder : holders) {
-				if (holder instanceof IPublicCompany) {
+				if (holder instanceof IFirm) {
 					// innerValue += holder.getMoney().getAmount();
 				}
 				for (Position pos : holder.getPortfolio().getPositions()) {
 					double value = pos.getAmount() * stocks.getPrice(pos.getTicker());
-					IPublicCompany heldCompany = sim.getListedCompany(pos.getTicker());
-					if (holder instanceof IPublicCompany) {
+					IFirm heldCompany = sim.getListedCompany(pos.getTicker());
+					if (holder instanceof IFirm) {
 						// only count real companies they hold
 						if (heldCompany instanceof IFirm) {
 							innerValue += value;

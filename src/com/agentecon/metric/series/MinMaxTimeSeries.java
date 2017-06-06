@@ -2,8 +2,8 @@
 
 package com.agentecon.metric.series;
 
-import com.agentecon.stats.Numbers;
 import com.agentecon.util.Average;
+import com.agentecon.util.Numbers;
 
 public class MinMaxTimeSeries extends TimeSeries {
 	

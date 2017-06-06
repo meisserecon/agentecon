@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
 import com.agentecon.github.WebUtil;
 
 public class SimulationLoader extends ClassLoader {

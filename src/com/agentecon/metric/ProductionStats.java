@@ -4,17 +4,18 @@ package com.agentecon.metric;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.api.IFirm;
-import com.agentecon.good.Good;
+import com.agentecon.firm.IFirm;
+import com.agentecon.goods.Good;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.production.IProducer;
 import com.agentecon.util.InstantiatingHashMap;
 
 /**
- * Compares what the firms of one type produced with what they could have produced given the input factors they acquired.
+ * Compares what the firms of one type produced with what they could have
+ * produced given the input factors they acquired.
  */
 public class ProductionStats extends SimStats {
 
@@ -39,8 +40,9 @@ public class ProductionStats extends SimStats {
 
 	@Override
 	public void notifyFirmCreated(IFirm firm) {
-		try {
-			FirmProductivityMonitor monitor = new FirmProductivityMonitor(firm) {
+		if (firm instanceof IProducer) {
+			IProducer prod = (IProducer) firm;
+			FirmProductivityMonitor monitor = new FirmProductivityMonitor(prod) {
 
 				@Override
 				protected int getDay() {
@@ -48,9 +50,8 @@ public class ProductionStats extends SimStats {
 				}
 
 			};
-			firmsByGood.get(firm.getOutput()).add(monitor);
-			firm.addFirmMonitor(monitor);
-		} catch (AbstractMethodError e) {
+			firmsByGood.get(prod.getOutput()).add(monitor);
+			prod.addProducerMonitor(monitor);
 		}
 	}
 

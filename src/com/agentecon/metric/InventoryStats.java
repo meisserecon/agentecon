@@ -6,19 +6,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.api.Event;
-import com.agentecon.api.IAgent;
-import com.agentecon.api.IMarket;
-import com.agentecon.api.ISimulation;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
+import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.market.IMarket;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.MinMaxTimeSeries;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.stats.Numbers;
+import com.agentecon.sim.Event;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.Numbers;
 
 public class InventoryStats extends SimStats {
 

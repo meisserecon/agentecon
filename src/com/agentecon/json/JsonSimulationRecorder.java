@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
 import com.agentecon.data.SimulationInfo;
 import com.agentecon.data.SimulationList;
 import com.agentecon.github.GitBasedSimulationList;

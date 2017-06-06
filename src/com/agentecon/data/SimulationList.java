@@ -2,7 +2,6 @@ package com.agentecon.data;
 
 import java.util.ArrayList;
 
-import com.agentecon.json.IPersistable;
 import com.agentecon.json.Persistable;
 import com.agentecon.runner.Checksum;
 

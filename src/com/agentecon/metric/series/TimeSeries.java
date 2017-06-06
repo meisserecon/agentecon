@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.agentecon.stats.Numbers;
 import com.agentecon.util.Average;
+import com.agentecon.util.Numbers;
 
 public class TimeSeries {
 

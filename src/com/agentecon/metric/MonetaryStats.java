@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
 import com.agentecon.metric.series.TimeSeries;

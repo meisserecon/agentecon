@@ -2,27 +2,23 @@
 
 package com.agentecon.metric;
 
-import com.agentecon.api.IFirm;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
 
-public abstract class FirmProductivityMonitor extends TimeSeries implements IFirmListener {
+public abstract class FirmProductivityMonitor extends TimeSeries implements IProducerListener {
 	
-	public FirmProductivityMonitor(IFirm firm){
+	public FirmProductivityMonitor(IProducer firm){
 		super(firm.getName());
 	}
 	
 	@Override
-	public void reportResults(IPublicCompany comp, double revenue, double cogs, double profits) {
+	public void reportResults(IProducer comp, double revenue, double cogs, double profits) {
 	}
 	
 	@Override
-	public void reportDividend(IPublicCompany comp, double amount) {
-	}
-	
-	@Override
-	public void notifyProduced(IPublicCompany comp, String type, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, String type, IStock[] inputs, IStock output) {
 		super.set(getDay(), output.getAmount());
 	}
 

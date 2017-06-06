@@ -9,11 +9,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.agentecon.api.IIteratedSimulation;
-import com.agentecon.api.IMarket;
-import com.agentecon.api.ISimulation;
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
+import com.agentecon.IIteratedSimulation;
+import com.agentecon.ISimulation;
+import com.agentecon.goods.Good;
+import com.agentecon.market.IMarket;
+import com.agentecon.market.IMarketListener;
+import com.agentecon.market.Price;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;

@@ -5,13 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.good.IStock;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.stats.Numbers;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.Numbers;
 
 public class DividendStats extends SimStats {
 
@@ -28,30 +27,21 @@ public class DividendStats extends SimStats {
 	}
 
 	@Override
-	public void notifyAgentCreated(IAgent firm) {
-		if (firm instanceof IPublicCompany) {
-			((IPublicCompany)firm).addFirmMonitor(new IFirmListener() {
-				
-				@Override
-				public void reportResults(IPublicCompany comp, double revenue, double cogs, double expectedProfits) {
+	public void notifyFirmCreated(IFirm firm) {
+		firm.addFirmMonitor(new IFirmListener() {
+
+			@Override
+			public void reportDividend(IFirm comp, double amount) {
+				if (comp == null) {
+					DividendStats.this.reportDividend(firm.getType(), amount);
+				} else {
+					DividendStats.this.reportDividend(comp.getType(), amount);
 				}
-				
-				@Override
-				public void reportDividend(IPublicCompany comp, double amount) {
-					if (comp == null){
-						DividendStats.this.reportDividend(firm.getType(), amount);
-					} else {
-						DividendStats.this.reportDividend(comp.getType(), amount);
-					}
-				}
-				
-				@Override
-				public void notifyProduced(IPublicCompany comp, String producer, IStock[] inputs, IStock output) {
-				}
-			});
-		}
+			}
+
+		});
 	}
-	
+
 	protected void reportDividend(String type, double amount) {
 		dividends.get(type).add(amount);
 	}
@@ -59,11 +49,11 @@ public class DividendStats extends SimStats {
 	@Override
 	public void notifyDayEnded(int day) {
 		String line = day + " dividends";
-		for (AveragingTimeSeries ts: dividends.values()){
+		for (AveragingTimeSeries ts : dividends.values()) {
 			double value = ts.push(day);
 			line += ", " + ts.getTimeSeries().getName() + " " + Numbers.toString(value);
 		}
-//		System.out.println(line);
+		// System.out.println(line);
 	}
 
 	@Override

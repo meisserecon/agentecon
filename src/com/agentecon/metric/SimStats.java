@@ -2,9 +2,10 @@ package com.agentecon.metric;
 
 import java.util.Collection;
 
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.sim.SimulationListenerAdapter;
 
 public abstract class SimStats extends SimulationListenerAdapter {
 

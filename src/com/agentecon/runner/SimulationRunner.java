@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import com.agentecon.api.IIteratedSimulation;
-import com.agentecon.api.ISimulation;
-import com.agentecon.api.SimulationConfig;
+import com.agentecon.IIteratedSimulation;
+import com.agentecon.ISimulation;
 import com.agentecon.metric.Demographics;
 import com.agentecon.metric.DividendStats;
 import com.agentecon.metric.MarketStats;
@@ -21,6 +20,7 @@ import com.agentecon.metric.SubstanceStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Correlator;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.sim.SimulationConfig;
 
 public class SimulationRunner {
 

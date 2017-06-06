@@ -8,18 +8,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.api.IFirm;
-import com.agentecon.api.IMarket;
-import com.agentecon.api.Price;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
+import com.agentecon.agent.IAgent;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IFirmListener;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.market.IMarket;
+import com.agentecon.market.IMarketListener;
+import com.agentecon.market.Price;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
 import com.agentecon.util.AccumulatingAverage;
 import com.agentecon.util.InstantiatingHashMap;
 
-public class MarketMetrics extends SimStats implements IMarketListener, IFirmListener {
+public class MarketMetrics extends SimStats implements IMarketListener, IFirmListener, IProducerListener {
 
 	private static final double MEMORY = 0.95;
 
@@ -56,30 +60,30 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 
 	@Override
-	public void notifyProduced(IPublicCompany comp, String producer, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, String producer, IStock[] inputs, IStock output) {
 		this.production.get(output.getGood()).add(output.getAmount());
 	}
 
 	@Override
-	public void reportDividend(IPublicCompany comp, double amount) {
+	public void reportDividend(IFirm comp, double amount) {
 		this.dividends.add(amount);
 	}
-	
+
 	@Override
-	public void reportResults(IPublicCompany comp, double revenue, double cogs, double profits) {
+	public void reportResults(IProducer comp, double revenue, double cogs, double profits) {
 		this.profits.add(profits);
 	}
 
 	@Override
 	public void notifyOffered(Good good, double quantity, Price price) {
 	}
-	
+
 	@Override
 	public void notifySold(Good good, double quantity, Price price) {
 		// System.out.println(quantity + " " + price);
 		this.prices.get(good).add(quantity, price.getPrice());
 	}
-	
+
 	@Override
 	public void notifyTradesCancelled() {
 		for (AccumulatingAverage avg : all) {
@@ -93,11 +97,11 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 
 	@Override
-	public void notifyFirmCreated(IFirm firm) {
-		firm.addFirmMonitor(this);
+	public void notifyAgentCreated(IAgent agent) {
+		agent.addListener(this);
 	}
-	
-	public boolean hasJustReachedStability(){
+
+	public boolean hasJustReachedStability() {
 		boolean wasStable = this.stable;
 		this.stable = isStable();
 		return this.stable && !wasStable;
@@ -111,13 +115,13 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 		}
 		return true;
 	}
-	
+
 	private double util;
-	
-	public double getLatestUtility(){
+
+	public double getLatestUtility() {
 		return util;
 	}
-	
+
 	@Override
 	public void notifyDayEnded(int day, double utility) {
 		this.util = utility;
@@ -142,7 +146,7 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	public Collection<? extends Chart> getCharts(String simId) {
 		return Arrays.asList();
 	}
-	
+
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
 		return Collections.emptyList();

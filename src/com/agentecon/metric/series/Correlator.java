@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class Correlator {
 

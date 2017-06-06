@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.ISimulation;
+import com.agentecon.ISimulation;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.InstantiatingHashMap;
@@ -61,7 +61,7 @@ public class Demographics extends SimStats {
 
 	@Override
 	public void notfiyConsumerDied(IConsumer consumer) {
-		utilityOnDeath.get(consumer.getType()).add(consumer.getTotalExperiencedUtility());
+		utilityOnDeath.get(consumer.getType()).add(consumer.getTotalUtility());
 	}
 
 	public Collection<? extends TimeSeries> getUtilityData() {
