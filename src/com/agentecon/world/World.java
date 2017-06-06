@@ -4,16 +4,16 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Producer;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationListeners;
-import com.agentecon.sim.config.SimConfig;
 
 public class World implements IWorld {
 
@@ -74,7 +74,7 @@ public class World implements IWorld {
 	}
 
 	public void finishDay(int day) {
-		IStock inheritedMoney = new Stock(SimConfig.MONEY);
+		IStock inheritedMoney = new Stock(Good.MONEY);
 		Portfolio inheritance = new Portfolio(inheritedMoney);
 		Collection<Consumer> consumers = agents.getAllConsumers();
 		Iterator<Consumer> iter = consumers.iterator();

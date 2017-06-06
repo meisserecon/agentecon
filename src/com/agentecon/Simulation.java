@@ -1,23 +1,25 @@
 // Created by Luzius on Apr 22, 2014
 
-package com.agentecon.sim;
+package com.agentecon;
 
 import java.util.Collection;
 import java.util.Queue;
 
 import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.firm.IFirm;
-import com.agentecon.firm.IFirmListener;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.Ticker;
 import com.agentecon.market.IMarket;
-import com.agentecon.sim.IAgent;
+import com.agentecon.sim.ISimulationListener;
+import com.agentecon.sim.RepeatedMarket;
 import com.agentecon.sim.SimulationConfig;
+import com.agentecon.sim.SimulationListeners;
 import com.agentecon.sim.config.IConfiguration;
 import com.agentecon.sim.config.SimConfig;
 import com.agentecon.sim.config.TechnologyConfiguration;
@@ -176,6 +178,11 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public IFirm getListedCompany(Ticker ticker) {
 		return world.getAgents().getCompany(ticker);
+	}
+	
+	public static void main(String[] args) {
+		Simulation sim = new Simulation();
+		sim.finish();
 	}
 	
 }

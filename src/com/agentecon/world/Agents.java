@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import com.agentecon.agent.Agent;
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
@@ -14,7 +15,6 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.Ticker;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.ISimulationListener;
 
 public class Agents implements IConsumers, IFirms {

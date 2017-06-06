@@ -11,10 +11,10 @@ import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.Bid;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.IWorld;
 
 public class Fundamentalist extends Firm implements IShareholder {
@@ -28,7 +28,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 	private Portfolio portfolio;
 
 	public Fundamentalist(IWorld world) {
-		super("Fundamentalist", new Endowment(new IStock[] { new Stock(SimConfig.MONEY, CASH) }, new IStock[] {}));
+		super("Fundamentalist", new Endowment(new IStock[] { new Stock(Good.MONEY, CASH) }, new IStock[] {}));
 		this.world = world;
 		this.portfolio = new Portfolio(getMoney());
 	}

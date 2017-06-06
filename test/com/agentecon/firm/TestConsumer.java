@@ -7,7 +7,6 @@ import com.agentecon.goods.Stock;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.Market;
 import com.agentecon.market.Price;
-import com.agentecon.sim.config.SimConfig;
 
 public class TestConsumer {
 
@@ -37,7 +36,7 @@ public class TestConsumer {
 	}
 
 	private Stock getWallet() {
-		return new Stock(SimConfig.MONEY, INFINITE);
+		return new Stock(Good.MONEY, INFINITE);
 	}
 
 	public boolean checkPrices(Market market, double accuracy) {

@@ -124,7 +124,8 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 			for (IOffer offer : offers) {
 				IStock s = inv.getStock(offer.getGood());
 				double excessStock = s.getAmount() - allocs[pos];
-				// double excessStock = Math.max(s.getAmount() - allocs[pos], s.getAmount() - 19); // work at least 5 hours
+				// double excessStock = Math.max(s.getAmount() - allocs[pos],
+				// s.getAmount() - 19); // work at least 5 hours
 				if (excessStock > Numbers.EPSILON && offer.getGood() == soldGood) {
 					double amountAcquired = offer.accept(getMoney(), s, excessStock);
 					completedSales &= amountAcquired == excessStock;
@@ -150,11 +151,19 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		dailySpendings.add(spendings);
 	}
 
+	private double totalUtility;
+
+	@Override
+	public double getTotalUtility() {
+		return totalUtility;
+	}
+
 	public final double consume() {
 		Inventory inv = getInventory();
 		double u = utility.consume(inv.getAll());
+		totalUtility += u;
 		listeners.notifyConsuming(this, getAge(), getInventory(), u);
-		assert!Double.isNaN(u);
+		assert !Double.isNaN(u);
 		assert u >= 0.0;
 		return u;
 	}

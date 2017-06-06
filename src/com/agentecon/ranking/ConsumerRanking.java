@@ -4,11 +4,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
 import com.agentecon.sim.AgentRef;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 
@@ -66,7 +66,7 @@ public class ConsumerRanking extends SimulationListenerAdapter {
 
 		@Override
 		public int compareTo(ConsumerListener o) {
-			return averageUtility.compareTo(o.averageUtility);
+			return o.averageUtility.compareTo(averageUtility);
 		}
 		
 		public String toString(){

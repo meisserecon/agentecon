@@ -2,7 +2,7 @@ package com.agentecon.world;
 
 import java.util.Random;
 
-import com.agentecon.sim.IAgent;
+import com.agentecon.agent.IAgent;
 import com.agentecon.sim.ISimulationListener;
 
 

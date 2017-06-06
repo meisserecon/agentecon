@@ -112,7 +112,7 @@ public class CobbDougConfiguration implements IConfiguration {
 
 	protected void addFirms(ArrayList<SimEvent> config, ArrayList<EvolvingEvent> newList, ProductionWeights prod) {
 		for (int i = 0; i < outputs.length; i++) {
-			Endowment end = new Endowment(new Stock[] { new Stock(SimConfig.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
+			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
 			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun, PriceConfig.DEFAULT));
 			// newList.add(new EvolvingFirmEvent(firmsPerType, "Firm " + i, end, fun, new Random(rand.nextLong()), PriceFactory.SENSOR, "0.05"));

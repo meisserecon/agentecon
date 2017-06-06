@@ -6,7 +6,6 @@ import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.events.SimEvent;
-import com.agentecon.goods.Good;
 import com.agentecon.sim.Event;
 import com.agentecon.sim.SimulationConfig;
 
@@ -14,8 +13,6 @@ public class SimConfig extends SimulationConfig {
 	
 	private static final int DEFAULT_WOBBLES = 0;
 	
-	public static final Good MONEY = new Good("Taler");
-
 	private int wobbles;
 	
 	public SimConfig(int rounds) {

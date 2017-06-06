@@ -2,17 +2,17 @@ package com.agentecon.finance;
 
 import java.util.Collection;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.MarketListeners;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.SimulationListenerAdapter;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.Agents;
 import com.agentecon.world.World;
 
@@ -42,7 +42,7 @@ public class StockMarket extends SimulationListenerAdapter implements IMarket {
 	}
 
 	private void distributeDividendsEqually(int day, Agents ags) {
-		IStock wallet = new Stock(SimConfig.MONEY);
+		IStock wallet = new Stock(Good.MONEY);
 		for (IFirm firm : ags.getPublicCompanies()) {
 			((ShareRegister)firm.getShareRegister()).collectRootDividend(wallet);
 		}

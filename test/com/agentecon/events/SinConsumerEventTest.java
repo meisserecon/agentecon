@@ -6,13 +6,13 @@ import java.util.Random;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.LogUtil;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.ISimulationListener;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.Agents;
 import com.agentecon.world.IConsumers;
 import com.agentecon.world.IFirms;
@@ -25,7 +25,7 @@ public class SinConsumerEventTest implements IWorld, IConsumers {
 
 	@Test
 	public void test() {
-		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(new Stock(SimConfig.MONEY, 1)), new LogUtil());
+		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(new Stock(Good.MONEY, 1)), new LogUtil());
 		for (day = 50; day<200; day++){
 			e.execute(this);
 		}

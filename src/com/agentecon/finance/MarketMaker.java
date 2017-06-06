@@ -13,7 +13,6 @@ import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.util.Average;
 
 public class MarketMaker extends Firm implements IShareholder, Cloneable {
@@ -25,7 +24,7 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
 	public MarketMaker(Collection<IFirm> comps) {
-		super("Market Maker", new Endowment(new IStock[] { new Stock(SimConfig.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
+		super("Market Maker", new Endowment(new IStock[] { new Stock(Good.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
 		this.portfolio = new Portfolio(getMoney());
 		this.reserve = 0.0;
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();

@@ -2,6 +2,7 @@ package com.agentecon.sim.config;
 
 import java.util.ArrayList;
 
+import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.events.ConsumerEvent;
@@ -13,7 +14,6 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.ranking.ConsumerRanking;
-import com.agentecon.sim.Simulation;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.verification.PriceMetric;
 import com.agentecon.world.IWorld;
@@ -97,7 +97,7 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addFirms(ArrayList<SimEvent> config, ProductionWeights prod) {
 		for (int i = 0; i < outputs.length; i++) {
-			Endowment end = new Endowment(new Stock[] { new Stock(SimConfig.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
+			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
 			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun, PriceConfig.DEFAULT));
 		}

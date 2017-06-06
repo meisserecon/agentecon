@@ -1,6 +1,6 @@
 package com.agentecon.verification;
 
-import com.agentecon.sim.IAgent;
+import com.agentecon.agent.IAgent;
 import com.agentecon.util.Numbers;
 import com.agentecon.world.Agents;
 

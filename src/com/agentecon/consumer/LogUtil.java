@@ -10,7 +10,6 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.util.Numbers;
 
 public class LogUtil extends AbstractWeightedUtil implements IUtility {
@@ -41,8 +40,8 @@ public class LogUtil extends AbstractWeightedUtil implements IUtility {
 	}
 
 	private double[] getOptimalAllocation(Inventory inv, Collection<IOffer> prices, HashSet<Good> ignorelist) {
-		double endowment = inv.getStock(SimConfig.MONEY).getAmount();
-		double totweight = getWeight(SimConfig.MONEY);
+		double endowment = inv.getStock(Good.MONEY).getAmount();
+		double totweight = getWeight(Good.MONEY);
 
 		// Note that goods in the inventory that have no price can be safely ignored
 		// as one cannot buy or sell them anyway. Also, they do not influence the
