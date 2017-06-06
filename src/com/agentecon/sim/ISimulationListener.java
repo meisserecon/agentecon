@@ -2,6 +2,7 @@
 
 package com.agentecon.sim;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.market.IMarket;
 
 public interface ISimulationListener {

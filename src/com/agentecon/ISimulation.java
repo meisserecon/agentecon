@@ -4,13 +4,13 @@ package com.agentecon;
 
 import java.util.Collection;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Ticker;
 import com.agentecon.market.IMarket;
-import com.agentecon.sim.IAgent;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationConfig;
 

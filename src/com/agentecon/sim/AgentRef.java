@@ -2,6 +2,8 @@
 
 package com.agentecon.sim;
 
+import com.agentecon.agent.IAgent;
+
 public class AgentRef {
 
 	private IAgent agent;

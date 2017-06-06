@@ -1,9 +1,10 @@
 // Created on Jun 1, 2015 by Luzius Meisser
 
-package com.agentecon.sim;
+package com.agentecon.agent;
 
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.sim.AgentRef;
 
 public interface IAgent extends Cloneable {
 	
@@ -28,6 +29,11 @@ public interface IAgent extends Cloneable {
 	public Inventory getInventory();
 	
 	public boolean isAlive();
+	
+	/**
+	 * Convenience method for adding a listener of the right type, e.g. addProducerMonitor for producers.
+	 */
+	public void addListener(Object listener);
 	
 	
 	/// CLONING RELATED FEATURES, NORMALLY NOT USED

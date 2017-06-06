@@ -1,6 +1,6 @@
 package com.agentecon.firm;
 
-import com.agentecon.sim.IAgent;
+import com.agentecon.agent.IAgent;
 
 public interface IShareholder extends IAgent {
 	

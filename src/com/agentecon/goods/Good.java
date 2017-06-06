@@ -5,6 +5,8 @@ package com.agentecon.goods;
 //Immutable
 public class Good implements Comparable<Good> {
 	
+	public static final Good MONEY = new Good("Taler");
+	
 	private String name;
 	private double persistence;
 

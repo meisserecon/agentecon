@@ -2,7 +2,7 @@
 
 package com.agentecon.consumer;
 
-import com.agentecon.sim.IAgent;
+import com.agentecon.agent.IAgent;
 
 public interface IConsumer extends IAgent {
 	
@@ -12,6 +12,8 @@ public interface IConsumer extends IAgent {
 	
 	public void collectDailyEndowment();
 	
+	public double getTotalUtility();
+	
 	public void addListener(IConsumerListener listener);
-
+	
 }
