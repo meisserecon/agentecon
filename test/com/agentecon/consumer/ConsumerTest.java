@@ -10,16 +10,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
-import com.agentecon.stats.Numbers;
+import com.agentecon.market.Price;
+import com.agentecon.util.Numbers;
 
 public class ConsumerTest {
 	

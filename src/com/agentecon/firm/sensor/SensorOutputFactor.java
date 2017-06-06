@@ -2,11 +2,11 @@
 
 package com.agentecon.firm.sensor;
 
-import com.agentecon.api.Price;
 import com.agentecon.firm.OutputFactor;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.Price;
 import com.agentecon.price.AdaptablePrice;
 import com.agentecon.price.IPrice;
 

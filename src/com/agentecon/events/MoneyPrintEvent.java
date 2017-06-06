@@ -1,7 +1,7 @@
 package com.agentecon.events;
 
 import com.agentecon.consumer.Consumer;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 import com.agentecon.world.IWorld;
 
 public class MoneyPrintEvent extends SimEvent {

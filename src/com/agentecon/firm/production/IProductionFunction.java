@@ -1,7 +1,7 @@
 package com.agentecon.firm.production;
 
-import com.agentecon.good.Good;
-import com.agentecon.good.Inventory;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Inventory;
 
 public interface IProductionFunction {
 

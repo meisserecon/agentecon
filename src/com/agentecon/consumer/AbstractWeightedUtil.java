@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
 
 public abstract class AbstractWeightedUtil implements IUtility {
 

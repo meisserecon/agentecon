@@ -5,7 +5,7 @@ package com.agentecon.price;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 /**
  * Creates prices according to settings. A separate instance is required for each firm. PriceFactory must be carried over through generations for evolving firms and "createPrice" only called once per

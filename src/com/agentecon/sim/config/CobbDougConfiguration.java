@@ -3,20 +3,19 @@ package com.agentecon.sim.config;
 import java.util.ArrayList;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.SimulationConfig;
-import com.agentecon.consumer.ReincarnatingConsumer;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.EvolvingEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.SimEvent;
 import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.good.Good;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Stock;
 import com.agentecon.price.PriceConfig;
+import com.agentecon.sim.SimulationConfig;
 
 public class CobbDougConfiguration implements IConfiguration {
 
-	public static final int ROUNDS = 1000 * SavingConsumerConfiguration.SCALE + ReincarnatingConsumer.START;
+	public static final int ROUNDS = 1000;
 	public static final int WOBBLES = 50;
 	public static final int MAX_ITERATIONS = 22;
 
@@ -113,7 +112,7 @@ public class CobbDougConfiguration implements IConfiguration {
 
 	protected void addFirms(ArrayList<SimEvent> config, ArrayList<EvolvingEvent> newList, ProductionWeights prod) {
 		for (int i = 0; i < outputs.length; i++) {
-			Endowment end = new Endowment(new Stock[] { new Stock(SimConfig.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
+			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
 			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun, PriceConfig.DEFAULT));
 			// newList.add(new EvolvingFirmEvent(firmsPerType, "Firm " + i, end, fun, new Random(rand.nextLong()), PriceFactory.SENSOR, "0.05"));

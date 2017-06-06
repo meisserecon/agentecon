@@ -3,9 +3,13 @@ package com.agentecon.finance;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Portfolio;
+import com.agentecon.firm.Position;
+import com.agentecon.firm.Ticker;
 import com.agentecon.firm.production.IPriceProvider;
-import com.agentecon.good.IStock;
-import com.agentecon.stats.Numbers;
+import com.agentecon.goods.IStock;
+import com.agentecon.util.Numbers;
 
 public class TradingPortfolio extends Portfolio {
 

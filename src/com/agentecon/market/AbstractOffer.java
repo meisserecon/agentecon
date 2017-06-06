@@ -2,11 +2,9 @@
 
 package com.agentecon.market;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.metric.IMarketListener;
-import com.agentecon.stats.Numbers;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.util.Numbers;
 
 public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer {
 	

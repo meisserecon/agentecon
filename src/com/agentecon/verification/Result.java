@@ -2,8 +2,7 @@ package com.agentecon.verification;
 
 import java.util.TreeMap;
 
-
-import com.agentecon.good.Good;
+import com.agentecon.goods.Good;
 
 public class Result {
 

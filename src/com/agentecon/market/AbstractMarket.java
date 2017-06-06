@@ -4,9 +4,8 @@ package com.agentecon.market;
 
 import java.util.Collection;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.stats.Numbers;
+import com.agentecon.goods.Good;
+import com.agentecon.util.Numbers;
 
 public abstract class AbstractMarket {
 

@@ -1,7 +1,7 @@
 package com.agentecon.firm;
 
 import com.agentecon.firm.decisions.IFinancials;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.IStock;
 
 public abstract class Financials implements IFinancials {
 	

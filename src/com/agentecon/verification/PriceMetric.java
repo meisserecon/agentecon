@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.agentecon.api.IMarket;
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.metric.IMarketListener;
-import com.agentecon.metric.SimulationListenerAdapter;
+import com.agentecon.goods.Good;
+import com.agentecon.market.IMarket;
+import com.agentecon.market.IMarketListener;
+import com.agentecon.market.Price;
+import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.AccumulatingAverage;
 import com.agentecon.util.Average;
 import com.agentecon.util.IAverage;
@@ -20,14 +20,16 @@ public class PriceMetric extends SimulationListenerAdapter implements IMarketLis
 	private HashMap<Good, AccumulatingAverage> prices;
 	private HashMap<Good, IAverage> volume;
 
+	private boolean verbose;
 	private int startRecordingDate;
 	private int endRecordingDate;
 
 	public PriceMetric(int startRecordingDate) {
-		this(startRecordingDate, Integer.MAX_VALUE);
+		this(startRecordingDate, Integer.MAX_VALUE, false);
 	}
-	
-	public PriceMetric(int start, int end){
+
+	public PriceMetric(int start, int end, boolean verbose) {
+		this.verbose = verbose;
 		this.startRecordingDate = start;
 		this.endRecordingDate = end;
 		this.prices = new InstantiatingHashMap<Good, AccumulatingAverage>() {
@@ -81,32 +83,40 @@ public class PriceMetric extends SimulationListenerAdapter implements IMarketLis
 	public void notifyDayEnded(int day, double utility) {
 		if (day == startRecordingDate) {
 			notifyTradesCancelled();
-			System.out.print("\t");
-			for (Good good: prices.keySet()){
-				System.out.print(good.toString() + "\t");
+			if (verbose) {
+				System.out.print("\t");
+				for (Good good : prices.keySet()) {
+					System.out.print(good.toString() + "\t");
+				}
+				System.out.println();
 			}
-			System.out.println();
 		} else if (day >= startRecordingDate && day < endRecordingDate) {
-			String line = Integer.toString(day);
+			String line = verbose ? Integer.toString(day) : null;
 			for (Entry<Good, AccumulatingAverage> e : prices.entrySet()) {
 				AccumulatingAverage avg = e.getValue();
 				volume.get(e.getKey()).add(avg.getWeight());
 				double val = avg.flush();
-				line += "\t" + val;
+				if (verbose) {
+					line += "\t" + val;
+				}
 			}
-			System.out.println(line);
+			if (verbose) {
+				System.out.println(line);
+			}
 		}
 	}
 
 	public void printResult(PrintStream ps) {
+		System.out.println("Good\tPrice\tProduction\tTurnover");
 		for (Map.Entry<Good, AccumulatingAverage> e : prices.entrySet()) {
 			double price = e.getValue().getWrapped().getAverage();
-			ps.println(e.getKey() + " price: " + price);
+			ps.print(e.getKey() + "\t" + price);
 			if (volume.containsKey(e.getKey())) {
 				double vol = volume.get(e.getKey()).getAverage();
-				ps.println("\tproduction: " + vol);
-				ps.println("\tturnover: " + vol * price);
+				ps.print("\t" + vol);
+				ps.print("\t" + vol * price);
 			}
+			System.out.println();
 		}
 
 		// if (prices.containsKey(new Good("output 0"))) {
@@ -114,9 +124,11 @@ public class PriceMetric extends SimulationListenerAdapter implements IMarketLis
 		// double priceNormalization = pizzaPrice.getWrapped().getAverage();
 		// System.out.println("\nNormalized prices:");
 		// for (Map.Entry<Good, AccumulatingAverage> e : prices.entrySet()) {
-		// ps.println(e.getKey() + " price: " + e.getValue().getWrapped().normalize(priceNormalization));
+		// ps.println(e.getKey() + " price: " +
+		// e.getValue().getWrapped().normalize(priceNormalization));
 		// if (volume.containsKey(e.getKey())) {
-		// ps.println(e.getKey() + " production: " + volume.get(e.getKey()).normalize(priceNormalization));
+		// ps.println(e.getKey() + " production: " +
+		// volume.get(e.getKey()).normalize(priceNormalization));
 		// }
 		// }
 		// }

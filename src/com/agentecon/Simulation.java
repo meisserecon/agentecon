@@ -1,28 +1,28 @@
 // Created by Luzius on Apr 22, 2014
 
-package com.agentecon.sim;
+package com.agentecon;
 
 import java.util.Collection;
 import java.util.Queue;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.api.IConsumer;
-import com.agentecon.api.IFirm;
-import com.agentecon.api.IIteratedSimulation;
-import com.agentecon.api.IMarket;
-import com.agentecon.api.ISimulation;
-import com.agentecon.api.SimulationConfig;
+import com.agentecon.IIteratedSimulation;
+import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.events.SimEvent;
-import com.agentecon.finance.IPublicCompany;
-import com.agentecon.finance.IShareholder;
 import com.agentecon.finance.StockMarket;
-import com.agentecon.finance.Ticker;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
-import com.agentecon.metric.ISimulationListener;
-import com.agentecon.metric.SimulationListeners;
+import com.agentecon.firm.Ticker;
+import com.agentecon.market.IMarket;
+import com.agentecon.sim.ISimulationListener;
+import com.agentecon.sim.RepeatedMarket;
+import com.agentecon.sim.SimulationConfig;
+import com.agentecon.sim.SimulationListeners;
 import com.agentecon.sim.config.IConfiguration;
-import com.agentecon.sim.config.SavingConsumerConfiguration;
 import com.agentecon.sim.config.SimConfig;
+import com.agentecon.sim.config.TechnologyConfiguration;
 import com.agentecon.world.World;
 
 // The world
@@ -38,13 +38,8 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private World world;
 	private StockMarket stocks;
 
-	static {
-		// Disabled because too slow on app engine
-		// Simulation.class.getClassLoader().setDefaultAssertionStatus(true);
-	}
-
 	public Simulation() {
-		this(new SavingConsumerConfiguration());
+		this(new TechnologyConfiguration(1313));
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
@@ -111,7 +106,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
 			market.iterate(day, config.getIntradayIterations());
 			for (Producer firm : world.getFirms().getAllFirms()) {
-				firm.produce(day);
+				firm.produce();
 			}
 			world.finishDay(day);
 		}
@@ -149,7 +144,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	}
 	
 	@Override
-	public Collection<? extends IPublicCompany> getListedCompanies() {
+	public Collection<? extends IFirm> getListedCompanies() {
 		return world.getAgents().getPublicCompanies();
 	}
 
@@ -177,12 +172,17 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 
 	@Override
 	public Collection<? extends IShareholder> getShareHolders() {
-		return world.getAgents().getShareHolders();
+		return world.getAgents().getShareholders();
 	}
 
 	@Override
-	public IPublicCompany getListedCompany(Ticker ticker) {
+	public IFirm getListedCompany(Ticker ticker) {
 		return world.getAgents().getCompany(ticker);
 	}
-
+	
+	public static void main(String[] args) {
+		Simulation sim = new Simulation();
+		sim.finish();
+	}
+	
 }

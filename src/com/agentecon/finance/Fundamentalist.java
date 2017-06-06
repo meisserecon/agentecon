@@ -5,14 +5,19 @@ import java.util.Collection;
 import java.util.PriorityQueue;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.IAgent;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Stock;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IRegister;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.IStockMarket;
+import com.agentecon.firm.Portfolio;
+import com.agentecon.firm.Position;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.Bid;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.world.IWorld;
 
-public class Fundamentalist extends PublicCompany implements IAgent, IStockMarketParticipant {
+public class Fundamentalist extends Firm implements IShareholder {
 	
 	private static final boolean ALLOWED_TO_BUY_OTHER_FUNDAMENTALISTS = true;
 
@@ -23,7 +28,7 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 	private Portfolio portfolio;
 
 	public Fundamentalist(IWorld world) {
-		super("Fundamentalist", new Endowment(new IStock[] { new Stock(SimConfig.MONEY, CASH) }, new IStock[] {}));
+		super("Fundamentalist", new Endowment(new IStock[] { new Stock(Good.MONEY, CASH) }, new IStock[] {}));
 		this.world = world;
 		this.portfolio = new Portfolio(getMoney());
 	}
@@ -47,8 +52,8 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 		boolean buyingAllowed = 1.5 * outerValue > innerValue;
 		boolean sellingAllowed = outerValue < 1.5 * innerValue;
 
-		Collection<IPublicCompany> comps = world.getAgents().getPublicCompanies();
-		PriorityQueue<IPublicCompany> queue = getOfferQueue(dsm, comps);
+		Collection<IFirm> comps = world.getAgents().getPublicCompanies();
+		PriorityQueue<IFirm> queue = getOfferQueue(dsm, comps);
 		int count = queue.size() / 5;
 		if (sellingAllowed) {
 			sellBadShares(money, dsm, queue, count);
@@ -61,9 +66,9 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 		}
 	}
 
-	protected void sellBadShares(IStock money, IStockMarket dsm, PriorityQueue<IPublicCompany> queue, int count) {
+	protected void sellBadShares(IStock money, IStockMarket dsm, PriorityQueue<IFirm> queue, int count) {
 		for (int i = 0; i < count; i++) {
-			IPublicCompany pc = queue.poll();
+			IFirm pc = queue.poll();
 			Position pos = portfolio.getPosition(pc.getTicker());
 			if (pos != null && !pos.isEmpty()) {
 				dsm.sell(pos, money, pos.getAmount());
@@ -74,10 +79,10 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 		}
 	}
 
-	protected void buyGoodShares(IStock money, IStockMarket dsm, PriorityQueue<IPublicCompany> queue) {
-		ArrayList<IPublicCompany> list = new ArrayList<>(queue);
+	protected void buyGoodShares(IStock money, IStockMarket dsm, PriorityQueue<IFirm> queue) {
+		ArrayList<IFirm> list = new ArrayList<>(queue);
 		for (int i = list.size() - 1; i >= 0 && !money.isEmpty(); i--) {
-			IPublicCompany pc = list.get(i);
+			IFirm pc = list.get(i);
 			Position pos = portfolio.getPosition(pc.getTicker());
 			Position pos2 = dsm.buy(pc.getTicker(), pos, money, money.getAmount());
 			portfolio.addPosition(pos2);
@@ -94,12 +99,12 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 		return price * IRegister.SHARES_PER_COMPANY;
 	}
 
-	protected IPublicCompany findWorstPosition(IStockMarket dsm) {
+	protected IFirm findWorstPosition(IStockMarket dsm) {
 		Collection<Position> pos = portfolio.getPositions();
 		if (pos.isEmpty()) {
 			return null;
 		} else {
-			PriorityQueue<IPublicCompany> queue = new PriorityQueue<>(pos.size(), new YieldComparator(dsm, false));
+			PriorityQueue<IFirm> queue = new PriorityQueue<>(pos.size(), new YieldComparator(dsm, false));
 			for (Position p : pos) {
 				if (dsm.hasBid(p.getTicker())) {
 					queue.add(world.getAgents().getCompany(p.getTicker()));
@@ -109,9 +114,9 @@ public class Fundamentalist extends PublicCompany implements IAgent, IStockMarke
 		}
 	}
 
-	protected PriorityQueue<IPublicCompany> getOfferQueue(IStockMarket dsm, Collection<IPublicCompany> comps) {
-		PriorityQueue<IPublicCompany> queue = new PriorityQueue<>(comps.size(), new YieldComparator(dsm, true));
-		for (IPublicCompany pc : comps) {
+	protected PriorityQueue<IFirm> getOfferQueue(IStockMarket dsm, Collection<IFirm> comps) {
+		PriorityQueue<IFirm> queue = new PriorityQueue<>(comps.size(), new YieldComparator(dsm, true));
+		for (IFirm pc : comps) {
 			if (dsm.hasAsk(pc.getTicker())) {
 				if (!ALLOWED_TO_BUY_OTHER_FUNDAMENTALISTS && pc.getTicker().getType().equals(getTicker().getType())){
 					// do not buy fundamentalist shares

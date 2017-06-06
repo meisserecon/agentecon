@@ -2,8 +2,8 @@ package com.agentecon.world;
 
 import java.util.Collection;
 
-import com.agentecon.api.IConsumer;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 
 public interface IConsumers {
 

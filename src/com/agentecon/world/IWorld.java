@@ -2,8 +2,8 @@ package com.agentecon.world;
 
 import java.util.Random;
 
-import com.agentecon.api.IAgent;
-import com.agentecon.metric.ISimulationListener;
+import com.agentecon.agent.IAgent;
+import com.agentecon.sim.ISimulationListener;
 
 
 public interface IWorld {

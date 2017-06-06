@@ -2,7 +2,7 @@ package com.agentecon.world;
 
 import java.util.Collection;
 
-import com.agentecon.api.IFirm;
+import com.agentecon.firm.IFirm;
 import com.agentecon.firm.Producer;
 
 public interface IFirms {

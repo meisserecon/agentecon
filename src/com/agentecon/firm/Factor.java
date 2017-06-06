@@ -1,7 +1,7 @@
 package com.agentecon.firm;
 
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;

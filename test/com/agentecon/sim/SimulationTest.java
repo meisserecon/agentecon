@@ -2,7 +2,7 @@ package com.agentecon.sim;
 
 import org.junit.Test;
 
-import com.agentecon.metric.SimulationListenerAdapter;
+import com.agentecon.Simulation;
 
 public class SimulationTest extends SimulationListenerAdapter {
 	

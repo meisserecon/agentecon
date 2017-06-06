@@ -1,9 +1,10 @@
 package com.agentecon.finance;
 
-import com.agentecon.api.Price;
 import com.agentecon.firm.Factor;
-import com.agentecon.good.IStock;
+import com.agentecon.firm.Position;
+import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
+import com.agentecon.market.Price;
 import com.agentecon.price.IPrice;
 
 public class FloorFactor extends Factor {

@@ -2,12 +2,11 @@
 
 package com.agentecon.firm;
 
-import com.agentecon.api.Price;
-import com.agentecon.good.Good;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.Market;
-import com.agentecon.sim.config.SimConfig;
+import com.agentecon.market.Price;
 
 public class TestConsumer {
 
@@ -37,7 +36,7 @@ public class TestConsumer {
 	}
 
 	private Stock getWallet() {
-		return new Stock(SimConfig.MONEY, INFINITE);
+		return new Stock(Good.MONEY, INFINITE);
 	}
 
 	public boolean checkPrices(Market market, double accuracy) {

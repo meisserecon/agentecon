@@ -1,9 +1,9 @@
 package com.agentecon.firm.production;
 
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
-import com.agentecon.stats.Numbers;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.util.Numbers;
 
 public class ProductionTax implements IProductionFunction {
 	

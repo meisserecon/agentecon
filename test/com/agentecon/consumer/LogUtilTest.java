@@ -8,12 +8,12 @@ import java.util.Collections;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.good.Good;
-import com.agentecon.good.IStock;
-import com.agentecon.good.Inventory;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Stock;
 import com.agentecon.sim.config.SimConfig;
-import com.agentecon.stats.Numbers;
+import com.agentecon.util.Numbers;
 
 public class LogUtilTest {
 	

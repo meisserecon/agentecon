@@ -9,26 +9,28 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.api.Price;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.firm.production.LogProdFun;
-import com.agentecon.good.Good;
-import com.agentecon.good.Inventory;
-import com.agentecon.good.Stock;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Market;
+import com.agentecon.market.Price;
 import com.agentecon.price.HardcodedPrice;
 import com.agentecon.price.IPrice;
 import com.agentecon.price.IPriceFactory;
 import com.agentecon.price.PriceConfig;
 import com.agentecon.price.PriceFactory;
-import com.agentecon.sim.config.SimConfig;
-import com.agentecon.stats.Numbers;
+import com.agentecon.production.IProducer;
+import com.agentecon.production.IProducerListener;
+import com.agentecon.util.Numbers;
 
 public class FirmTest {
 	
@@ -60,7 +62,7 @@ public class FirmTest {
 			firm.offer(market);
 			System.out.println(tc.getPriceSquareError(market));
 			tc.buyAndSell(market);
-			firm.produce(i);
+			firm.produce();
 		}
 		for (int i = 0; i < 100; i++) {
 			Market market = new Market(rand);
@@ -68,7 +70,7 @@ public class FirmTest {
 			System.out.println(tc.getPriceSquareError(market));
 			tc.buyAndSell(market);
 			firm.adaptPrices();
-			firm.produce(i);
+			firm.produce();
 		}
 		Market market = new Market(rand);
 		firm.offer(market);
@@ -108,7 +110,7 @@ public class FirmTest {
 
 		});
 		firm.adaptPrices();
-		double production = firm.produce(0);
+		double production = produce(firm);
 		assert Math.abs(production - 36.1564) < 0.001;
 //		double profits = firm.getLatestProfits();
 //		assert Math.abs(profits - 264.537) < 0.001;
@@ -148,12 +150,31 @@ public class FirmTest {
 			}
 
 		});
-		double production = firm.produce(0);
-		System.out.println("Produced " + production);
+		double prod = produce(firm);
+		firm.produce();
+		System.out.println("Produced " + prod);
 		double x1 = 6.25;
 		double production2 = prodFun.produce(new Inventory(new Stock(SWISSTIME, x1)));
 		System.out.println(production2);
-		assert Numbers.equals(production, production2);
+		assert Numbers.equals(prod, production2);
+	}
+
+	private double produce(Producer firm) {
+		final double[] production = new double[1];
+		firm.addProducerMonitor(new IProducerListener() {
+			
+			@Override
+			public void reportResults(IProducer inst, double revenue, double cogs, double expectedProfits) {
+			}
+			
+			@Override
+			public void notifyProduced(IProducer inst, String producer, IStock[] inputs, IStock output) {
+				production[0] = output.getAmount();
+			}
+		});
+		firm.produce();
+		double prod = production[0];
+		return prod;
 	}
 	
 	@Test
@@ -195,7 +216,7 @@ public class FirmTest {
 			}
 
 		});
-		double production = firm.produce(0);
+		double production = produce(firm);
 		System.out.println("Produced " + production);
 		double x1 = Math.pow(factor * fonduePrice*Math.pow(alpha / hourPrice1, 1 - beta)*Math.pow(beta / hourPrice2, beta), 1/(1 - alpha - beta));
 		double x2 = hourPrice1 / hourPrice2 * beta / alpha * x1;

@@ -1,6 +1,6 @@
 package com.agentecon.sim.config;
 
-import com.agentecon.api.SimulationConfig;
+import com.agentecon.sim.SimulationConfig;
 
 public interface IConfiguration {
 
