@@ -1,6 +1,6 @@
 # An Agent-Based Simulation of the Stolper-Samuelson Effect
 
-This branch contains the model described in the paper [An Agent-Based Simulation of the Solper-Samuelson Effect](http://master.agentecon.com/draft.pdf) as revised and submitted to the journal Computational Economics. This configuration is also part of the master's thesis [Mastering Agent-Based Economics](http://master.agentecon.com/thesis.pdf).
+This branch contains the model described in the paper [An Agent-Based Simulation of the Solper-Samuelson Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2794828) as accepted by the [journal Computational Economics](https://link.springer.com/article/10.1007%2Fs10614-016-9616-x). This configuration is also part of the master's thesis [Mastering Agent-Based Economics](http://master.agentecon.com/thesis.pdf).
 
 In order to modify and run the model yourself, you should follow these steps:
 
