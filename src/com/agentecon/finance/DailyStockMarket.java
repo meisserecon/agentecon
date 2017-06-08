@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
@@ -100,10 +101,10 @@ public class DailyStockMarket implements IStockMarket {
 	}
 
 	@Override
-	public Position buy(Ticker ticker, Position existing, IStock wallet, double budget) {
+	public Position buy(IAgent owner, Ticker ticker, Position existing, IStock wallet, double budget) {
 		AskFin ask = getAsk(ticker);
 		if (ask != null) {
-			return ask.accept(wallet, existing, budget);
+			return ask.accept(owner, wallet, existing, budget);
 		} else {
 			return existing;
 		}
@@ -123,10 +124,10 @@ public class DailyStockMarket implements IStockMarket {
 	}
 
 	@Override
-	public double sell(Position pos, IStock wallet, double shares) {
+	public double sell(IAgent owner, Position pos, IStock wallet, double shares) {
 		BidFin bid = getBid(pos.getTicker());
 		if (bid != null) {
-			return bid.accept(wallet, pos, shares);
+			return bid.accept(owner, wallet, pos, shares);
 		} else {
 			return 0.0;
 		}

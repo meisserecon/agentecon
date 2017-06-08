@@ -22,11 +22,11 @@ public class TestConsumer {
 		for (Price value : prices) {
 			IOffer ask = market.getAsk(value.getGood());
 			if (ask != null && value.isAbove(ask.getPrice())) {
-				ask.accept(getWallet(), getStock(ask.getGood()), INFINITE);
+				ask.accept(null, getWallet(), getStock(ask.getGood()), INFINITE);
 			}
 			IOffer bid = market.getBid(value.getGood());
 			if (bid != null && bid.getPrice().isAbove(value)) {
-				bid.accept(getWallet(), getStock(bid.getGood()), INFINITE);
+				bid.accept(null, getWallet(), getStock(bid.getGood()), INFINITE);
 			}
 		}
 	}

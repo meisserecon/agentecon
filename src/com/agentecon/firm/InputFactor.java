@@ -1,5 +1,6 @@
 package com.agentecon.firm;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Bid;
@@ -13,13 +14,13 @@ public class InputFactor extends Factor {
 		super(stock, price);
 	}
 
-	protected AbstractOffer newOffer(IStock money, double p, double planned) {
-		return new Bid(money, getStock(), new Price(getGood(), p), planned);
+	protected AbstractOffer newOffer(IAgent owner, IStock money, double p, double planned) {
+		return new Bid(owner, money, getStock(), new Price(getGood(), p), planned);
 	}
 	
 	@Override
-	public void createOffers(IPriceMakerMarket market, IStock money, double budget) {
-		super.createOffers(market, money, budget / price.getPrice());  // NOT getPrice() as overridden in subclass
+	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double budget) {
+		super.createOffers(market, owner, money, budget / price.getPrice());  // NOT getPrice() as overridden in subclass
 	}
 	
 	public InputFactor duplicate(IStock stock){

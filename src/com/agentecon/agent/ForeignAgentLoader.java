@@ -1,6 +1,6 @@
 package com.agentecon.agent;
 
-import com.agentecon.IAgentProvider;
+import com.agentecon.IAgentFactory;
 
 public class ForeignAgentLoader extends ClassLoader {
 
@@ -8,7 +8,7 @@ public class ForeignAgentLoader extends ClassLoader {
 		
 	}
 	
-	public IAgentProvider getAgentProvider(){
+	public IAgentFactory getAgentFactory(){
 		return null;
 	}
 	

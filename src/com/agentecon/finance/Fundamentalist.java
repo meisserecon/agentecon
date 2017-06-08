@@ -71,7 +71,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 			IFirm pc = queue.poll();
 			Position pos = portfolio.getPosition(pc.getTicker());
 			if (pos != null && !pos.isEmpty()) {
-				dsm.sell(pos, money, pos.getAmount());
+				dsm.sell(this, pos, money, pos.getAmount());
 				if (pos.isEmpty()) {
 					portfolio.disposePosition(pos.getTicker());
 				}
@@ -84,7 +84,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 		for (int i = list.size() - 1; i >= 0 && !money.isEmpty(); i--) {
 			IFirm pc = list.get(i);
 			Position pos = portfolio.getPosition(pc.getTicker());
-			Position pos2 = dsm.buy(pc.getTicker(), pos, money, money.getAmount());
+			Position pos2 = dsm.buy(this, pc.getTicker(), pos, money, money.getAmount());
 			portfolio.addPosition(pos2);
 		}
 	}

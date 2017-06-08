@@ -1,5 +1,6 @@
 package com.agentecon.finance;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
@@ -31,16 +32,16 @@ public class MarketMakerPrice {
 		});
 	}
 
-	public void trade(IStockMarket dsm, IStock wallet, double budget) {
+	public void trade(IStockMarket dsm, IAgent owner, IStock wallet, double budget) {
 		double low = floor.getPrice();
 		double high = ceiling.getPrice();
 		double middle = (low + high) / 2;
 		if (Numbers.isBigger(budget, 0.0)) {
 			floor.adapt(middle / SPREAD_MULTIPLIER);
-			floor.createOffers(dsm, wallet, budget / floor.getPrice());
+			floor.createOffers(dsm, owner, wallet, budget / floor.getPrice());
 		}
 		ceiling.adapt(middle * SPREAD_MULTIPLIER);
-		ceiling.createOffers(dsm, wallet, ceiling.getStock().getAmount() * 0.05); // offer a fraction of the present shares
+		ceiling.createOffers(dsm, owner, wallet, ceiling.getStock().getAmount() * 0.05); // offer a fraction of the present shares
 	}
 
 	public double getPrice() {

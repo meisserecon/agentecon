@@ -54,10 +54,10 @@ public class CobbDouglasUtilTest {
 	}
 	
 	public static IOffer createBid(double price) {
-		return new Bid(new Stock(MONEY, 10000), new Stock(SWISSTIME), new Price(SWISSTIME, price), 1000);
+		return new Bid(null, new Stock(MONEY, 10000), new Stock(SWISSTIME), new Price(SWISSTIME, price), 1000);
 	}
 
 	public static IOffer createAsk(double price) {
-		return new Ask(new Stock(MONEY), new Stock(FONDUE, 1000), new Price(FONDUE, price), 1000);
+		return new Ask(null, new Stock(MONEY), new Stock(FONDUE, 1000), new Price(FONDUE, price), 1000);
 	}
 }

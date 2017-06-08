@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
@@ -79,14 +80,10 @@ public class RepeatedMarket {
 				}
 			};
 		}
-
-		@Override
-		public void notifyOffered(Good good, double quantity, Price price) {
-		}
 		
 		@Override
-		public void notifySold(Good good, double quantity, Price price) {
-			current.get(good).add(quantity, price.getPrice());
+		public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
+			current.get(good).add(quantity, payment / quantity);
 		}
 
 		@Override
@@ -114,7 +111,7 @@ public class RepeatedMarket {
 				return change.getAverage() > sensitivity;
 			}
 		}
-		
+
 	}
 	
 }

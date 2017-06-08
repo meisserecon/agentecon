@@ -9,8 +9,6 @@ public class SimulationTest extends SimulationListenerAdapter {
 	@Test
 	public void test() {
 		Simulation sim = new Simulation();
-		while (!sim.isFinished()) {
-			sim.forward(100);
-		}
+		sim.run();
 	}
 }

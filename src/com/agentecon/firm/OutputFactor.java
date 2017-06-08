@@ -1,5 +1,6 @@
 package com.agentecon.firm;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
@@ -12,8 +13,8 @@ public class OutputFactor extends Factor {
 		super(stock, price);
 	}
 
-	protected AbstractOffer newOffer(IStock money, double p, double amount) {
-		return new Ask(money, getStock(), new Price(getGood(), p), amount);
+	protected AbstractOffer newOffer(IAgent owner, IStock money, double p, double amount) {
+		return new Ask(owner, money, getStock(), new Price(getGood(), p), amount);
 	}
 
 	public OutputFactor duplicate(IStock stock) {

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarketListener;
@@ -46,12 +47,8 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 	}
 
 	@Override
-	public void notifyOffered(Good good, double quantity, Price price) {
-	}
-
-	@Override
-	public void notifySold(Good good, double quantity, Price price) {
-		averages.get(good).add(quantity, price.getPrice());
+	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
+		averages.get(good).add(quantity, payment / quantity);
 	}
 
 	@Override

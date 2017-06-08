@@ -2,6 +2,7 @@
 
 package com.agentecon.firm.sensor;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.OutputFactor;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
@@ -41,10 +42,10 @@ public class SensorOutputFactor extends OutputFactor {
 	}
 
 	@Override
-	public void createOffers(IPriceMakerMarket market, IStock money, double amount) {
+	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double amount) {
 		double sensorSize = accuracy.getOfferSize() * amount;
-		super.createOffers(market, money, sensorSize);
-		prevRealAsk = new Ask(money, getStock(), new Price(getGood(), getSafePrice()), amount - sensorSize);
+		super.createOffers(market, owner, money, sensorSize);
+		prevRealAsk = new Ask(owner, money, getStock(), new Price(getGood(), getSafePrice()), amount - sensorSize);
 		market.offer(prevRealAsk);
 	}
 

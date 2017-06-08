@@ -41,7 +41,7 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 		IStock money = getMoney().hide(reserve);
 		double budgetPerPosition = money.getAmount() / priceBeliefs.size();
 		for (MarketMakerPrice e : priceBeliefs.values()) {
-			e.trade(dsm, money, budgetPerPosition);
+			e.trade(dsm, this, money, budgetPerPosition);
 		}
 	}
 

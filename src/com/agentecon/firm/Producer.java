@@ -86,7 +86,7 @@ public class Producer extends Firm implements IProducer {
 				if (f.isObtainable()) {
 					double amount = prod.getExpenses(f.getGood(), f.getPrice(), totSalaries);
 					if (amount > 0) {
-						f.createOffers(market, getMoney(), amount);
+						f.createOffers(market, this, getMoney(), amount);
 					} else {
 						// so we find out about the true price even if we are not interested
 						createSymbolicOffer(market, f);
@@ -97,12 +97,12 @@ public class Producer extends Firm implements IProducer {
 				}
 			}
 		}
-		output.createOffers(market, getMoney(), output.getStock().getAmount());
+		output.createOffers(market, this, getMoney(), output.getStock().getAmount());
 	}
 
 	private void createSymbolicOffer(IPriceMakerMarket market, InputFactor f) {
 		if (getMoney().getAmount() > 100) {
-			f.createOffers(market, getMoney(), 1);
+			f.createOffers(market, this, getMoney(), 1);
 		}
 	}
 	

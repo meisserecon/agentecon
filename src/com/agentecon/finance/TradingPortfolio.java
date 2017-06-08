@@ -3,6 +3,7 @@ package com.agentecon.finance;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
@@ -33,11 +34,11 @@ public class TradingPortfolio extends Portfolio {
 		return value;
 	}
 
-	public double sell(IStockMarket stocks, double fraction) {
+	public double sell(IStockMarket stocks, IAgent owner, double fraction) {
 		double moneyBefore = wallet.getAmount();
 		for (Ticker ticker : new ArrayList<>(inv.keySet())) {
 			Position pos = inv.get(ticker);
-			stocks.sell(pos, wallet, pos.getAmount() * fraction);
+			stocks.sell(owner, pos, wallet, pos.getAmount() * fraction);
 			if (pos.isEmpty()) {
 				disposePosition(ticker);
 			}
@@ -45,7 +46,7 @@ public class TradingPortfolio extends Portfolio {
 		return wallet.getAmount() - moneyBefore;
 	}
 
-	public double invest(IStockMarket stocks, double budget) {
+	public double invest(IStockMarket stocks, IAgent owner, double budget) {
 		double moneyBefore = wallet.getAmount();
 		if (Numbers.isBigger(budget, 0.0)) {
 			assert wallet.getAmount() >= budget;
@@ -53,9 +54,9 @@ public class TradingPortfolio extends Portfolio {
 			if (any != null) {
 				double before = wallet.getAmount();
 				Position pos = getPosition(any);
-				addPosition(stocks.buy(any, pos, wallet, budget));
+				addPosition(stocks.buy(owner, any, pos, wallet, budget));
 				double spent = before - wallet.getAmount();
-				invest(stocks, budget - spent);
+				invest(stocks, owner, budget - spent);
 			}
 		}
 		return moneyBefore - wallet.getAmount();

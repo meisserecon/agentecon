@@ -30,11 +30,11 @@ public class ConsumerTest {
 	public static final Good ITALTIME = new Good("Italian man-hours", 0.0);
 
 	public static IOffer createBid() {
-		return new Bid(new Stock(MONEY, 10000), new Stock(SWISSTIME), new Price(SWISSTIME, 2.97287), 1000);
+		return new Bid(null, new Stock(MONEY, 10000), new Stock(SWISSTIME), new Price(SWISSTIME, 2.97287), 1000);
 	}
 
 	public static IOffer createAsk() {
-		return new Ask(new Stock(MONEY), new Stock(FONDUE, 1000), new Price(FONDUE, 10), 1000);
+		return new Ask(null, new Stock(MONEY), new Stock(FONDUE, 1000), new Price(FONDUE, 10), 1000);
 	}
 
 	public static Endowment createEndowment() {
@@ -94,8 +94,8 @@ public class ConsumerTest {
 		cons.collectDailyEndowment();
 		cons.maximizeUtility(new IPriceTakerMarket() {
 
-			private IOffer ask = new Ask(new Stock(MONEY), new Stock(PIZZA, 1000), new Price(FONDUE, 1.0), 1000);
-			private IOffer bid = new Bid(new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
+			private IOffer ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(FONDUE, 1.0), 1000);
+			private IOffer bid = new Bid(null, new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
 
 			@Override
 			public Collection<IOffer> getOffers(IPriceFilter bidAskFilter) {

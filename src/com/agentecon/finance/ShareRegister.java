@@ -3,6 +3,7 @@ package com.agentecon.finance;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IRegister;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
@@ -26,12 +27,12 @@ public class ShareRegister implements IRegister {
 		this.all.add(rootPosition);
 	}
 	
-	public void raiseCapital(DailyStockMarket dsm, IStock wallet) {
+	public void raiseCapital(DailyStockMarket dsm, IAgent owner, IStock wallet) {
 		if (!rootPosition.isEmpty()){
 			collectRootDividend(wallet);
 			Bid bid = dsm.getBid(getTicker());
 			if (bid != null){
-				bid.accept(wallet, rootPosition, rootPosition.getAmount());
+				bid.accept(owner, wallet, rootPosition, rootPosition.getAmount());
 			}
 		}
 	}

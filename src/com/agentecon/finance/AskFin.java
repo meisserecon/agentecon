@@ -1,5 +1,6 @@
 package com.agentecon.finance;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
@@ -8,19 +9,19 @@ import com.agentecon.market.Price;
 
 public class AskFin extends Ask {
 
-	public AskFin(IStock wallet, Position stock, Price price, double amount) {
-		super(wallet, stock, price, amount);
+	public AskFin(IAgent owner, IStock wallet, Position stock, Price price, double amount) {
+		super(owner, wallet, stock, price, amount);
 	}
 	
 	protected Position getStock(){
 		return (Position)stock;
 	}
 	
-	public Position accept(IStock payer, Position target, double budget) {
+	public Position accept(IAgent acceptor, IStock payer, Position target, double budget) {
 		if (target == null){
 			target = getStock().split();
 		}
-		super.accept(payer, target, budget / getPrice().getPrice());
+		super.accept(acceptor, payer, target, budget / getPrice().getPrice());
 		return target;
 	}
 

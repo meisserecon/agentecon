@@ -1,5 +1,6 @@
 package com.agentecon.firm;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
@@ -32,8 +33,8 @@ public abstract class Factor {
 		return prevOffer.isBid() ? !success : success;
 	}
 
-	public void createOffers(IPriceMakerMarket market, IStock money, double amount) {
-		prevOffer = newOffer(money, price.getPrice(), amount);
+	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double amount) {
+		prevOffer = newOffer(owner, money, price.getPrice(), amount);
 		if (prevOffer.isBid()) {
 			market.offer((Bid) prevOffer);
 		} else {
@@ -41,7 +42,7 @@ public abstract class Factor {
 		}
 	}
 
-	protected abstract AbstractOffer newOffer(IStock money, double p, double planned);
+	protected abstract AbstractOffer newOffer(IAgent owner, IStock money, double p, double planned);
 
 	public double getVolume() {
 		return prevOffer == null ? 0.0 : prevOffer.getTransactionVolume();

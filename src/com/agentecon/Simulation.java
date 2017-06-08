@@ -5,8 +5,6 @@ package com.agentecon;
 import java.util.Collection;
 import java.util.Queue;
 
-import com.agentecon.IIteratedSimulation;
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.events.SimEvent;
@@ -74,32 +72,12 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	}
 
 	public void run() {
-		if (!isFinished()) {
-			step(config.getRounds());
-		}
+		forwardTo(config.getRounds());
 	}
 
 	@Override
-	public void forward(int steps) {
-		step(steps);
-	}
-
-	public int getDay() {
-		return day;
-	}
-
-	@Override
-	public boolean isFinished() {
-		return day >= config.getRounds();
-	}
-	
-	public void finish() {
-		step(config.getRounds() - day);
-	}
-
-	public void step(int days) {
-		int target = this.day + days;
-		for (; day < target; day++) {
+	public void forwardTo(int targetDay) {
+		for (; day < targetDay; day++) {
 			processEvents(day); //  must happen before daily endowments
 			world.prepareDay(day);
 			stocks.trade(day);
@@ -112,6 +90,15 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		}
 	}
 
+	public int getDay() {
+		return day;
+	}
+
+	@Override
+	public boolean isFinished() {
+		return day >= config.getRounds();
+	}
+	
 	private void processEvents(int day) {
 		while (!events.isEmpty() && events.peek().getDay() <= day) {
 			SimEvent event = events.poll();
@@ -154,6 +141,11 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			listeners.add(listener);
 		}
 	}
+	
+	@Override
+	public void removeListener(ISimulationListener listener) {
+		listeners.remove(listener);
+	}
 
 	@Override
 	public String getName() {
@@ -182,7 +174,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	
 	public static void main(String[] args) {
 		Simulation sim = new Simulation();
-		sim.finish();
+		sim.run();
 	}
-	
+
 }

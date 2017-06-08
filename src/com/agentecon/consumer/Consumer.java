@@ -59,7 +59,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		if (isMortal()) {
 			if (isRetired()) {
 				int daysLeft = maxAge - age + 1;
-				double amount = portfolio.sell(stocks, 1.0 / daysLeft);
+				double amount = portfolio.sell(stocks, this, 1.0 / daysLeft);
 				listeners.notifyDivested(this, amount);
 			} else {
 				double invest = dailySpendings.getAverage() / maxAge * (maxAge - getRetirementAge());
@@ -79,7 +79,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		} else {
 			savingsTarget = 0.0;
 		}
-		double amount = portfolio.invest(stocks, invest);
+		double amount = portfolio.invest(stocks, this, invest);
 		listeners.notifyInvested(this, amount);
 	}
 
@@ -127,7 +127,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				// double excessStock = Math.max(s.getAmount() - allocs[pos],
 				// s.getAmount() - 19); // work at least 5 hours
 				if (excessStock > Numbers.EPSILON && offer.getGood() == soldGood) {
-					double amountAcquired = offer.accept(getMoney(), s, excessStock);
+					double amountAcquired = offer.accept(this, getMoney(), s, excessStock);
 					completedSales &= amountAcquired == excessStock;
 					trading = true;
 				}
@@ -141,7 +141,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				IStock s = inv.getStock(offer.getGood());
 				double difference = allocs[pos] - s.getAmount();
 				if (difference > Numbers.EPSILON && offer.getGood() != soldGood && !getMoney().isEmpty()) {
-					offer.accept(getMoney(), s, difference);
+					offer.accept(this, getMoney(), s, difference);
 					spendings += difference * offer.getPrice().getPrice();
 					trading = true;
 				}

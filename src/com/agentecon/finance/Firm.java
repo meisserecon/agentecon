@@ -14,28 +14,28 @@ public abstract class Firm extends Agent implements IFirm {
 	private Ticker ticker;
 	private ShareRegister register;
 	private FirmListeners monitor;
-	
+
 	public Firm(String type, Endowment end) {
 		super(type, end);
 		this.ticker = new Ticker(type, getAgentId());
 		this.register = new ShareRegister(ticker, getDividendWallet());
 		this.monitor = new FirmListeners();
 	}
-	
+
 	@Override
 	public ShareRegister getShareRegister() {
 		return register;
 	}
-	
+
 	@Override
 	public Ticker getTicker() {
 		return ticker;
 	}
-	
+
 	public void addFirmMonitor(IFirmListener prodmon) {
 		this.monitor.add(prodmon);
 	}
-	
+
 	@Override
 	public void inherit(Position pos) {
 		register.inherit(pos);
@@ -43,15 +43,15 @@ public abstract class Firm extends Agent implements IFirm {
 
 	@Override
 	public void raiseCapital(Object stockmarket) {
-		register.raiseCapital((DailyStockMarket) stockmarket, getDividendWallet());
+		register.raiseCapital((DailyStockMarket) stockmarket, this, getDividendWallet());
 	}
 
 	protected abstract double calculateDividends(int day);
-	
+
 	@Override
 	public void payDividends(int day) {
 		double dividend = calculateDividends(day);
-		if (dividend > 0){
+		if (dividend > 0) {
 			monitor.reportDividend(this, dividend);
 			register.payDividend(getDividendWallet(), dividend);
 		}

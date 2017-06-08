@@ -116,7 +116,7 @@ public class TechnologyConfiguration implements IConfiguration {
 		// ROUNDS);
 		sim.addListener(metric1);
 		// sim.addListener(pp);
-		sim.finish();
+		sim.run();
 		metric1.printResult(System.out);
 		ranking.print(System.out);
 	}
