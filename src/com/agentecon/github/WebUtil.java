@@ -6,41 +6,60 @@ import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class WebUtil {
 
+	private final static String API_ADDRESS = "https://api.github.com";
+	private final static String ACCESS_SECRETS = loadSecrets();
+
 	public static String readHttp(String address) throws IOException, InterruptedException {
-		while (true) {
+		if (address.contains(API_ADDRESS)) {
+			address += ACCESS_SECRETS;
+		}
+		String content = "";
+		String nextPage = null;
+		while (address != null) {
+			long t0 = System.nanoTime();
 			try {
 				URL url = new URL(address);
 				URLConnection conn = url.openConnection();
-				if (address.contains("https://api.github.com")) {
-					// to allow requests at all
-					conn.setRequestProperty("User-Agent", "agentecon.com");
-					// to increase rate limit, see https://api.github.com/rate_limit?access_token=e255edf51ccbe47b4a3745710f3e4000b5a0192a
-					conn.setRequestProperty("Authorization", "token d27fcf0624764787025bc3b7e4bfc3ddc82e8af1");
-				}
-				try (InputStream stream = conn.getInputStream()) {
-					String first = new String(readData(stream));
-					String next = conn.getHeaderField("Link");
-					if (next != null) {
-						return first + fetchNext(next);
-					} else {
-						return first;
-					}
+				InputStream stream = conn.getInputStream();
+				try {
+					content += new String(readData(stream));
+					nextPage = getNextPageUrl(conn);
+				} finally {
+					stream.close();
 				}
 			} catch (SocketTimeoutException e) {
 				Thread.sleep(5000); // retry later
 			}
+			long t1 = System.nanoTime();
+			System.out.println((t1 - t0) / 1000000 + "ms spent reading " + address);
+			address = nextPage;
 		}
+		return content;
 	}
 
-	private static String fetchNext(String next) throws IOException, InterruptedException {
-		if (next.contains("next")) {
+	protected static String getNextPageUrl(URLConnection conn) {
+		String next = conn.getHeaderField("Link");
+		if (next != null && next.contains("next")) {
 			int open = next.indexOf('<');
 			int close = next.indexOf('>');
-			return readHttp(next.substring(open + 1, close));
+			next = next.substring(open + 1, close);
 		} else {
+			next = null;
+		}
+		return next;
+	}
+
+	private static String loadSecrets() {
+		Path path = FileSystems.getDefault().getPath("..", "github-secret.txt");
+		try {
+			return Files.readAllLines(path).get(0);
+		} catch (IOException e) {
 			return "";
 		}
 	}

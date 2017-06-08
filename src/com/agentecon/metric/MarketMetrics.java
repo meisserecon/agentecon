@@ -73,15 +73,10 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	public void reportResults(IProducer comp, double revenue, double cogs, double profits) {
 		this.profits.add(profits);
 	}
-
+	
 	@Override
-	public void notifyOffered(Good good, double quantity, Price price) {
-	}
-
-	@Override
-	public void notifySold(Good good, double quantity, Price price) {
-		// System.out.println(quantity + " " + price);
-		this.prices.get(good).add(quantity, price.getPrice());
+	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
+		this.prices.get(good).add(quantity, payment / quantity);			
 	}
 
 	@Override

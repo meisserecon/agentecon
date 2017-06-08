@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
@@ -87,11 +88,6 @@ public class MarketStats extends SimStats implements IMarketListener {
 		market.addMarketListener(this);
 	}
 
-	@Override
-	public void notifyOffered(Good good, double quantity, Price price) {
-		// averageOffers.get(good).add(quantity, price.getPrice());
-	}
-
 	private String comment;
 
 	@Override
@@ -99,11 +95,11 @@ public class MarketStats extends SimStats implements IMarketListener {
 		super.notifySimEnded(sim);
 		comment = sim instanceof IIteratedSimulation ? ((IIteratedSimulation) sim).getComment() : null;
 	}
-
+	
 	@Override
-	public void notifySold(Good good, double quantity, Price price) {
+	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		if (quantity >= 0.001) {
-			averages.get(good).add(quantity, price.getPrice());
+			averages.get(good).add(quantity, payment / quantity);
 		}
 	}
 

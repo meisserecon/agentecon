@@ -4,8 +4,8 @@ package com.agentecon.runner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -17,22 +17,20 @@ import com.agentecon.github.WebUtil;
 
 public class SimulationLoader extends ClassLoader {
 
-	private static final String SIM_CLASS = "com.agentecon.sim.Simulation";
+	private static final String SIM_CLASS = "com.agentecon.Simulation";
+	private static final String AGENT_CLASS = "com.agentecon.AgentFactory";
 
 	private static final int ENDING_LEN = ".class".length();
 
-	private String name;
 	private Checksum checksum;
 	private HashMap<String, byte[]> data;
 
 	public SimulationLoader(Path jarFile) throws IOException {
 		this(Files.readAllBytes(jarFile));
-		this.name = "Local Simulation";
 	}
 	
-	public SimulationLoader(String tag, URL url) throws SocketTimeoutException, IOException{
-		this(WebUtil.readData(url));
-		this.name = tag; 
+	public SimulationLoader(InputStream input) throws SocketTimeoutException, IOException{
+		this(WebUtil.readData(input));
 	}
 	
 	public SimulationLoader(byte[] jarData) {
@@ -90,15 +88,11 @@ public class SimulationLoader extends ClassLoader {
 		}
 	}
 
-	public String findName() {
-		return name;
-	}
-
 	public ISimulation load() throws IOException {
 		try {
 			return (ISimulation) loadClass(SIM_CLASS).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new IOException("Failed to load simulation " + name , e);
+			throw new IOException("Failed to load simulation" , e);
 		}
 	}
 

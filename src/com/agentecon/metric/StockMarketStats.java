@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
@@ -100,14 +100,10 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			// does not exist in earlier version
 		}
 	}
-
+	
 	@Override
-	public void notifyOffered(Good good, double quantity, Price price) {
-	}
-
-	@Override
-	public void notifySold(Good good, double quantity, Price price) {
-		averages.get(good).add(quantity, price.getPrice());
+	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
+		averages.get(good).add(quantity, payment / quantity);
 	}
 
 	@Override

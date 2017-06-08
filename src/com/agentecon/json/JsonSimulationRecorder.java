@@ -1,6 +1,7 @@
 package com.agentecon.json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,14 +33,16 @@ public class JsonSimulationRecorder {
 	}
 
 	public void generateFromRepo(GitSimulationHandle handle) throws IOException {
-		SimulationLoader loader = new SimulationLoader(handle.getName(), handle.getSimulationURL());
-		SimulationInfo info = new SimulationInfo(loader.getChecksum(), handle);
-		generate(info, loader);
+		try (InputStream input = handle.open()) {
+			SimulationLoader loader = new SimulationLoader(input);
+			SimulationInfo info = new SimulationInfo(loader.getChecksum(), handle);
+			generate(info, loader);
+		}
 	}
 
 	public void generateLocal(Path simulationJarFile) throws IOException {
 		SimulationLoader loader = new SimulationLoader(simulationJarFile);
-		SimulationInfo info = new SimulationInfo(loader.getChecksum(), loader.findName(), Files.getLastModifiedTime(simulationJarFile));
+		SimulationInfo info = new SimulationInfo(loader.getChecksum(), "local", Files.getLastModifiedTime(simulationJarFile));
 		generate(info, loader);
 	}
 
@@ -66,7 +69,7 @@ public class JsonSimulationRecorder {
 
 	public static void main(String[] args) throws InterruptedException, IOException {
 		JsonSimulationRecorder generator = new JsonSimulationRecorder();
-		GitBasedSimulationList list = new GitBasedSimulationList(new HashMap<String, GitSimulationHandle>(), "meisserecon", "agentecon");
+		GitBasedSimulationList list = new GitBasedSimulationList("meisserecon", "agentecon");
 
 		boolean on = false;
 		for (GitSimulationHandle handle : list.getSims()) {

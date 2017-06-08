@@ -120,7 +120,7 @@ public class SimulationRunner {
 					stat.notifySimStarting(sim);
 				}
 				while (!sim.isFinished()) {
-					sim.forward(10);
+					sim.forwardTo(sim.getDay() + 10);
 					if (periodic != null) {
 						periodic.notifyProgress(sim.getDay());
 					}
