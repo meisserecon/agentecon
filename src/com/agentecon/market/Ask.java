@@ -2,12 +2,13 @@
 
 package com.agentecon.market;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
 
 public class Ask extends AbstractOffer {
 
-	public Ask(IStock wallet, IStock stock, Price price, double amount) {
-		super(wallet, stock, price, amount);
+	public Ask(IAgent initiator, IStock wallet, IStock stock, Price price, double amount) {
+		super(initiator, wallet, stock, price, amount);
 	}
 
 	@Override
@@ -16,7 +17,7 @@ public class Ask extends AbstractOffer {
 	}
 	
 	@Override
-	public double accept(IStock payer, IStock target, double targetAmount) {
+	public double accept(IAgent acceptingAgent, IStock payer, IStock target, double targetAmount) {
 		double amount = Math.min(getAmount(), targetAmount);
 		double price = getPrice().getPrice();
 		double total = amount * price;
@@ -25,7 +26,7 @@ public class Ask extends AbstractOffer {
 			total = payer.getAmount();
 		}
 		assert amount >= 0;
-		transfer(payer, total, target, -amount);
+		transfer(acceptingAgent, payer, total, target, -amount);
 		return amount;
 	}
 
@@ -41,10 +42,7 @@ public class Ask extends AbstractOffer {
 
 	public void match(Bid bid) {
 		if (!getPrice().isAbove(bid.getPrice())){
-			double m1 = wallet.getAmount();
-			double amount = bid.accept(wallet, stock, getAmount());
-			double income = wallet.getAmount() - m1;
-			doStats(income, amount);
+			bid.accept(getOwner(), wallet, stock, getAmount());
 		}
 	}
 

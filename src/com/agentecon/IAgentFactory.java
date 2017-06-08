@@ -6,7 +6,7 @@ import com.agentecon.consumer.IUtility;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProductionFunction;
 
-public interface IAgentProvider {
+public interface IAgentFactory {
 
 	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction);
 	

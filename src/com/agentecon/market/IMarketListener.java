@@ -2,13 +2,12 @@
 
 package com.agentecon.market;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 
 public interface IMarketListener {
 	
-	public void notifyOffered(Good good, double quantity, Price price);
-	
-	public void notifySold(Good good, double quantity, Price price);
+	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment);
 	
 	public void notifyTradesCancelled();
 

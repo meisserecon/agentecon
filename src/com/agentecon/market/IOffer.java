@@ -2,6 +2,7 @@
 
 package com.agentecon.market;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 
@@ -39,10 +40,11 @@ public interface IOffer {
 	 * that is affordable with the given wallet, whichever is lower).
 	 * 
 	 * Wallet content and stock will be adjusted accordingly.
+	 * @param acceptingAgent TODO
 	 * 
 	 * @return the amount actually exchanged
 	 */
-	public double accept(IStock wallet, IStock stock, double limit);
+	public double accept(IAgent acceptingAgent, IStock wallet, IStock stock, double limit);
 
 	/**
 	 * Return the better one of the two offers (pricewise).

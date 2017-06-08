@@ -2,20 +2,26 @@
 
 package com.agentecon.market;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.util.Numbers;
 
 public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer {
 	
+	private IAgent owner;
+	protected IStock wallet;
+	protected IStock stock;
+	private Price price;
+	
+	protected IMarketListener listener = NULL_LISTENER;
+	private double volume;
+	private double quantity;
+	
 	private static final IMarketListener NULL_LISTENER = new IMarketListener() {
 
 		@Override
-		public void notifyOffered(Good good, double quantity, Price price) {
-		}
-
-		@Override
-		public void notifySold(Good good, double quantity, Price price) {
+		public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		}
 
 		@Override
@@ -23,19 +29,14 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 		}
 	};
 	
-	private double volume;
-	private double quantity;
-	protected IStock wallet;
-	protected IStock stock;
-	private Price price;
-	protected IMarketListener listener = NULL_LISTENER;
-	
-	public AbstractOffer(IStock wallet, IStock stock, Price price, double quantity){
+	public AbstractOffer(IAgent initator, IStock wallet, IStock stock, Price price, double quantity){
+		this.owner = initator;
 		this.wallet = wallet;
 		this.stock = stock;
 		this.price = price;
 		this.volume = 0.0;
 		this.quantity = quantity;
+		assert stock.getGood() == price.getGood();
 		assert price.getPrice() >= Numbers.EPSILON;
 	}
 	
@@ -45,21 +46,25 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 	
 	public void setListener(IMarketListener listener){
 		this.listener = listener == null ? NULL_LISTENER : listener;
-		this.listener.notifyOffered(getGood(), getAmount(), getPrice());
 	}
 	
-	public void transfer(IStock sourceWallet, double moneyFlow, IStock target, double goodsFlow){
+	public void transfer(IAgent counterParty, IStock sourceWallet, double moneyFlow, IStock target, double goodsFlow){
 		wallet.transfer(sourceWallet, moneyFlow);
 		stock.transfer(target, goodsFlow);
-		doStats(moneyFlow, goodsFlow);
+		doStats(counterParty, moneyFlow, goodsFlow);
 	}
 
-	protected void doStats(double moneyFlow, double goodsFlow) {
-		volume += Math.abs(moneyFlow);
-		double absQuant = Math.abs(goodsFlow);
-		this.quantity -= absQuant;
-		
-		listener.notifySold(getGood(), absQuant, getPrice());
+	private void doStats(IAgent counterParty, double moneyFlow, double goodsFlow) {
+		this.volume += Math.abs(moneyFlow);
+		this.quantity -= Math.abs(goodsFlow);
+		if (moneyFlow > 0){
+			assert goodsFlow < 0;
+			// we receive money and give goods
+			listener.notifyTraded(owner, counterParty, getGood(), -goodsFlow, moneyFlow);
+		} else {
+			assert goodsFlow > 0;
+			listener.notifyTraded(counterParty, owner, getGood(), goodsFlow, -moneyFlow);
+		}
 	}
 	
 	public double getAmount(){
@@ -70,20 +75,19 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 		return price;
 	}
 	
-	public void setMarketListener(IMarketListener listener){
-		this.listener = listener;
-		this.listener.notifyOffered(getGood(), getAmount(), getPrice());
-	}
-	
 	public Good getGood() {
 		return stock.getGood();
+	}
+	
+	public IAgent getOwner() {
+		return owner;
 	}
 	
 	public boolean isUsed(){
 		return getAmount() == 0.0;
 	}
 	
-	public abstract double accept(IStock source, IStock target, double amount);
+	public abstract double accept(IAgent acceptingAgent, IStock source, IStock target, double amount);
 	
 	public int compareTo(AbstractOffer o) {
 		return price.compareTo(o.price);

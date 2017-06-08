@@ -45,7 +45,14 @@ public interface ISimulation {
 	
 	public void addListener(ISimulationListener listener);
 	
-	public void forward(int steps);
+	public void removeListener(ISimulationListener listener);
+	
+	/**
+	 * Runs the simulation up to the start of the provided day.
+	 * This method can only go forward in time. This method has no effect
+	 * when the provided day is in the past. 
+	 */
+	public void forwardTo(int day);
 	
 	public boolean isFinished();
 	

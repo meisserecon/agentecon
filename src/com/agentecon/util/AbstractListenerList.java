@@ -16,6 +16,10 @@ public class AbstractListenerList<T> {
 		assert l != null;
 		list.add(l);
 	}
+	
+	public void remove(T l){
+		list.remove(l);
+	}
 
 	@Override
 	public String toString(){
