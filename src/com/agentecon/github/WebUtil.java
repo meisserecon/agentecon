@@ -10,6 +10,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.agentecon.util.IOUtils;
+
 public class WebUtil {
 
 	private final static String API_ADDRESS = "https://api.github.com";
@@ -28,7 +30,7 @@ public class WebUtil {
 				URLConnection conn = url.openConnection();
 				InputStream stream = conn.getInputStream();
 				try {
-					content += new String(readData(stream));
+					content += new String(IOUtils.readData(stream));
 					nextPage = getNextPageUrl(conn);
 				} finally {
 					stream.close();
@@ -72,43 +74,6 @@ public class WebUtil {
 			return content.substring(pos2 + item.length(), urlEnd);
 		} else {
 			return null;
-		}
-	}
-
-	public static byte[] readData(InputStream source) throws IOException {
-		int ava = source.available();
-		int size = ava == 0 ? 1000 : ava;
-		ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-		byte[] buffer = new byte[size];
-		while (true) {
-			int read = source.read(buffer, 0, buffer.length);
-			if (read > 0) {
-				out.write(buffer, 0, read);
-			} else {
-				assert read == -1;
-				break;
-			}
-		}
-		return out.toByteArray();
-	}
-
-	public static byte[] readData(int size, InputStream source) throws IOException {
-		byte[] data = new byte[size];
-		int pos = 0;
-		while (pos < size) {
-			int read = source.read(data, pos, size - pos);
-			if (read == -1) {
-				throw new RuntimeException("Early end of entry");
-			} else {
-				pos += read;
-			}
-		}
-		return data;
-	}
-
-	public static byte[] readData(URL url) throws SocketTimeoutException, IOException {
-		try (InputStream input = url.openStream()) {
-			return readData(input);
 		}
 	}
 

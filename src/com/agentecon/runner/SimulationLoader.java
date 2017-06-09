@@ -13,12 +13,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import com.agentecon.ISimulation;
-import com.agentecon.github.WebUtil;
+import com.agentecon.util.IOUtils;
 
 public class SimulationLoader extends ClassLoader {
 
 	private static final String SIM_CLASS = "com.agentecon.Simulation";
-	private static final String AGENT_CLASS = "com.agentecon.AgentFactory";
 
 	private static final int ENDING_LEN = ".class".length();
 
@@ -30,7 +29,7 @@ public class SimulationLoader extends ClassLoader {
 	}
 	
 	public SimulationLoader(InputStream input) throws SocketTimeoutException, IOException{
-		this(WebUtil.readData(input));
+		this(IOUtils.readData(input));
 	}
 	
 	public SimulationLoader(byte[] jarData) {
@@ -44,7 +43,7 @@ public class SimulationLoader extends ClassLoader {
 				while (entry != null) {
 					if (!entry.isDirectory()) {
 						int size = (int) entry.getSize();
-						byte[] data = WebUtil.readData(size, jis);
+						byte[] data = IOUtils.readData(size, jis);
 						this.data.put(toClassName(entry.getName()), data);
 						jis.closeEntry();
 					}
