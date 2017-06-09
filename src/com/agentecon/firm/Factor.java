@@ -7,15 +7,15 @@ import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public abstract class Factor {
 
 	protected IStock stock;
-	protected IPrice price;
+	protected IBelief price;
 	protected AbstractOffer prevOffer;
 
-	public Factor(IStock stock, IPrice price) {
+	public Factor(IStock stock, IBelief price) {
 		assert stock != null;
 		assert price != null;
 		this.stock = stock;

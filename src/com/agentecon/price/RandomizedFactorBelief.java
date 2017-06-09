@@ -2,12 +2,12 @@ package com.agentecon.price;
 
 import java.util.Random;
 
-public class RandomizedFactorPrice extends AdaptablePrice {
+public class RandomizedFactorBelief extends AdjustableBelief {
 
 	private Random rand;
 	private double maxRandDelta;
 
-	public RandomizedFactorPrice(Random rand, double delta) {
+	public RandomizedFactorBelief(Random rand, double delta) {
 		this.rand = rand;
 		this.maxRandDelta = 2 * delta; // so E[randomized delta] = delta
 	}

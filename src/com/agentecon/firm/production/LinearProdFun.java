@@ -4,7 +4,7 @@ import com.agentecon.consumer.Weight;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class LinearProdFun extends AbstractProductionFunction {
 
@@ -22,7 +22,7 @@ public class LinearProdFun extends AbstractProductionFunction {
 		return production;
 	}
 
-	public boolean shouldProduce(IPrice inputPrice, IPrice outputPrice) {
+	public boolean shouldProduce(IBelief inputPrice, IBelief outputPrice) {
 		double weight = inputs[0].weight;
 		return weight * outputPrice.getPrice() > inputPrice.getPrice();
 	}

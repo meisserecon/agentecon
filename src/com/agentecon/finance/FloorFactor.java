@@ -6,11 +6,11 @@ import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Price;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class FloorFactor extends Factor {
 
-	public FloorFactor(IStock stock, IPrice price) {
+	public FloorFactor(IStock stock, IBelief price) {
 		super(stock, price);
 	}
 

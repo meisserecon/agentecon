@@ -21,12 +21,14 @@ public class TestConsumer {
 	public void buyAndSell(Market market) {
 		for (Price value : prices) {
 			IOffer ask = market.getAsk(value.getGood());
-			if (ask != null && value.isAbove(ask.getPrice())) {
+			while (ask != null && value.isAbove(ask.getPrice())) {
 				ask.accept(null, getWallet(), getStock(ask.getGood()), INFINITE);
+				ask = market.getAsk(value.getGood());
 			}
 			IOffer bid = market.getBid(value.getGood());
-			if (bid != null && bid.getPrice().isAbove(value)) {
+			while (bid != null && bid.getPrice().isAbove(value)) {
 				bid.accept(null, getWallet(), getStock(bid.getGood()), INFINITE);
+				bid = market.getBid(value.getGood());
 			}
 		}
 	}

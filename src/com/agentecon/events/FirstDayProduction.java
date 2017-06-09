@@ -1,7 +1,5 @@
 package com.agentecon.events;
 
-import com.agentecon.firm.IFirm;
-import com.agentecon.firm.IFirmListener;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.production.IProducer;

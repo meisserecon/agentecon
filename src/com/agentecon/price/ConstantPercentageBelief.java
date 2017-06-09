@@ -1,11 +1,15 @@
 package com.agentecon.price;
 
 
-public class ConstantPrecentagePrice extends AdaptablePrice {
+public class ConstantPercentageBelief extends AdjustableBelief {
 
 	private double delta;
 	
-	public ConstantPrecentagePrice(double delta) {
+	public ConstantPercentageBelief(){
+		this(DEFAULT_ACCURACY);
+	}
+	
+	public ConstantPercentageBelief(double delta) {
 		super();
 		this.delta = delta;
 	}

@@ -5,11 +5,11 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Price;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class OutputFactor extends Factor {
 
-	public OutputFactor(IStock stock, IPrice price) {
+	public OutputFactor(IStock stock, IBelief price) {
 		super(stock, price);
 	}
 

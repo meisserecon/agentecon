@@ -4,11 +4,11 @@ package com.agentecon.price;
 
 import com.agentecon.util.Numbers;
 
-public class HardcodedPrice implements IPrice {
+public class HardcodedBelief implements IBelief {
 	
 	private double price;
 
-	public HardcodedPrice(double price) {
+	public HardcodedBelief(double price) {
 		this.price = price;
 	}
 
@@ -27,7 +27,7 @@ public class HardcodedPrice implements IPrice {
 	}
 	
 	@Override
-	public HardcodedPrice clone(){
+	public HardcodedBelief clone(){
 		return this;
 	}
 	

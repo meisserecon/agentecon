@@ -4,7 +4,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
-import com.agentecon.price.ExpSearchPrice;
+import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.util.Numbers;
 
 public class MarketMakerPrice {
@@ -18,13 +18,13 @@ public class MarketMakerPrice {
 	private CeilingFactor ceiling;
 
 	public MarketMakerPrice(Position pos) {
-		this.floor = new FloorFactor(pos, new ExpSearchPrice(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER){
+		this.floor = new FloorFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER){
 			@Override
 			protected double getMax(){
 				return 0.1;
 			}
 		});
-		this.ceiling = new CeilingFactor(pos, new ExpSearchPrice(0.1, INITIAL_PRICE_BELIEF * SPREAD_MULTIPLIER){
+		this.ceiling = new CeilingFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF * SPREAD_MULTIPLIER){
 			@Override
 			protected double getMax(){
 				return 0.1;

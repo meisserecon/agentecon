@@ -1,6 +1,6 @@
 package com.agentecon.price;
 
-public class ExpSearchPrice extends AdaptablePrice {
+public class ExpSearchBelief extends AdjustableBelief {
 
 	public static final double MAX_ADAPTION_FACTOR = 0.5;
 	public static final double MIN_ADAPTION_FACTOR = 0.005;
@@ -10,17 +10,21 @@ public class ExpSearchPrice extends AdaptablePrice {
 	private boolean direction;
 	private int sameDirectionInARow;
 
-	public ExpSearchPrice(double initialDelta, double initialPrice) {
+	public ExpSearchBelief(double initialDelta, double initialPrice) {
 		super(initialPrice);
 		this.delta = initialDelta;
 		this.sameDirectionInARow = 0;
 		this.speed = 1.1;
 	}
 
-	public ExpSearchPrice(double initialDelta) {
+	public ExpSearchBelief(double initialDelta) {
 		this.delta = initialDelta;
 		this.sameDirectionInARow = 0;
 		this.speed = 1.1;
+	}
+	
+	public ExpSearchBelief() {
+		this(DEFAULT_ACCURACY);
 	}
 	
 	protected double getMax(){

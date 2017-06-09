@@ -8,23 +8,23 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.price.AdaptablePrice;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.AdjustableBelief;
+import com.agentecon.price.IBelief;
 
 public class SensorOutputFactor extends OutputFactor {
 	
 	private Ask prevRealAsk;
 	private SensorAccuracy accuracy;
 
-	public SensorOutputFactor(IStock stock, IPrice price) {
+	public SensorOutputFactor(IStock stock, IBelief price) {
 		this(stock, price, new SensorAccuracy());
 	}
 
-	public SensorOutputFactor(IStock stock, IPrice price, double accuracy) {
+	public SensorOutputFactor(IStock stock, IBelief price, double accuracy) {
 		this(stock, price, new SensorAccuracy(accuracy));
 	}
 	
-	public SensorOutputFactor(IStock stock, IPrice price, SensorAccuracy accuracy) {
+	public SensorOutputFactor(IStock stock, IBelief price, SensorAccuracy accuracy) {
 		super(stock, price);
 		this.accuracy = accuracy;
 	}
@@ -62,7 +62,7 @@ public class SensorOutputFactor extends OutputFactor {
 	}
 
 	private double getSafePrice() {
-		return Math.max(AdaptablePrice.MIN, super.getPrice() / (1 + accuracy.getAccuracy()));
+		return Math.max(AdjustableBelief.MIN, super.getPrice() / (1 + accuracy.getAccuracy()));
 	}
 
 	@Override

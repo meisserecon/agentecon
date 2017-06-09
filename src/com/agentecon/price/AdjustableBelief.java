@@ -4,18 +4,20 @@ package com.agentecon.price;
 
 import com.agentecon.util.Numbers;
 
-public abstract class AdaptablePrice implements IPrice {
+public abstract class AdjustableBelief implements IBelief {
+	
+	public static final double DEFAULT_ACCURACY = 0.03;
 
 	public static final double MIN = 0.000001;
 	public static final double MAX = 100000;
 
 	private double price;
 	
-	public AdaptablePrice() {
+	public AdjustableBelief() {
 		this(10.0);
 	}
 
-	public AdaptablePrice(double initial) {
+	public AdjustableBelief(double initial) {
 		this.price = initial;
 	}
 	
@@ -67,9 +69,9 @@ public abstract class AdaptablePrice implements IPrice {
 	}
 	
 	@Override
-	public IPrice clone(){
+	public IBelief clone(){
 		try {
-			return (IPrice) super.clone();
+			return (IBelief) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new java.lang.RuntimeException(e);
 		}

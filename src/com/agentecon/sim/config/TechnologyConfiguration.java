@@ -12,7 +12,6 @@ import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
-import com.agentecon.price.PriceConfig;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.verification.PriceMetric;
@@ -99,7 +98,7 @@ public class TechnologyConfiguration implements IConfiguration {
 		for (int i = 0; i < outputs.length; i++) {
 			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
-			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun, PriceConfig.DEFAULT));
+			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun));
 		}
 	}
 

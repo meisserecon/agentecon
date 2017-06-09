@@ -6,11 +6,11 @@ import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class InputFactor extends Factor {
 
-	public InputFactor(IStock stock, IPrice price) {
+	public InputFactor(IStock stock, IBelief price) {
 		super(stock, price);
 	}
 

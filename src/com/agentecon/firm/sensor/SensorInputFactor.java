@@ -8,22 +8,22 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class SensorInputFactor extends InputFactor {
 	
 	private Bid prevRealBid;
 	private SensorAccuracy acc;
 
-	public SensorInputFactor(IStock stock, IPrice price) {
+	public SensorInputFactor(IStock stock, IBelief price) {
 		this(stock, price, new SensorAccuracy());
 	}
 	
-	public SensorInputFactor(IStock stock, IPrice price, double accuracy) {
+	public SensorInputFactor(IStock stock, IBelief price, double accuracy) {
 		this(stock, price, new SensorAccuracy(accuracy));
 	}
 
-	public SensorInputFactor(IStock stock, IPrice price, SensorAccuracy accuracy) {
+	public SensorInputFactor(IStock stock, IBelief price, SensorAccuracy accuracy) {
 		super(stock, price);
 		this.acc = accuracy;
 	}

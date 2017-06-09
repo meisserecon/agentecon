@@ -6,11 +6,11 @@ import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Price;
-import com.agentecon.price.IPrice;
+import com.agentecon.price.IBelief;
 
 public class CeilingFactor extends Factor {
 
-	public CeilingFactor(IStock stock, IPrice price) {
+	public CeilingFactor(IStock stock, IBelief price) {
 		super(stock, price);
 	}
 

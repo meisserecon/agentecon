@@ -18,10 +18,10 @@ public class ExpSearchTest {
 
 	@Test
 	public void test() {
-		ExpSearchPrice price = new ExpSearchPrice(0.05);
+		ExpSearchBelief price = new ExpSearchBelief(0.05);
 		double target = 100;
 		int steps = 0;
-		while (Math.abs(price.getPrice() - target) > ExpSearchPrice.MIN_ADAPTION_FACTOR * target){
+		while (Math.abs(price.getPrice() - target) > ExpSearchBelief.MIN_ADAPTION_FACTOR * target){
 			price.adapt(price.getPrice() < target);
 			assert steps++ < 100;
 		}

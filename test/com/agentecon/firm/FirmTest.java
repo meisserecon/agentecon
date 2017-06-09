@@ -23,11 +23,8 @@ import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Market;
 import com.agentecon.market.Price;
-import com.agentecon.price.HardcodedPrice;
-import com.agentecon.price.IPrice;
-import com.agentecon.price.IPriceFactory;
-import com.agentecon.price.PriceConfig;
-import com.agentecon.price.PriceFactory;
+import com.agentecon.price.HardcodedBelief;
+import com.agentecon.price.IBelief;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.util.Numbers;
@@ -56,7 +53,7 @@ public class FirmTest {
 	@Test
 	public void testPriceFinding() {
 		TestConsumer tc = new TestConsumer(new Price(PIZZA, 30), new Price(SWISSTIME, 10), new Price(ITALTIME, 15));
-		Producer firm = new Producer("testfirm", end, new LogProdFun(PIZZA, new Weight(ITALTIME, 5.0), new Weight(SWISSTIME, 5.0)), new PriceFactory(rand, PriceConfig.DEFAULT), new DifferentialDividend());
+		Producer firm = new Producer("testfirm", end, new LogProdFun(PIZZA, new Weight(ITALTIME, 5.0), new Weight(SWISSTIME, 5.0)), new DifferentialDividend());
 		for (int i = 0; i < 100; i++) {
 			Market market = new Market(rand);
 			firm.offer(market);
@@ -64,7 +61,7 @@ public class FirmTest {
 			tc.buyAndSell(market);
 			firm.produce();
 		}
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 			Market market = new Market(rand);
 			firm.offer(market);
 			System.out.println(tc.getPriceSquareError(market));
@@ -81,18 +78,18 @@ public class FirmTest {
 	public void testOptimalProduction(){
 		final double hourPrice = 2.972868529894414d;
 		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000), new Stock(FONDUE, 36.156428643107d) }, new Stock[] {});
-		Producer firm = new Producer("chalet", end, new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0)), new IPriceFactory(){
-
+		Producer firm = new Producer("chalet", end, new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0)), new DifferentialDividend()){
+			
 			@Override
-			public IPrice createPrice(Good good) {
+			protected IBelief createPriceBelief(Good good){
 				if (good.equals(SWISSTIME)){
-					return new HardcodedPrice(hourPrice);
+					return new HardcodedBelief(hourPrice);
 				} else {
-					return new HardcodedPrice(10.0);
+					return new HardcodedBelief(10.0);
 				}
 			}
 			
-		}, new DifferentialDividend());
+		};
 		firm.offer(new IPriceMakerMarket() {
 			
 			@Override
@@ -123,18 +120,18 @@ public class FirmTest {
 		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
 		double alpha = 0.5;
 		IProductionFunction prodFun = new CobbDouglasProduction(FONDUE, 1.0, new Weight(SWISSTIME, alpha));
-		Producer firm = new Producer("chalet", end, prodFun, new IPriceFactory(){
+		Producer firm = new Producer("chalet", end, prodFun, new DifferentialDividend()){
 
 			@Override
-			public IPrice createPrice(Good good) {
+			public IBelief createPriceBelief(Good good) {
 				if (good.equals(SWISSTIME)){
-					return new HardcodedPrice(hourPrice1);
+					return new HardcodedBelief(hourPrice1);
 				} else {
-					return new HardcodedPrice(fonduePrice);
+					return new HardcodedBelief(fonduePrice);
 				}
 			}
 			
-		}, new DifferentialDividend());
+		};
 		firm.offer(new IPriceMakerMarket() {
 			
 			@Override
@@ -187,20 +184,20 @@ public class FirmTest {
 		double beta = 0.25;
 		double factor = 2.0;
 		IProductionFunction prodFun = new CobbDouglasProduction(FONDUE, factor, new Weight(SWISSTIME, alpha), new Weight(ITALTIME, beta));
-		Producer firm = new Producer("chalet", end, prodFun, new IPriceFactory(){
+		Producer firm = new Producer("chalet", end, prodFun, new DifferentialDividend()){
 
 			@Override
-			public IPrice createPrice(Good good) {
+			public IBelief createPriceBelief(Good good) {
 				if (good.equals(SWISSTIME)){
-					return new HardcodedPrice(hourPrice1);
+					return new HardcodedBelief(hourPrice1);
 				} else if (good.equals(ITALTIME)){
-					return new HardcodedPrice(hourPrice2);
+					return new HardcodedBelief(hourPrice2);
 				} else {
-					return new HardcodedPrice(fonduePrice);
+					return new HardcodedBelief(fonduePrice);
 				}
 			}
 			
-		}, new DifferentialDividend());
+		};
 		firm.offer(new IPriceMakerMarket() {
 			
 			@Override

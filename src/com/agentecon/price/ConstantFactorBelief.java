@@ -1,11 +1,11 @@
 package com.agentecon.price;
 
 
-public class ConstantFactorPrice extends AdaptablePrice {
+public class ConstantFactorBelief extends AdjustableBelief {
 
 	private double factor;
 	
-	public ConstantFactorPrice(double delta) {
+	public ConstantFactorBelief(double delta) {
 		super();
 		this.factor = 1.0 + delta;
 	}
