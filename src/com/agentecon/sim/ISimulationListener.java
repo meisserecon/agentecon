@@ -11,9 +11,9 @@ public interface ISimulationListener {
 	
 	public void notifyDayEnded(int day, double utility);
 
-	public void notifyMarketOpened(IMarket market);
+	public void notifyGoodsMarketOpened(IMarket market);
 	
-	public void notifyMarketClosed(IMarket market, boolean finalIteration);
+	public void notifyStockMarketOpened(IMarket market);
 	
 	public void notifyAgentCreated(IAgent agent);
 

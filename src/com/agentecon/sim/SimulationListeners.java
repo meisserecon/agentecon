@@ -9,9 +9,9 @@ import com.agentecon.util.AbstractListenerList;
 public class SimulationListeners extends AbstractListenerList<ISimulationListener> implements ISimulationListener {
 	
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		for (ISimulationListener l: list){
-			l.notifyMarketOpened(market);
+			l.notifyGoodsMarketOpened(market);
 		}
 	}
 
@@ -37,9 +37,9 @@ public class SimulationListeners extends AbstractListenerList<ISimulationListene
 	}
 
 	@Override
-	public void notifyMarketClosed(IMarket market, boolean fin) {
+	public void notifyStockMarketOpened(IMarket market) {
 		for (ISimulationListener l: list){
-			l.notifyMarketClosed(market, fin);
+			l.notifyStockMarketOpened(market);
 		}		
 	}
 

@@ -10,5 +10,7 @@ public interface IMarketListener {
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment);
 	
 	public void notifyTradesCancelled();
+	
+	public void notifyMarketClosed(int day);
 
 }

@@ -2,7 +2,7 @@
 
 package com.agentecon.market;
 
-public interface IPriceMakerMarket {
+public interface IPriceMakerMarket extends IMarket {
 	
 	public void offer(Bid offer);
 	

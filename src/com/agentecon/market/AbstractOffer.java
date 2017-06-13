@@ -27,6 +27,10 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 		@Override
 		public void notifyTradesCancelled() {
 		}
+
+		@Override
+		public void notifyMarketClosed(int day) {
+		}
 	};
 	
 	public AbstractOffer(IAgent initator, IStock wallet, IStock stock, Price price, double quantity){
@@ -57,8 +61,8 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 	private void doStats(IAgent counterParty, double moneyFlow, double goodsFlow) {
 		this.volume += Math.abs(moneyFlow);
 		this.quantity -= Math.abs(goodsFlow);
-		if (moneyFlow > 0){
-			assert goodsFlow < 0;
+		if (moneyFlow >= 0){
+			assert goodsFlow <= 0;
 			// we receive money and give goods
 			listener.notifyTraded(owner, counterParty, getGood(), -goodsFlow, moneyFlow);
 		} else {

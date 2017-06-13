@@ -10,7 +10,7 @@ import com.agentecon.market.IMarket;
 public class SimulationListenerAdapter implements ISimulationListener {
 
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class SimulationListenerAdapter implements ISimulationListener {
 	}
 
 	@Override
-	public void notifyMarketClosed(IMarket market, boolean fin) {
+	public void notifyStockMarketOpened(IMarket market) {
 	}
 
 	@Override
