@@ -15,7 +15,6 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;
@@ -83,7 +82,7 @@ public class MarketStats extends SimStats implements IMarketListener {
 	}
 
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		averages.clear();
 		market.addMarketListener(this);
 	}
@@ -106,9 +105,9 @@ public class MarketStats extends SimStats implements IMarketListener {
 	@Override
 	public void notifyTradesCancelled() {
 	}
-
+	
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyMarketClosed(int day) {
 		Average indexValue = new Average();
 		for (Entry<Good, Average> e : averages.entrySet()) {
 			Average avg = e.getValue();

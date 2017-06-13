@@ -5,7 +5,7 @@ package com.agentecon.data;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
-import com.agentecon.github.GitSimulationHandle;
+import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.json.Persistable;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.runner.Checksum;
@@ -20,8 +20,6 @@ public class SimulationInfo extends Persistable {
 
 	private String hash;
 	private String name;
-	private String author;
-	private String description;
 	private String sourceUrl;
 
 	private int currentRound, rounds;
@@ -29,20 +27,16 @@ public class SimulationInfo extends Persistable {
 
 	private String output;
 
-	public SimulationInfo(Checksum checksum, String name, FileTime date) {
+	public SimulationInfo(Checksum checksum, String name) {
 		this(checksum);
 		this.name = name;
-		this.author = "Unknown";
-		this.description = "Generated from local jar file on " + date;
 		this.sourceUrl = "";
 	}
 
 	public SimulationInfo(Checksum checksum, GitSimulationHandle handle) {
 		this(checksum);
 		this.name = handle.getName();
-		this.description = handle.getDescription() + ", " + handle.getDate();
-		this.author = handle.getAuthor();
-		this.sourceUrl = handle.getSourceUrl();
+		this.sourceUrl = handle.getBrowsableURL("com.agentecon.Simulation").toString();
 	}
 
 	private SimulationInfo(Checksum checksum) {
@@ -68,10 +62,6 @@ public class SimulationInfo extends Persistable {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getDescription() {
-		return description;
 	}
 
 	public int getCompletionPercent() {

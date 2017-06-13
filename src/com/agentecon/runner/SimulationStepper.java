@@ -6,8 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.agentecon.ISimulation;
-import com.agentecon.github.LocalSimulationHandle;
-import com.agentecon.github.SimulationHandle;
+import com.agentecon.agent.IAgent;
+import com.agentecon.classloader.LocalSimulationHandle;
+import com.agentecon.classloader.SimulationHandle;
+import com.agentecon.data.AgentData;
+import com.agentecon.data.TradeGraph;
 import com.agentecon.util.LogClock;
 
 public class SimulationStepper {
@@ -16,36 +19,44 @@ public class SimulationStepper {
 	private SimulationLoader loader;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
-		try (InputStream input = handle.open()) {
-			this.loader = new SimulationLoader(input);
-			this.simulation = loader.load();
-		}
+		this.loader = new SimulationLoader(handle);
+		this.simulation = loader.loadSimulation();
 	}
 
-	public StepGraph getData(int day, List<String> agents, String dataKey, int stepSize) throws IOException {
+	private ISimulation getSimulation(int day) throws IOException {
 		assert day <= simulation.getConfig().getRounds();
-		int startDay = day - stepSize;
-		if (simulation.getDay() > startDay) {
-			simulation = loader.load(); // reload, cannot step backwards
+		if (simulation.getDay() > day) {
+			simulation = loader.loadSimulation(); // reload, cannot step backwards
 		}
-		simulation.forwardTo(startDay);
-		StepGraph graph = new StepGraph(simulation, agents);
+		simulation.forwardTo(day);
+		return simulation;
+	}
+
+	public AgentData getAgentData(int day, int agentId) throws IOException {
+		ISimulation sim = getSimulation(day);
+		IAgent agent = sim.getAgents().getAgent(agentId);
+		return new AgentData(agent);
+	}
+
+	public TradeGraph getData(int day, List<String> agents, String dataKey, int stepSize) throws IOException {
+		ISimulation simulation = getSimulation(day - stepSize);
+		TradeGraph graph = new TradeGraph(simulation, agents);
 		simulation.forwardTo(day);
 		graph.fetch(dataKey);
 		return graph;
 	}
-	
+
 	public static void main(String[] args) throws IOException, InterruptedException {
 		LogClock clock = new LogClock();
 		LocalSimulationHandle local = new LocalSimulationHandle();
 		clock.time("Created handle");
 		SimulationStepper stepper = new SimulationStepper(local);
 		clock.time("Created stepper");
-		StepGraph graph1 = stepper.getData(100, Arrays.asList("consumers", "firms"), "utility", 10);
+		TradeGraph graph1 = stepper.getData(100, Arrays.asList("consumers", "firms"), "utility", 10);
 		clock.time("Stepped to day 100");
-		StepGraph graph2 = stepper.getData(110, Arrays.asList("consumers", "firms"), "utility", 10);
+		TradeGraph graph2 = stepper.getData(110, Arrays.asList("consumers", "firms"), "utility", 10);
 		clock.time("Stepped to day 110");
-		StepGraph graph3 = stepper.getData(100, Arrays.asList("consumers", "firms"), "utility", 10);
+		TradeGraph graph3 = stepper.getData(100, Arrays.asList("consumers", "firms"), "utility", 10);
 		clock.time("Stepped to day 100");
 	}
 

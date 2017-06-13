@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
+import com.agentecon.agent.IAgents;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
 import com.agentecon.metric.series.Chart;
@@ -16,7 +17,8 @@ public class DividendStats extends SimStats {
 
 	private HashMap<String, AveragingTimeSeries> dividends;
 
-	public DividendStats() {
+	public DividendStats(IAgents agents) {
+		super(agents);
 		this.dividends = new InstantiatingHashMap<String, AveragingTimeSeries>() {
 
 			@Override

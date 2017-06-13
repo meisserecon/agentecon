@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgents;
 import com.agentecon.metric.Demographics;
 import com.agentecon.metric.DividendStats;
 import com.agentecon.metric.MarketStats;
@@ -43,6 +44,7 @@ public class SimulationRunner {
 		this.overallStats = new ArrayList<>();
 		this.latestRunStats = new ArrayList<>();
 
+		IAgents agents = sim.getAgents();
 		if (hasIterations(sim)) {
 			iter = (IIteratedSimulation) sim;
 			this.stats.add(new MarketStats(INCL_VOLUME));
@@ -51,17 +53,17 @@ public class SimulationRunner {
 		} else {
 			MarketStats mstats = new MarketStats(true);
 			this.stats.add(mstats);
-			StockMarketStats sstats = new StockMarketStats(sim);
+			StockMarketStats sstats = new StockMarketStats(agents);
 			this.stats.add(sstats);
-			this.stats.add(new SubstanceStats(sim, sstats, mstats));
-			this.stats.add(new OwnershipStats(sim));
-			this.stats.add(new DividendStats());
-			this.stats.add(new MonetaryStats(sim));
+			this.stats.add(new SubstanceStats(agents, sstats, mstats));
+			this.stats.add(new OwnershipStats(agents));
+			this.stats.add(new DividendStats(agents));
+			this.stats.add(new MonetaryStats(agents));
 			// this.stats.add(new ProductionStats());
 			// this.stats.add(new SingleFirmStats());
 			// this.stats.add(new InventoryStats(sim));
 			if (hasAging()) {
-				this.stats.add(new Demographics(sim));
+				this.stats.add(new Demographics(agents));
 			}
 		}
 		this.latestRunStats.addAll(stats);

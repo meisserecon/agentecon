@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
@@ -14,7 +14,6 @@ import com.agentecon.metric.series.TimeSeries;
 
 public class SubstanceStats extends SimStats {
 
-	private ISimulation sim;
 	private TimeSeries innerValue;
 	private TimeSeries outerValue;
 	private TimeSeries valueRatio;
@@ -23,8 +22,8 @@ public class SubstanceStats extends SimStats {
 	private MarketStats market;
 	private StockMarketStats stocks;
 
-	public SubstanceStats(ISimulation sim, StockMarketStats stocks, MarketStats market) {
-		this.sim = sim;
+	public SubstanceStats(IAgents agents, StockMarketStats stocks, MarketStats market) {
+		super(agents);
 		this.stocks = stocks;
 		this.market = market;
 		this.innerValue = new TimeSeries("Inner Value");
@@ -36,7 +35,7 @@ public class SubstanceStats extends SimStats {
 	@Override
 	public void notifyDayEnded(int day, double utility) {
 		try {
-			Collection<? extends IShareholder> holders = sim.getShareHolders();
+			Collection<? extends IShareholder> holders = agents.getShareHolders();
 			double outerValue = 0.0;
 			double innerValue = 0.0;
 			for (IShareholder holder : holders) {
@@ -45,7 +44,7 @@ public class SubstanceStats extends SimStats {
 				}
 				for (Position pos : holder.getPortfolio().getPositions()) {
 					double value = pos.getAmount() * stocks.getPrice(pos.getTicker());
-					IFirm heldCompany = sim.getListedCompany(pos.getTicker());
+					IFirm heldCompany = agents.getListedCompany(pos.getTicker());
 					if (holder instanceof IFirm) {
 						// only count real companies they hold
 						if (heldCompany instanceof IFirm) {

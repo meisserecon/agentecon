@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.ISimulation;
+import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
@@ -17,11 +17,10 @@ import com.agentecon.util.InstantiatingHashMap;
 
 public class OwnershipStats extends SimStats {
 
-	private ISimulation sim;
 	private HashMap<String, HashMap<String, TimeSeries>> structure;
 
-	public OwnershipStats(ISimulation world) {
-		this.sim = world;
+	public OwnershipStats(IAgents agents) {
+		super(agents);
 		this.structure = new InstantiatingHashMap<String, HashMap<String, TimeSeries>>() {
 
 			@Override
@@ -48,7 +47,7 @@ public class OwnershipStats extends SimStats {
 						return new OwnershipStructure(key);
 					}
 				};
-				for (IShareholder pc : sim.getShareHolders()) {
+				for (IShareholder pc : agents.getShareHolders()) {
 					String ownerType = pc.getType();
 					if (pc instanceof IConsumer && ((IConsumer) pc).isRetired()) {
 						ownerType = "Retiree";

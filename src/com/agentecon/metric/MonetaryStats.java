@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgents;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
 import com.agentecon.metric.series.TimeSeries;
@@ -16,11 +16,11 @@ public class MonetaryStats extends SimStats {
 
 	private static final int SKIP = 10;
 
-	private ISimulation sim;
+	private IAgents agents;
 	private HashMap<String, AveragingTimeSeries> cashByType;
 
-	public MonetaryStats(ISimulation world) {
-		this.sim = world;
+	public MonetaryStats(IAgents agents) {
+		this.agents = agents;
 		this.cashByType = new InstantiatingHashMap<String, AveragingTimeSeries>() {
 
 			@Override
@@ -32,17 +32,14 @@ public class MonetaryStats extends SimStats {
 
 	@Override
 	public void notifyDayEnded(int day) {
-		try {
-			for (IAgent a : sim.getAgents()) {
-				double money = a.getMoney().getAmount();
-				cashByType.get(a.getType()).add(money / SKIP);
+		for (IAgent a : agents.getAgents()) {
+			double money = a.getMoney().getAmount();
+			cashByType.get(a.getType()).add(money / SKIP);
+		}
+		if (day % SKIP == 0) {
+			for (AveragingTimeSeries ats : cashByType.values()) {
+				ats.pushSum(day);
 			}
-			if (day % SKIP == 0) {
-				for (AveragingTimeSeries ats : cashByType.values()) {
-					ats.pushSum(day);
-				}
-			}
-		} catch (AbstractMethodError e) {
 		}
 	}
 

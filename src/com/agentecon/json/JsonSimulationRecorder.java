@@ -1,17 +1,16 @@
 package com.agentecon.json;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 
 import com.agentecon.ISimulation;
+import com.agentecon.classloader.GitSimulationHandle;
+import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.data.SimulationInfo;
 import com.agentecon.data.SimulationList;
-import com.agentecon.github.GitBasedSimulationList;
-import com.agentecon.github.GitSimulationHandle;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.runner.SimulationLoader;
 import com.agentecon.runner.SimulationRunner;
@@ -33,23 +32,22 @@ public class JsonSimulationRecorder {
 	}
 
 	public void generateFromRepo(GitSimulationHandle handle) throws IOException {
-		try (InputStream input = handle.open()) {
-			SimulationLoader loader = new SimulationLoader(input);
-			SimulationInfo info = new SimulationInfo(loader.getChecksum(), handle);
-			generate(info, loader);
-		}
+		SimulationLoader loader = new SimulationLoader(handle);
+		SimulationInfo info = new SimulationInfo(loader.getChecksum(), handle);
+		generate(info, loader);
 	}
 
-	public void generateLocal(Path simulationJarFile) throws IOException {
+	public void generateLocal(File simulationJarFile) throws IOException {
+		LocalSimulationHandle handle = new LocalSimulationHandle(simulationJarFile);
 		SimulationLoader loader = new SimulationLoader(simulationJarFile);
-		SimulationInfo info = new SimulationInfo(loader.getChecksum(), "local", Files.getLastModifiedTime(simulationJarFile));
+		SimulationInfo info = new SimulationInfo(loader.getChecksum(), "local");
 		generate(info, loader);
 	}
 
 	private void generate(SimulationInfo info, SimulationLoader loader) throws IOException {
 		SimulationInfo existing = sims.getSimulation(loader.getChecksum());
 		int[] chartsToRecycle = existing == null ? new int[0] : existing.getChartIds();
-		ISimulation sim = loader.load();
+		ISimulation sim = loader.loadSimulation();
 		SimulationRunner runner = new SimulationRunner(sim);
 		info.notifyStarted(sim.getConfig().getRounds());
 		runner.run(null);
@@ -67,25 +65,25 @@ public class JsonSimulationRecorder {
 		persister.save(sims);
 	}
 
-	public static void main(String[] args) throws InterruptedException, IOException {
-		JsonSimulationRecorder generator = new JsonSimulationRecorder();
-		GitBasedSimulationList list = new GitBasedSimulationList("meisserecon", "agentecon");
-
-		boolean on = false;
-		for (GitSimulationHandle handle : list.getSims()) {
-			if (handle.getName().equals("PairedExploration")) {
-				on = true;
-			}
-			if (on) {
-				try {
-					System.out.println("Generating files for " + handle);
-					generator.generateFromRepo(handle);
-				} catch (IOException e) {
-					System.out.println("Failed to load " + handle + " from " + handle.getSimulationURL());
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+	// public static void main(String[] args) throws InterruptedException, IOException {
+	// JsonSimulationRecorder generator = new JsonSimulationRecorder();
+	// GitBasedSimulationList list = new GitBasedSimulationList("meisserecon", "agentecon");
+	//
+	// boolean on = false;
+	// for (GitSimulationHandle handle : list.getSims()) {
+	// if (handle.getName().equals("PairedExploration")) {
+	// on = true;
+	// }
+	// if (on) {
+	// try {
+	// System.out.println("Generating files for " + handle);
+	// generator.generateFromRepo(handle);
+	// } catch (IOException e) {
+	// System.out.println("Failed to load " + handle + " from " + handle.getSimulationURL());
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+	// }
 
 }

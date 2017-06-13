@@ -15,7 +15,6 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;
@@ -87,8 +86,12 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		market.addMarketListener(this);
+	}
+	
+	@Override
+	public void notifyMarketClosed(int day) {
 	}
 
 	@Override

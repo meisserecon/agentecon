@@ -6,12 +6,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgents;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IMarket;
+import com.agentecon.market.IMarketListener;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.MinMaxTimeSeries;
 import com.agentecon.metric.series.TimeSeries;
@@ -25,15 +26,14 @@ public class InventoryStats extends SimStats {
 	private double money;
 	private boolean allowMoneySupplyChange;
 
-	private ISimulation sim;
 	private HashMap<Good, MinMaxTimeSeries> consumerInv;
 	private HashMap<Good, MinMaxTimeSeries> firmInv;
 	private HashMap<Good, MinMaxTimeSeries> traderInv;
 	// private HashMap<IFirm, HashMap<Good, TimeSeries>> individualInventories;
 	private TimeSeries moneySupply;
 
-	public InventoryStats(ISimulation sim) {
-		this.sim = sim;
+	public InventoryStats(IAgents agents) {
+		super(agents);
 		this.money = 0.0;
 		this.moneySupply = new TimeSeries("Money Supply");
 		this.allowMoneySupplyChange = true;
@@ -58,20 +58,6 @@ public class InventoryStats extends SimStats {
 				return new MinMaxTimeSeries(key.getName() + " inventory");
 			}
 		};
-		// this.individualInventories = new InstantiatingHashMap<IFirm, HashMap<Good, TimeSeries>>() {
-		//
-		// @Override
-		// protected HashMap<Good, TimeSeries> create(IFirm key) {
-		// return new InstantiatingHashMap<Good, TimeSeries>() {
-		//
-		// @Override
-		// protected TimeSeries create(Good key) {
-		// return new TimeSeries(key.getName());
-		// }
-		//
-		// };
-		// }
-		// };
 	}
 
 	@Override
@@ -81,53 +67,33 @@ public class InventoryStats extends SimStats {
 	}
 
 	@Override
-	public void notifyMarketClosed(IMarket market, boolean fin) {
-		if (fin) {
-			HashMap<Good, Average> all = new InstantiatingHashMap<Good, Average>() {
+	public void notifyGoodsMarketOpened(IMarket market) {
+		market.addMarketListener(new IMarketListener() {
 
-				@Override
-				protected Average create(Good key) {
-					return new Average();
-				}
-
-			};
-			for (IAgent ag : sim.getFirms()) {
-				Inventory inv = ag.getInventory();
-				for (IStock stock : inv.getAll()) {
-					if (!stock.isEmpty()) {
-						// individualInventories.get(ag).get(stock.getGood()).set(sim.getDay(), stock.getAmount());
-						all.get(stock.getGood()).add(1.0, stock.getAmount());
-					}
-				}
+			@Override
+			public void notifyTradesCancelled() {
 			}
-			for (Map.Entry<Good, Average> entry : all.entrySet()) {
-				firmInv.get(entry.getKey()).set(sim.getDay(), entry.getValue());
-			}
-		}
-		if (fin) {
-			HashMap<Good, Average> all = new InstantiatingHashMap<Good, Average>() {
 
-				@Override
-				protected Average create(Good key) {
-					return new Average();
-				}
-
-			};
-			for (IAgent ag : sim.getConsumers()) {
-				Inventory inv = ag.getInventory();
-				for (IStock stock : inv.getAll()) {
-					if (!stock.isEmpty() && stock.getGood().getPersistence() > 0.0) {
-						all.get(stock.getGood()).add(1.0, stock.getAmount());
-					}
-				}
+			@Override
+			public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 			}
-			for (Map.Entry<Good, Average> entry : all.entrySet()) {
-				consumerInv.get(entry.getKey()).set(sim.getDay(), entry.getValue());
-			}
-		}
 
+			@Override
+			public void notifyMarketClosed(int day) {
+				InventoryStats.this.notifyMarketClosed(day);
+			}
+		});
+	}
+
+	public void notifyMarketClosed(int day) {
+		checkInventories(day, agents.getFirms(), firmInv);
+		checkInventories(day, agents.getConsumers(), consumerInv);
+		checkMoneySupply(day);
+	}
+
+	protected void checkMoneySupply(int day) {
 		double money = 0.0;
-		for (IAgent a : sim.getAgents()) {
+		for (IAgent a : agents.getAgents()) {
 			money += a.getMoney().getAmount();
 		}
 		if (this.money != money && allowMoneySupplyChange) {
@@ -136,10 +102,29 @@ public class InventoryStats extends SimStats {
 		} else {
 			assert Numbers.equals(this.money, money);
 		}
-		if (fin) {
-			moneySupply.set(sim.getDay(), money);
-		}
+		moneySupply.set(day, money);
+	}
+	
+	private void checkInventories(int day, Collection<? extends IAgent> agents, HashMap<Good, MinMaxTimeSeries> inventories) {
+		HashMap<Good, Average> all = new InstantiatingHashMap<Good, Average>() {
 
+			@Override
+			protected Average create(Good key) {
+				return new Average();
+			}
+
+		};
+		for (IAgent ag : agents) {
+			Inventory inv = ag.getInventory();
+			for (IStock stock : inv.getAll()) {
+				if (!stock.isEmpty() && stock.getGood().getPersistence() > 0.0) {
+					all.get(stock.getGood()).add(1.0, stock.getAmount());
+				}
+			}
+		}
+		for (Map.Entry<Good, Average> entry : all.entrySet()) {
+			inventories.get(entry.getKey()).set(day, entry.getValue());
+		}
 	}
 
 	public Collection<Chart> getCharts(String parentId) {
@@ -157,7 +142,7 @@ public class InventoryStats extends SimStats {
 		// }
 		return charts;
 	}
-	
+
 	@Override
 	public ArrayList<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();

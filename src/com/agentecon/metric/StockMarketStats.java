@@ -10,13 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
+import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
@@ -27,7 +28,6 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 
 	public static boolean PRINT_TICKER = false;
 
-	private ISimulation world;
 	private Good index = new Good("Index");
 	private HashMap<Ticker, Average> averages;
 	private HashMap<Good, TimeSeries> prices;
@@ -35,8 +35,8 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	private HashMap<Good, TimeSeries> peratio;
 	private AveragingTimeSeries investments, divestments, difference;
 
-	public StockMarketStats(ISimulation world) {
-		this.world = world;
+	public StockMarketStats(IAgents agents) {
+		super(agents);
 		this.investments = new AveragingTimeSeries("Inflows");
 		this.divestments = new AveragingTimeSeries("Outflows");
 		this.difference = new AveragingTimeSeries("Inflows - Outflows");
@@ -83,24 +83,15 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	}
 
 	@Override
-	public void notifySimStarting(ISimulation sim) {
-		super.notifySimStarting(sim);
-		try {
-			sim.getStockMarket().addMarketListener(this);
-		} catch (AbstractMethodError e) {
-			// no market
-		}
+	public void notifyStockMarketOpened(IMarket market) {
+		market.addMarketListener(this);
 	}
 
 	@Override
 	public void notifyConsumerCreated(IConsumer consumer) {
-		try {
-			consumer.addListener(this);
-		} catch (AbstractMethodError e) {
-			// does not exist in earlier version
-		}
+		consumer.addListener(this);
 	}
-	
+
 	@Override
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
 		averages.get(good).add(quantity, payment / quantity);
@@ -110,11 +101,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	public void notifyTradesCancelled() {
 		averages.clear();
 	}
-
-	private ArrayList<Ticker> toPrint = new ArrayList<>();
-
+	
 	@Override
-	public void notifyDayEnded(int day) {
+	public void notifyMarketClosed(int day) {
 		investments.pushSum(day);
 		divestments.pushSum(day);
 		difference.pushSum(day);
@@ -141,7 +130,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			indexPoints.add(avgPrice);
 			sectorIndices.get(sector).add(avgPrice);
 
-			double dividends = world.getListedCompany(firm).getShareRegister().getAverageDividend();
+			double dividends = agents.getListedCompany(firm).getShareRegister().getAverageDividend();
 			if (dividends > 1) {
 				double peratio = avgPrice.getAverage() / dividends;
 				indexRatio.add(peratio);
@@ -165,6 +154,8 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			peratio.get(index).set(day, indexRatio.getAverage());
 		}
 	}
+
+	private ArrayList<Ticker> toPrint = new ArrayList<>();
 
 	protected void printTicker(int day) {
 		if (PRINT_TICKER) {

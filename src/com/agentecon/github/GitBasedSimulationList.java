@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import com.agentecon.classloader.GitSimulationHandle;
+import com.agentecon.classloader.SimulationHandle;
+import com.agentecon.classloader.WebUtil;
+
 public class GitBasedSimulationList {
 
 	private static final String NAME = "\"name\":\"";
@@ -40,16 +44,7 @@ public class GitBasedSimulationList {
 	}
 
 	public ArrayList<GitSimulationHandle> getSims() {
-		ArrayList<GitSimulationHandle> sims = new ArrayList<>(this.sims.values());
-		Collections.sort(sims, new Comparator<GitSimulationHandle>() {
-
-			@Override
-			public int compare(GitSimulationHandle o1, GitSimulationHandle o2) {
-				return -o1.getDate().compareTo(o2.getDate());
-			}
-
-		});
-		return sims;
+		return new ArrayList<>(this.sims.values());
 	}
 
 	public SimulationHandle getSimulation(String name) {

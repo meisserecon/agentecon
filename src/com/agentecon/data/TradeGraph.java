@@ -1,4 +1,4 @@
-package com.agentecon.runner;
+package com.agentecon.data;
 
 import java.util.List;
 
@@ -7,15 +7,14 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationListenerAdapter;
 
-public class StepGraph extends SimulationListenerAdapter implements ISimulationListener, IMarketListener {
+public class TradeGraph extends SimulationListenerAdapter implements ISimulationListener, IMarketListener {
 	
 	private ISimulation simulation;
 
-	public StepGraph(ISimulation simulation, List<String> agents) {
+	public TradeGraph(ISimulation simulation, List<String> agents) {
 		this.simulation = simulation;
 		simulation.addListener(this);
 	}
@@ -25,10 +24,9 @@ public class StepGraph extends SimulationListenerAdapter implements ISimulationL
 	}
 	
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		market.addMarketListener(this);
 	}
-
 
 	@Override
 	public void notifyTradesCancelled() {
@@ -36,8 +34,11 @@ public class StepGraph extends SimulationListenerAdapter implements ISimulationL
 
 	@Override
 	public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void notifyMarketClosed(int day) {
 	}
 
 }

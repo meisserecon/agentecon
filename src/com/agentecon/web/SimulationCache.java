@@ -5,7 +5,7 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.agentecon.github.SimulationHandle;
+import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.runner.SimulationStepper;
 
 public class SimulationCache {
