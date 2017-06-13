@@ -12,7 +12,6 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.util.Numbers;
 
 public class LogUtilTest {

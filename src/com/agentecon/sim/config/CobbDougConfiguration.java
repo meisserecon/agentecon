@@ -7,9 +7,9 @@ import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.EvolvingEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.SimEvent;
-import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.sim.SimulationConfig;
 
 public class CobbDougConfiguration implements IConfiguration {

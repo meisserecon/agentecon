@@ -9,7 +9,6 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.AccumulatingAverage;
 import com.agentecon.util.Average;
@@ -63,8 +62,12 @@ public class PriceMetric extends SimulationListenerAdapter implements IMarketLis
 	}
 
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		market.addMarketListener(this);
+	}
+	
+	@Override
+	public void notifyMarketClosed(int day) {
 	}
 
 	public boolean isStable() {

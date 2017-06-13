@@ -14,8 +14,8 @@ public class MoneyPrintEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
-		for (Consumer c : sim.getConsumers().getRandomConsumers(getCardinality())) {
+	public void execute(int day, IWorld sim) {
+		for (Consumer c : sim.getAgents().getRandomConsumers(getCardinality())) {
 			IStock money = c.getMoney();
 			if (amount > 0) {
 				money.add(amount);

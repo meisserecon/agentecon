@@ -9,22 +9,19 @@ import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
-import com.agentecon.market.IMarket;
-import com.agentecon.market.IMarketListener;
-import com.agentecon.market.MarketListeners;
 import com.agentecon.sim.SimulationListenerAdapter;
+import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Agents;
 import com.agentecon.world.World;
 
-public class StockMarket extends SimulationListenerAdapter implements IMarket {
+public class StockMarket extends SimulationListenerAdapter {
 
 	private World world;
-	private MarketListeners listeners;
+	private SimulationListeners listeners;
 
-	public StockMarket(World world) {
-		this.listeners = new MarketListeners();
+	public StockMarket(World world, SimulationListeners listeners) {
+		this.listeners = listeners;
 		this.world = world;
-		this.world.addListener(this);
 	}
 
 	public void trade(int day) {
@@ -60,7 +57,9 @@ public class StockMarket extends SimulationListenerAdapter implements IMarket {
 		for (IShareholder shareholder : ags.getShareholders()) {
 			shareholder.getPortfolio().collectDividends();
 		}
-		DailyStockMarket dsm = new DailyStockMarket(listeners, world.getRand());
+		DailyStockMarket dsm = new DailyStockMarket(world.getRand());
+		listeners.notifyStockMarketOpened(dsm);
+		
 		for (MarketMaker mm : mms) {
 			// System.out.println(day + ": " + mm);
 			mm.postOffers(dsm);
@@ -72,6 +71,7 @@ public class StockMarket extends SimulationListenerAdapter implements IMarket {
 		for (IShareholder con : ags.getRandomShareholders()) {
 			con.managePortfolio(dsm);
 		}
+		dsm.close(day);
 	}
 
 	@Override
@@ -87,11 +87,6 @@ public class StockMarket extends SimulationListenerAdapter implements IMarket {
 		for (MarketMaker mm : mms) {
 			mm.addPosition(register.createPosition());
 		}
-	}
-
-	@Override
-	public void addMarketListener(IMarketListener listener) {
-		listeners.add(listener);
 	}
 
 }

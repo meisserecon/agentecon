@@ -21,6 +21,8 @@ import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {
 
+	public static final int IMMORTAL = Integer.MAX_VALUE;
+
 	private int age, maxAge;
 	protected Good soldGood;
 	private IUtility utility;
@@ -30,7 +32,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	private ConsumerListeners listeners;
 
 	public Consumer(String type, Endowment end, IUtility utility) {
-		this(type, Integer.MAX_VALUE, end, utility);
+		this(type, IMMORTAL, end, utility);
 	}
 
 	public Consumer(String type, int maxAge, Endowment end, IUtility utility) {
@@ -169,17 +171,21 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	}
 
 	public boolean isMortal() {
-		return maxAge < Integer.MAX_VALUE;
+		return maxAge == IMMORTAL;
 	}
 
 	public Inventory age(Portfolio inheritance) {
-		if (age == getRetirementAge()) {
-			listeners.notifyRetiring(this, age);
-		}
-		this.age++;
-		if (age > maxAge) {
-			inheritance.absorb(portfolio);
-			return super.dispose();
+		if (isMortal()) {
+			if (age == getRetirementAge()) {
+				listeners.notifyRetiring(this, age);
+			}
+			this.age++;
+			if (age > maxAge) {
+				inheritance.absorb(portfolio);
+				return super.dispose();
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

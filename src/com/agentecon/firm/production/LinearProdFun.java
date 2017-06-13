@@ -5,6 +5,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.price.IBelief;
+import com.agentecon.production.IPriceProvider;
 
 public class LinearProdFun extends AbstractProductionFunction {
 

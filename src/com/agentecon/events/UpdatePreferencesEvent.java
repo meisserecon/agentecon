@@ -12,8 +12,8 @@ public abstract class UpdatePreferencesEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
-		for (Consumer c : sim.getConsumers().getRandomConsumers(getCardinality())) {
+	public void execute(int day, IWorld sim) {
+		for (Consumer c : sim.getAgents().getRandomConsumers(getCardinality())) {
 			update(c);
 		}
 	}

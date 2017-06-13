@@ -14,8 +14,8 @@ public class TaxEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
-		for (Producer firm: sim.getFirms().getRandomFirms(getCardinality())){
+	public void execute(int day, IWorld sim) {
+		for (Producer firm: sim.getAgents().getRandomFirms(getCardinality())){
 			firm.setProductionFunction(new ProductionTax(firm.getProductionFunction(), rate));
 		}
 	}

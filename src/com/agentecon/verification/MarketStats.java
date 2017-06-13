@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgents;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
+import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
@@ -22,11 +22,11 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 
 	public static boolean PRINT_TICKER = true;
 
-	private ISimulation world;
+	private IAgents world;
 	private Good index = new Good("Stock Index");
 	private HashMap<Good, Average> averages;
 
-	public MarketStats(ISimulation world) {
+	public MarketStats(IAgents world) {
 		this.world = world;
 		this.averages = new InstantiatingHashMap<Good, Average>() {
 
@@ -40,10 +40,15 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 	public double getPrice(Good ticker) {
 		return averages.get(ticker).getAverage();
 	}
-
+	
 	@Override
 	public void notifyDayStarted(int day) {
-		averages.clear();
+		assert averages.isEmpty();
+	}
+	
+	@Override
+	public void notifyStockMarketOpened(IMarket market) {
+		market.addMarketListener(this);
 	}
 
 	@Override
@@ -55,11 +60,9 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 	public void notifyTradesCancelled() {
 		averages.clear();
 	}
-
-	private ArrayList<Good> toPrint = new ArrayList<>();
-
+	
 	@Override
-	public void notifyDayEnded(int day, double utility) {
+	public void notifyMarketClosed(int day) {
 		Average indexPoints = new Average();
 		HashMap<Good, Average> sectorIndices = new InstantiatingHashMap<Good, Average>() {
 
@@ -97,7 +100,10 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 		all.putAll(averages);
 		all.putAll(sectorIndices);
 		printTicker(all, day);
+		averages.clear();
 	}
+
+	private ArrayList<Good> toPrint = new ArrayList<>();
 
 	protected void printTicker(Map<Good, Average> map, int day) {
 		if (PRINT_TICKER) {

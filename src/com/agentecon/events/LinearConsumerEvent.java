@@ -2,6 +2,7 @@ package com.agentecon.events;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtil;
 import com.agentecon.world.IWorld;
@@ -28,19 +29,20 @@ public class LinearConsumerEvent extends ConsumerEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
+	public void execute(int day, IWorld sim) {
 		if (initialPopulation > 0) {
 			int step = maxAge / initialPopulation;
 			for (; initialPopulation > 0; initialPopulation--) {
-				sim.add(new Consumer(type, Math.max(maxAge - initialPopulation * step, step), end, utilFun.create(count++)));
+				int maxAge = Math.max(this.maxAge - initialPopulation * step, step);
+				sim.add(createConsumer(type, maxAge, end, utilFun.create(count++)));
 			}
 		}
-		super.execute(sim);
+		super.execute(day, sim);
 	}
-
+	
 	@Override
-	protected Consumer createConsumer() {
-		return new Consumer(type, maxAge, end, utilFun.create(count++));
+	protected IConsumer createConsumer(String type, int immortal, Endowment end, IUtility util){
+		return new Consumer(type, this.maxAge, end, util);
 	}
 
 }

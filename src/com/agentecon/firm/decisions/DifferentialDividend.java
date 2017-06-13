@@ -2,7 +2,7 @@ package com.agentecon.firm.decisions;
 
 /**
  * Choose spendings to maximize profits.
- * Pay out a constant fraction of cash holdings as dividend, thereby implicitely setting price levels.
+ * Pay out a constant fraction of cash holdings as dividend, thereby implicitly setting price levels.
  */
 public class DifferentialDividend implements IFirmDecisions {
 

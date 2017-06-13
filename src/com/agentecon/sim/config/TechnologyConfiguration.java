@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IUtility;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.FirmEvent;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.MarketMaker;
-import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.verification.PriceMetric;
@@ -31,7 +33,7 @@ public class TechnologyConfiguration implements IConfiguration {
 	protected Good[] inputs, outputs;
 
 	public TechnologyConfiguration(int seed) {
-		this(FIRMS_PER_TYPE, CONSUMERS_PER_TYPE, 3, 3, seed);
+		this(FIRMS_PER_TYPE, CONSUMERS_PER_TYPE, 1, 1, seed);
 	}
 
 	public TechnologyConfiguration(int firmsPerType, int consumersPerType, int consumerTypes, int firmTypes, int seed) {
@@ -63,7 +65,7 @@ public class TechnologyConfiguration implements IConfiguration {
 		config.addEvent(new SimEvent(0, MARKET_MAKERS) {
 
 			@Override
-			public void execute(IWorld sim) {
+			public void execute(int day, IWorld sim) {
 				for (int i = 0; i < getCardinality(); i++) {
 					sim.add(new MarketMaker(sim.getAgents().getPublicCompanies()));
 				}
@@ -78,17 +80,12 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addConsumers(ArrayList<SimEvent> config, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
-			final int typeNumber = i;
 			String name = "Consumer " + i;
 			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
 			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)) {
 				@Override
-				protected Consumer createConsumer() {
-					if (typeNumber == 3) {
-						return new Consumer(type, ROUNDS, end, utilFun.create(count++));
-					} else {
-						return new Consumer(type, end, utilFun.create(count++));
-					}
+				protected IConsumer createConsumer(String type, int maxAge, Endowment end, IUtility util){
+					return new Consumer(type, maxAge, end, utilFun.create(count++));
 				}
 			});
 		}

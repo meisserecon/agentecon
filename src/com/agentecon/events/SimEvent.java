@@ -15,6 +15,6 @@ public abstract class SimEvent extends Event {
 		super(step, interval, card);
 	}
 
-	public abstract void execute(IWorld sim);
+	public abstract void execute(int day, IWorld sim);
 
 }

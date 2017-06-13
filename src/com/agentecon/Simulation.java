@@ -2,18 +2,12 @@
 
 package com.agentecon;
 
-import java.util.Collection;
 import java.util.Queue;
 
-import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.IConsumer;
+import com.agentecon.agent.IAgents;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
-import com.agentecon.firm.IFirm;
-import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Producer;
-import com.agentecon.firm.Ticker;
-import com.agentecon.market.IMarket;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.RepeatedMarket;
 import com.agentecon.sim.SimulationConfig;
@@ -50,7 +44,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		this.events = this.config.createEventQueue();
 		this.listeners = new SimulationListeners();
 		this.world = new World(config.getSeed(), listeners);
-		this.stocks = new StockMarket(world);
+		this.stocks = new StockMarket(world, listeners);
 		this.day = 0;
 	}
 	
@@ -83,7 +77,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			stocks.trade(day);
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
 			market.iterate(day, config.getIntradayIterations());
-			for (Producer firm : world.getFirms().getAllFirms()) {
+			for (Producer firm : world.getAgents().getAllFirms()) {
 				firm.produce();
 			}
 			world.finishDay(day);
@@ -102,7 +96,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private void processEvents(int day) {
 		while (!events.isEmpty() && events.peek().getDay() <= day) {
 			SimEvent event = events.poll();
-			event.execute(world);
+			event.execute(day, world);
 			listeners.notifyEvent(event);
 			if (event.reschedule()) {
 				events.add(event);
@@ -113,26 +107,6 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public SimulationConfig getConfig() {
 		return config;
-	}
-
-	@Override
-	public Collection<? extends IConsumer> getConsumers() {
-		return world.getConsumers().getAllConsumers();
-	}
-
-	@Override
-	public Collection<? extends IFirm> getFirms() {
-		return world.getFirms().getAllFirms();
-	}
-	
-	@Override
-	public Collection<? extends IAgent> getAgents() {
-		return world.getAgents().getAll();
-	}
-	
-	@Override
-	public Collection<? extends IFirm> getListedCompanies() {
-		return world.getAgents().getPublicCompanies();
 	}
 
 	@Override
@@ -147,34 +121,14 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		listeners.remove(listener);
 	}
 
-	@Override
-	public String getName() {
-		return "Name";
-	}
-
-	@Override
-	public String getDescription() {
-		return "Description";
-	}
-
-	@Override
-	public IMarket getStockMarket() {
-		return stocks;
-	}
-
-	@Override
-	public Collection<? extends IShareholder> getShareHolders() {
-		return world.getAgents().getShareholders();
-	}
-
-	@Override
-	public IFirm getListedCompany(Ticker ticker) {
-		return world.getAgents().getCompany(ticker);
-	}
-	
 	public static void main(String[] args) {
 		Simulation sim = new Simulation();
 		sim.run();
+	}
+
+	@Override
+	public IAgents getAgents() {
+		return world.getAgents();
 	}
 
 }

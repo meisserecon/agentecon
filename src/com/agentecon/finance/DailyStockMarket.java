@@ -14,6 +14,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.BestPriceMarket;
 import com.agentecon.market.Bid;
+import com.agentecon.market.IMarketListener;
 import com.agentecon.market.MarketListeners;
 import com.agentecon.util.InstantiatingHashMap;
 
@@ -23,9 +24,9 @@ public class DailyStockMarket implements IStockMarket {
 	private MarketListeners listeners;
 	private HashMap<Ticker, BestPriceMarket> market;
 
-	public DailyStockMarket(MarketListeners listeners, Random rand) {
+	public DailyStockMarket(Random rand) {
 		this.rand = rand;
-		this.listeners = listeners;
+		this.listeners = new MarketListeners();
 		this.market = new InstantiatingHashMap<Ticker, BestPriceMarket>() {
 
 			@Override
@@ -33,6 +34,11 @@ public class DailyStockMarket implements IStockMarket {
 				return new BestPriceMarket(key);
 			}
 		};
+	}
+	
+	@Override
+	public void addMarketListener(IMarketListener listener) {
+		this.listeners.add(listener);
 	}
 
 	@Override
@@ -166,6 +172,10 @@ public class DailyStockMarket implements IStockMarket {
 			}
 		}
 		return asks + "/" + market.size() + " asks and " + bids + "/" + market.size() + " bids left";
+	}
+	
+	public void close(int day){
+		listeners.notifyMarketClosed(day);
 	}
 
 }

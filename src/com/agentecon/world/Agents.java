@@ -8,7 +8,9 @@ import java.util.Random;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.IFirm;
@@ -17,16 +19,15 @@ import com.agentecon.firm.Producer;
 import com.agentecon.firm.Ticker;
 import com.agentecon.sim.ISimulationListener;
 
-public class Agents implements IConsumers, IFirms {
+public class Agents implements IAgents, IConsumers, IFirms {
 
 	private long seed;
 	private Random rand;
 
-	private ArrayList<IAgent> all;
-	private HashMap<Ticker, IFirm> publicCompanies;
-
-	private ArrayList<Producer> firms;
+	private HashMap<Integer, Agent> all;
 	private ArrayList<Consumer> consumers;
+	private HashMap<Ticker, IFirm> firms;
+	private ArrayList<Producer> producers;
 	private ArrayList<Fundamentalist> fundies;
 	private ArrayList<MarketMaker> marketMakers;
 	private ArrayList<IShareholder> shareholders;
@@ -34,31 +35,30 @@ public class Agents implements IConsumers, IFirms {
 	private ISimulationListener listeners;
 
 	public Agents(ISimulationListener listeners, long seed) {
-		this(listeners, seed, new ArrayList<IAgent>());
+		this(listeners, seed, new ArrayList<Agent>());
 	}
 
-	public Agents(ISimulationListener listeners, long seed, ArrayList<IAgent> all) {
-		this.publicCompanies = new HashMap<>();
-		this.all = new ArrayList<>();
+	public Agents(ISimulationListener listeners, long seed, Collection<Agent> all) {
+		this.firms = new HashMap<>();
+		this.all = new HashMap<>();
 		this.consumers = new ArrayList<>();
 		this.shareholders = new ArrayList<>();
-		this.firms = new ArrayList<>();
+		this.producers = new ArrayList<>();
 		this.marketMakers = new ArrayList<>();
 		this.fundies = new ArrayList<>();
-		for (IAgent a : all) {
+		for (Agent a : all) {
 			if (a.isAlive()) {
 				add(a);
 			} else {
 				listeners.notifyAgentDied(a);
 			}
 		}
-		this.listeners = listeners; // must be at the end to avoid unnecessary
-									// notifications
+		this.listeners = listeners; // must be at the end to avoid unnecessary notifications
 		this.seed = seed;
 	}
 
 	public Collection<Producer> getAllFirms() {
-		return firms;
+		return producers;
 	}
 
 	public Collection<Consumer> getAllConsumers() {
@@ -71,14 +71,14 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public IFirm getCompany(Ticker ticker) {
-		return publicCompanies.get(ticker);
+		return firms.get(ticker);
 	}
 
-	public void add(IAgent agent) {
-		all.add(agent);
+	public void add(Agent agent) {
+		all.put(agent.getAgentId(), agent);
 		if (agent instanceof IFirm) {
 			IFirm pc = (IFirm) agent;
-			publicCompanies.put(pc.getTicker(), pc);
+			firms.put(pc.getTicker(), pc);
 		}
 		if (agent instanceof IShareholder) {
 			shareholders.add((IShareholder) agent);
@@ -90,7 +90,7 @@ public class Agents implements IConsumers, IFirms {
 			marketMakers.add((MarketMaker) agent);
 		}
 		if (agent instanceof Producer) {
-			firms.add((Producer) agent);
+			producers.add((Producer) agent);
 		}
 		if (agent instanceof Consumer) {
 			consumers.add((Consumer) agent);
@@ -105,7 +105,7 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public Collection<? extends IAgent> getAll() {
-		return all;
+		return all.values();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -125,11 +125,11 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public Collection<Producer> getRandomFirms(int cardinality) {
-		Collections.shuffle(firms, getRand());
-		if (cardinality < 0 || cardinality >= firms.size()) {
-			return firms;
+		Collections.shuffle(producers, getRand());
+		if (cardinality < 0 || cardinality >= producers.size()) {
+			return producers;
 		} else {
-			return firms.subList(0, cardinality);
+			return producers.subList(0, cardinality);
 		}
 	}
 
@@ -146,7 +146,7 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public Collection<IFirm> getPublicCompanies() {
-		return publicCompanies.values();
+		return firms.values();
 	}
 
 	public Collection<? extends IShareholder> getShareholders() {
@@ -160,14 +160,14 @@ public class Agents implements IConsumers, IFirms {
 	}
 
 	public Agents renew(long seed) {
-		return new Agents(listeners, seed, all);
+		return new Agents(listeners, seed, all.values());
 	}
 
 	public Agents duplicate() {
 		preserveRand();
 		assert rand == null;
-		ArrayList<IAgent> allDup = new ArrayList<>(all.size());
-		for (IAgent a : all) {
+		ArrayList<Agent> allDup = new ArrayList<>(all.size());
+		for (Agent a : all.values()) {
 			allDup.add(a.clone());
 		}
 		return new Agents(listeners, seed, allDup);
@@ -182,17 +182,59 @@ public class Agents implements IConsumers, IFirms {
 
 	@Override
 	public String toString() {
-		return consumers.size() + " consumers, " + firms.size() + " firms";
+		return consumers.size() + " consumers, " + producers.size() + " firms";
 	}
 
 	public void refreshReferences() {
-		for (IAgent a : all) {
-			((Agent) a).refreshRef();
+		for (Agent a : all.values()) {
+			a.refreshRef();
 		}
 	}
 
 	public Collection<MarketMaker> getAllMarketMakers() {
 		return marketMakers;
+	}
+
+	@Override
+	public Collection<? extends IAgent> getAgents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IConsumer> getConsumers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IFirm> getFirms() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IShareholder> getShareHolders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IFirm> getListedCompanies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IFirm getListedCompany(Ticker ticker) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IAgent getAgent(int agentId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

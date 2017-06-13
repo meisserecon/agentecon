@@ -7,7 +7,6 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Price;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
@@ -46,9 +45,13 @@ public class PricePrinter extends SimulationListenerAdapter implements IMarketLi
 	}
 
 	@Override
-	public void notifyMarketOpened(IMarket market) {
+	public void notifyGoodsMarketOpened(IMarket market) {
 		this.prices.clear();
 		market.addMarketListener(this);
+	}
+	
+	@Override
+	public void notifyMarketClosed(int day) {
 	}
 
 	@Override

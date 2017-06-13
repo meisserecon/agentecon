@@ -8,6 +8,7 @@ import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.IBelief;
+import com.agentecon.util.Numbers;
 
 public abstract class Factor {
 

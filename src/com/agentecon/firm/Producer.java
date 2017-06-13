@@ -9,18 +9,16 @@ import com.agentecon.finance.Firm;
 import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.CobbDouglasProduction;
-import com.agentecon.firm.production.IPriceProvider;
-import com.agentecon.firm.production.IProductionFunction;
-import com.agentecon.firm.sensor.SensorInputFactor;
-import com.agentecon.firm.sensor.SensorOutputFactor;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.price.IBelief;
+import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.production.ProducerListeners;
 
 public class Producer extends Firm implements IProducer {
@@ -30,11 +28,11 @@ public class Producer extends Firm implements IProducer {
 	private IProductionFunction prod;
 
 	private IFirmDecisions strategy;
-	
+
 	private ProducerListeners listeners;
 
 	public Producer(String type, Endowment end, IProductionFunction prod) {
-		this(type, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction)prod).getTotalWeight()));
+		this(type, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
 	}
 
 	public Producer(String type, Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
@@ -46,19 +44,19 @@ public class Producer extends Firm implements IProducer {
 		this.inputs = new InputFactor[inputs.length];
 		for (int i = 0; i < inputs.length; i++) {
 			Good input = inputs[i];
-			this.inputs[i] = new SensorInputFactor(getStock(input), createPriceBelief(input));
+			this.inputs[i] = new InputFactor(getStock(input), createPriceBelief(input));
 		}
 		IStock outStock = getStock(prod.getOutput());
-		this.output = new SensorOutputFactor(outStock, createPriceBelief(prod.getOutput()));
+		this.output = new OutputFactor(outStock, createPriceBelief(prod.getOutput()));
 		this.listeners = new ProducerListeners();
 	}
-	
+
 	@Override
 	public void addProducerMonitor(IProducerListener listener) {
 		this.listeners.add(listener);
 	}
 
-	protected IBelief createPriceBelief(Good good){
+	protected IBelief createPriceBelief(Good good) {
 		return new ExpSearchBelief();
 	}
 
@@ -87,7 +85,9 @@ public class Producer extends Firm implements IProducer {
 				}
 			}
 		}
-		output.createOffers(market, this, getMoney(), output.getStock().getAmount());
+		if (!output.getStock().isEmpty()) {
+			output.createOffers(market, this, getMoney(), output.getStock().getAmount());
+		}
 	}
 
 	private void createSymbolicOffer(IPriceMakerMarket market, InputFactor f) {
@@ -95,8 +95,8 @@ public class Producer extends Firm implements IProducer {
 			f.createOffers(market, this, getMoney(), 1);
 		}
 	}
-	
-	public void notifyMarketClosed(){
+
+	public void notifyMarketClosed() {
 		adaptPrices();
 	}
 
@@ -122,7 +122,7 @@ public class Producer extends Firm implements IProducer {
 	public Good getGood() {
 		return output.getGood();
 	}
-	
+
 	@Override
 	protected double calculateDividends(int day) {
 		IStock wallet = getMoney();
@@ -198,7 +198,7 @@ public class Producer extends Firm implements IProducer {
 		}
 		return klon;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Firm with " + getMoney() + ", " + output + ", " + Arrays.toString(inputs);

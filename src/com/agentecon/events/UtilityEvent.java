@@ -16,8 +16,8 @@ public class UtilityEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
-		Collection<Consumer> cons = sim.getConsumers().getRandomConsumers(cardinality);
+	public void execute(int day, IWorld sim) {
+		Collection<Consumer> cons = sim.getAgents().getRandomConsumers(cardinality);
 		for (Consumer con: cons){
 			con.setUtilityFunction(util);
 		}

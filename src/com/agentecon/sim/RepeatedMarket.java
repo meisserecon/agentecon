@@ -10,7 +10,6 @@ import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.Market;
-import com.agentecon.market.Price;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.world.World;
@@ -29,11 +28,11 @@ public class RepeatedMarket {
 		MarketObserver observer = new MarketObserver(iterations);
 		while (true) {
 			world.startTransaction();
-			Collection<Producer> firms = world.getFirms().getRandomFirms();
-			Collection<Consumer> cons = world.getConsumers().getRandomConsumers();
+			Collection<Producer> firms = world.getAgents().getRandomFirms();
+			Collection<Consumer> cons = world.getAgents().getRandomConsumers();
 			Market market = new Market(world.getRand());
 			market.addMarketListener(observer);
-			listeners.notifyMarketOpened(market);
+			listeners.notifyGoodsMarketOpened(market);
 			for (Producer firm : firms) {
 				firm.offer(market);
 			}
@@ -44,12 +43,11 @@ public class RepeatedMarket {
 				firm.adaptPrices();
 			}
 			if (observer.shouldTryAgain()){
-				market.notifyCancelled();
+				market.cancel();
 				world.abortTransaction();
-				listeners.notifyMarketClosed(market, false);
 			} else {
+				market.close(day);
 				world.commitTransaction();
-				listeners.notifyMarketClosed(market, true);
 				break;
 			}
 		}
@@ -110,6 +108,10 @@ public class RepeatedMarket {
 //				System.out.println(count++);
 				return change.getAverage() > sensitivity;
 			}
+		}
+
+		@Override
+		public void notifyMarketClosed(int day) {
 		}
 
 	}

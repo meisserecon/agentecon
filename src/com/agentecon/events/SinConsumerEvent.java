@@ -1,7 +1,6 @@
 package com.agentecon.events;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtil;
 import com.agentecon.world.IWorld;
@@ -35,20 +34,15 @@ public class SinConsumerEvent extends ConsumerEvent {
 	}
 
 	@Override
-	public void execute(IWorld sim) {
-		int day = sim.getDay() - start;
+	public void execute(int today, IWorld sim) {
+		int day = today - start;
 		assert day >= 0;
 		double period = (day % cycle) * 2 * Math.PI / cycle;
 		this.births += (Math.sin(period) + FLATNESS) * getCardinality() / cycle / FLATNESS;
 		while (births >= 1.0){
 			births -= 1.0;
-			sim.add(createConsumer());
+			sim.add(createConsumer(type, this.maxAge, end, utilFun.create(count++)));
 		}
-	}
-	
-	@Override
-	protected Consumer createConsumer() {
-		return new Consumer(type, maxAge, end, utilFun.create(count++));
 	}
 	
 }

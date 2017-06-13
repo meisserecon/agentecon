@@ -3,6 +3,8 @@ package com.agentecon.firm.production;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.util.Numbers;
 
 public class ProductionTax implements IProductionFunction {

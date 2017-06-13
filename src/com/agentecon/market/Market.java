@@ -12,6 +12,7 @@ import com.agentecon.util.InstantiatingHashMap;
 
 public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 
+	private boolean open;
 	private MarketListeners listeners;
 	private HashMap<Good, AbstractMarket> markets;
 
@@ -25,6 +26,7 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 			
 		};
 		this.listeners = new MarketListeners();
+		this.open = true;
 	}
 
 	@Override
@@ -38,24 +40,29 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 	}
 
 	public void offer(Bid offer) {
+		assert open;
 		offer.setListener(listeners);
 		get(offer.getGood()).offer(offer);
 	}
 
 	public void offer(Ask offer) {
+		assert open;
 		offer.setListener(listeners);
 		get(offer.getGood()).offer(offer);
 	}
 
 	public Bid getBid(Good good) {
+		assert open;
 		return get(good).getBid();
 	}
 
 	public Ask getAsk(Good good) {
+		assert open;
 		return get(good).getAsk();
 	}
 
 	public Price getPrice(Good good) {
+		assert open;
 		return get(good).getPrice();
 	}
 
@@ -121,6 +128,7 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 
 	@Override
 	public Collection<IOffer> getOffers(IPriceFilter bidAskFilter) {
+		assert open;
 		ArrayList<IOffer> offers = new ArrayList<IOffer>();
 		for (AbstractMarket sub : markets.values()) {
 			if (bidAskFilter.isOfInterest(sub.getGood())) {
@@ -134,8 +142,17 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 		return offers;
 	}
 
-	public void notifyCancelled() {
+	public void cancel() {
+		assert open;
+		open = false;
 		listeners.notifyTradesCancelled();
 	}
+	
+	public void close(int day) {
+		assert open;
+		open = false;
+		listeners.notifyMarketClosed(day);
+	}
+
 
 }

@@ -12,7 +12,6 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
-import com.agentecon.firm.production.IProductionFunction;
 import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -20,6 +19,7 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
+import com.agentecon.market.IMarketListener;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Market;
 import com.agentecon.market.Price;
@@ -27,6 +27,7 @@ import com.agentecon.price.HardcodedBelief;
 import com.agentecon.price.IBelief;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
+import com.agentecon.production.IProductionFunction;
 import com.agentecon.util.Numbers;
 
 public class FirmTest {
@@ -105,6 +106,10 @@ public class FirmTest {
 				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
 			}
 
+			@Override
+			public void addMarketListener(IMarketListener listener) {
+			}
+
 		});
 		firm.adaptPrices();
 		double production = produce(firm);
@@ -144,6 +149,10 @@ public class FirmTest {
 			public void offer(Bid offer) {
 				assert offer.getPrice().getPrice() == hourPrice1;
 				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
+			}
+
+			@Override
+			public void addMarketListener(IMarketListener listener) {
 			}
 
 		});
@@ -210,6 +219,10 @@ public class FirmTest {
 			public void offer(Bid offer) {
 				assert offer.getPrice().getPrice() == hourPrice1 || offer.getPrice().getPrice() == hourPrice2;
 				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
+			}
+
+			@Override
+			public void addMarketListener(IMarketListener listener) {
 			}
 
 		});

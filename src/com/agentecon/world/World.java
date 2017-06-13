@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
+import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.firm.Portfolio;
@@ -12,7 +13,6 @@ import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationListeners;
 
 public class World implements IWorld {
@@ -30,11 +30,6 @@ public class World implements IWorld {
 		this.agents = new Agents(listeners, rand.nextLong());
 	}
 
-	@Override
-	public IConsumers getConsumers() {
-		return agents;
-	}
-
 	public void handoutEndowments() {
 		for (Consumer c : agents.getAllConsumers()) {
 			c.collectDailyEndowment();
@@ -42,11 +37,6 @@ public class World implements IWorld {
 		for (Producer f : agents.getAllFirms()) {
 			f.collectDailyEndowment();
 		}
-	}
-
-	@Override
-	public Agents getFirms() {
-		return agents;
 	}
 
 	public void prepareDay(int day) {
@@ -66,11 +56,6 @@ public class World implements IWorld {
 	@Override
 	public int getDay() {
 		return day;
-	}
-
-	@Override
-	public void addListener(ISimulationListener listener) {
-		listeners.add(listener);
 	}
 
 	public void finishDay(int day) {
@@ -113,9 +98,8 @@ public class World implements IWorld {
 		return agents;
 	}
 
-	@Override
 	public void add(IAgent agent) {
-		agents.add(agent);
+		agents.add((Agent) agent);
 	}
 
 }

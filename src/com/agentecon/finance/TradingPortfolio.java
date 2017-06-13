@@ -8,8 +8,8 @@ import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
-import com.agentecon.firm.production.IPriceProvider;
 import com.agentecon.goods.IStock;
+import com.agentecon.production.IPriceProvider;
 import com.agentecon.util.Numbers;
 
 public class TradingPortfolio extends Portfolio {
