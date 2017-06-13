@@ -77,7 +77,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			stocks.trade(day);
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
 			market.iterate(day, config.getIntradayIterations());
-			for (Producer firm : world.getAgents().getAllFirms()) {
+			for (Producer firm : world.getAgents().getFirms()) {
 				firm.produce();
 			}
 			world.finishDay(day);

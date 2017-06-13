@@ -5,6 +5,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.firm.FirmListeners;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
+import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
@@ -42,8 +43,8 @@ public abstract class Firm extends Agent implements IFirm {
 	}
 
 	@Override
-	public void raiseCapital(Object stockmarket) {
-		register.raiseCapital((DailyStockMarket) stockmarket, this, getDividendWallet());
+	public void raiseCapital(IStockMarket stockmarket) {
+		register.raiseCapital(stockmarket, this, getDividendWallet());
 	}
 
 	protected abstract double calculateDividends(int day);

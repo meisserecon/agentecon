@@ -31,10 +31,10 @@ public class World implements IWorld {
 	}
 
 	public void handoutEndowments() {
-		for (Consumer c : agents.getAllConsumers()) {
+		for (Consumer c : agents.getConsumers()) {
 			c.collectDailyEndowment();
 		}
-		for (Producer f : agents.getAllFirms()) {
+		for (Producer f : agents.getFirms()) {
 			f.collectDailyEndowment();
 		}
 	}
@@ -61,7 +61,7 @@ public class World implements IWorld {
 	public void finishDay(int day) {
 		IStock inheritedMoney = new Stock(Good.MONEY);
 		Portfolio inheritance = new Portfolio(inheritedMoney);
-		Collection<Consumer> consumers = agents.getAllConsumers();
+		Collection<Consumer> consumers = agents.getConsumers();
 		Iterator<Consumer> iter = consumers.iterator();
 		double util = 0.0;
 		while (iter.hasNext()) {

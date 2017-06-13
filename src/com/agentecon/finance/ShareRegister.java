@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IRegister;
+import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
@@ -27,7 +28,7 @@ public class ShareRegister implements IRegister {
 		this.all.add(rootPosition);
 	}
 	
-	public void raiseCapital(DailyStockMarket dsm, IAgent owner, IStock wallet) {
+	public void raiseCapital(IStockMarket dsm, IAgent owner, IStock wallet) {
 		if (!rootPosition.isEmpty()){
 			collectRootDividend(wallet);
 			Bid bid = dsm.getBid(getTicker());

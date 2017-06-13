@@ -10,7 +10,6 @@ import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.Consumer;
-import com.agentecon.consumer.IConsumer;
 import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
 import com.agentecon.firm.IFirm;
@@ -19,7 +18,7 @@ import com.agentecon.firm.Producer;
 import com.agentecon.firm.Ticker;
 import com.agentecon.sim.ISimulationListener;
 
-public class Agents implements IAgents, IConsumers, IFirms {
+public class Agents implements IAgents {
 
 	private long seed;
 	private Random rand;
@@ -57,11 +56,11 @@ public class Agents implements IAgents, IConsumers, IFirms {
 		this.seed = seed;
 	}
 
-	public Collection<Producer> getAllFirms() {
+	public Collection<Producer> getFirms() {
 		return producers;
 	}
 
-	public Collection<Consumer> getAllConsumers() {
+	public Collection<Consumer> getConsumers() {
 		return consumers;
 	}
 
@@ -104,12 +103,11 @@ public class Agents implements IAgents, IConsumers, IFirms {
 		return getRandomConsumers(-1);
 	}
 
-	public Collection<? extends IAgent> getAll() {
+	public Collection<? extends IAgent> getAgents() {
 		return all.values();
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Collection<Consumer> getRandomConsumers(int cardinality) {
 		Collections.shuffle(consumers, getRand()); // OPTIMIZABLE in case of
 													// cardinality < size
@@ -133,7 +131,6 @@ public class Agents implements IAgents, IConsumers, IFirms {
 		}
 	}
 
-	@Override
 	public Consumer getRandomConsumer() {
 		return consumers.get(getRand().nextInt(consumers.size()));
 	}
@@ -196,45 +193,18 @@ public class Agents implements IAgents, IConsumers, IFirms {
 	}
 
 	@Override
-	public Collection<? extends IAgent> getAgents() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends IConsumer> getConsumers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends IFirm> getFirms() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Collection<? extends IShareholder> getShareHolders() {
-		// TODO Auto-generated method stub
-		return null;
+		return shareholders;
 	}
 
 	@Override
-	public Collection<? extends IFirm> getListedCompanies() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IFirm getListedCompany(Ticker ticker) {
-		// TODO Auto-generated method stub
-		return null;
+	public IFirm getFirm(Ticker ticker) {
+		return firms.get(ticker);
 	}
 
 	@Override
 	public IAgent getAgent(int agentId) {
-		// TODO Auto-generated method stub
-		return null;
+		return all.get(agentId);
 	}
 
 }

@@ -87,7 +87,7 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 				indexPoints.add(avgPrice);
 				sectorIndices.get(sector).add(avgPrice);
 
-				double dividends = world.getListedCompany(firm).getShareRegister().getAverageDividend();
+				double dividends = world.getFirm(firm).getShareRegister().getAverageDividend();
 				if (dividends > 1) {
 					double peratio = avgPrice.getAverage() / dividends;
 					indexRatio.add(peratio);

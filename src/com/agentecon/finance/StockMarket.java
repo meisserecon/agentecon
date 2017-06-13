@@ -43,7 +43,7 @@ public class StockMarket extends SimulationListenerAdapter {
 		for (IFirm firm : ags.getPublicCompanies()) {
 			((ShareRegister)firm.getShareRegister()).collectRootDividend(wallet);
 		}
-		Collection<Consumer> consumers = ags.getAllConsumers();
+		Collection<Consumer> consumers = ags.getConsumers();
 		double dividend = wallet.getAmount() / consumers.size();
 		for (Consumer cons: consumers){
 			cons.getMoney().transfer(wallet, dividend);

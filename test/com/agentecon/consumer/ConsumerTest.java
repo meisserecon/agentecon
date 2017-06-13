@@ -94,7 +94,7 @@ public class ConsumerTest {
 		cons.collectDailyEndowment();
 		cons.maximizeUtility(new IPriceTakerMarket() {
 
-			private IOffer ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(FONDUE, 1.0), 1000);
+			private IOffer ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(PIZZA, 1.0), 1000);
 			private IOffer bid = new Bid(null, new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
 
 			@Override

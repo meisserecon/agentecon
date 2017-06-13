@@ -16,7 +16,7 @@ public class MoneySupplyVerification {
 
 	private double calcSum() {
 		double money = 0.0;
-		for (IAgent ag : agents.getAll()) {
+		for (IAgent ag : agents.getAgents()) {
 			money += ag.getMoney().getAmount();
 		}
 		return money;
