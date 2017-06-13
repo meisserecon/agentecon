@@ -10,7 +10,7 @@ public interface IFirm extends IAgent {
 	
 	public void inherit(Position pos);
 	
-	public void raiseCapital(Object stockmarket);
+	public void raiseCapital(IStockMarket stockmarket);
 
 	public void payDividends(int day);
 	

@@ -17,9 +17,7 @@ public Collection<? extends IAgent> getAgents();
 	
 	public Collection<? extends IShareholder> getShareHolders();
 	
-	public Collection<? extends IFirm> getListedCompanies();
-	
-	public IFirm getListedCompany(Ticker ticker);
+	public IFirm getFirm(Ticker ticker);
 
 	public IAgent getAgent(int agentId);
 

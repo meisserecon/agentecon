@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -41,12 +39,10 @@ public class AgentLoader extends ClassLoader {
 	
 	public AgentLoader(SimulationHandle source) throws SocketTimeoutException, IOException{
 		super(AgentLoader.class.getClassLoader());
-		URL url = source.getJarURL();
-		URLConnection conn = url.openConnection();
 		this.source = source;
-		this.date = conn.getLastModified() == 0 ? conn.getDate() : conn.getLastModified();
+		this.date = source.getJarDate();
 		this.data = new HashMap<String, byte[]>();
-		try (InputStream is = conn.getInputStream()){
+		try (InputStream is = source.openJar()){
 			JarInputStream jis = new JarInputStream(new BufferedInputStream(is, 500000));
 			try {
 				JarEntry entry = jis.getNextJarEntry();
