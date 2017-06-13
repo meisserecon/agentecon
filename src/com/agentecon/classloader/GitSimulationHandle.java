@@ -1,5 +1,7 @@
 package com.agentecon.classloader;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -29,13 +31,23 @@ public class GitSimulationHandle extends SimulationHandle {
 		}
 	}
 
-	@Override
 	public URL getJarURL() {
 		try {
 			return new URL("https://api.github.com/" + getOwner() + "/" + repo + "/contents/" + JAR_PATH + "?ref=" + getName());
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
+	}
+
+	@Override
+	public long getJarDate() throws IOException {
+		URL url = getJarURL();
+		return url.openConnection().getDate();
+	}
+
+	@Override
+	public InputStream openJar() throws IOException {
+		return getJarURL().openStream();
 	}
 	
 }

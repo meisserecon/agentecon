@@ -1,6 +1,9 @@
 package com.agentecon.classloader;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -32,21 +35,22 @@ public class LocalSimulationHandle extends SimulationHandle {
 	}
 
 	@Override
-	public URL getJarURL() {
-		try {
-			return new URL("file://" + getJarfile().getAbsolutePath());
-		} catch (MalformedURLException e) {
-			throw new java.lang.RuntimeException(e);
-		}
-	}
-
-	@Override
 	public URL getBrowsableURL(String classname) {
 		try {
 			return new URL("file://" + basePath.getAbsolutePath() + File.separatorChar + classname.replace('.', File.separatorChar));
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
+	}
+
+	@Override
+	public long getJarDate() throws IOException {
+		return getJarfile().lastModified();
+	}
+
+	@Override
+	public InputStream openJar() throws IOException {
+		return new FileInputStream(getJarfile());
 	}
 
 }

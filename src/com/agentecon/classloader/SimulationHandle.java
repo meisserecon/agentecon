@@ -1,5 +1,7 @@
 package com.agentecon.classloader;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 public abstract class SimulationHandle {
@@ -21,7 +23,9 @@ public abstract class SimulationHandle {
 		return owner;
 	}
 	
-	public abstract URL getJarURL();
+	public abstract long getJarDate() throws IOException;
+	
+	public abstract InputStream openJar() throws IOException;
 	
 	public abstract URL getBrowsableURL(String classname);
 	
