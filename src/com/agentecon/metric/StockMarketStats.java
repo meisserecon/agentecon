@@ -130,7 +130,7 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			indexPoints.add(avgPrice);
 			sectorIndices.get(sector).add(avgPrice);
 
-			double dividends = agents.getListedCompany(firm).getShareRegister().getAverageDividend();
+			double dividends = agents.getFirm(firm).getShareRegister().getAverageDividend();
 			if (dividends > 1) {
 				double peratio = avgPrice.getAverage() / dividends;
 				indexRatio.add(peratio);

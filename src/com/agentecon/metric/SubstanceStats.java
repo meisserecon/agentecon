@@ -44,7 +44,7 @@ public class SubstanceStats extends SimStats {
 				}
 				for (Position pos : holder.getPortfolio().getPositions()) {
 					double value = pos.getAmount() * stocks.getPrice(pos.getTicker());
-					IFirm heldCompany = agents.getListedCompany(pos.getTicker());
+					IFirm heldCompany = agents.getFirm(pos.getTicker());
 					if (holder instanceof IFirm) {
 						// only count real companies they hold
 						if (heldCompany instanceof IFirm) {
