@@ -43,12 +43,16 @@ public class FileServer extends NanoHTTPD {
 	@Override
 	public Response serve(IHTTPSession session) {
 		Method method = session.getMethod();
-		assert method.equals("GET");
+		assert method == Method.GET;
 		String uri = session.getUri();
 		System.out.println(method + " requested  on " + uri);
 		if (uri.equals("/")){
 			uri = "/index.html";
 		}
+		return serve(session, uri);
+	}
+
+	protected Response serve(IHTTPSession session, String uri) {
 		File child = new File(baseFolder, uri);
 		if (child.isFile() && child.getAbsolutePath().startsWith(baseFolder.getAbsolutePath())) {
 			try {

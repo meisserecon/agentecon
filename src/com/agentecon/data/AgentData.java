@@ -1,37 +1,32 @@
 package com.agentecon.data;
 
-import java.io.File;
-import java.net.URL;
+import java.util.Collection;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.classloader.AgentLoader;
+import com.agentecon.goods.IStock;
+import com.agentecon.util.Numbers;
 
-public class AgentData {
+public class AgentData extends JsonData {
 
-	public long date;
-	public String owner;
-	public String codeLink;
-	
-	public double money;
 	public String agentName;
+	public String[][] inventory;
+	
+	public SourceData source;
 
 	public AgentData(IAgent agent) {
-		Class<? extends IAgent> clazz = agent.getClass();
-		ClassLoader loader = clazz.getClassLoader();
-		if (loader instanceof AgentLoader) {
-			AgentLoader agentLoader = (AgentLoader) loader;
-			this.date = agentLoader.getDate();
-			this.owner = agentLoader.getSourceData().getOwner();
-			this.codeLink = agentLoader.getSourceData().getBrowsableURL(agent.getClass().getName()).toExternalForm();
-		} else {
-			URL url = loader.getResource(clazz.getName().replace('.', File.separatorChar) + ".class");
-			File sourceFile = new File(url.toExternalForm().substring("file://".length()).replace(".class", ".java").replace("/bin/", "/src/"));
-			this.date = sourceFile.lastModified();
-			this.owner = System.getProperty("user.name");
-			this.codeLink = "file://" + sourceFile;
-		}
-		this.money = agent.getMoney().getAmount();
+		this.source = new SourceData(agent);
+		
+		this.inventory = toStringArray(agent.getInventory().getAll());
 		this.agentName = agent.getName();
+	}
+
+	public static String[][] toStringArray(Collection<IStock> inv) {
+		String[][] inventory = new String[inv.size()][2];
+		int i=0;
+		for (IStock stock: inv){
+			inventory[i++] = new String[]{stock.getGood().toString(), Numbers.toString(stock.getAmount())}; 
+		}
+		return inventory;
 	}
 
 }

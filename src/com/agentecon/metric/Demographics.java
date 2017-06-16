@@ -60,7 +60,7 @@ public class Demographics extends SimStats {
 
 	@Override
 	public void notfiyConsumerDied(IConsumer consumer) {
-		utilityOnDeath.get(consumer.getType()).add(consumer.getTotalUtility());
+		utilityOnDeath.get(consumer.getType()).add(consumer.getUtilityFunction().getStatistics().getTotal());
 	}
 
 	public Collection<? extends TimeSeries> getUtilityData() {

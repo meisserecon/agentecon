@@ -12,7 +12,7 @@ import com.agentecon.classloader.SimulationHandle;
 
 public class SimulationLoader extends AgentLoader {
 
-	private static final String SIM_CLASS = "com.agentecon.Simulation";
+	public static final String SIM_CLASS = "com.agentecon.Simulation";
 
 	private Checksum checksum;
 

@@ -3,6 +3,10 @@
 <head>
 <title>Simulation</title>
 <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="js/simold.js"></script>
+<script src="hc/highcharts.js"></script>
+<script src="hc/highcharts-more.js"></script>
+<script src="hc/modules/exporting.js"></script>
 <link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css">
 <link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
 <link type="text/css" rel="stylesheet" href="css/style.css">
@@ -26,17 +30,16 @@
 			Several MBs of simulation data are being loaded into the browser, can take a while depending on your connection. In some cases, it does not seem to work at all. :)
 		</div>
 
+		<div id="desc">Loading a simulation may take a few seconds...</div>
+		<!-- 		<div id="todo">TODO: better description, link to documentation, etc.</div> -->
+
+		<br> Click on legend items to filter them. Zoom into the charts by selecting the area of interest. Once zoomed in, hold 'shift' to pad. Charts might be slightly inaccurate as some data points
+		are skipped in order to ensure acceptable browser performance. <br>
 		<div id="sourcelink"></div>
 		<br> <br>
 		
-		<div id="tradegraph"></div>
-		
 		<script>
-		var test = "asdasd";
-		$.getJSON("/tradegraph/luzius/local/local", function(data) {
-			var loc = window.location;
-			document.getElementById('tradegraph').innerHTML = data;
-		});
+			agentecon.front.getHandle(window.location.search.substring(4));
 		</script>
 		
 		<div id="charts"></div>
