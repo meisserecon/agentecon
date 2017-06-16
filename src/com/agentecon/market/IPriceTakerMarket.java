@@ -7,7 +7,7 @@ import java.util.Collection;
 import com.agentecon.goods.Good;
 
 
-public interface IPriceTakerMarket {
+public interface IPriceTakerMarket extends IMarket {
 	
 //	public double buy(Wallet wallet, Stock stock, double amount);
 //	

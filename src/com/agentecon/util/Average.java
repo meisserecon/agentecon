@@ -39,6 +39,10 @@ public class Average implements Cloneable, IAverage, Comparable<Average> {
 		this.max = Math.max(max, x);
 	}
 	
+	public double getTotal(){
+		return sum;
+	}
+	
 	public double getTotWeight(){
 		return weight;
 	}

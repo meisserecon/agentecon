@@ -87,7 +87,7 @@ public class Portfolio implements Cloneable {
 			throw new java.lang.RuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public String toString() {
 		return wallet + ", " + inv.values();

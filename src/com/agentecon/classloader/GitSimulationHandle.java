@@ -17,9 +17,8 @@ public class GitSimulationHandle extends SimulationHandle {
 //		this.date = WebUtil.extract(commitDesc, "date", 0);
 	}
 
-	@Override
-	public String getOwner() {
-		return repo;
+	public String getPath(){
+		return super.getOwner() + "/" + repo + "/" + getName();
 	}
 
 	@Override

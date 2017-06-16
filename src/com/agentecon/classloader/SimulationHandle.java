@@ -23,6 +23,8 @@ public abstract class SimulationHandle {
 		return owner;
 	}
 	
+	public abstract String getPath();
+	
 	public abstract long getJarDate() throws IOException;
 	
 	public abstract InputStream openJar() throws IOException;

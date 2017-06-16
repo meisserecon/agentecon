@@ -72,6 +72,12 @@ public class Inventory {
 	protected IStock createStock(Good type) {
 		return new Stock(type);
 	}
+	
+	public void absorb(Inventory other) {
+		for (IStock s: other.inv.values()){
+			receive(s);
+		}
+	}
 
 	public void receive(IStock[] daily) {
 		for (IStock s : daily) {
@@ -94,6 +100,7 @@ public class Inventory {
 		}
 	}
 	
+	@Override
 	public String toString() {
 		String list = null;
 		for (IStock s : inv.values()) {

@@ -4,7 +4,7 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IPriceMakerMarket;
 
-public interface IProducer extends IFirm {
+public interface IProducer extends IFirm, IPriceProvider {
 	
 	public Good[] getInputs();
 	
@@ -12,10 +12,10 @@ public interface IProducer extends IFirm {
 	
 	public void offer(IPriceMakerMarket market);
 	
-	public void produce();
-	
-	public void notifyMarketClosed();
-	
 	public void addProducerMonitor(IProducerListener listener);
+
+	public void adaptPrices();
+	
+	public void produce();
 
 }

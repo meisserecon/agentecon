@@ -8,6 +8,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
+import com.agentecon.util.Average;
 
 
 public interface IUtility {
@@ -25,5 +26,9 @@ public interface IUtility {
 	public Good[] getGoods();
 
 	public double[] getWeights();
+	
+	public Average getStatistics();
+	
+	public double getLatestExperiencedUtility();
 
 }

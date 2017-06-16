@@ -17,7 +17,7 @@ import com.agentecon.util.IOUtils;
 
 public class AgentLoader extends ClassLoader {
 
-	private static final String AGENT_CLASS = "com.agentecon.AgentFactory";
+	public static final String AGENT_CLASS = "com.agentecon.AgentFactory";
 
 	private static final int ENDING_LEN = ".class".length();
 
@@ -113,6 +113,25 @@ public class AgentLoader extends ClassLoader {
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		IAgentFactory fac = new AgentLoader().loadAgentFactory();
 		System.out.println(fac);
+	}
+
+	public static String getType(Class<?> clazz) {
+		String name = getName(clazz);
+		ClassLoader cl = clazz.getClassLoader();
+		if (cl instanceof AgentLoader){
+			return ((AgentLoader) cl).getSourceData().getOwner() + "-" + name;
+		} else {
+			return name;
+		}
+	}
+
+	protected static String getName(Class<?> clazz) {
+		String name = clazz.getSimpleName();
+		while (name.length()==0){
+			clazz = clazz.getSuperclass();
+			name = clazz.getSimpleName();
+		}
+		return name;
 	}
 
 }

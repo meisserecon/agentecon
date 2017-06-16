@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
 public class Numbers {
 
 	private static final DecimalFormat FORMATTER = new DecimalFormat("#.####");
+	private static final DecimalFormat SHORT_FORMATTER = new DecimalFormat("#.##");
+	
 	public static final double EPSILON = 0.000001; // 10e-6
 
 	public static boolean isBigger(double bigger, double smaller) {
@@ -20,6 +22,10 @@ public class Numbers {
 	
 	public static String toString(double d){
 		return FORMATTER.format(d);
+	}
+	
+	public static String toShortString(double d){
+		return SHORT_FORMATTER.format(d);
 	}
 	
 	public static boolean equals(double d1, double d2){

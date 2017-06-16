@@ -8,4 +8,6 @@ public interface IRegister {
 	
 	public double getAverageDividend();
 	
+	public int getShareholderCount();
+	
 }
