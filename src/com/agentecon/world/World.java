@@ -6,10 +6,9 @@ import java.util.Random;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
-import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
@@ -31,11 +30,8 @@ public class World implements IWorld {
 	}
 
 	public void handoutEndowments() {
-		for (Consumer c : agents.getConsumers()) {
+		for (IConsumer c : agents.getConsumers()) {
 			c.collectDailyEndowment();
-		}
-		for (Producer f : agents.getFirms()) {
-			f.collectDailyEndowment();
 		}
 	}
 
@@ -61,16 +57,16 @@ public class World implements IWorld {
 	public void finishDay(int day) {
 		IStock inheritedMoney = new Stock(Good.MONEY);
 		Portfolio inheritance = new Portfolio(inheritedMoney);
-		Collection<Consumer> consumers = agents.getConsumers();
-		Iterator<Consumer> iter = consumers.iterator();
+		Collection<IConsumer> consumers = agents.getConsumers();
+		Iterator<IConsumer> iter = consumers.iterator();
 		double util = 0.0;
 		while (iter.hasNext()) {
-			Consumer c = iter.next();
+			IConsumer c = iter.next();
 			assert c.isAlive();
 			util += c.consume();
 			c.age(inheritance);
 		}
-		for (Position pos: inheritance.getPositions()){
+		for (Position pos : inheritance.getPositions()) {
 			agents.getCompany(pos.getTicker()).inherit(pos);
 		}
 		if (inheritedMoney.getAmount() > 0) {
@@ -100,6 +96,10 @@ public class World implements IWorld {
 
 	public void add(IAgent agent) {
 		agents.add((Agent) agent);
+	}
+
+	public String toString() {
+		return "World at day " + day + " with " + agents.getAgents().size() + " agents";
 	}
 
 }

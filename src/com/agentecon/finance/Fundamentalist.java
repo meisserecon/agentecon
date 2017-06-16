@@ -28,7 +28,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 	private Portfolio portfolio;
 
 	public Fundamentalist(IWorld world) {
-		super("Fundamentalist", new Endowment(new IStock[] { new Stock(Good.MONEY, CASH) }, new IStock[] {}));
+		super(new Endowment(new IStock[] { new Stock(Good.MONEY, CASH) }, new IStock[] {}));
 		this.world = world;
 		this.portfolio = new Portfolio(getMoney());
 	}
@@ -52,7 +52,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 		boolean buyingAllowed = 1.5 * outerValue > innerValue;
 		boolean sellingAllowed = outerValue < 1.5 * innerValue;
 
-		Collection<IFirm> comps = world.getAgents().getPublicCompanies();
+		Collection<IFirm> comps = world.getAgents().getFirms();
 		PriorityQueue<IFirm> queue = getOfferQueue(dsm, comps);
 		int count = queue.size() / 5;
 		if (sellingAllowed) {

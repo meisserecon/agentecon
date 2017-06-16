@@ -15,6 +15,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
+import com.agentecon.market.IMarketListener;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
@@ -56,9 +57,9 @@ public class ConsumerTest {
 	@Test
 	public void test() {
 		LogUtil utilFun = new LogUtil(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
-		Consumer cons = new Consumer("dummy", createEndowment(), utilFun);
+		Consumer cons = new Consumer(createEndowment(), utilFun);
 		cons.collectDailyEndowment();
-		cons.maximizeUtility(new IPriceTakerMarket() {
+		cons.tradeGoods(new IPriceTakerMarket() {
 
 			private IOffer ask = createAsk();
 			private IOffer bid = createBid();
@@ -82,6 +83,11 @@ public class ConsumerTest {
 			public Collection<IOffer> getAsks() {
 				return Arrays.asList(ask);
 			}
+
+			@Override
+			public void addMarketListener(IMarketListener listener) {
+				throw new java.lang.RuntimeException("not implemented");
+			}
 		});
 		double util = cons.consume();
 		assert Numbers.equals(util, 58.400245564);
@@ -90,9 +96,9 @@ public class ConsumerTest {
 	@Test
 	public void test2() {
 		LogUtil utilFun = new LogUtil(new Weight(PIZZA, 8), new Weight(ITALTIME, 14));
-		Consumer cons = new Consumer("dummy", createEndowment2(), utilFun);
+		Consumer cons = new Consumer(createEndowment2(), utilFun);
 		cons.collectDailyEndowment();
-		cons.maximizeUtility(new IPriceTakerMarket() {
+		cons.tradeGoods(new IPriceTakerMarket() {
 
 			private IOffer ask = new Ask(null, new Stock(MONEY), new Stock(PIZZA, 1000), new Price(PIZZA, 1.0), 1000);
 			private IOffer bid = new Bid(null, new Stock(MONEY, 10000), new Stock(ITALTIME), new Price(ITALTIME, 0.24424871756), 1000);
@@ -115,6 +121,11 @@ public class ConsumerTest {
 			@Override
 			public Collection<IOffer> getAsks() {
 				return Arrays.asList(ask);
+			}
+
+			@Override
+			public void addMarketListener(IMarketListener listener) {
+				throw new java.lang.RuntimeException("not implemented");
 			}
 		});
 		assert Numbers.equals(cons.consume(), cons.getUtilityFunction().getUtility(Arrays.<IStock>asList(new Stock(PIZZA, 2.116844127999999), new Stock(ITALTIME, 21.331651435017676))));

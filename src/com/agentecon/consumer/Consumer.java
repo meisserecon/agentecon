@@ -31,12 +31,12 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	private double savingsTarget;
 	private ConsumerListeners listeners;
 
-	public Consumer(String type, Endowment end, IUtility utility) {
-		this(type, IMMORTAL, end, utility);
+	public Consumer(Endowment end, IUtility utility) {
+		this(IMMORTAL, end, utility);
 	}
 
-	public Consumer(String type, int maxAge, Endowment end, IUtility utility) {
-		super(type, end);
+	public Consumer(int maxAge, Endowment end, IUtility utility) {
+		super(end);
 		this.maxAge = maxAge;
 		this.soldGood = end.getDaily()[0].getGood();
 		this.utility = utility;
@@ -51,10 +51,6 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 
 	public IUtility getUtilityFunction() {
 		return utility;
-	}
-
-	public void setUtilityFunction(IUtility utility) {
-		this.utility = utility;
 	}
 
 	public void managePortfolio(IStockMarket stocks) {
@@ -85,7 +81,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		listeners.notifyInvested(this, amount);
 	}
 
-	public void maximizeUtility(IPriceTakerMarket market) {
+	public void tradeGoods(IPriceTakerMarket market) {
 		Inventory inv = getInventory();
 		if (isRetired()) {
 			inv = inv.hide(soldGood); // cannot work any more, hide hours
@@ -153,17 +149,9 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		dailySpendings.add(spendings);
 	}
 
-	private double totalUtility;
-
-	@Override
-	public double getTotalUtility() {
-		return totalUtility;
-	}
-
 	public final double consume() {
 		Inventory inv = getInventory();
 		double u = utility.consume(inv.getAll());
-		totalUtility += u;
 		listeners.notifyConsuming(this, getAge(), getInventory(), u);
 		assert !Double.isNaN(u);
 		assert u >= 0.0;

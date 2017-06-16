@@ -34,15 +34,15 @@ public class LinearConsumerEvent extends ConsumerEvent {
 			int step = maxAge / initialPopulation;
 			for (; initialPopulation > 0; initialPopulation--) {
 				int maxAge = Math.max(this.maxAge - initialPopulation * step, step);
-				sim.add(createConsumer(type, maxAge, end, utilFun.create(count++)));
+				sim.add(createConsumer(maxAge, end, utilFun.create(count++)));
 			}
 		}
 		super.execute(day, sim);
 	}
 	
 	@Override
-	protected IConsumer createConsumer(String type, int immortal, Endowment end, IUtility util){
-		return new Consumer(type, this.maxAge, end, util);
+	protected IConsumer createConsumer(int immortal, Endowment end, IUtility util){
+		return new Consumer(this.maxAge, end, util);
 	}
 
 }

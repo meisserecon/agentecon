@@ -21,7 +21,7 @@ import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.production.ProducerListeners;
 
-public class Producer extends Firm implements IProducer {
+public class Producer extends Firm implements IProducer, IPriceProvider {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -31,12 +31,12 @@ public class Producer extends Firm implements IProducer {
 
 	private ProducerListeners listeners;
 
-	public Producer(String type, Endowment end, IProductionFunction prod) {
-		this(type, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
+	public Producer(Endowment end, IProductionFunction prod) {
+		this(end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
 	}
 
-	public Producer(String type, Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
-		super(type, end);
+	public Producer(Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
+		super(end);
 		this.prod = prod;
 		this.strategy = strategy;
 
@@ -62,13 +62,7 @@ public class Producer extends Firm implements IProducer {
 
 	public void offer(IPriceMakerMarket market) {
 		double budget = getMoney().getAmount();
-		double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(new IPriceProvider() {
-
-			@Override
-			public double getPrice(Good output) {
-				return Producer.this.getFactor(output).getPrice();
-			}
-		}));
+		double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(this));
 		if (!getMoney().isEmpty()) {
 			for (InputFactor f : inputs) {
 				if (f.isObtainable()) {
@@ -94,10 +88,6 @@ public class Producer extends Firm implements IProducer {
 		if (getMoney().getAmount() > 100) {
 			f.createOffers(market, this, getMoney(), 1);
 		}
-	}
-
-	public void notifyMarketClosed() {
-		adaptPrices();
 	}
 
 	public void adaptPrices() {
@@ -157,10 +147,10 @@ public class Producer extends Firm implements IProducer {
 	}
 
 	public Producer createNextGeneration(Endowment end, IProductionFunction prod) {
-		return new Producer(getType(), end, prod, strategy);
+		return new Producer(end, prod, strategy);
 	}
 
-	public Factor getFactor(Good good) {
+	private Factor getFactor(Good good) {
 		if (good.equals(this.output.getGood())) {
 			return this.output;
 		} else {
@@ -201,7 +191,12 @@ public class Producer extends Firm implements IProducer {
 
 	@Override
 	public String toString() {
-		return "Firm with " + getMoney() + ", " + output + ", " + Arrays.toString(inputs);
+		return getType() + " with " + getMoney() + ", " + output + ", " + Arrays.toString(inputs);
+	}
+
+	@Override
+	public double getPrice(Good good) {
+		return getFactor(good).getPrice();
 	}
 
 }

@@ -11,7 +11,6 @@ import com.agentecon.world.IWorld;
 public class ConsumerEvent extends SimEvent {
 
 	protected int count;
-	protected String type;
 	protected Endowment end;
 	protected IUtilityFactory utilFun;
 
@@ -21,7 +20,6 @@ public class ConsumerEvent extends SimEvent {
 
 	public ConsumerEvent(int time, int card, int interval, String name, Endowment end, IUtilityFactory utility) {
 		super(time, interval, card);
-		this.type = name;
 		this.end = end;
 		this.count = 0;
 		this.utilFun = utility;
@@ -41,12 +39,12 @@ public class ConsumerEvent extends SimEvent {
 	@Override
 	public void execute(int day, IWorld sim) {
 		for (int i = 0; i < cardinality; i++) {
-			sim.add((Agent) createConsumer(type, Consumer.IMMORTAL, end, utilFun.create(count++)));
+			sim.add((Agent) createConsumer(Consumer.IMMORTAL, end, utilFun.create(count++)));
 		}
 	}
 
-	protected IConsumer createConsumer(String type, int maxAge, Endowment end, IUtility util){
-		return new Consumer(type, maxAge, end, util);
+	protected IConsumer createConsumer(int maxAge, Endowment end, IUtility util){
+		return new Consumer(maxAge, end, util);
 	}
 
 	public String toString() {

@@ -16,12 +16,12 @@ public class AgentFactory implements IAgentFactory {
 	
 	@Override
 	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
-		return new Consumer("Consumer", endowment, utilityFunction);
+		return new Consumer(endowment, utilityFunction);
 	}
 
 	@Override
 	public IProducer createProducer(Endowment endowment, IProductionFunction prodFun) {
-		return new Producer(prodFun.getOutput() + " producer", endowment, prodFun);
+		return new Producer(endowment, prodFun);
 	}
 
 	@Override

@@ -6,19 +6,31 @@ import java.util.Random;
 
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.util.Average;
 
 public abstract class AbstractWeightedUtil implements IUtility {
 
+	private double latest;
+	private Average stats;
 	private Weight[] weights;
 
 	public AbstractWeightedUtil(Weight... weights) {
 		this.weights = weights;
+		this.stats = new Average();
+		this.latest = 0.0;
 	}
 	
 	public AbstractWeightedUtil(Weight[] weights, Weight... moreWeights) {
+		this.stats = new Average();
+		this.latest = 0.0;
 		this.weights = new Weight[weights.length + moreWeights.length];
 		System.arraycopy(weights, 0, this.weights, 0, weights.length);
 		System.arraycopy(moreWeights, 0, this.weights, weights.length, moreWeights.length);
+	}
+	
+	@Override
+	public double getLatestExperiencedUtility() {
+		return latest;
 	}
 	
 	@Override
@@ -78,6 +90,8 @@ public abstract class AbstractWeightedUtil implements IUtility {
 				good.consume();
 			}
 		}
+		latest = util;
+		stats.add(util);
 		return util;
 	}
 
@@ -109,6 +123,10 @@ public abstract class AbstractWeightedUtil implements IUtility {
 			newWeights[i] = new Weight(weights[i].good, Math.max(1.0, weights[i].weight * factor));
 		}
 		return newWeights;
+	}
+	
+	public Average getStatistics(){
+		return stats;
 	}
 
 }

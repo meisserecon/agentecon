@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.firm.IFirm;
-import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
@@ -13,9 +13,10 @@ import com.agentecon.firm.Ticker;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
+import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.util.Average;
 
-public class MarketMaker extends Firm implements IShareholder, Cloneable {
+public class MarketMaker extends Firm implements IMarketMaker {
 
 	private static final int MARKET_MAKER_CASH = 1000;
 
@@ -23,13 +24,13 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
-	public MarketMaker(Collection<IFirm> comps) {
-		super("Market Maker", new Endowment(new IStock[] { new Stock(Good.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
+	public MarketMaker(Collection<IFirm> firms) {
+		super(new Endowment(new IStock[] { new Stock(Good.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
 		this.portfolio = new Portfolio(getMoney());
 		this.reserve = 0.0;
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();
-		for (IFirm pc : comps) {
-			addPosition(pc.getShareRegister().createPosition());
+		for (IFirm firm : firms) {
+			notifyFirmCreated(firm);
 		}
 	}
 
@@ -37,7 +38,7 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 	public void managePortfolio(IStockMarket dsm) {
 	}
 
-	public void postOffers(IStockMarket dsm) {
+	public void postOffers(IPriceMakerMarket dsm) {
 		IStock money = getMoney().hide(reserve);
 		double budgetPerPosition = money.getAmount() / priceBeliefs.size();
 		for (MarketMakerPrice e : priceBeliefs.values()) {
@@ -45,10 +46,11 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 		}
 	}
 
-	public void addPosition(Position pos) {
-		if (pos.getTicker().equals(getTicker())) {
-			pos.dispose(); // do not trade own shares
+	public void notifyFirmCreated(IFirm firm){
+		if (firm.getTicker().equals(getTicker())) {
+			// do not trade own shares
 		} else {
+			Position pos = firm.getShareRegister().createPosition();
 			portfolio.addPosition(pos);
 			MarketMakerPrice prev = priceBeliefs.put(pos.getTicker(), new MarketMakerPrice(pos));
 			assert prev == null;
@@ -101,6 +103,6 @@ public class MarketMaker extends Firm implements IShareholder, Cloneable {
 
 	@Override
 	public String toString() {
-		return getMoney() + ", holding " + getAvgHoldings() + ", price index: " + getIndex().toFullString() + ", dividend " + getShareRegister().getAverageDividend();
+		return getType() + " with " + getMoney() + ", holding " + getAvgHoldings() + ", price index: " + getIndex().toFullString() + ", dividend " + getShareRegister().getAverageDividend();
 	}
 }

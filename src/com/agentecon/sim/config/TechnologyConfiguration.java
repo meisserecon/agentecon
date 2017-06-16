@@ -67,7 +67,7 @@ public class TechnologyConfiguration implements IConfiguration {
 			@Override
 			public void execute(int day, IWorld sim) {
 				for (int i = 0; i < getCardinality(); i++) {
-					sim.add(new MarketMaker(sim.getAgents().getPublicCompanies()));
+					sim.add(new MarketMaker(sim.getAgents().getFirms()));
 				}
 			}
 		});
@@ -84,8 +84,8 @@ public class TechnologyConfiguration implements IConfiguration {
 			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
 			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)) {
 				@Override
-				protected IConsumer createConsumer(String type, int maxAge, Endowment end, IUtility util){
-					return new Consumer(type, maxAge, end, utilFun.create(count++));
+				protected IConsumer createConsumer(int maxAge, Endowment end, IUtility util){
+					return new Consumer(maxAge, end, utilFun.create(count++));
 				}
 			});
 		}

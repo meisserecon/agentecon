@@ -89,6 +89,10 @@ public class ShareRegister implements IRegister {
 		}
 		return tot;
 	}
+	
+	public int getShareholderCount(){
+		return all.size();
+	}
 
 	@Override
 	public String toString() {

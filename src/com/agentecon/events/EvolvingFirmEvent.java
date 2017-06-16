@@ -24,7 +24,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 		this.prodFun = fun;
 		this.firms = new ArrayList<>();
 		for (int i = 0; i < getCardinality(); i++) {
-			firms.add(new Producer(type, end, fun));
+			firms.add(new Producer(end, fun));
 		}
 		initListener();
 	}

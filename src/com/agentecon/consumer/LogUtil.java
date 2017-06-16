@@ -12,7 +12,7 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.util.Numbers;
 
-public class LogUtil extends AbstractWeightedUtil implements IUtility {
+public class LogUtil extends AbstractWeightedUtil {
 
 	public static final double ADJUSTMENT = 1.0; // to avoid negative utility
 

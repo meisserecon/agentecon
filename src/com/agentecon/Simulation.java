@@ -8,6 +8,7 @@ import com.agentecon.agent.IAgents;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.firm.Producer;
+import com.agentecon.production.IProducer;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.RepeatedMarket;
 import com.agentecon.sim.SimulationConfig;
@@ -77,7 +78,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			stocks.trade(day);
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
 			market.iterate(day, config.getIntradayIterations());
-			for (Producer firm : world.getAgents().getFirms()) {
+			for (IProducer firm : world.getAgents().getProducers()) {
 				firm.produce();
 			}
 			world.finishDay(day);
@@ -129,6 +130,11 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public IAgents getAgents() {
 		return world.getAgents();
+	}
+	
+	@Override
+	public String toString(){
+		return "Simulation at day " + day + " with " + world.getAgents().getAgents().size() + " agents";
 	}
 
 }

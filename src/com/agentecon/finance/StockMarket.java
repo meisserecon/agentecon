@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -14,7 +16,7 @@ import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Agents;
 import com.agentecon.world.World;
 
-public class StockMarket extends SimulationListenerAdapter {
+public class StockMarket {
 
 	private World world;
 	private SimulationListeners listeners;
@@ -26,10 +28,10 @@ public class StockMarket extends SimulationListenerAdapter {
 
 	public void trade(int day) {
 		Agents ags = world.getAgents();
-		for (IFirm firm : ags.getPublicCompanies()) {
+		for (IFirm firm : ags.getFirms()) {
 			firm.payDividends(day);
 		}
-		Collection<MarketMaker> mms = ags.getRandomizedMarketMakers();
+		Collection<IMarketMaker> mms = ags.getRandomizedMarketMakers();
 		if (mms.isEmpty()) {
 			// Assume model without stock market, distribute dividends proportionally among consumers
 			distributeDividendsEqually(day, ags);
@@ -40,12 +42,12 @@ public class StockMarket extends SimulationListenerAdapter {
 
 	private void distributeDividendsEqually(int day, Agents ags) {
 		IStock wallet = new Stock(Good.MONEY);
-		for (IFirm firm : ags.getPublicCompanies()) {
+		for (IFirm firm : ags.getFirms()) {
 			((ShareRegister)firm.getShareRegister()).collectRootDividend(wallet);
 		}
-		Collection<Consumer> consumers = ags.getConsumers();
+		Collection<IConsumer> consumers = ags.getConsumers();
 		double dividend = wallet.getAmount() / consumers.size();
-		for (Consumer cons: consumers){
+		for (IConsumer cons: consumers){
 			cons.getMoney().transfer(wallet, dividend);
 		}
 		if (!wallet.isEmpty()){
@@ -53,40 +55,25 @@ public class StockMarket extends SimulationListenerAdapter {
 		}
 	}
 
-	protected void runDailyMarket(int day, Agents ags, Collection<MarketMaker> mms) {
+	protected void runDailyMarket(int day, Agents ags, Collection<IMarketMaker> mms) {
 		for (IShareholder shareholder : ags.getShareholders()) {
 			shareholder.getPortfolio().collectDividends();
 		}
 		DailyStockMarket dsm = new DailyStockMarket(world.getRand());
 		listeners.notifyStockMarketOpened(dsm);
 		
-		for (MarketMaker mm : mms) {
+		for (IMarketMaker mm : mms) {
 			// System.out.println(day + ": " + mm);
 			mm.postOffers(dsm);
 		}
 		// System.out.println(day + " trading stats " + dsm.getTradingStats());
-		for (IFirm pc : ags.getPublicCompanies()) {
+		for (IFirm pc : ags.getFirms()) {
 			pc.raiseCapital(dsm);
 		}
 		for (IShareholder con : ags.getRandomShareholders()) {
 			con.managePortfolio(dsm);
 		}
 		dsm.close(day);
-	}
-
-	@Override
-	public void notifyAgentCreated(IAgent firm) {
-		if (firm instanceof IFirm) {
-			notifyMarketMakers((IFirm) firm);
-		}
-	}
-
-	private void notifyMarketMakers(IFirm comp) {
-		ShareRegister register = (ShareRegister) comp.getShareRegister();
-		Collection<MarketMaker> mms = world.getAgents().getAllMarketMakers();
-		for (MarketMaker mm : mms) {
-			mm.addPosition(register.createPosition());
-		}
 	}
 
 }

@@ -2,7 +2,7 @@
 
 package com.agentecon.events;
 
-import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.world.IWorld;
 
 public abstract class UpdatePreferencesEvent extends SimEvent {
@@ -13,12 +13,12 @@ public abstract class UpdatePreferencesEvent extends SimEvent {
 
 	@Override
 	public void execute(int day, IWorld sim) {
-		for (Consumer c : sim.getAgents().getRandomConsumers(getCardinality())) {
+		for (IConsumer c : sim.getAgents().getRandomConsumers(getCardinality())) {
 			update(c);
 		}
 	}
 
-	protected abstract void update(Consumer c);
+	protected abstract void update(IConsumer c);
 
 	@Override
 	public String toString(){

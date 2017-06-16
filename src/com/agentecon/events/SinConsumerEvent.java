@@ -41,7 +41,7 @@ public class SinConsumerEvent extends ConsumerEvent {
 		this.births += (Math.sin(period) + FLATNESS) * getCardinality() / cycle / FLATNESS;
 		while (births >= 1.0){
 			births -= 1.0;
-			sim.add(createConsumer(type, this.maxAge, end, utilFun.create(count++)));
+			sim.add(createConsumer(this.maxAge, end, utilFun.create(count++)));
 		}
 	}
 	

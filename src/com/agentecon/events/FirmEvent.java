@@ -21,7 +21,7 @@ public class FirmEvent extends SimEvent {
 	@Override
 	public void execute(int day, IWorld sim) {
 		for (int i = 0; i < getCardinality(); i++) {
-			sim.add(new Producer(type, end, prodFun));
+			sim.add(new Producer(end, prodFun));
 		}
 	}
 

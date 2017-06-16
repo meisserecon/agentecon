@@ -1,9 +1,9 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
+import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.util.Numbers;
 
@@ -32,7 +32,7 @@ public class MarketMakerPrice {
 		});
 	}
 
-	public void trade(IStockMarket dsm, IAgent owner, IStock wallet, double budget) {
+	public void trade(IPriceMakerMarket dsm, IAgent owner, IStock wallet, double budget) {
 		double low = floor.getPrice();
 		double high = ceiling.getPrice();
 		double middle = (low + high) / 2;

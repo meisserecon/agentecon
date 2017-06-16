@@ -6,10 +6,12 @@ import java.util.Map;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.Market;
+import com.agentecon.production.IProducer;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.world.World;
@@ -28,18 +30,18 @@ public class RepeatedMarket {
 		MarketObserver observer = new MarketObserver(iterations);
 		while (true) {
 			world.startTransaction();
-			Collection<Producer> firms = world.getAgents().getRandomFirms();
-			Collection<Consumer> cons = world.getAgents().getRandomConsumers();
+			Collection<IProducer> firms = world.getAgents().getRandomFirms();
+			Collection<IConsumer> cons = world.getAgents().getRandomConsumers();
 			Market market = new Market(world.getRand());
 			market.addMarketListener(observer);
 			listeners.notifyGoodsMarketOpened(market);
-			for (Producer firm : firms) {
+			for (IProducer firm : firms) {
 				firm.offer(market);
 			}
-			for (Consumer c : cons) {
-				c.maximizeUtility(market);
+			for (IConsumer c : cons) {
+				c.tradeGoods(market);
 			}
-			for (Producer firm: firms) {
+			for (IProducer firm: firms) {
 				firm.adaptPrices();
 			}
 			if (observer.shouldTryAgain()){

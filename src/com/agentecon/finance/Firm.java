@@ -16,9 +16,9 @@ public abstract class Firm extends Agent implements IFirm {
 	private ShareRegister register;
 	private FirmListeners monitor;
 
-	public Firm(String type, Endowment end) {
-		super(type, end);
-		this.ticker = new Ticker(type, getAgentId());
+	public Firm(Endowment end) {
+		super(end);
+		this.ticker = new Ticker(getType(), getAgentId());
 		this.register = new ShareRegister(ticker, getDividendWallet());
 		this.monitor = new FirmListeners();
 	}
