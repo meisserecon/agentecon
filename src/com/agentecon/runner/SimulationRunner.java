@@ -72,21 +72,11 @@ public class SimulationRunner {
 	}
 
 	private boolean hasIterations(ISimulation sim2) {
-		try {
-			return sim instanceof IIteratedSimulation && ((IIteratedSimulation) sim2).hasNext();
-		} catch (AbstractMethodError e) {
-			return true;
-		}
+		return sim instanceof IIteratedSimulation && ((IIteratedSimulation) sim2).hasNext();
 	}
 
 	private boolean hasAging() {
-		try {
-			return sim.getConfig().hasAging();
-		} catch (NoSuchMethodError e) {
-			return true;
-		} catch (AbstractMethodError e) {
-			return true;
-		}
+		return sim.getConfig().hasAging();
 	}
 
 	public SimulationConfig getConfig() {
@@ -151,7 +141,7 @@ public class SimulationRunner {
 				ps.println(c.getTopCorrelations(true));
 				ps.println(c.getTopCorrelations(false));
 			}
-		} catch (NoSuchMethodError | AbstractMethodError e){
+		} catch (NoSuchMethodError | AbstractMethodError e) {
 			System.out.println("Aborted with error " + e);
 		} finally {
 			System.setOut(oldOut);
