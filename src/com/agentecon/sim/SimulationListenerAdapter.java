@@ -42,7 +42,7 @@ public class SimulationListenerAdapter implements ISimulationListener {
 		}
 	}
 	
-	public void notifyConsumerCreated(IConsumer firm){
+	public void notifyConsumerCreated(IConsumer consumer){
 	}
 	
 	public void notifyFirmCreated(IFirm firm){

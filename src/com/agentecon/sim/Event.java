@@ -44,6 +44,10 @@ public abstract class Event implements Comparable<Event> {
 		}
 	}
 	
+	public int getDay() {
+		return nextExecution;
+	}
+	
 	public int getInterval(){
 		return interval;
 	}
@@ -54,10 +58,6 @@ public abstract class Event implements Comparable<Event> {
 
 	public final int compareTo(Event o) {
 		return Integer.compare(nextExecution, o.nextExecution);
-	}
-
-	public int getDay() {
-		return nextExecution;
 	}
 
 }
