@@ -1,4 +1,4 @@
-package com.agentecon.sim.config;
+package com.agentecon.configuration;
 
 import java.util.ArrayList;
 
@@ -79,7 +79,7 @@ public class CobbDougConfiguration implements IConfiguration {
 			}
 			evolvingEvents = newList;
 		}
-		SimulationConfig config = new SimConfig(ROUNDS, seed, WOBBLES);
+		SimulationConfig config = new SimulationConfig(ROUNDS, seed, WOBBLES);
 		for (SimEvent event : constantEvents) {
 			config.addEvent(event);
 		}
@@ -103,9 +103,8 @@ public class CobbDougConfiguration implements IConfiguration {
 
 	protected void addConsumers(ArrayList<SimEvent> config, ArrayList<EvolvingEvent> newList, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
-			String name = "Consumer " + i;
 			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
-			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)));
+			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)));
 		}
 	}
 

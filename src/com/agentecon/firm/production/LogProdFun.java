@@ -19,16 +19,17 @@ public class LogProdFun extends AbstractProductionFunction {
 		double production = 1.0;
 		for (Weight input : inputs) {
 			IStock in = inventory.getStock(input.good);
-			production += input.weight * Math.log(ADJUSTMENT + in.consume());
+			production += input.weight * Math.log(ADJUSTMENT + (input.capital ? in.getAmount() : in.consume()));
 		}
 		return production;
 	}
 
 	@Override
 	public double getCostOfMaximumProfit(IPriceProvider prices) {
-		double totWeight = getTotalWeight();
-		double outprice = prices.getPrice(output);
-		return outprice * totWeight;
+		throw new RuntimeException("not correctly implemented");
+//		double totWeight = getTotalWeight();
+//		double outprice = prices.getPrice(output);
+//		return outprice * totWeight;
 	}
 
 	@Override

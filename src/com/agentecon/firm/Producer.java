@@ -40,7 +40,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 		this.prod = prod;
 		this.strategy = strategy;
 
-		Good[] inputs = prod.getInput();
+		Good[] inputs = prod.getInputs();
 		this.inputs = new InputFactor[inputs.length];
 		for (int i = 0; i < inputs.length; i++) {
 			Good input = inputs[i];

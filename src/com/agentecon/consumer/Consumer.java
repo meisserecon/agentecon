@@ -16,31 +16,21 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
-import com.agentecon.util.MovingAverage;
 import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {
 
-	public static final int IMMORTAL = Integer.MAX_VALUE;
-
-	private int age, maxAge;
-	protected Good soldGood;
+	private int age;
+	private Good soldGood;
 	private IUtility utility;
-	private TradingPortfolio portfolio;
-	private MovingAverage dailySpendings;
-	private double savingsTarget;
-	private ConsumerListeners listeners;
+	protected TradingPortfolio portfolio;
+	protected ConsumerListeners listeners;
 
 	public Consumer(Endowment end, IUtility utility) {
-		this(IMMORTAL, end, utility);
-	}
-
-	public Consumer(int maxAge, Endowment end, IUtility utility) {
 		super(end);
-		this.maxAge = maxAge;
+		this.age = 0;
 		this.soldGood = end.getDaily()[0].getGood();
 		this.utility = utility;
-		this.dailySpendings = new MovingAverage(0.95);
 		this.portfolio = new TradingPortfolio(getMoney());
 		this.listeners = new ConsumerListeners();
 	}
@@ -54,40 +44,12 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	}
 
 	public void managePortfolio(IStockMarket stocks) {
-		if (isMortal()) {
-			if (isRetired()) {
-				int daysLeft = maxAge - age + 1;
-				double amount = portfolio.sell(stocks, this, 1.0 / daysLeft);
-				listeners.notifyDivested(this, amount);
-			} else {
-				double invest = dailySpendings.getAverage() / maxAge * (maxAge - getRetirementAge());
-				invest(stocks, invest);
-			}
-		} else {
-			double invest = dailySpendings.getAverage() * 0.2;
-			invest(stocks, invest);
-		}
-	}
-
-	private void invest(IStockMarket stocks, double invest) {
-		double dividendIncome = portfolio.getLatestDividendIncome();
-		if (dividendIncome < invest) {
-			savingsTarget = invest - dividendIncome;
-			invest = Math.min(getMoney().getAmount(), invest);
-		} else {
-			savingsTarget = 0.0;
-		}
-		double amount = portfolio.invest(stocks, this, invest);
-		listeners.notifyInvested(this, amount);
 	}
 
 	public void tradeGoods(IPriceTakerMarket market) {
 		Inventory inv = getInventory();
 		if (isRetired()) {
 			inv = inv.hide(soldGood); // cannot work any more, hide hours
-		}
-		if (savingsTarget > 0.0) {
-			inv = inv.hide(getMoney().getGood(), Math.min(savingsTarget, dailySpendings.getAverage() / 2));
 		}
 		trade(inv, market);
 	}
@@ -139,17 +101,21 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				IStock s = inv.getStock(offer.getGood());
 				double difference = allocs[pos] - s.getAmount();
 				if (difference > Numbers.EPSILON && offer.getGood() != soldGood && !getMoney().isEmpty()) {
+					double money = getMoney().getAmount();
 					offer.accept(this, getMoney(), s, difference);
-					spendings += difference * offer.getPrice().getPrice();
+					spendings += (money - getMoney().getAmount());
 					trading = true;
 				}
 				pos++;
 			}
 		}
-		dailySpendings.add(spendings);
+		notifySpent(spendings);
 	}
 
-	public final double consume() {
+	protected void notifySpent(double spendings) {
+	}
+
+	public double consume() {
 		Inventory inv = getInventory();
 		double u = utility.consume(inv.getAll());
 		listeners.notifyConsuming(this, getAge(), getInventory(), u);
@@ -159,54 +125,36 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	}
 
 	public boolean isMortal() {
-		return maxAge == IMMORTAL;
+		return false;
 	}
 
 	public Inventory age(Portfolio inheritance) {
-		if (isMortal()) {
-			if (age == getRetirementAge()) {
-				listeners.notifyRetiring(this, age);
-			}
-			this.age++;
-			if (age > maxAge) {
-				inheritance.absorb(portfolio);
-				return super.dispose();
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+		return null;
 	}
 
 	public boolean isRetired() {
-		return age > getRetirementAge();
-	}
-
-	private int getRetirementAge() {
-		return maxAge / 5 * 3;
-	}
-
-	@Override
-	public Consumer clone() {
-		Consumer klon = (Consumer) super.clone();
-		klon.dailySpendings = dailySpendings.clone();
-		klon.portfolio = portfolio.clone(klon.getMoney());
-		return klon;
+		return false;
 	}
 
 	@Override
 	public int getAge() {
 		return age;
 	}
+	
+	public Portfolio getPortfolio() {
+		return portfolio;
+	}
+	
+	@Override
+	public Consumer clone() {
+		Consumer klon = (Consumer) super.clone();
+		klon.portfolio = portfolio.clone(klon.getMoney());
+		return klon;
+	}
 
 	@Override
 	public String toString() {
 		return super.toString();
-	}
-
-	public Portfolio getPortfolio() {
-		return portfolio;
 	}
 
 }

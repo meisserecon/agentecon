@@ -1,4 +1,4 @@
-package com.agentecon.sim.config;
+package com.agentecon.configuration;
 
 import com.agentecon.sim.SimulationConfig;
 

@@ -2,20 +2,21 @@
 
 package com.agentecon;
 
+import java.util.Collection;
 import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
+import com.agentecon.configuration.IConfiguration;
+import com.agentecon.configuration.TechnologyConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
-import com.agentecon.firm.Producer;
+import com.agentecon.market.RepeatedMarket;
 import com.agentecon.production.IProducer;
+import com.agentecon.sim.Event;
 import com.agentecon.sim.ISimulationListener;
-import com.agentecon.sim.RepeatedMarket;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
-import com.agentecon.sim.config.IConfiguration;
-import com.agentecon.sim.config.SimConfig;
-import com.agentecon.sim.config.TechnologyConfiguration;
 import com.agentecon.world.World;
 
 // The world
@@ -23,7 +24,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 
 	private IConfiguration metaConfig;
 
-	private SimConfig config;
+	private SimulationConfig config;
 
 	private int day;
 	private Queue<SimEvent> events;
@@ -34,21 +35,29 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	public Simulation() {
 		this(new TechnologyConfiguration(1313));
 	}
-	
+
 	public Simulation(IConfiguration metaConfig) {
 		this(metaConfig.createNextConfig());
 		this.metaConfig = metaConfig;
 	}
 
 	public Simulation(SimulationConfig config) {
-		this.config = (SimConfig) config;
-		this.events = this.config.createEventQueue();
+		this.config = config;
+		this.events = createEventQueue(config.getEvents());
 		this.listeners = new SimulationListeners();
 		this.world = new World(config.getSeed(), listeners);
 		this.stocks = new StockMarket(world, listeners);
 		this.day = 0;
 	}
-	
+
+	private PriorityBlockingQueue<SimEvent> createEventQueue(Collection<Event> collection) {
+		PriorityBlockingQueue<SimEvent> queue = new PriorityBlockingQueue<>();
+		for (Event e : collection) {
+			queue.add((SimEvent) e);
+		}
+		return queue;
+	}
+
 	@Override
 	public boolean hasNext() {
 		return metaConfig != null && metaConfig.shouldTryAgain();
@@ -73,7 +82,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public void forwardTo(int targetDay) {
 		for (; day < targetDay; day++) {
-			processEvents(day); //  must happen before daily endowments
+			processEvents(day); // must happen before daily endowments
 			world.prepareDay(day);
 			stocks.trade(day);
 			RepeatedMarket market = new RepeatedMarket(world, listeners);
@@ -93,7 +102,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	public boolean isFinished() {
 		return day >= config.getRounds();
 	}
-	
+
 	private void processEvents(int day) {
 		while (!events.isEmpty() && events.peek().getDay() <= day) {
 			SimEvent event = events.poll();
@@ -116,7 +125,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			listeners.add(listener);
 		}
 	}
-	
+
 	@Override
 	public void removeListener(ISimulationListener listener) {
 		listeners.remove(listener);
@@ -131,9 +140,9 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	public IAgents getAgents() {
 		return world.getAgents();
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return "Simulation at day " + day + " with " + world.getAgents().getAgents().size() + " agents";
 	}
 

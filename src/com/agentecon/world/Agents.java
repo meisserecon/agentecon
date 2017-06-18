@@ -10,7 +10,6 @@ import java.util.Random;
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
-import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
@@ -97,8 +96,8 @@ public class Agents implements IAgents {
 		if (agent instanceof Producer) {
 			producers.add((Producer) agent);
 		}
-		if (agent instanceof Consumer) {
-			consumers.add((Consumer) agent);
+		if (agent instanceof IConsumer) {
+			consumers.add((IConsumer) agent);
 			consumerTypes.add(agent.getType());
 		}
 		if (listeners != null && newAgent) {

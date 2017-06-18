@@ -3,7 +3,7 @@ package com.agentecon.finance;
 import java.util.Collection;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;

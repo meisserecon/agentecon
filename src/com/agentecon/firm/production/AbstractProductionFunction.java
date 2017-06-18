@@ -21,12 +21,8 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 	}
 	
 	@Override
-	public double[] getWeights() {
-		double[] ws = new double[inputs.length];
-		for (int i=0; i<inputs.length; i++){
-			ws[i] = inputs[i].weight;
-		}
-		return ws;
+	public Weight[] getWeights() {
+		return inputs;
 	}
 	
 	@Override
@@ -51,14 +47,14 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 	}
 
 	@Override
-	public Good[] getInput() {
+	public Good[] getInputs() {
 		Good[] goods = new Good[inputs.length];
 		for (int i=0; i<goods.length; i++){
 			goods[i] = inputs[i].good;
 		}
 		return goods;
 	}
-
+	
 	@Override
 	public Good getOutput() {
 		return output;

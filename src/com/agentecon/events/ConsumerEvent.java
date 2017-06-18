@@ -14,19 +14,19 @@ public class ConsumerEvent extends SimEvent {
 	protected Endowment end;
 	protected IUtilityFactory utilFun;
 
-	public ConsumerEvent(int card, String name, Endowment end, IUtilityFactory utility) {
-		this(0, card, 0, name, end, utility);
+	public ConsumerEvent(int card, Endowment end, IUtilityFactory utility) {
+		this(0, card, 0, end, utility);
 	}
 
-	public ConsumerEvent(int time, int card, int interval, String name, Endowment end, IUtilityFactory utility) {
+	public ConsumerEvent(int time, int card, int interval, Endowment end, IUtilityFactory utility) {
 		super(time, interval, card);
 		this.end = end;
 		this.count = 0;
 		this.utilFun = utility;
 	}
 
-	public ConsumerEvent(int card, String name, Endowment end, final LogUtil util) {
-		this(card, name, end, new IUtilityFactory(){
+	public ConsumerEvent(int card, Endowment end, final LogUtil util) {
+		this(card, end, new IUtilityFactory(){
 
 			@Override
 			public IUtility create(int number) {
@@ -39,12 +39,12 @@ public class ConsumerEvent extends SimEvent {
 	@Override
 	public void execute(int day, IWorld sim) {
 		for (int i = 0; i < cardinality; i++) {
-			sim.add((Agent) createConsumer(Consumer.IMMORTAL, end, utilFun.create(count++)));
+			sim.add((Agent) createConsumer(end, utilFun.create(count++)));
 		}
 	}
 
-	protected IConsumer createConsumer(int maxAge, Endowment end, IUtility util){
-		return new Consumer(maxAge, end, util);
+	protected IConsumer createConsumer(Endowment end, IUtility util){
+		return new Consumer(end, util);
 	}
 
 	public String toString() {

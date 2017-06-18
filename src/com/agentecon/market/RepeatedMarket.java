@@ -1,17 +1,17 @@
-package com.agentecon.sim;
+package com.agentecon.market;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarketListener;
-import com.agentecon.market.Market;
 import com.agentecon.production.IProducer;
+import com.agentecon.sim.SimulationListeners;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.world.World;

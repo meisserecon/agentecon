@@ -1,4 +1,4 @@
-package com.agentecon.sim.config;
+package com.agentecon.configuration;
 
 import java.util.ArrayList;
 
@@ -58,7 +58,7 @@ public class TechnologyConfiguration implements IConfiguration {
 		addFirms(events, new ProductionWeights(inputs, outputs));
 		addConsumers(events, new ConsumptionWeights(inputs, outputs));
 
-		SimulationConfig config = new SimConfig(ROUNDS, 1313);
+		SimulationConfig config = new SimulationConfig(ROUNDS, 1313);
 		for (SimEvent event : events) {
 			config.addEvent(event);
 		}
@@ -80,12 +80,11 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addConsumers(ArrayList<SimEvent> config, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
-			String name = "Consumer " + i;
 			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
-			config.add(new ConsumerEvent(consumersPerType, name, end, defaultPrefs.getFactory(i)) {
+			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)) {
 				@Override
-				protected IConsumer createConsumer(int maxAge, Endowment end, IUtility util){
-					return new Consumer(maxAge, end, utilFun.create(count++));
+				protected IConsumer createConsumer(Endowment end, IUtility util){
+					return new Consumer(end, utilFun.create(count++));
 				}
 			});
 		}

@@ -12,11 +12,9 @@ import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Stock;
-import com.agentecon.sim.config.SimConfig;
 import com.agentecon.util.Numbers;
 
 public class ProdFunTest {
-	
 	
 	public static final Good MONEY = new Good("Taler");
 	public static final Good PIZZA = new Good("Pizza", 1.0);

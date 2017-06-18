@@ -18,7 +18,7 @@ public class LinearProdFun extends AbstractProductionFunction {
 		double production = 0.0;
 		for (Weight input : inputs) {
 			IStock in = inventory.getStock(input.good);
-			production += input.weight * Math.max(1.0, in.consume());
+			production += input.weight * Math.max(1.0, input.capital ? in.getAmount() : in.consume());
 		}
 		return production;
 	}
