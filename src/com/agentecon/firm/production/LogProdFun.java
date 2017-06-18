@@ -26,10 +26,10 @@ public class LogProdFun extends AbstractProductionFunction {
 
 	@Override
 	public double getCostOfMaximumProfit(IPriceProvider prices) {
-		throw new RuntimeException("not correctly implemented");
-//		double totWeight = getTotalWeight();
-//		double outprice = prices.getPrice(output);
-//		return outprice * totWeight;
+		// is this really correct?
+		double totWeight = getTotalWeight();
+		double outprice = prices.getPrice(output);
+		return outprice * totWeight;
 	}
 
 	@Override
