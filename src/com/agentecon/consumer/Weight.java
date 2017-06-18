@@ -8,10 +8,16 @@ public class Weight {
 	
 	public final Good good;
 	public final double weight;
+	public final boolean capital;
 
 	public Weight(Good good, double weight) {
+		this(good, weight, false);
+	}
+	
+	public Weight(Good good, double weight, boolean capital) {
 		this.good = good;
 		this.weight = weight;
+		this.capital = capital;
 		assert weight != 0.0;
 	}
 	
