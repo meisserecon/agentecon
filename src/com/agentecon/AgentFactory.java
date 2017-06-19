@@ -16,7 +16,7 @@ import com.agentecon.production.IProductionFunction;
 public class AgentFactory implements IAgentFactory {
 	
 	@Override
-	public IConsumer createAutarkicConsumer(Endowment endowment, IUtility utilityFunction, IProductionFunction production) {
+	public IConsumer createHermit(Endowment endowment, IUtility utilityFunction, IProductionFunction production) {
 		return new Hermit(endowment, utilityFunction, production);
 	}
 	

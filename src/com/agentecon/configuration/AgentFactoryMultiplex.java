@@ -44,8 +44,8 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 	}
 
 	@Override
-	public IConsumer createAutarkicConsumer(Endowment endowment, IUtility utilityFunction, IProductionFunction production) {
-		return getCurrent().createAutarkicConsumer(endowment, utilityFunction, production);
+	public IConsumer createHermit(Endowment endowment, IUtility utilityFunction, IProductionFunction production) {
+		return getCurrent().createHermit(endowment, utilityFunction, production);
 	}
 
 	@Override

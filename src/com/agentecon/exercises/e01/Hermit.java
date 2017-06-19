@@ -8,10 +8,12 @@
  */
 package com.agentecon.exercises.e01;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
 import com.agentecon.AgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
-import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.goods.Good;
@@ -39,7 +41,7 @@ public class Hermit extends Consumer {
 	
 	@Override
 	public void tradeGoods(IPriceTakerMarket market) {
-		// autarkic consumer does not trade, produces instead for himself
+		// Hermit does not trade, produces instead for himself
 		produce(getInventory());
 	}
 
@@ -70,22 +72,9 @@ public class Hermit extends Consumer {
 		return super.consume();
 	}
 
-	public static void main(String[] args) {
-		// load the configuration that uses this consumer
-		HermitConfiguration configuration = new HermitConfiguration(new AgentFactory(), 10);
-		
-		// load the simulation
-		Simulation sim = new Simulation(configuration);
-		
-		// load and register the ranking as a listener
-		ConsumerRanking ranking = new ConsumerRanking();
-		sim.addListener(ranking);
-		
-		// run the simulation
-		sim.run();
-		
-		// print the ranking
-		ranking.print(System.out);
+	// The "static void main" method is executed when running a class
+	public static void main(String[] args) throws SocketTimeoutException, IOException {
+		HermitConfiguration.main(args); // the HermitConfiguration knows what to do
 	}
 	
 }
