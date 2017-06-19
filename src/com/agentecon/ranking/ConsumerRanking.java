@@ -15,35 +15,33 @@ import com.agentecon.util.Average;
 public class ConsumerRanking extends SimulationListenerAdapter {
 
 	private ArrayList<ConsumerListener> list;
-	
-	public ConsumerRanking(){
+
+	public ConsumerRanking() {
 		this.list = new ArrayList<>();
 	}
-	
+
 	@Override
-	public void notifyAgentCreated(IAgent agent) {
-		if (agent instanceof IConsumer){
-			ConsumerListener listener = new ConsumerListener(agent);
-			list.add(listener);
-			((IConsumer)agent).addListener(listener);
-		}
+	public void notifyConsumerCreated(IConsumer consumer) {
+		ConsumerListener listener = new ConsumerListener(consumer);
+		list.add(listener);
+		consumer.addListener(listener);
 	}
-	
+
 	public void print(PrintStream out) {
 		Collections.sort(list);
 		int rank = 1;
 		System.out.println("Rank\tType\tId\tAvg Utility");
-		for (ConsumerListener l: list){
+		for (ConsumerListener l : list) {
 			out.println(rank++ + "\t" + l);
 		}
 	}
-	
-	class ConsumerListener implements IConsumerListener, Comparable<ConsumerListener>{
-		
+
+	class ConsumerListener implements IConsumerListener, Comparable<ConsumerListener> {
+
 		private AgentRef agent;
 		private Average averageUtility = new Average();
-		
-		public ConsumerListener(IAgent agent){
+
+		public ConsumerListener(IAgent agent) {
 			this.agent = agent.getReference();
 		}
 
@@ -68,12 +66,13 @@ public class ConsumerRanking extends SimulationListenerAdapter {
 		public int compareTo(ConsumerListener o) {
 			return o.averageUtility.compareTo(averageUtility);
 		}
-		
-		public String toString(){
+
+		@Override
+		public String toString() {
 			IAgent agent = this.agent.get();
 			return agent.getType() + "\t" + agent.getAgentId() + "\t" + averageUtility.getAverage();
 		}
-		
+
 	}
 
 }

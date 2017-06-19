@@ -8,6 +8,8 @@
  */
 package com.agentecon.exercises.ex1;
 
+import com.agentecon.AgentFactory;
+import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.configuration.AutarkicConsumerConfiguration;
 import com.agentecon.consumer.Consumer;
@@ -17,6 +19,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.production.IProductionFunction;
+import com.agentecon.ranking.ConsumerRanking;
 
 public class AutarkicConsumer extends Consumer {
 	
@@ -43,7 +46,7 @@ public class AutarkicConsumer extends Consumer {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
+		double plannedLeisureTime = currentManhours.getAmount() * 0.5;
 		
 		Inventory productionInventory = inventory.hide(manhours, plannedLeisureTime);
 		prodFun.produce(productionInventory);
@@ -56,4 +59,22 @@ public class AutarkicConsumer extends Consumer {
 		return super.consume();
 	}
 
+	public static void main(String[] args) {
+		// load the configuration that uses this consumer
+		AutarkicConsumerConfiguration configuration = new AutarkicConsumerConfiguration(new AgentFactory());
+		
+		// load the simulation
+		Simulation sim = new Simulation(configuration);
+		
+		// load and register the ranking as a listener
+		ConsumerRanking ranking = new ConsumerRanking();
+		sim.addListener(ranking);
+		
+		// run the simulation
+		sim.run();
+		
+		// print the ranking
+		ranking.print(System.out);
+	}
+	
 }
