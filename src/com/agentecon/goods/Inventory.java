@@ -5,27 +5,34 @@ import java.util.HashMap;
 
 public class Inventory {
 
-	private HashMap<Good, IStock> inv;
+	private final Good money;
+	private final HashMap<Good, IStock> inv;
 
-	public Inventory(IStock... initial) {
+	public Inventory(Good money, IStock... initial) {
+		this.money = money;
 		this.inv = new HashMap<Good, IStock>();
 		for (IStock s : initial) {
 			inv.put(s.getGood(), s);
 		}
 	}
 
-	public Inventory(Collection<IStock> initial, boolean duplicate) {
+	public Inventory(Good money, Collection<IStock> initial, boolean duplicate) {
+		this.money = money;
 		this.inv = new HashMap<Good, IStock>();
 		for (IStock s : initial) {
 			inv.put(s.getGood(), duplicate ? s.duplicate() : s);
 		}
+	}
+	
+	public IStock getMoney(){
+		return getStock(money);
 	}
 
 	/**
 	 * Returns a delegate of this inventory that hides amount of good. Changes to the delegate will also be reflected in this inventory.
 	 */
 	public Inventory hide(Good good, double amount) {
-		Inventory clone = new Inventory(inv.values(), false) {
+		Inventory clone = new Inventory(money, inv.values(), false) {
 			protected IStock createStock(Good type) {
 				return Inventory.this.getStock(type);
 			}
@@ -39,7 +46,7 @@ public class Inventory {
 	 * Changes to the delegate will also be reflected in this inventory.
 	 */
 	public Inventory hideRelative(Good good, double fraction) {
-		Inventory clone = new Inventory(inv.values(), false) {
+		Inventory clone = new Inventory(money, inv.values(), false) {
 			protected IStock createStock(Good type) {
 				return Inventory.this.getStock(type);
 			}
@@ -91,7 +98,7 @@ public class Inventory {
 	}
 	
 	public Inventory duplicate(){
-		return new Inventory(inv.values(), true);
+		return new Inventory(money, inv.values(), true);
 	}
 
 	public void deprecate() {

@@ -32,7 +32,7 @@ public class GitSimulationHandle extends SimulationHandle {
 
 	public URL getJarURL() {
 		try {
-			return new URL("https://api.github.com/" + getOwner() + "/" + repo + "/contents/" + JAR_PATH + "?ref=" + getName());
+			return new URL("https://raw.githubusercontent.com/" + getOwner() + "/" + repo + "/" + getName() + "/" + JAR_PATH);
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}

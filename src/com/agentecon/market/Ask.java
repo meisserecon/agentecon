@@ -6,6 +6,10 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
 
 public class Ask extends AbstractOffer {
+	
+	public Ask(IAgent initiator, IStock wallet, IStock stock, double price) {
+		this(initiator, wallet, stock, new Price(stock.getGood(), price), stock.getAmount());
+	}
 
 	public Ask(IAgent initiator, IStock wallet, IStock stock, Price price, double amount) {
 		super(initiator, wallet, stock, price, amount);

@@ -24,25 +24,25 @@ public class AgentLoader extends ClassLoader {
 	private long date;
 	private SimulationHandle source;
 	private HashMap<String, byte[]> data;
-	
-	public AgentLoader() throws SocketTimeoutException, IOException{
+
+	public AgentLoader() throws SocketTimeoutException, IOException {
 		this("meisserecon", "agentecon", "master");
 	}
-	
-	public AgentLoader(String owner, String repo, String branch) throws SocketTimeoutException, IOException{
+
+	public AgentLoader(String owner, String repo, String branch) throws SocketTimeoutException, IOException {
 		this(new GitSimulationHandle(owner, repo, branch));
 	}
-	
+
 	public AgentLoader(File basePath) throws IOException {
 		this(new LocalSimulationHandle(basePath));
 	}
-	
-	public AgentLoader(SimulationHandle source) throws SocketTimeoutException, IOException{
+
+	public AgentLoader(SimulationHandle source) throws SocketTimeoutException, IOException {
 		super(AgentLoader.class.getClassLoader());
 		this.source = source;
 		this.date = source.getJarDate();
 		this.data = new HashMap<String, byte[]>();
-		try (InputStream is = source.openJar()){
+		try (InputStream is = source.openJar()) {
 			JarInputStream jis = new JarInputStream(new BufferedInputStream(is, 500000));
 			try {
 				JarEntry entry = jis.getNextJarEntry();
@@ -62,15 +62,31 @@ public class AgentLoader extends ClassLoader {
 			throw new java.lang.RuntimeException(e);
 		}
 	}
-	
-	public long getDate(){
+
+	/**
+	 * Reverse class loader order.
+	 */
+	@Override
+	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+		synchronized (getClassLoadingLock(name)) {
+			// First, check if the class has already been loaded
+			Class<?> c = findLoadedClass(name);
+			if (c == null && this.data.containsKey(name)) {
+				return findClass(name);
+			} else {
+				return super.loadClass(name, resolve);
+			}
+		}
+	}
+
+	public long getDate() {
 		return date;
 	}
-	
-	public SimulationHandle getSourceData(){
+
+	public SimulationHandle getSourceData() {
 		return source;
 	}
-	
+
 	public static byte[] readData(InputStream source) throws IOException {
 		int ava = source.available();
 		int size = ava == 0 ? 1000 : ava;
@@ -87,7 +103,7 @@ public class AgentLoader extends ClassLoader {
 		}
 		return out.toByteArray();
 	}
-	
+
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		byte[] data = this.data.remove(name);
@@ -106,10 +122,10 @@ public class AgentLoader extends ClassLoader {
 		try {
 			return (IAgentFactory) loadClass(AGENT_CLASS).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new IOException("Failed to load simulation" , e);
+			throw new IOException("Failed to load simulation", e);
 		}
 	}
-	
+
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		IAgentFactory fac = new AgentLoader().loadAgentFactory();
 		System.out.println(fac);
@@ -118,7 +134,7 @@ public class AgentLoader extends ClassLoader {
 	public static String getType(Class<?> clazz) {
 		String name = getName(clazz);
 		ClassLoader cl = clazz.getClassLoader();
-		if (cl instanceof AgentLoader){
+		if (cl instanceof AgentLoader) {
 			return ((AgentLoader) cl).getSourceData().getOwner() + "-" + name;
 		} else {
 			return name;
@@ -127,7 +143,7 @@ public class AgentLoader extends ClassLoader {
 
 	protected static String getName(Class<?> clazz) {
 		String name = clazz.getSimpleName();
-		while (name.length()==0){
+		while (name.length() == 0) {
 			clazz = clazz.getSuperclass();
 			name = clazz.getSimpleName();
 		}

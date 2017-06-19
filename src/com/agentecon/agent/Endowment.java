@@ -1,5 +1,6 @@
 package com.agentecon.agent;
 
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 
@@ -7,20 +8,26 @@ public class Endowment {
 
 	public static final int HOURS_PER_DAY = 24;
 	
+	private Good money;
 	private IStock[] initial;
 	private IStock[] daily;
 	
-	public Endowment(IStock... daily) {
-		this(new IStock[]{}, daily);
+	public Endowment(IStock wallet) {
+		this(wallet.getGood(), new IStock[]{wallet}, new IStock[]{});
+	}
+	
+	public Endowment(Good money, IStock... daily) {
+		this(money, new IStock[]{}, daily);
 	}
 		
-	public Endowment(IStock[] initial, IStock[] daily) {
+	public Endowment(Good money, IStock[] initial, IStock[] daily) {
 		this.initial = initial;
 		this.daily = daily;
+		this.money = money;
 	}
 
 	public Inventory getInitialInventory() {
-		return new Inventory(clone(initial));
+		return new Inventory(money, clone(initial));
 	}
 	
 	public IStock[] getDaily(){

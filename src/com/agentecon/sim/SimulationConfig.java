@@ -4,11 +4,14 @@ package com.agentecon.sim;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
+
+import com.agentecon.goods.Good;
+import com.agentecon.research.IInnovation;
 
 public class SimulationConfig {
 
+	private static final Good MONEY = new Good("Taler");
+	
 	private static final int DEFAULT_MARKET_RETRIES = 0;
 
 	private long seed;
@@ -34,6 +37,10 @@ public class SimulationConfig {
 		this.rounds = rounds;
 		this.marketRetries = wobbles;
 	}
+	
+	public Good getMoney(){
+		return MONEY;
+	}
 
 	public long getSeed() {
 		return seed;
@@ -57,6 +64,10 @@ public class SimulationConfig {
 
 	public int getIntradayIterations() {
 		return marketRetries;
+	}
+
+	public IInnovation getInnovation() {
+		return null;
 	}
 
 }

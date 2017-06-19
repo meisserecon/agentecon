@@ -4,7 +4,7 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IPriceMakerMarket;
 
-public interface IProducer extends IFirm, IPriceProvider {
+public interface IProducer extends IFirm {
 	
 	public Good[] getInputs();
 	

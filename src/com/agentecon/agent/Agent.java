@@ -73,7 +73,7 @@ public abstract class Agent implements IAgent, Cloneable {
 		assert alive;
 		alive = false;
 		Inventory old = this.inv;
-		this.inv = new Inventory();
+		this.inv = new Inventory(old.getMoney().getGood());
 		return old;
 	}
 
@@ -82,7 +82,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public final IStock getMoney() {
-		return inv.getStock(Good.MONEY);
+		return inv.getMoney();
 	}
 
 	public final void collectDailyEndowment() {

@@ -9,7 +9,7 @@ import com.agentecon.production.IProductionFunction;
 
 public interface IAgentFactory {
 	
-	public IConsumer createAutarkicConsumer(Endowment endowment, IUtility utilityFunction, IProductionFunction production);
+	public IConsumer createHermit(Endowment endowment, IUtility utilityFunction, IProductionFunction production);
 
 	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction);
 	

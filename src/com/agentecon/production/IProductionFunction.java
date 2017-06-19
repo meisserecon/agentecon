@@ -3,7 +3,7 @@ package com.agentecon.production;
 import com.agentecon.consumer.Weight;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
-import com.agentecon.production.IPriceProvider;
+import com.agentecon.goods.Quantity;
 
 public interface IProductionFunction {
 
@@ -11,15 +11,21 @@ public interface IProductionFunction {
 	 * Returns the input goods for this production function, including
 	 * both transformed and capital goods.
 	 * 
-	 * Use 'getWeights' to find out which inputs are capital goods.
+	 * Use 'getWeight' to find out which inputs are capital goods.
 	 */
 	public Good[] getInputs();
 	
 	/**
-	 * Returns the relative weights of the different input goods and
+	 * Returns the relative weight of the given input goods and
 	 * whether they are capital goods or transformed goods.
 	 */
-	public Weight[] getWeights();
+	public Weight getWeight(Good manhours);
+	
+	/**
+	 * Returns the number of units of the given good that are needed
+	 * upfront before an output can be produced.
+	 */
+	public double getFixedCost(Good good);
 
 	/**
 	 * Returns the output produced by this production function.
@@ -39,7 +45,7 @@ public interface IProductionFunction {
 	 * 
 	 * @return the amount of the output produced
 	 */
-	public double produce(Inventory inventory);
+	public Quantity produce(Inventory inventory);
 	
 	/**
 	 * Returns how much should optimally be spent on the input goods given the provided
@@ -53,5 +59,5 @@ public interface IProductionFunction {
 	 * Capital inputs are not taken into account.
 	 */
 	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings);
-	
+
 }

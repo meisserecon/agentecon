@@ -1,5 +1,7 @@
 package com.agentecon.goods;
 
+import com.agentecon.util.Numbers;
+
 public class Quantity {
 	
 	private final Good good;
@@ -18,6 +20,11 @@ public class Quantity {
 
 	public Good getGood() {
 		return good;
+	}
+	
+	@Override
+	public String toString(){
+		return Numbers.toString(amount) + " " + good;
 	}
 	
 }
