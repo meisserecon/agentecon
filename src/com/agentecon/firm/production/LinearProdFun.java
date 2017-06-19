@@ -29,12 +29,12 @@ public class LinearProdFun extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getCostOfMaximumProfit(IPriceProvider prices) {
-		return Double.MAX_VALUE;
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
+		return Double.MAX_VALUE; // actually wrong, could also be zero depending on output price
 	}
 
 	@Override
-	public double getExpenses(Good good, double price, double totalSpendings) {
+	public double getExpenses(Good good, IPriceProvider price, double totalSpendings) {
 		return Double.MAX_VALUE;
 	}
 

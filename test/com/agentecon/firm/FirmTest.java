@@ -14,8 +14,8 @@ import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.Good;
-import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Quantity;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
@@ -174,7 +174,7 @@ public class FirmTest {
 			}
 			
 			@Override
-			public void notifyProduced(IProducer inst, String producer, IStock[] inputs, IStock output) {
+			public void notifyProduced(IProducer inst, Quantity[] inputs, Quantity output) {
 				production[0] = output.getAmount();
 			}
 		});

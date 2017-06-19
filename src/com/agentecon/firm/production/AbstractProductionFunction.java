@@ -9,15 +9,22 @@ import com.agentecon.production.IProductionFunction;
 
 public abstract class AbstractProductionFunction implements IProductionFunction {
 
-	private double totInputs;
 	protected final Good output;
 	protected final Weight[] inputs;
+	
+	private double totWeight;
+	private double totConsumedWeight;
 
 	public AbstractProductionFunction(Good output, Weight... weights) {
 		assert output != null;
 		this.output = output;
 		this.inputs = weights;
-		this.totInputs = calcTotWeights();
+		for (Weight w: weights){
+			totWeight += w.weight;
+			if (!w.capital){
+				totConsumedWeight += w.weight;
+			}
+		}
 	}
 	
 	@Override
@@ -34,16 +41,12 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 	
 	protected abstract double useInputs(Inventory inventory);
 
-	private double calcTotWeights() {
-		double tot = 0.0;
-		for (Weight w : inputs) {
-			tot += w.weight;
-		}
-		return tot;
-	}
-
 	public double getTotalWeight() {
-		return totInputs;
+		return totWeight;
+	}
+	
+	public double getTotalConsumedWeight(){
+		return totConsumedWeight;
 	}
 
 	@Override
@@ -60,13 +63,13 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 		return output;
 	}
 
-	protected double getWeight(Good input) {
+	protected Weight getWeight(Good input) {
 		for (int i = 0; i < inputs.length; i++) {
 			if (inputs[i].good.equals(input)) {
-				return inputs[i].weight;
+				return inputs[i];
 			}
 		}
-		return 0;
+		return null;
 	}
 	
 	@Override

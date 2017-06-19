@@ -25,7 +25,7 @@ public class LogProdFun extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getCostOfMaximumProfit(IPriceProvider prices) {
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
 		// is this really correct?
 		double totWeight = getTotalWeight();
 		double outprice = prices.getPrice(output);
@@ -33,9 +33,11 @@ public class LogProdFun extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getExpenses(Good good, double price, double totalSpendings) {
-		double offerPerWeight = totalSpendings / getTotalWeight();
-		return offerPerWeight * getWeight(good) - price * ADJUSTMENT;
+	public double getExpenses(Good good, IPriceProvider price, double totalSpendings) {
+		double offerPerWeight = totalSpendings / getTotalConsumedWeight();
+		Weight weight = getWeight(good);
+		assert !weight.capital : "this function does not help you with expenses on capital goods";
+		return offerPerWeight * weight.weight - price.getPrice(good) * ADJUSTMENT;
 	}
 
 }

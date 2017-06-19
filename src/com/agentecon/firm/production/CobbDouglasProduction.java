@@ -9,7 +9,7 @@ import com.agentecon.production.IPriceProvider;
 public class CobbDouglasProduction extends AbstractProductionFunction {
 
 	public static final double PRODUCTIVITY = 10;
-	
+
 	private double constantFactor;
 
 	public CobbDouglasProduction(Good output, Weight... weights) {
@@ -34,6 +34,14 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 	public double getReturnsToScale() {
 		return super.getTotalWeight();
 	}
+	
+	public double getReturnsToScaleExcludingCapital() {
+		return super.getTotalConsumedWeight();
+	}
+	
+	public double getProfitAndCapitalShare(){
+		return 1.0 - super.getTotalConsumedWeight();
+	}
 
 	@Override
 	public double useInputs(Inventory inventory) {
@@ -45,38 +53,50 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 		production = Math.max(constantFactor * production, 1.0);
 		return production;
 	}
-	
+
 	@Override
-	public double getCostOfMaximumProfit(IPriceProvider prices) {
-		double totWeight = getTotalWeight();
-		if (totWeight >= 1.0) {
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
+		if (getReturnsToScaleExcludingCapital() >= 1.0) {
 			// increasing returns to scale
 			return Double.MAX_VALUE;
 		} else {
+			double totWeight = getTotalConsumedWeight();
 			double outprice = prices.getPrice(output);
-			double prod = getCBHelperProduct(prices);
+			double prod = getCBHelperProduct(getMultiplier(inv), prices);
 			double factor = Math.pow(outprice * prod, 1 / (1 - totWeight));
 			return totWeight * factor;
 		}
 	}
 
-	private double getCBHelperProduct(IPriceProvider prices) {
+	private double getMultiplier(Inventory inv) {
+		double multiplier = constantFactor;
+		for (Weight w : inputs) {
+			if (w.capital) {
+				multiplier *= Math.pow(inv.getStock(w.good).getAmount(), w.weight);
+			}
+		}
+		return multiplier;
+	}
+
+	private double getCBHelperProduct(double constantFactor, IPriceProvider prices) {
 		double tot = constantFactor;
 		for (Weight in : inputs) {
-			double price = prices.getPrice(in.good);
-			if (Double.isInfinite(price)) {
-				// skip, not obtainable
-			} else {
-				tot *= Math.pow(in.weight / price, in.weight);
+			if (!in.capital) {
+				double price = prices.getPrice(in.good);
+				if (Double.isInfinite(price)) {
+					// skip, not obtainable
+				} else {
+					tot *= Math.pow(in.weight / price, in.weight);
+				}
 			}
 		}
 		return tot;
 	}
 
 	@Override
-	public double getExpenses(Good good, double price, double totalSpendings) {
-		double offerPerWeight = totalSpendings / getTotalWeight();
-		return offerPerWeight * getWeight(good);
+	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) {
+		double offerPerWeight = totalSpendings / getTotalConsumedWeight();
+		return offerPerWeight * getWeight(good).weight;
 	}
 
 }

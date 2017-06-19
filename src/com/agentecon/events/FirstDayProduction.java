@@ -1,7 +1,7 @@
 package com.agentecon.events;
 
 import com.agentecon.goods.Good;
-import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.util.Average;
@@ -18,7 +18,7 @@ public class FirstDayProduction implements IProducerListener {
 	}
 
 	@Override
-	public void notifyProduced(IProducer comp, String producer, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, Quantity[] inputs, Quantity output) {
 		if (count > 0) {
 			assert this.output == null || this.output.equals(output.getGood());
 			assert output.getAmount() < 100;

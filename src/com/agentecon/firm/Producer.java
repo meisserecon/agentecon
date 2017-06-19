@@ -11,7 +11,7 @@ import com.agentecon.firm.decisions.IFirmDecisions;
 import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
-import com.agentecon.goods.Stock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.price.IBelief;
@@ -62,11 +62,11 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 
 	public void offer(IPriceMakerMarket market) {
 		double budget = getMoney().getAmount();
-		double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(this));
+		double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(getInventory(), this));
 		if (!getMoney().isEmpty()) {
 			for (InputFactor f : inputs) {
 				if (f.isObtainable()) {
-					double amount = prod.getExpenses(f.getGood(), f.getPrice(), totSalaries);
+					double amount = prod.getExpenses(f.getGood(), this, totSalaries);
 					if (amount > 0) {
 						f.createOffers(market, this, getMoney(), amount);
 					} else {
@@ -98,14 +98,14 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 	}
 
 	public void produce() {
-		IStock[] inputAmounts = new IStock[inputs.length];
+		Quantity[] inputQuantities = new Quantity[inputs.length];
 		double cogs = 0.0;
 		for (int i = 0; i < inputs.length; i++) {
 			cogs += inputs[i].getVolume();
-			inputAmounts[i] = inputs[i].getStock().duplicate();
+			inputQuantities[i] = inputs[i].getStock().getQuantity();
 		}
 		double produced = prod.produce(getInventory());
-		listeners.notifyProduced(this, getType(), inputAmounts, new Stock(output.getGood(), produced));
+		listeners.notifyProduced(this, inputQuantities, new Quantity(output.getGood(), produced));
 		listeners.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
 	}
 
@@ -120,7 +120,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 
 			@Override
 			public double getIdealCogs() {
-				return prod.getCostOfMaximumProfit(new IPriceProvider() {
+				return prod.getCostOfMaximumProfit(getInventory(), new IPriceProvider() {
 
 					@Override
 					public double getPrice(Good good) {
