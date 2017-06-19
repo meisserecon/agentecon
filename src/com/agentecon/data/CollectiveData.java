@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 
 public class CollectiveData extends JsonData {
@@ -24,7 +25,7 @@ public class CollectiveData extends JsonData {
 	public CollectiveData(Collection<? extends IAgent> agents) {
 		this.agents = agents.size();
 		this.source = findCommonType(agents);
-		Inventory base = new Inventory();
+		Inventory base = new Inventory(new Good("temp"));
 		for (IAgent a : agents) {
 			base.absorb(a.getInventory().duplicate());
 		}

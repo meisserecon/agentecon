@@ -2,7 +2,7 @@
 
 package com.agentecon.metric;
 
-import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
@@ -18,7 +18,7 @@ public abstract class FirmProductivityMonitor extends TimeSeries implements IPro
 	}
 	
 	@Override
-	public void notifyProduced(IProducer comp, String type, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, Quantity[] inputs, Quantity output) {
 		super.set(getDay(), output.getAmount());
 	}
 

@@ -12,7 +12,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
 import com.agentecon.goods.Good;
-import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.metric.series.Chart;
@@ -59,7 +59,7 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 
 	@Override
-	public void notifyProduced(IProducer comp, String producer, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer comp, Quantity[] inputs, Quantity output) {
 		this.production.get(output.getGood()).add(output.getAmount());
 	}
 

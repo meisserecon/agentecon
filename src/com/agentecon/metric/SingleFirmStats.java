@@ -8,7 +8,7 @@ import java.util.HashMap;
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
-import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;
@@ -81,7 +81,7 @@ public class SingleFirmStats extends SimStats {
 		}
 
 		@Override
-		public void notifyProduced(IProducer inst, String producer, IStock[] inputs, IStock output) {
+		public void notifyProduced(IProducer inst, Quantity[] inputs, Quantity output) {
 		}
 	}
 
