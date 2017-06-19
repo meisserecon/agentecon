@@ -5,7 +5,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.consumer.LogUtil;
+import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.world.IWorld;
 
 public class ConsumerEvent extends SimEvent {
@@ -25,7 +25,7 @@ public class ConsumerEvent extends SimEvent {
 		this.utilFun = utility;
 	}
 
-	public ConsumerEvent(int card, Endowment end, final LogUtil util) {
+	public ConsumerEvent(int card, Endowment end, final LogUtilWithFloor util) {
 		this(card, end, new IUtilityFactory(){
 
 			@Override

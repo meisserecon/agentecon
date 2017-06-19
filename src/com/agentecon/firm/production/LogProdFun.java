@@ -23,7 +23,7 @@ public class LogProdFun extends AbstractProductionFunction {
 		}
 		return production;
 	}
-
+	
 	@Override
 	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
 		// is this really correct?

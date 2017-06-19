@@ -56,7 +56,7 @@ public class ConsumerTest {
 
 	@Test
 	public void test() {
-		LogUtil utilFun = new LogUtil(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
+		LogUtilWithFloor utilFun = new LogUtilWithFloor(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
 		Consumer cons = new Consumer(createEndowment(), utilFun);
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {
@@ -95,7 +95,7 @@ public class ConsumerTest {
 
 	@Test
 	public void test2() {
-		LogUtil utilFun = new LogUtil(new Weight(PIZZA, 8), new Weight(ITALTIME, 14));
+		LogUtilWithFloor utilFun = new LogUtilWithFloor(new Weight(PIZZA, 8), new Weight(ITALTIME, 14));
 		Consumer cons = new Consumer(createEndowment2(), utilFun);
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {

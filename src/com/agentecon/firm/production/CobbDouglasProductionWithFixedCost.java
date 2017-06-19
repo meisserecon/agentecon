@@ -12,13 +12,18 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	private Quantity fixedCost;
 
 	public CobbDouglasProductionWithFixedCost(Good output, Quantity fixedCost, Weight... weights) {
-		super(output, weights);
-		this.fixedCost = fixedCost;
+		this(output, PRODUCTIVITY, fixedCost, weights);
 	}
 
 	public CobbDouglasProductionWithFixedCost(Good output, double constantFactor, Quantity fixedCost, Weight... weights) {
 		super(output, constantFactor, weights);
 		this.fixedCost = fixedCost;
+		assert !getWeight(fixedCost.getGood()).capital : "Fixed costs for capital goods not yet supported";
+	}
+	
+	@Override
+	public double getFixedCost(Good good) {
+		return fixedCost.getGood().equals(good) ? fixedCost.getAmount() : 0.0;
 	}
 
 	@Override

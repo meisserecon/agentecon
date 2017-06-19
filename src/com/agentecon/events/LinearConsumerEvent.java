@@ -4,7 +4,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.consumer.LogUtil;
+import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.world.IWorld;
 
 public class LinearConsumerEvent extends ConsumerEvent {
@@ -23,7 +23,7 @@ public class LinearConsumerEvent extends ConsumerEvent {
 
 			@Override
 			public IUtility create(int number) {
-				return new LogUtil();
+				return new LogUtilWithFloor();
 			}
 		});
 	}

@@ -6,7 +6,7 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.exercises.ex1;
+package com.agentecon.exercises.e01;
 
 import com.agentecon.AgentFactory;
 import com.agentecon.Simulation;
@@ -50,9 +50,16 @@ public class Hermit extends Consumer {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-		double plannedLeisureTime = currentManhours.getAmount() * 0.5;
+//		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
 		
-		Inventory productionInventory = inventory.hide(manhours, plannedLeisureTime);
+		double weight = prodFun.getWeight(manhours).weight;
+		double fixedCost = prodFun.getFixedCost(manhours);
+		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost)/(1+weight);
+		double optimalLeisureTime = currentManhours.getAmount() - optimalWorkAmount;
+		
+		// The hide function creates allows to hide parts of the inventory from the
+		// production function, preserving it for later consumption.
+		Inventory productionInventory = inventory.hide(manhours, optimalLeisureTime);
 		prodFun.produce(productionInventory);
 	}
 	
@@ -65,7 +72,7 @@ public class Hermit extends Consumer {
 
 	public static void main(String[] args) {
 		// load the configuration that uses this consumer
-		HermitConfiguration configuration = new HermitConfiguration(new AgentFactory());
+		HermitConfiguration configuration = new HermitConfiguration(new AgentFactory(), 10);
 		
 		// load the simulation
 		Simulation sim = new Simulation(configuration);

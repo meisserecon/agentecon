@@ -1,7 +1,7 @@
 package com.agentecon.configuration;
 
 import com.agentecon.consumer.IUtility;
-import com.agentecon.consumer.LogUtil;
+import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.IUtilityFactory;
 import com.agentecon.goods.Good;
@@ -30,17 +30,17 @@ public class ConsumptionWeights {
 		}
 	}
 
-	public LogUtil createUtilFun(int type) {
+	public LogUtilWithFloor createUtilFun(int type) {
 		int count = Math.min(MAX_CONSUMPTION_GOODS, outputs.length);
 		Weight[] prefs = new Weight[count + 1];
 		for (int i = 0; i < count; i++) {
 			prefs[i] = outputs[(i + type) % outputs.length];
 		}
 		prefs[prefs.length - 1] = inputs[type];
-		return new LogUtil(prefs);
+		return new LogUtilWithFloor(prefs);
 	}
 
-	public LogUtil createDeviation(LogUtil basis, Good changedGood, double newWeight) {
+	public LogUtilWithFloor createDeviation(LogUtilWithFloor basis, Good changedGood, double newWeight) {
 		if (basis.isValued(changedGood)) {
 			Good[] goods = basis.getGoods();
 			double[] weights = basis.getWeights();
@@ -49,7 +49,7 @@ public class ConsumptionWeights {
 				double w = goods[i] == changedGood ? newWeight : weights[i];
 				newWeights[i] = new Weight(goods[i], w);
 			}
-			return new LogUtil(newWeights);
+			return new LogUtilWithFloor(newWeights);
 		} else {
 			return basis;
 		}

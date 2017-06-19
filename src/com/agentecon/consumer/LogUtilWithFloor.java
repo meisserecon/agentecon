@@ -12,24 +12,23 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.util.Numbers;
 
-public class LogUtil extends AbstractWeightedUtil {
+public class LogUtilWithFloor extends AbstractWeightedUtil {
 
-	public static final double ADJUSTMENT = 1.0; // to avoid negative utility
-
-	public LogUtil(Weight[] weights, Weight... moreWeights) {
+	public LogUtilWithFloor(Weight[] weights, Weight... moreWeights) {
 		super(weights, moreWeights);
 	}
 
-	public LogUtil(Weight... weights) {
+	public LogUtilWithFloor(Weight... weights) {
 		super(weights);
 	}
 
 	public double getUtility(Collection<IStock> goods) {
 		double u = 0.0;
 		for (IStock s : goods) {
+			double amount = s.getAmount();
 			double weight = getWeight(s.getGood());
-			if (weight > 0.0) {
-				u += Math.log(s.getAmount() + ADJUSTMENT) * weight;
+			if (amount > 1.0 && weight > 0.0) {
+				u += Math.log(s.getAmount()) * weight;
 			}
 		}
 		return u;
@@ -48,7 +47,7 @@ public class LogUtil extends AbstractWeightedUtil {
 		// quantities of other goods with log utility.
 		for (IOffer offer : prices) {
 			if (!ignorelist.contains(offer.getGood())) {
-				endowment += (inv.getStock(offer.getGood()).getAmount() + ADJUSTMENT) * offer.getPrice().getPrice();
+				endowment += inv.getStock(offer.getGood()).getAmount() * offer.getPrice().getPrice();
 				totweight += getWeight(offer.getGood());
 			}
 		}
@@ -60,7 +59,7 @@ public class LogUtil extends AbstractWeightedUtil {
 			if (ignorelist.contains(good)) {
 				targetAmounts[pos++] = present;
 			} else {
-				double target = getWeight(good) * endowment / totweight / offer.getPrice().getPrice() - ADJUSTMENT;
+				double target = getWeight(good) * endowment / totweight / offer.getPrice().getPrice();
 				if ((target > present && offer.isBid()) || (target < present && !offer.isBid())) {
 					// We want more of something that is not for sale or we want less of something there are no bids for
 					// Should happen rarely
@@ -79,8 +78,8 @@ public class LogUtil extends AbstractWeightedUtil {
 		return targetAmounts;
 	}
 
-	public LogUtil wiggle(Random rand) {
-		return new LogUtil(super.copyWeights(rand));
+	public LogUtilWithFloor wiggle(Random rand) {
+		return new LogUtilWithFloor(super.copyWeights(rand));
 	}
 	
 }

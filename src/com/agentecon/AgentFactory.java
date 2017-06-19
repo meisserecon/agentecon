@@ -4,7 +4,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.exercises.ex1.Hermit;
+import com.agentecon.exercises.e01.Hermit;
 import com.agentecon.firm.Producer;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProductionFunction;

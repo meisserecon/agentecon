@@ -65,9 +65,7 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 	
 	public static final AgentFactoryMultiplex createDefault() throws SocketTimeoutException, IOException{
 		return new AgentFactoryMultiplex(
-//				new AgentLoader("meisserecon", "agentecon", "master"),
-//				new AgentLoader("meisserecon", "agentecon", "master"),
-//				new AgentLoader("meisserecon", "agentecon", "master"),
+				new AgentLoader("meisserecon", "agentecon", "master").loadAgentFactory(),
 				new AgentFactory()
 				);
 	}

@@ -28,8 +28,8 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 	}
 	
 	@Override
-	public Weight[] getWeights() {
-		return inputs;
+	public double getFixedCost(Good good) {
+		return 0;
 	}
 	
 	@Override
@@ -63,7 +63,8 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 		return output;
 	}
 
-	protected Weight getWeight(Good input) {
+	@Override
+	public Weight getWeight(Good input) {
 		for (int i = 0; i < inputs.length; i++) {
 			if (inputs[i].good.equals(input)) {
 				return inputs[i];
