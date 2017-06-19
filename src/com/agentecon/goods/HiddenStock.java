@@ -91,4 +91,9 @@ public class HiddenStock implements IStock {
 		return new RelativeHiddenStock(this, fraction);
 	}
 
+	@Override
+	public Quantity getQuantity() {
+		return new Quantity(getGood(), getAmount());
+	}
+
 }

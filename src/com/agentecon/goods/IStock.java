@@ -1,11 +1,26 @@
 package com.agentecon.goods;
 
 public interface IStock {
+	
+	/**
+	 * @return new Quantity(getGood(), getAmount())
+	 */
+	public Quantity getQuantity();
 
+	/**
+	 * The type of the good.
+	 */
 	public Good getGood();
 
+	/**
+	 * The amount that is available.
+	 * For the HiddenStock class, part of the stock can be hidden.
+	 */
 	public double getAmount();
 
+	/**
+	 * Consumes the available stock.
+	 */
 	public double consume();
 
 	public void remove(double quantity);
@@ -38,5 +53,4 @@ public interface IStock {
 	
 	public IStock duplicate();
 
-	
 }

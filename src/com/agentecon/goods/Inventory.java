@@ -118,5 +118,13 @@ public class Inventory {
 			return "Inventory with " + list;
 		}
 	}
+
+	public Quantity[] getQuantities(Good[] goods) {
+		Quantity[] inputAmounts = new Quantity[goods.length];
+		for (int i = 0; i < inputAmounts.length; i++) {
+			inputAmounts[i] = getStock(goods[i]).getQuantity();
+		}
+		return inputAmounts;
+	}
 	
 }

@@ -44,14 +44,14 @@ public interface IProductionFunction {
 	/**
 	 * Returns how much should optimally be spent on the input goods given the provided
 	 * price beliefs.
-	 * Capital inputs are not taken into account.
+	 * Capital inputs are assumed as given and provided through inventory.
 	 */
-	public double getCostOfMaximumProfit(IPriceProvider prices);
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices);
 	
 	/**
 	 * Tells how how much to optimally spend on each input good given total spendings.
 	 * Capital inputs are not taken into account.
 	 */
-	public double getExpenses(Good good, double price, double totalSpendings);
+	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings);
 	
 }

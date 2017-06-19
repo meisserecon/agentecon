@@ -139,4 +139,9 @@ public class Stock implements IStock {
 		return Numbers.toString(amount) + " " + good.toString();
 	}
 
+	@Override
+	public Quantity getQuantity() {
+		return new Quantity(good, amount);
+	}
+
 }

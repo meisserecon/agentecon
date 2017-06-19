@@ -3,12 +3,13 @@
 package com.agentecon.production;
 
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.util.AbstractListenerList;
 
 public class ProducerListeners extends AbstractListenerList<IProducerListener> implements IProducerListener {
 	
 	public void notifyProduced(String type, IStock[] inputs, IStock output) {
-		notifyProduced(null, type, inputs, output);
+		notifyProduced(null, inputs, output);
 	}
 
 	public void reportResults(double revenue, double cogs, double profits) {
@@ -16,9 +17,9 @@ public class ProducerListeners extends AbstractListenerList<IProducerListener> i
 	}
 
 	@Override
-	public void notifyProduced(IProducer inst, String type, IStock[] inputs, IStock output) {
+	public void notifyProduced(IProducer inst, Quantity[] inputs, Quantity output) {
 		for (IProducerListener l : list) {
-			l.notifyProduced(inst, type, inputs, output);
+			l.notifyProduced(inst, inputs, output);
 		}
 	}
 	
