@@ -11,8 +11,6 @@ package com.agentecon.exercises.e01;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import com.agentecon.AgentFactory;
-import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
@@ -21,7 +19,6 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.ranking.ConsumerRanking;
 
 /**
  * An autarkic consumer that produces its own food and does not

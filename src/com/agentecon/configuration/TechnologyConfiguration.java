@@ -17,9 +17,11 @@ import com.agentecon.production.IProductionFunction;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.verification.PriceMetric;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class TechnologyConfiguration implements IConfiguration {
+	
+	public static final Good MONEY = new Good("Taler");
 
 	public static final int CONSUMERS_PER_TYPE = 100;
 	public static final int FIRMS_PER_TYPE = 10;
@@ -65,9 +67,9 @@ public class TechnologyConfiguration implements IConfiguration {
 		config.addEvent(new SimEvent(0, MARKET_MAKERS) {
 
 			@Override
-			public void execute(int day, IWorld sim) {
+			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
-					sim.add(new MarketMaker(sim.getAgents().getFirms()));
+					sim.add(new MarketMaker(MONEY, sim.getAgents().getFirms()));
 				}
 			}
 		});
@@ -92,7 +94,7 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addFirms(ArrayList<SimEvent> config, ProductionWeights prod) {
 		for (int i = 0; i < outputs.length; i++) {
-			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
+			Endowment end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
 			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun));
 		}

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.agentecon.consumer.Weight;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Quantity;
 import com.agentecon.production.IProductionFunction;
 
 public abstract class AbstractProductionFunction implements IProductionFunction {
@@ -33,10 +34,10 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 	}
 	
 	@Override
-	public final double produce(Inventory inventory) {
+	public final Quantity produce(Inventory inventory) {
 		double production = useInputs(inventory);
 		inventory.getStock(getOutput()).addFreshlyProduced(production);
-		return production;
+		return new Quantity(output, production);
 	}
 	
 	protected abstract double useInputs(Inventory inventory);

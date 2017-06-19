@@ -66,7 +66,7 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	}
 
 	private double getFixedCosts(IPriceProvider prices) {
-		double price = prices.getPrice(fixedCost.getGood());
+		double price = prices.getPriceBelief(fixedCost.getGood());
 		if (Double.isInfinite(price)) {
 			return 0.0; // TODO
 		} else {

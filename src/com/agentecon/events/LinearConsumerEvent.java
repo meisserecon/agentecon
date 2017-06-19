@@ -5,7 +5,7 @@ import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class LinearConsumerEvent extends ConsumerEvent {
 
@@ -29,7 +29,7 @@ public class LinearConsumerEvent extends ConsumerEvent {
 	}
 
 	@Override
-	public void execute(int day, IWorld sim) {
+	public void execute(int day, ICountry sim) {
 		if (initialPopulation > 0) {
 			int step = maxAge / initialPopulation;
 			for (; initialPopulation > 0; initialPopulation--) {

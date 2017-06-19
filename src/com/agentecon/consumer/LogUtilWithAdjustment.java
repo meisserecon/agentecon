@@ -40,8 +40,9 @@ public class LogUtilWithAdjustment extends AbstractWeightedUtil {
 	}
 
 	private double[] getOptimalAllocation(Inventory inv, Collection<IOffer> prices, HashSet<Good> ignorelist) {
-		double endowment = inv.getStock(Good.MONEY).getAmount();
-		double totweight = getWeight(Good.MONEY);
+		IStock money = inv.getMoney();
+		double endowment = money.getAmount();
+		double totweight = getWeight(money.getGood());
 
 		// Note that goods in the inventory that have no price can be safely ignored
 		// as one cannot buy or sell them anyway. Also, they do not influence the

@@ -13,9 +13,11 @@ public class TestConsumer {
 	private static final double INFINITE = 1000000; // :)
 
 	private Price[] prices;
+	private Good money;
 
-	public TestConsumer(Price... prices) {
+	public TestConsumer(Good money, Price... prices) {
 		this.prices = prices;
+		this.money = money;
 	}
 
 	public void buyAndSell(Market market) {
@@ -38,7 +40,7 @@ public class TestConsumer {
 	}
 
 	private Stock getWallet() {
-		return new Stock(Good.MONEY, INFINITE);
+		return new Stock(money, INFINITE);
 	}
 
 	public boolean checkPrices(Market market, double accuracy) {

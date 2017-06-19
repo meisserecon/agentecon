@@ -14,14 +14,14 @@ import com.agentecon.production.IProducer;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.util.Average;
 import com.agentecon.util.InstantiatingHashMap;
-import com.agentecon.world.World;
+import com.agentecon.world.Country;
 
 public class RepeatedMarket {
 
-	private final World world;
+	private final Country world;
 	private final SimulationListeners listeners;
 
-	public RepeatedMarket(World world, SimulationListeners listeners) {
+	public RepeatedMarket(Country world, SimulationListeners listeners) {
 		this.world = world;
 		this.listeners = listeners; 
 	}

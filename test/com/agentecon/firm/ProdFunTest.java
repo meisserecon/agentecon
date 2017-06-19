@@ -11,6 +11,7 @@ import com.agentecon.firm.production.CobbDouglasProduction;
 import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Quantity;
 import com.agentecon.goods.Stock;
 import com.agentecon.util.Numbers;
 
@@ -33,7 +34,7 @@ public class ProdFunTest {
 	@Test
 	public void testLog() {
 		LogProdFun f1 = new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0));
-		Inventory inv = new Inventory(new Stock(SWISSTIME, 30.3683d));
+		Inventory inv = new Inventory(MONEY, new Stock(SWISSTIME, 30.3683d));
 		f1.produce(inv);
 		System.out.println(inv.getStock(FONDUE));
 		assert Math.abs(inv.getStock(FONDUE).getAmount() - 35.458) < 0.001;
@@ -42,13 +43,13 @@ public class ProdFunTest {
 	@Test
 	public void testCobbDouglas() {
 		CobbDouglasProduction f1 = new CobbDouglasProduction(FONDUE, new Weight(SWISSTIME, 0.4), new Weight(ITALTIME, 0.5));
-		Inventory inv = new Inventory(new Stock(SWISSTIME, 10), new Stock(ITALTIME, 10));
-		double prod = f1.produce(inv);
+		Inventory inv = new Inventory(MONEY, new Stock(SWISSTIME, 10), new Stock(ITALTIME, 10));
+		Quantity prod = f1.produce(inv);
 		
-		Inventory inv2 = new Inventory(new Stock(SWISSTIME, 50), new Stock(ITALTIME, 50));
-		double prod2 = f1.produce(inv2);
+		Inventory inv2 = new Inventory(MONEY, new Stock(SWISSTIME, 50), new Stock(ITALTIME, 50));
+		Quantity prod2 = f1.produce(inv2);
 		System.out.println(inv2.getStock(FONDUE));
-		assert Numbers.equals(prod2, prod * Math.pow(5.0, f1.getReturnsToScale()));
+		assert Numbers.equals(prod2.getAmount(), prod.getAmount() * Math.pow(5.0, f1.getReturnsToScale()));
 	}
 	
 }

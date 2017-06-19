@@ -17,7 +17,7 @@ import com.agentecon.sim.Event;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
-import com.agentecon.world.World;
+import com.agentecon.world.Country;
 
 // The world
 public class Simulation implements ISimulation, IIteratedSimulation {
@@ -29,7 +29,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private int day;
 	private Queue<SimEvent> events;
 	private SimulationListeners listeners;
-	private World world;
+	private Country world;
 	private StockMarket stocks;
 
 	public Simulation() {
@@ -45,7 +45,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		this.config = config;
 		this.events = createEventQueue(config.getEvents());
 		this.listeners = new SimulationListeners();
-		this.world = new World(config.getSeed(), listeners);
+		this.world = new Country(config, listeners);
 		this.stocks = new StockMarket(world, listeners);
 		this.day = 0;
 	}

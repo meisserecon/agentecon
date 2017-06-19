@@ -104,9 +104,9 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 			cogs += inputs[i].getVolume();
 			inputQuantities[i] = inputs[i].getStock().getQuantity();
 		}
-		double produced = prod.produce(getInventory());
-		listeners.notifyProduced(this, inputQuantities, new Quantity(output.getGood(), produced));
-		listeners.reportResults(this, output.getVolume(), cogs, produced * output.getPrice() - cogs);
+		Quantity produced = prod.produce(getInventory());
+		listeners.notifyProduced(this, inputQuantities, produced);		
+		listeners.reportResults(this, output.getVolume(), cogs, produced.getAmount() * output.getPrice() - cogs);
 	}
 
 	public Good getGood() {
@@ -123,7 +123,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 				return prod.getCostOfMaximumProfit(getInventory(), new IPriceProvider() {
 
 					@Override
-					public double getPrice(Good good) {
+					public double getPriceBelief(Good good) {
 						return Producer.this.getFactor(good).getPrice();
 					}
 				});
@@ -195,7 +195,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 	}
 
 	@Override
-	public double getPrice(Good good) {
+	public double getPriceBelief(Good good) {
 		return getFactor(good).getPrice();
 	}
 

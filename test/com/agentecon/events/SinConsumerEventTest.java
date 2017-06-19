@@ -10,16 +10,16 @@ import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
 import com.agentecon.world.Agents;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
-public class SinConsumerEventTest implements IWorld {
+public class SinConsumerEventTest implements ICountry {
 	
 	private int day;
 	private int consumers;
 
 	@Test
 	public void test() {
-		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(new Stock(Good.MONEY, 1)), new LogUtilWithFloor());
+		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(new Stock(getMoney(), 1)), new LogUtilWithFloor());
 		for (day = 50; day<200; day++){
 			e.execute(day, this);
 		}
@@ -43,6 +43,11 @@ public class SinConsumerEventTest implements IWorld {
 	@Override
 	public Agents getAgents() {
 		return null;
+	}
+
+	@Override
+	public Good getMoney() {
+		return new Good("Taler");
 	}
 
 }

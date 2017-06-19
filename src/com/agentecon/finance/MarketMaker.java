@@ -24,8 +24,8 @@ public class MarketMaker extends Firm implements IMarketMaker {
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
-	public MarketMaker(Collection<IFirm> firms) {
-		super(new Endowment(new IStock[] { new Stock(Good.MONEY, MARKET_MAKER_CASH) }, new IStock[] {}));
+	public MarketMaker(Good money, Collection<IFirm> firms) {
+		super(new Endowment(money, new IStock[] { new Stock(money, MARKET_MAKER_CASH) }, new IStock[] {}));
 		this.portfolio = new Portfolio(getMoney());
 		this.reserve = 0.0;
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();

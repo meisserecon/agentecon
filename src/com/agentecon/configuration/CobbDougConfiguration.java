@@ -14,6 +14,8 @@ import com.agentecon.sim.SimulationConfig;
 
 public class CobbDougConfiguration implements IConfiguration {
 
+	public static final Good MONEY = new Good("Taler");
+	
 	public static final int ROUNDS = 1000;
 	public static final int WOBBLES = 50;
 	public static final int MAX_ITERATIONS = 22;
@@ -110,7 +112,7 @@ public class CobbDougConfiguration implements IConfiguration {
 
 	protected void addFirms(ArrayList<SimEvent> config, ArrayList<EvolvingEvent> newList, ProductionWeights prod) {
 		for (int i = 0; i < outputs.length; i++) {
-			Endowment end = new Endowment(new Stock[] { new Stock(Good.MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
+			Endowment end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000), new Stock(outputs[i], 10) }, new Stock[] {});
 			IProductionFunction fun = prod.createProdFun(i, 0.7);
 			config.add(new FirmEvent(firmsPerType, "Firm " + i, end, fun));
 			// newList.add(new EvolvingFirmEvent(firmsPerType, "Firm " + i, end, fun, new Random(rand.nextLong()), PriceFactory.SENSOR, "0.05"));

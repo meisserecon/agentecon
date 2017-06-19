@@ -1,10 +1,10 @@
 package com.agentecon;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.exercises.e01.Hermit;
+import com.agentecon.exercises.e02.Farmer;
 import com.agentecon.firm.Producer;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProductionFunction;
@@ -22,7 +22,7 @@ public class AgentFactory implements IAgentFactory {
 	
 	@Override
 	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
-		return new Consumer(endowment, utilityFunction);
+		return new Farmer(endowment, utilityFunction);
 	}
 
 	@Override

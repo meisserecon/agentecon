@@ -6,7 +6,7 @@ import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class ConsumerEvent extends SimEvent {
 
@@ -37,7 +37,7 @@ public class ConsumerEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(int day, IWorld sim) {
+	public void execute(int day, ICountry sim) {
 		for (int i = 0; i < cardinality; i++) {
 			sim.add((Agent) createConsumer(end, utilFun.create(count++)));
 		}

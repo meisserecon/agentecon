@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IRegister;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
@@ -26,6 +27,10 @@ public class ShareRegister implements IRegister {
 		this.dividend = new MovingAverage(0.8);
 		this.rootPosition = new Position(this, ticker, wallet.getGood(), SHARES_PER_COMPANY);
 		this.all.add(rootPosition);
+	}
+	
+	public void claimCompanyShares(Position owner){
+		owner.absorb(rootPosition);
 	}
 	
 	public void raiseCapital(IStockMarket dsm, IAgent owner, IStock wallet) {

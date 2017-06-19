@@ -45,22 +45,26 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 
 	@Override
 	public IConsumer createHermit(Endowment endowment, IUtility utilityFunction, IProductionFunction production) {
-		return getCurrent().createHermit(endowment, utilityFunction, production);
+		IConsumer consumer = getCurrent().createHermit(endowment, utilityFunction, production);
+		return consumer == null ? createHermit(endowment, utilityFunction, production) : consumer;
 	}
 
 	@Override
 	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
-		return getCurrent().createConsumer(endowment, utilityFunction);
+		IConsumer consumer =  getCurrent().createConsumer(endowment, utilityFunction);
+		return consumer == null ? createConsumer(endowment, utilityFunction) : consumer;
 	}
 
 	@Override
 	public IProducer createProducer(Endowment endowment, IProductionFunction prodFun) {
-		return getCurrent().createProducer(endowment, prodFun);
+		IProducer producer = getCurrent().createProducer(endowment, prodFun);
+		return producer == null ? createProducer(endowment, prodFun) : producer;
 	}
 
 	@Override
 	public IFirm createFirm(Endowment endowment) {
-		return getCurrent().createFirm(endowment);
+		IFirm firm = getCurrent().createFirm(endowment);
+		return firm == null ? createFirm(endowment) : firm;
 	}
 	
 	public static final AgentFactoryMultiplex createDefault() throws SocketTimeoutException, IOException{

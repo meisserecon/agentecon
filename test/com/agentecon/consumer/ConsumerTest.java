@@ -39,11 +39,11 @@ public class ConsumerTest {
 	}
 
 	public static Endowment createEndowment() {
-		return new Endowment(new Stock[] { new Stock(MONEY, 26.4537) }, new Stock[] { new Stock(SWISSTIME, 24) });
+		return new Endowment(MONEY, new Stock[] { new Stock(MONEY, 26.4537) }, new Stock[] { new Stock(SWISSTIME, 24) });
 	}
 
 	public static Endowment createEndowment2() {
-		return new Endowment(new Stock[] { new Stock(MONEY, 1.465103413) }, new Stock[] { new Stock(ITALTIME, 24) });
+		return new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1.465103413) }, new Stock[] { new Stock(ITALTIME, 24) });
 	}
 
 	@Before

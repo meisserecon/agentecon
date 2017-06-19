@@ -2,66 +2,39 @@ package com.agentecon.finance;
 
 import java.util.Collection;
 
-import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.MortalConsumer;
-import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
-import com.agentecon.goods.Good;
-import com.agentecon.goods.IStock;
-import com.agentecon.goods.Stock;
-import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Agents;
-import com.agentecon.world.World;
+import com.agentecon.world.Country;
 
 public class StockMarket {
 
-	private World world;
+	private Country country;
 	private SimulationListeners listeners;
 
-	public StockMarket(World world, SimulationListeners listeners) {
+	public StockMarket(Country world, SimulationListeners listeners) {
 		this.listeners = listeners;
-		this.world = world;
+		this.country = world;
 	}
 
 	public void trade(int day) {
-		Agents ags = world.getAgents();
+		Agents ags = country.getAgents();
 		for (IFirm firm : ags.getFirms()) {
 			firm.payDividends(day);
 		}
 		Collection<IMarketMaker> mms = ags.getRandomizedMarketMakers();
-		if (mms.isEmpty()) {
-			// Assume model without stock market, distribute dividends proportionally among consumers
-			distributeDividendsEqually(day, ags);
-		} else {
-			runDailyMarket(day, ags, mms);
-		}
-	}
-
-	private void distributeDividendsEqually(int day, Agents ags) {
-		IStock wallet = new Stock(Good.MONEY);
-		for (IFirm firm : ags.getFirms()) {
-			((ShareRegister)firm.getShareRegister()).collectRootDividend(wallet);
-		}
-		Collection<IConsumer> consumers = ags.getConsumers();
-		double dividend = wallet.getAmount() / consumers.size();
-		for (IConsumer cons: consumers){
-			cons.getMoney().transfer(wallet, dividend);
-		}
-		if (!wallet.isEmpty()){
-			consumers.iterator().next().getMoney().absorb(wallet);
-		}
+		runDailyMarket(day, ags, mms);
 	}
 
 	protected void runDailyMarket(int day, Agents ags, Collection<IMarketMaker> mms) {
 		for (IShareholder shareholder : ags.getShareholders()) {
 			shareholder.getPortfolio().collectDividends();
 		}
-		DailyStockMarket dsm = new DailyStockMarket(world.getRand());
+		DailyStockMarket dsm = new DailyStockMarket(country.getRand());
 		listeners.notifyStockMarketOpened(dsm);
-		
+
 		for (IMarketMaker mm : mms) {
 			// System.out.println(day + ": " + mm);
 			mm.postOffers(dsm);

@@ -46,7 +46,7 @@ public class CobbDouglasUtilTest {
 		double utility = utilFun.getUtility(Arrays.<IStock>asList(s1, s2));
 		assert Numbers.equals(utility, 10.298165523700048);
 		
-		Inventory inv = new Inventory(new Stock(SWISSTIME, 24));
+		Inventory inv = new Inventory(MONEY, new Stock(SWISSTIME, 24));
 		double[] alloc = utilFun.getOptimalAllocation(inv, Arrays.asList(createAsk(10), createBid(5)));
 		double endow = 5*24;
 		assert Numbers.equals(alloc[0], 10.0 / 25.0 * endow / 10); 

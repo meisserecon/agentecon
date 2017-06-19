@@ -5,7 +5,7 @@ import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.MortalConsumer;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class SinConsumerEvent extends ConsumerEvent {
 	
@@ -36,7 +36,7 @@ public class SinConsumerEvent extends ConsumerEvent {
 	}
 
 	@Override
-	public void execute(int today, IWorld sim) {
+	public void execute(int today, ICountry sim) {
 		int day = today - start;
 		assert day >= 0;
 		double period = (day % cycle) * 2 * Math.PI / cycle;

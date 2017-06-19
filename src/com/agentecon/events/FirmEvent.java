@@ -3,7 +3,7 @@ package com.agentecon.events;
 import com.agentecon.agent.Endowment;
 import com.agentecon.firm.Producer;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class FirmEvent extends SimEvent {
 
@@ -19,7 +19,7 @@ public class FirmEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(int day, IWorld sim) {
+	public void execute(int day, ICountry sim) {
 		for (int i = 0; i < getCardinality(); i++) {
 			sim.add(new Producer(end, prodFun));
 		}

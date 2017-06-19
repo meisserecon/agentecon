@@ -9,7 +9,7 @@ import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.util.Average;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class EvolvingFirmEvent extends EvolvingEvent {
 
@@ -64,7 +64,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 		} else {
 			stock.remove(-diff);
 		}
-		end = new Endowment(inv.getAll().toArray(new IStock[]{}), end.getDaily());
+		end = new Endowment(inv.getMoney().getGood(), inv.getAll().toArray(new IStock[]{}), end.getDaily());
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 	}
 
 	@Override
-	public void execute(int day, IWorld sim) {
+	public void execute(int day, ICountry sim) {
 		for (Producer firm : firms) {
 			sim.add(firm);
 		}

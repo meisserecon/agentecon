@@ -3,7 +3,7 @@
 package com.agentecon.events;
 
 import com.agentecon.sim.Event;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public abstract class SimEvent extends Event {
 	
@@ -15,6 +15,6 @@ public abstract class SimEvent extends Event {
 		super(step, interval, card);
 	}
 
-	public abstract void execute(int day, IWorld sim);
+	public abstract void execute(int day, ICountry sim);
 
 }

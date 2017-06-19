@@ -61,7 +61,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 			return Double.MAX_VALUE;
 		} else {
 			double totWeight = getTotalConsumedWeight();
-			double outprice = prices.getPrice(output);
+			double outprice = prices.getPriceBelief(output);
 			double prod = getCBHelperProduct(getMultiplier(inv), prices);
 			double factor = Math.pow(outprice * prod, 1 / (1 - totWeight));
 			return totWeight * factor;
@@ -82,7 +82,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 		double tot = constantFactor;
 		for (Weight in : inputs) {
 			if (!in.capital) {
-				double price = prices.getPrice(in.good);
+				double price = prices.getPriceBelief(in.good);
 				if (Double.isInfinite(price)) {
 					// skip, not obtainable
 				} else {

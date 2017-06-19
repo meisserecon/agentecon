@@ -44,7 +44,7 @@ public class FirmTest {
 	@Before
 	public void setUp() throws Exception {
 		this.rand = new Random(23);
-		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
+		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
 	}
 
 	@After
@@ -53,7 +53,7 @@ public class FirmTest {
 
 	@Test
 	public void testPriceFinding() {
-		TestConsumer tc = new TestConsumer(new Price(PIZZA, 30), new Price(SWISSTIME, 10), new Price(ITALTIME, 15));
+		TestConsumer tc = new TestConsumer(MONEY, new Price(PIZZA, 30), new Price(SWISSTIME, 10), new Price(ITALTIME, 15));
 		Producer firm = new Producer(end, new LogProdFun(PIZZA, new Weight(ITALTIME, 5.0), new Weight(SWISSTIME, 5.0)), new DifferentialDividend());
 		for (int i = 0; i < 100; i++) {
 			Market market = new Market(rand);
@@ -78,7 +78,7 @@ public class FirmTest {
 	@Test
 	public void testOptimalProduction(){
 		final double hourPrice = 2.972868529894414d;
-		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000), new Stock(FONDUE, 36.156428643107d) }, new Stock[] {});
+		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000), new Stock(FONDUE, 36.156428643107d) }, new Stock[] {});
 		Producer firm = new Producer(end, new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0)), new DifferentialDividend()){
 			
 			@Override
@@ -122,7 +122,7 @@ public class FirmTest {
 	public void testOptimalProductionCobbDouglas1(){
 		final double hourPrice1 = 2.0;
 		final double fonduePrice = 10.0;
-		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
+		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
 		double alpha = 0.5;
 		IProductionFunction prodFun = new CobbDouglasProduction(FONDUE, 1.0, new Weight(SWISSTIME, alpha));
 		Producer firm = new Producer(end, prodFun, new DifferentialDividend()){
@@ -160,9 +160,9 @@ public class FirmTest {
 		firm.produce();
 		System.out.println("Produced " + prod);
 		double x1 = 6.25;
-		double production2 = prodFun.produce(new Inventory(new Stock(SWISSTIME, x1)));
+		Quantity production2 = prodFun.produce(new Inventory(MONEY, new Stock(SWISSTIME, x1)));
 		System.out.println(production2);
-		assert Numbers.equals(prod, production2);
+		assert Numbers.equals(prod, production2.getAmount());
 	}
 
 	private double produce(Producer firm) {
@@ -188,7 +188,7 @@ public class FirmTest {
 		final double hourPrice1 = 5.0;
 		final double hourPrice2 = 4.0;
 		final double fonduePrice = 10.0;
-		this.end = new Endowment(new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
+		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
 		double alpha = 0.45;
 		double beta = 0.25;
 		double factor = 2.0;
@@ -230,9 +230,9 @@ public class FirmTest {
 		System.out.println("Produced " + production);
 		double x1 = Math.pow(factor * fonduePrice*Math.pow(alpha / hourPrice1, 1 - beta)*Math.pow(beta / hourPrice2, beta), 1/(1 - alpha - beta));
 		double x2 = hourPrice1 / hourPrice2 * beta / alpha * x1;
-		double production2 = prodFun.produce(new Inventory(new Stock(SWISSTIME, x1), new Stock(ITALTIME, x2)));
+		Quantity production2 = prodFun.produce(new Inventory(MONEY, new Stock(SWISSTIME, x1), new Stock(ITALTIME, x2)));
 		System.out.println(production2);
-		assert Numbers.equals(production, production2);
+		assert Numbers.equals(production, production2.getAmount());
 	}
 	
 }

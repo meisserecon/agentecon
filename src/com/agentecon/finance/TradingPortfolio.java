@@ -29,7 +29,7 @@ public class TradingPortfolio extends Portfolio {
 	public double getSubstanceValue(IPriceProvider prices) {
 		double value = wallet.getAmount();
 		for (Position p : inv.values()) {
-			value += p.getAmount() * prices.getPrice(p.getTicker());
+			value += p.getAmount() * prices.getPriceBelief(p.getTicker());
 		}
 		return value;
 	}

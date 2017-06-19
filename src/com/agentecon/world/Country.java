@@ -7,26 +7,39 @@ import java.util.Random;
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
+import com.agentecon.firm.IFirm;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
+import com.agentecon.research.IFounder;
+import com.agentecon.research.IInnovation;
+import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
 
-public class World implements IWorld {
+public class Country implements ICountry {
 
 	private int day;
+	private Good money;
 	private Random rand;
 	private Agents agents, backup;
 	private long randomBaseSeed;
+	private IInnovation innovation;
 	private SimulationListeners listeners;
 
-	public World(long randomSeed, SimulationListeners listeners) {
+	public Country(SimulationConfig config, SimulationListeners listeners) {
+		this.money = config.getMoney();
 		this.listeners = listeners;
-		this.randomBaseSeed = randomSeed + 123123453;
-		this.rand = new Random(randomSeed);
+		this.randomBaseSeed = config.getSeed() + 123123453;
+		this.rand = new Random(config.getSeed());
 		this.agents = new Agents(listeners, rand.nextLong());
+		this.innovation = config.getInnovation();
+	}
+	
+	public Good getMoney(){
+		return money;
 	}
 
 	public void handoutEndowments() {
@@ -41,7 +54,20 @@ public class World implements IWorld {
 		this.rand = new Random(day ^ randomBaseSeed);
 		this.agents = this.agents.renew(rand.nextLong());
 		this.handoutEndowments();
+		this.createFirms();
 		this.listeners.notifyDayStarted(day);
+	}
+
+	private void createFirms() {
+		for (IShareholder shareholder : agents.getShareholders()) {
+			if (shareholder instanceof IFounder){
+				IFounder founder = (IFounder) shareholder;
+				IFirm firm = founder.considerCreatingFirm(innovation);
+				if (firm != null){
+					add(firm);
+				}
+			}
+		}		
 	}
 
 	@Override
@@ -55,7 +81,7 @@ public class World implements IWorld {
 	}
 
 	public void finishDay(int day) {
-		IStock inheritedMoney = new Stock(Good.MONEY);
+		IStock inheritedMoney = new Stock(money);
 		Portfolio inheritance = new Portfolio(inheritedMoney);
 		Collection<IConsumer> consumers = agents.getConsumers();
 		Iterator<IConsumer> iter = consumers.iterator();

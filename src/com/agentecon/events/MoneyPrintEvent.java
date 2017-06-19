@@ -2,7 +2,7 @@ package com.agentecon.events;
 
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.goods.IStock;
-import com.agentecon.world.IWorld;
+import com.agentecon.world.ICountry;
 
 public class MoneyPrintEvent extends SimEvent {
 
@@ -14,7 +14,7 @@ public class MoneyPrintEvent extends SimEvent {
 	}
 
 	@Override
-	public void execute(int day, IWorld sim) {
+	public void execute(int day, ICountry sim) {
 		for (IConsumer c : sim.getAgents().getRandomConsumers(getCardinality())) {
 			IStock money = c.getMoney();
 			if (amount > 0) {

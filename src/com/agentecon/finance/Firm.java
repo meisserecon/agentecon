@@ -5,6 +5,7 @@ import com.agentecon.agent.Endowment;
 import com.agentecon.firm.FirmListeners;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
+import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
@@ -16,6 +17,13 @@ public abstract class Firm extends Agent implements IFirm {
 	private ShareRegister register;
 	private FirmListeners monitor;
 
+	public Firm(IShareholder owner, Endowment end) {
+		this(end);
+		Position ownerPosition = this.register.createPosition();
+		this.register.claimCompanyShares(ownerPosition);
+		owner.getPortfolio().addPosition(ownerPosition);
+	}
+	
 	public Firm(Endowment end) {
 		super(end);
 		this.ticker = new Ticker(getType(), getAgentId());
@@ -50,7 +58,7 @@ public abstract class Firm extends Agent implements IFirm {
 	protected abstract double calculateDividends(int day);
 
 	@Override
-	public void payDividends(int day) {
+	public final void payDividends(int day) {
 		double dividend = calculateDividends(day);
 		if (dividend > 0) {
 			monitor.reportDividend(this, dividend);
