@@ -26,7 +26,7 @@ import com.agentecon.goods.Stock;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.sim.SimulationConfig;
 
-public class AutarkicConsumerConfiguration extends SimulationConfig {
+public class HermitConfiguration extends SimulationConfig {
 
 	public static final Good POTATOE = new Good("Potatoe", 0.95);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
@@ -34,7 +34,7 @@ public class AutarkicConsumerConfiguration extends SimulationConfig {
 	
 	private static final int ROUNDS = 10000;
 	
-	public AutarkicConsumerConfiguration(IAgentFactory factory){
+	public HermitConfiguration(IAgentFactory factory){
 		super(ROUNDS);
 		IStock[] initialEndowment = new IStock[]{new Stock(LAND, 100)};
 		IStock[] dailyEndowment = new IStock[]{new Stock(MAN_HOUR, 24)};
@@ -51,7 +51,7 @@ public class AutarkicConsumerConfiguration extends SimulationConfig {
 
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		IAgentFactory factory = AgentFactoryMultiplex.createDefault();
-		AutarkicConsumerConfiguration config = new AutarkicConsumerConfiguration(factory);
+		HermitConfiguration config = new HermitConfiguration(factory);
 		Simulation sim = new Simulation(config);
 		ConsumerRanking ranking = new ConsumerRanking();
 		sim.addListener(ranking);

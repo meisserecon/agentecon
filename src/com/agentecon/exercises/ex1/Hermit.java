@@ -11,7 +11,7 @@ package com.agentecon.exercises.ex1;
 import com.agentecon.AgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
-import com.agentecon.configuration.AutarkicConsumerConfiguration;
+import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.goods.Good;
@@ -21,16 +21,20 @@ import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.ranking.ConsumerRanking;
 
-public class AutarkicConsumer extends Consumer {
+/**
+ * An autarkic consumer that produces its own food and does not
+ * interact with others.
+ */
+public class Hermit extends Consumer {
 	
 	private Good manhours;
 	private IProductionFunction prodFun;
 
-	public AutarkicConsumer(Endowment end, IUtility utility, IProductionFunction prodFun) {
+	public Hermit(Endowment end, IUtility utility, IProductionFunction prodFun) {
 		super(end, utility);
 		this.prodFun = prodFun;
 		this.manhours = end.getDaily()[0].getGood();
-		assert this.manhours.equals(AutarkicConsumerConfiguration.MAN_HOUR);
+		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
 	
 	@Override
@@ -61,7 +65,7 @@ public class AutarkicConsumer extends Consumer {
 
 	public static void main(String[] args) {
 		// load the configuration that uses this consumer
-		AutarkicConsumerConfiguration configuration = new AutarkicConsumerConfiguration(new AgentFactory());
+		HermitConfiguration configuration = new HermitConfiguration(new AgentFactory());
 		
 		// load the simulation
 		Simulation sim = new Simulation(configuration);
