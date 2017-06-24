@@ -154,5 +154,4 @@ public class Market implements IPriceMakerMarket, IPriceTakerMarket, IMarket {
 		listeners.notifyMarketClosed(day);
 	}
 
-
 }

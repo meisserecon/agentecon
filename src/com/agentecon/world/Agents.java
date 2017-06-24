@@ -14,7 +14,6 @@ import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
-import com.agentecon.firm.Producer;
 import com.agentecon.firm.Ticker;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.ISimulationListener;
@@ -93,8 +92,8 @@ public class Agents implements IAgents {
 		if (agent instanceof IMarketMaker) {
 			marketMakers.add((IMarketMaker) agent);
 		}
-		if (agent instanceof Producer) {
-			producers.add((Producer) agent);
+		if (agent instanceof IProducer) {
+			producers.add((IProducer) agent);
 		}
 		if (agent instanceof IConsumer) {
 			consumers.add((IConsumer) agent);

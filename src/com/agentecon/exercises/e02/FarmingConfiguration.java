@@ -16,7 +16,6 @@ import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.configuration.AgentFactoryMultiplex;
-import com.agentecon.configuration.RemoteAgentFactory;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
@@ -40,7 +39,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	public static final Good POTATOE = new Good("Potatoe", 0.95);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
 	
-	private static final int ROUNDS = 100;
+	private static final int ROUNDS = 10000;
 	
 	public FarmingConfiguration(IAgentFactory factory, int agents){
 		super(ROUNDS);
@@ -80,7 +79,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		IAgentFactory defaultFactory = new AgentFactory(); // this factory loads your Hermit
-		IAgentFactory meisserFactory = new RemoteAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
+//		IAgentFactory meisserFactory = new RemoteAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
 //		IAgentFactory other = new RemoteAgentFactory("user", "repo"); // maybe you want to load agents from someone else's repository for comparison?
 		
 		// Create a multiplex factory that alternates between different factories when instantiating agents 

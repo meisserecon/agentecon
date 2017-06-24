@@ -109,7 +109,7 @@ public class FirmTest {
 			@Override
 			public void addMarketListener(IMarketListener listener) {
 			}
-
+			
 		});
 		firm.adaptPrices();
 		double production = produce(firm);
