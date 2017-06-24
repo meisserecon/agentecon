@@ -5,5 +5,5 @@ package com.agentecon.market;
 public interface IMarket {
 	
 	public void addMarketListener(IMarketListener listener);
-
+	
 }

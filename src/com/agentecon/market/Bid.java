@@ -8,6 +8,10 @@ import com.agentecon.util.Numbers;
 
 public class Bid extends AbstractOffer {
 	
+	public Bid(IAgent initiator, IStock wallet, IStock stock, double price, double quantity){
+		this(initiator, wallet, stock, new Price(stock.getGood(), price), quantity);
+	}
+	
 	public Bid(IAgent initiator, IStock wallet, IStock stock, Price price, double quantity){
 		super(initiator, wallet, stock, price, quantity);
 		assert wallet.getAmount() - getAmount() * getPrice().getPrice() >= -Numbers.EPSILON;

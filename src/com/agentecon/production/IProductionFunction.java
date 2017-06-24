@@ -5,6 +5,10 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Quantity;
 
+/**
+ * A production function transforms inputs into outputs.
+ * It can only be used once per day.
+ */
 public interface IProductionFunction {
 
 	/**
