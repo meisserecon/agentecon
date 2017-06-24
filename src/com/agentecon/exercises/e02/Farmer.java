@@ -50,7 +50,9 @@ public class Farmer extends Consumer implements IFounder {
 			IStock wallet = getMoney();
 			IStock firmMoney = wallet.hideRelative(0.5);
 			
-			return new Farm(owner, firmMoney, myLand, prod);
+			AdaptiveFarm farm = new AdaptiveFarm(owner, firmMoney, myLand, prod);
+			farm.getInventory().getStock(manhours).transfer(getStock(manhours), 10);
+			return farm;
 		} else {
 			return null;
 		}
@@ -66,9 +68,8 @@ public class Farmer extends Consumer implements IFounder {
 		return super.consume();
 	}
 	
-	// The "static void main" method is executed when running a class
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
-		HermitConfiguration.main(args); // the HermitConfiguration knows what to do
+		FarmingConfiguration.main(args);
 	}
 
 }
