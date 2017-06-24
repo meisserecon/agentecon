@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simulation</title>
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
+<link type="text/css" rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+				</button>
+				<a class="brand" href="/">Agentecon</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div id="handle">
+			<h1>Loading...</h1>
+		</div>
+
+		<div id="sourcelink"></div>
+		<br> <br>
+		
+		<div id="tradegraph"></div>
+		
+		<script>
+		var test = "asdasd";
+		$.getJSON("/luzius/local/local/tradegraph", function(data) {
+			var loc = window.location;
+			document.getElementById('tradegraph').innerHTML = data;
+		});
+		</script>
+		
+		<div id="charts"></div>
+
+		<div id="output"></div>
+
+	</div>
+
+</body>
+</html>
