@@ -1,6 +1,6 @@
 package com.agentecon.finance;
 
-import com.agentecon.agent.Agent;
+import com.agentecon.SimAgent;
 import com.agentecon.agent.Endowment;
 import com.agentecon.firm.FirmListeners;
 import com.agentecon.firm.IFirm;
@@ -11,7 +11,7 @@ import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
 
-public abstract class Firm extends Agent implements IFirm {
+public abstract class Firm extends SimAgent implements IFirm {
 
 	private Ticker ticker;
 	private ShareRegister register;

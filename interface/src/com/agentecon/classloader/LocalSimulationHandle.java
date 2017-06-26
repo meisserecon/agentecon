@@ -12,7 +12,7 @@ public class LocalSimulationHandle extends SimulationHandle {
 	private File basePath;
 
 	public LocalSimulationHandle() {
-		this(new File("../AgenteconSim"));
+		this(new File("../simulation"));
 	}
 
 	public LocalSimulationHandle(File basePath) {

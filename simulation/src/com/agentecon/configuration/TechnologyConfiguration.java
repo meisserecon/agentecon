@@ -82,7 +82,7 @@ public class TechnologyConfiguration implements IConfiguration {
 
 	protected void addConsumers(ArrayList<SimEvent> config, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
-			Endowment end = new Endowment(new Stock(inputs[i], Endowment.HOURS_PER_DAY));
+			Endowment end = new Endowment(MONEY, new Stock(inputs[i], Endowment.HOURS_PER_DAY));
 			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)) {
 				@Override
 				protected IConsumer createConsumer(Endowment end, IUtility util){

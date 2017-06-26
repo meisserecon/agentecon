@@ -14,8 +14,6 @@ import com.agentecon.sim.AgentRef;
 
 public abstract class Agent implements IAgent, Cloneable {
 
-	private static int current = 1;
-
 	private int number;
 	private String type;
 	private Endowment end;
@@ -24,12 +22,12 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	private AgentRef ref;
 
-	public Agent(Endowment end) {
+	public Agent(Endowment end, int number) {
 		this.type = AgentLoader.getType(getClass());
 		this.inv = end.getInitialInventory();
 		this.end = end;
-		this.number = current++;
 		this.alive = true;
+		this.number = number;
 		this.ref = new AgentRef(this);
 		assert type != null;
 	}
