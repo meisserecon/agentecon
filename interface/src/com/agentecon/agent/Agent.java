@@ -22,14 +22,19 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	private AgentRef ref;
 
-	public Agent(Endowment end, int number) {
+	public Agent(Endowment end) {
 		this.type = AgentLoader.getType(getClass());
 		this.inv = end.getInitialInventory();
 		this.end = end;
 		this.alive = true;
-		this.number = number;
+		this.number = 0;
 		this.ref = new AgentRef(this);
 		assert type != null;
+	}
+	
+	public void setId(int id){
+		assert this.number == 0;
+		this.number = id;
 	}
 	
 	public void addListener(Object listener) {

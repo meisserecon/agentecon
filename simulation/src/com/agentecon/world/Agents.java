@@ -22,6 +22,7 @@ public class Agents implements IAgents {
 
 	private long seed;
 	private Random rand;
+	private int agentId;
 
 	private HashMap<Integer, Agent> all;
 	private ArrayList<IConsumer> consumers;
@@ -47,6 +48,7 @@ public class Agents implements IAgents {
 		this.firmTypes = new HashSet<>();
 		this.listeners = listeners;
 		this.seed = seed;
+		this.agentId = 1;
 	}
 
 	public Collection<IFirm> getFirms() {
@@ -75,6 +77,9 @@ public class Agents implements IAgents {
 	}
 
 	private void include(Agent agent, boolean newAgent) {
+		if (newAgent){
+			agent.setId(agentId++);
+		}
 		all.put(agent.getAgentId(), agent);
 		if (agent instanceof IFirm) {
 			IFirm firm = (IFirm) agent;
