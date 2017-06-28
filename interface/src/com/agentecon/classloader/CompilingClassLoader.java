@@ -25,6 +25,9 @@ public class CompilingClassLoader extends RemoteLoader {
 	public CompilingClassLoader(RemoteJarLoader simulationJar, SimulationHandle source) throws SocketTimeoutException, IOException {
 		super(CompilingClassLoader.class.getClassLoader(), source);
 		this.compiler = new AgentCompiler(simulationJar, source);
+		if (simulationJar != null){
+			simulationJar.addDependentLoader(this);
+		}
 	}
 
 	@Override

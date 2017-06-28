@@ -8,10 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 public class LocalSimulationHandle extends SimulationHandle {
 
 	private File basePath;
+	private HashMap<String, Long> touchedFiles;
 
 	public LocalSimulationHandle() {
 		this(new File("../simulation"));
@@ -20,6 +23,7 @@ public class LocalSimulationHandle extends SimulationHandle {
 	public LocalSimulationHandle(File basePath) {
 		super(System.getProperty("user.name").toLowerCase(), "local");
 		this.basePath = basePath;
+		this.touchedFiles = new HashMap<>();
 		assert this.basePath.isDirectory() : this.basePath.getAbsolutePath() + " is not a folder";
 		// assert getJarfile().isFile() : getJarfile().getAbsolutePath() + "
 		// does not exist";
@@ -58,13 +62,21 @@ public class LocalSimulationHandle extends SimulationHandle {
 
 	@Override
 	public InputStream openJar() throws IOException {
-		return new FileInputStream(getJarfile());
+		File file = getJarfile();
+		notifyTouched(file);
+		return new FileInputStream(file);
+	}
+
+	private void notifyTouched(File file) {
+		touchedFiles.put(file.getPath(), file.lastModified());
 	}
 
 	@Override
 	public InputStream openInputStream(String classname) throws IOException {
 		String fileName = classname.replace('.', '/') + ".java";
-		return new FileInputStream(new File(basePath, fileName));
+		File file = new File(basePath, fileName);
+		notifyTouched(file);
+		return new FileInputStream(file);
 	}
 
 	@Override
@@ -82,6 +94,21 @@ public class LocalSimulationHandle extends SimulationHandle {
 			}
 		}
 		return names;
+	}
+
+	@Override
+	public String getVersion() {
+		long[] version = new long[]{0};
+		touchedFiles.forEach(new BiConsumer<String, Long>() {
+
+			@Override
+			public void accept(String t, Long u) {
+				if (new File(t).lastModified() != u){
+					version[0]++;
+				}
+			}
+		});
+		return version[0] + " modified files";
 	}
 
 }

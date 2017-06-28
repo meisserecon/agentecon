@@ -40,6 +40,10 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	
 	private static final int ROUNDS = 100;
 	
+	public HermitConfiguration() throws IOException{
+		this(createFactory(), 10);
+	}
+	
 	public HermitConfiguration(IAgentFactory factory, int agents){
 		super(ROUNDS);
 		IStock[] initialEndowment = new IStock[]{new Stock(LAND, 100)};
@@ -71,19 +75,20 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	}
 
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
-		IAgentFactory defaultFactory = new CompilingAgentFactory(new File("../exercises/src")); // this factory loads agents from the local disk
-		IAgentFactory meisserFactory = new CompilingAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
-//		IAgentFactory other = new RemoteAgentFactory("user", "repo"); // maybe you want to load agents from someone else's repository for comparison?
-		
-		// Create a multiplex factory that alternates between different factories when instantiating agents 
-		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, meisserFactory);
-		
+		IAgentFactory factory = createFactory();
 		HermitConfiguration config = new HermitConfiguration(factory, 10); // Create the configuration
 		Simulation sim = new Simulation(config); // Create the simulation
 		ConsumerRanking ranking = new ConsumerRanking(); // Create a ranking
 		sim.addListener(ranking); // register the ranking as a listener interested in what is going on
 		sim.run(); // run the simulation
 		ranking.print(System.out); // print the resulting ranking
+	}
+
+	private static IAgentFactory createFactory() throws SocketTimeoutException, IOException {
+		IAgentFactory defaultFactory = new CompilingAgentFactory(new File("../exercises/src")); // this factory loads agents from the local disk
+		IAgentFactory meisserFactory = new CompilingAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
+		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, meisserFactory);
+		return factory;
 	}
 	
 }

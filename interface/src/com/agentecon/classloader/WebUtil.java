@@ -19,7 +19,11 @@ public class WebUtil {
 
 	public static String readHttp(String address) throws FileNotFoundException, IOException {
 		if (address.contains(API_ADDRESS)) {
-			address += ACCESS_SECRETS;
+			if (address.contains("?")){
+				address += "&" + ACCESS_SECRETS.substring(1);
+			} else {
+				address += ACCESS_SECRETS;
+			}
 		}
 		String content = "";
 		String nextPage = null;
@@ -54,7 +58,7 @@ public class WebUtil {
 	}
 
 	private static String loadSecrets() {
-		Path path = FileSystems.getDefault().getPath("..", "github-secret.txt");
+		Path path = FileSystems.getDefault().getPath("../..", "github-secret.txt");
 		try {
 			return Files.readAllLines(path, Charset.defaultCharset()).get(0);
 		} catch (IOException e) {

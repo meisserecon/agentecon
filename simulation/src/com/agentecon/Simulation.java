@@ -7,8 +7,8 @@ import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
+import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.configuration.IConfiguration;
-import com.agentecon.configuration.TechnologyConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.market.RepeatedMarket;
@@ -32,8 +32,8 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private Country world;
 	private StockMarket stocks;
 
-	public Simulation() {
-		this(new TechnologyConfiguration(1313));
+	public Simulation() throws Exception {
+		this(new HermitConfiguration());
 	}
 
 	public Simulation(IConfiguration metaConfig) {
@@ -131,7 +131,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		listeners.remove(listener);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Simulation sim = new Simulation();
 		sim.run();
 	}

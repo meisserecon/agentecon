@@ -42,4 +42,6 @@ public abstract class SimulationHandle {
 
 	public abstract Collection<String> listSourceFiles(String packageName) throws IOException;
 
+	public abstract String getVersion() throws IOException;
+
 }
