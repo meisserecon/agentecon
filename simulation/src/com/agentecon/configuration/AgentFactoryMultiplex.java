@@ -9,7 +9,6 @@
 package com.agentecon.configuration;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 
 import com.agentecon.EConsumerType;
 import com.agentecon.IAgentFactory;
@@ -31,11 +30,11 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 		return factories[current++ % factories.length];
 	}
 
-	public static final AgentFactoryMultiplex createDefault() throws SocketTimeoutException, IOException{
-		return new AgentFactoryMultiplex(
-				new RemoteAgentFactory("meisserecon", "agentecon", "master")
-				);
-	}
+//	public static final AgentFactoryMultiplex createDefault() throws SocketTimeoutException, IOException{
+//		return new AgentFactoryMultiplex(
+//				new CompilingAgentFactory("meisserecon", "agentecon", "master")
+//				);
+//	}
 
 	@Override
 	public IConsumer createConsumer(EConsumerType type, Endowment endowment, IUtility utilityFunction) {

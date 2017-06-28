@@ -7,6 +7,7 @@ import java.util.Collection;
 
 public abstract class SimulationHandle {
 	
+	public static final String JAVA_SUFFIX = ".java";
 	public static final String JAR_PATH = "simulation/jar/simulation.jar";
 
 	private String owner, name;

@@ -12,26 +12,28 @@ import java.io.File;
 import java.net.URL;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.classloader.RemoteJarLoader;
+import com.agentecon.classloader.RemoteLoader;
+import com.agentecon.classloader.SimulationHandle;
 
 public class SourceData {
 	
-	public long date;
+//	public long date;
 	public String owner;
 	public String codeLink;
 	
 	public SourceData(IAgent agent) {
 		Class<? extends IAgent> clazz = agent.getClass();
 		ClassLoader loader = clazz.getClassLoader();
-		if (loader instanceof RemoteJarLoader) {
-			RemoteJarLoader agentLoader = (RemoteJarLoader) loader;
-			this.date = agentLoader.getDate();
-			this.owner = agentLoader.getSourceData().getOwner();
-			this.codeLink = agentLoader.getSourceData().getBrowsableURL(agent.getClass().getName()).toExternalForm();
+		if (loader instanceof RemoteLoader) {
+			RemoteLoader agentLoader = (RemoteLoader) loader;
+			SimulationHandle handle = agentLoader.getSource();
+//			this.date = agentLoader.getDate();
+			this.owner = agentLoader.getOwner();
+			this.codeLink = handle.getBrowsableURL(agent.getClass().getName()).toExternalForm();
 		} else {
 			URL url = loader.getResource(clazz.getName().replace('.', File.separatorChar) + ".class");
 			File sourceFile = new File(url.toExternalForm().substring("file://".length()).replace(".class", ".java").replace("/bin/", "/src/"));
-			this.date = sourceFile.lastModified();
+//			this.date = sourceFile.lastModified();
 			this.owner = System.getProperty("user.name");
 			this.codeLink = "file://" + sourceFile;
 		}

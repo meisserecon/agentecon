@@ -11,8 +11,6 @@ import java.util.Collection;
 
 public class LocalSimulationHandle extends SimulationHandle {
 
-	private static final String JAVA_SUFFIX = ".java";
-
 	private File basePath;
 
 	public LocalSimulationHandle() {
@@ -23,7 +21,8 @@ public class LocalSimulationHandle extends SimulationHandle {
 		super(System.getProperty("user.name").toLowerCase(), "local");
 		this.basePath = basePath;
 		assert this.basePath.isDirectory() : this.basePath.getAbsolutePath() + " is not a folder";
-		assert getJarfile().isFile() : getJarfile().getAbsolutePath() + " does not exist";
+		// assert getJarfile().isFile() : getJarfile().getAbsolutePath() + "
+		// does not exist";
 	}
 
 	public String getDescription() {
@@ -73,14 +72,16 @@ public class LocalSimulationHandle extends SimulationHandle {
 		File file = new File(basePath, packageName.replace('.', '/'));
 		File[] children = file.listFiles();
 		ArrayList<String> names = new ArrayList<>();
-		for (File f : children) {
-			String name = f.getName();
-			if (name.endsWith(JAVA_SUFFIX)) {
-				name = name.substring(0, name.length() - JAVA_SUFFIX.length());
-				names.add(packageName + "." + f.getName());
+		if (children != null) {
+			for (File f : children) {
+				String name = f.getName();
+				if (name.endsWith(JAVA_SUFFIX)) {
+					name = name.substring(0, name.length() - JAVA_SUFFIX.length());
+					names.add(packageName + "." + name);
+				}
 			}
 		}
-		throw new RuntimeException("not implemented");
+		return names;
 	}
 
 }

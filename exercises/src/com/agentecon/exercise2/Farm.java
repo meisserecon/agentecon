@@ -9,6 +9,7 @@
 package com.agentecon.exercise2;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;

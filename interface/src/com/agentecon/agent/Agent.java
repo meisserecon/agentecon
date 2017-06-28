@@ -1,6 +1,6 @@
 package com.agentecon.agent;
 
-import com.agentecon.classloader.RemoteJarLoader;
+import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.firm.IFirm;
@@ -23,7 +23,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	private AgentRef ref;
 
 	public Agent(Endowment end) {
-		this.type = RemoteJarLoader.getType(getClass());
+		this.type = inferType(getClass());
 		this.inv = end.getInitialInventory();
 		this.end = end;
 		this.alive = true;
@@ -32,6 +32,24 @@ public abstract class Agent implements IAgent, Cloneable {
 		assert type != null;
 	}
 	
+	private static String inferType(Class<? extends Agent> clazz) {
+		ClassLoader loader = clazz.getClassLoader();
+		if (loader instanceof RemoteLoader){
+			return ((RemoteLoader)loader).getOwner() + "-" + getName(clazz);
+		} else {
+			return getName(clazz);
+		}
+	}
+	
+	private static String getName(Class<?> clazz) {
+		String name = clazz.getSimpleName();
+		while (name.length() == 0) {
+			clazz = clazz.getSuperclass();
+			name = clazz.getSimpleName();
+		}
+		return name;
+	}
+
 	public void setId(int id){
 		assert this.number == 0;
 		this.number = id;

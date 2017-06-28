@@ -22,11 +22,11 @@ import javax.tools.StandardLocation;
 public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 
 	private JavaCompiler compiler;
-	private GithubFileManager manager;
+	private SourceFileManager manager;
 
 	public AgentCompiler(RemoteJarLoader simulationJar, SimulationHandle source) {
 		this.compiler = ToolProvider.getSystemJavaCompiler();
-		this.manager = new GithubFileManager(simulationJar, source, this);
+		this.manager = new SourceFileManager(simulationJar, source, this);
 	}
 
 	public byte[] findClass(String name) throws ClassNotFoundException {

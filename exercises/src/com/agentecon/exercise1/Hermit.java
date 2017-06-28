@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.firm.IFirm;

@@ -15,12 +15,11 @@ import java.util.jar.JarInputStream;
 
 import com.agentecon.util.IOUtils;
 
-public class RemoteJarLoader extends ClassLoader {
+public class RemoteJarLoader extends RemoteLoader {
 
 	private static final int ENDING_LEN = ".class".length();
 
 	private long date;
-	private SimulationHandle source;
 	private HashMap<String, byte[]> data;
 
 	public RemoteJarLoader() throws SocketTimeoutException, IOException {
@@ -36,8 +35,7 @@ public class RemoteJarLoader extends ClassLoader {
 	}
 
 	public RemoteJarLoader(SimulationHandle source) throws SocketTimeoutException, IOException {
-		super(RemoteJarLoader.class.getClassLoader());
-		this.source = source;
+		super(RemoteJarLoader.class.getClassLoader(), source);
 		this.date = source.getJarDate();
 		this.data = new HashMap<String, byte[]>();
 		try (InputStream is = source.openJar()) {
@@ -63,10 +61,6 @@ public class RemoteJarLoader extends ClassLoader {
 
 	public long getDate() {
 		return date;
-	}
-
-	public SimulationHandle getSourceData() {
-		return source;
 	}
 
 	public static byte[] readData(InputStream source) throws IOException {
@@ -98,25 +92,6 @@ public class RemoteJarLoader extends ClassLoader {
 
 	private String toClassName(String name) {
 		return name.substring(0, name.length() - ENDING_LEN).replace('/', '.');
-	}
-
-	public static String getType(Class<?> clazz) {
-		String name = getName(clazz);
-		ClassLoader cl = clazz.getClassLoader();
-		if (cl instanceof RemoteJarLoader) {
-			return ((RemoteJarLoader) cl).getSourceData().getOwner() + "-" + name;
-		} else {
-			return name;
-		}
-	}
-
-	protected static String getName(Class<?> clazz) {
-		String name = clazz.getSimpleName();
-		while (name.length() == 0) {
-			clazz = clazz.getSuperclass();
-			name = clazz.getSimpleName();
-		}
-		return name;
 	}
 
 	public void forEach(BiConsumer<String, byte[]> biConsumer) {

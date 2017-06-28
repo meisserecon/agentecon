@@ -12,9 +12,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.configuration.FarmingConfiguration;
+import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.exercise1.HermitConfiguration;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
