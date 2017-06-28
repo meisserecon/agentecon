@@ -12,7 +12,7 @@ import java.io.File;
 import java.net.URL;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.classloader.AgentLoader;
+import com.agentecon.classloader.RemoteJarLoader;
 
 public class SourceData {
 	
@@ -23,8 +23,8 @@ public class SourceData {
 	public SourceData(IAgent agent) {
 		Class<? extends IAgent> clazz = agent.getClass();
 		ClassLoader loader = clazz.getClassLoader();
-		if (loader instanceof AgentLoader) {
-			AgentLoader agentLoader = (AgentLoader) loader;
+		if (loader instanceof RemoteJarLoader) {
+			RemoteJarLoader agentLoader = (RemoteJarLoader) loader;
 			this.date = agentLoader.getDate();
 			this.owner = agentLoader.getSourceData().getOwner();
 			this.codeLink = agentLoader.getSourceData().getBrowsableURL(agent.getClass().getName()).toExternalForm();

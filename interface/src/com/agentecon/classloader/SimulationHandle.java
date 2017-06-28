@@ -3,10 +3,11 @@ package com.agentecon.classloader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 
 public abstract class SimulationHandle {
 	
-	public static final String JAR_PATH = "jar/simulation.jar";
+	public static final String JAR_PATH = "simulation/jar/simulation.jar";
 
 	private String owner, name;
 
@@ -35,5 +36,9 @@ public abstract class SimulationHandle {
 	public String toString(){
 		return name;
 	}
+
+	public abstract InputStream openInputStream(String classname) throws IOException;
+
+	public abstract Collection<String> listSourceFiles(String packageName) throws IOException;
 
 }

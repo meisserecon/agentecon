@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class LocalSimulationHandle extends SimulationHandle {
+
+	private static final String JAVA_SUFFIX = ".java";
 
 	private File basePath;
 
@@ -33,7 +37,7 @@ public class LocalSimulationHandle extends SimulationHandle {
 	private File getJarfile() {
 		return new File(basePath, JAR_PATH.replace('/', File.separatorChar));
 	}
-	
+
 	@Override
 	public String getPath() {
 		return getOwner() + "/local/local";
@@ -56,6 +60,27 @@ public class LocalSimulationHandle extends SimulationHandle {
 	@Override
 	public InputStream openJar() throws IOException {
 		return new FileInputStream(getJarfile());
+	}
+
+	@Override
+	public InputStream openInputStream(String classname) throws IOException {
+		String fileName = classname.replace('.', '/') + ".java";
+		return new FileInputStream(new File(basePath, fileName));
+	}
+
+	@Override
+	public Collection<String> listSourceFiles(String packageName) throws IOException {
+		File file = new File(basePath, packageName.replace('.', '/'));
+		File[] children = file.listFiles();
+		ArrayList<String> names = new ArrayList<>();
+		for (File f : children) {
+			String name = f.getName();
+			if (name.endsWith(JAVA_SUFFIX)) {
+				name = name.substring(0, name.length() - JAVA_SUFFIX.length());
+				names.add(packageName + "." + f.getName());
+			}
+		}
+		throw new RuntimeException("not implemented");
 	}
 
 }

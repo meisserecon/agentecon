@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 public class GitSimulationHandle extends SimulationHandle {
 
@@ -31,8 +32,12 @@ public class GitSimulationHandle extends SimulationHandle {
 	}
 
 	public URL getJarURL() {
+		return getURL(JAR_PATH);
+	}
+
+	private URL getURL(String path) {
 		try {
-			return new URL("https://raw.githubusercontent.com/" + getOwner() + "/" + repo + "/" + getName() + "/" + JAR_PATH);
+			return new URL("https://raw.githubusercontent.com/" + getOwner() + "/" + repo + "/" + getName() + "/" + path);
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
@@ -47,6 +52,36 @@ public class GitSimulationHandle extends SimulationHandle {
 	@Override
 	public InputStream openJar() throws IOException {
 		return getJarURL().openStream();
+	}
+
+//	@Override
+//	public URI getURI(String classname) {
+//		try {
+//			String path = classname.replace('.', '/');
+//			int dollar = path.indexOf('$');
+//			if (dollar >= 0){
+//				path = path.substring(0, dollar);
+//			}
+//			return getURL("simulation/" + path).toURI();
+//		} catch (URISyntaxException e) {
+//			throw new java.lang.RuntimeException(e);
+//		}
+//	}
+
+	@Override
+	public InputStream openInputStream(String classname) throws IOException {
+		String path = classname.replace('.', '/');
+		int dollar = path.indexOf('$');
+		if (dollar >= 0){
+			path = path.substring(0, dollar);
+		}
+		URL url = getURL("simulation/src/" + path + ".java");
+		return url.openStream();
+	}
+
+	@Override
+	public Collection<String> listSourceFiles(String packageName) throws IOException {
+		throw new RuntimeException("not implemented");
 	}
 	
 }

@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.ISimulation;
-import com.agentecon.classloader.AgentLoader;
+import com.agentecon.classloader.RemoteJarLoader;
 import com.agentecon.classloader.SimulationHandle;
 
-public class SimulationLoader extends AgentLoader {
+public class SimulationLoader extends RemoteJarLoader {
 
 	public static final String SIM_CLASS = "com.agentecon.Simulation";
 
