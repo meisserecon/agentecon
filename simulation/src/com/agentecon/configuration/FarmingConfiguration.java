@@ -78,7 +78,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	}
 	
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
-		IAgentFactory defaultFactory = new CompilingAgentFactory(new File("../exercises/src")); // this factory loads your Hermit
+		IAgentFactory defaultFactory = new CompilingAgentFactory(new File("../exercises/src")); // this factory loads your Farmer
 //		IAgentFactory meisserFactory = new RemoteAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
 //		IAgentFactory other = new RemoteAgentFactory("user", "repo"); // maybe you want to load agents from someone else's repository for comparison?
 		

@@ -10,7 +10,7 @@ public class CompilingClassLoader extends RemoteLoader {
 	private AgentCompiler compiler;
 
 	public CompilingClassLoader(RemoteJarLoader simulationJar, SimulationHandle source) throws SocketTimeoutException, IOException {
-		super(simulationJar, source);
+		super(simulationJar == null ? CompilingClassLoader.class.getClassLoader() : simulationJar, source);
 		this.compiler = new AgentCompiler(simulationJar, source);
 	}
 

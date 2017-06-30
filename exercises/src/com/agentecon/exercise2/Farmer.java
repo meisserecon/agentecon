@@ -69,8 +69,4 @@ public class Farmer extends Consumer implements IFounder {
 		return super.consume();
 	}
 	
-	public static void main(String[] args) throws SocketTimeoutException, IOException {
-		FarmingConfiguration.main(args);
-	}
-
 }
