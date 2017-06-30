@@ -9,6 +9,7 @@
 package com.agentecon.classloader;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.tools.Diagnostic;
@@ -34,7 +35,8 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 			byte[] byteCode = manager.getByteCode(name);
 			if (byteCode == null) {
 				JavaFileObject object = manager.getJavaFileForInput(StandardLocation.SOURCE_PATH, name, Kind.SOURCE);
-				boolean success = this.compiler.getTask(null, manager, this, null, null, Collections.singleton(object)).call();
+				System.out.println("Compiling " + name);
+				boolean success = this.compiler.getTask(null, manager, this, Arrays.asList("-cp","loaded.jar"), null, Collections.singleton(object)).call();
 				assert success;
 				byteCode = manager.getByteCode(name);
 			}

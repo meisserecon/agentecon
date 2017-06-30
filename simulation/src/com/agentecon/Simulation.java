@@ -2,6 +2,7 @@
 
 package com.agentecon;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -32,7 +33,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private Country world;
 	private StockMarket stocks;
 
-	public Simulation() throws Exception {
+	public Simulation() throws IOException {
 		this(new HermitConfiguration());
 	}
 

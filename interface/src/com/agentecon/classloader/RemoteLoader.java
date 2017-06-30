@@ -9,32 +9,32 @@
 package com.agentecon.classloader;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
-public class RemoteLoader extends ClassLoader {
+public abstract class RemoteLoader extends ClassLoader {
 	
 	private String version;
 	protected SimulationHandle source;
-	private ArrayList<RemoteLoader> subloaders;
+	protected HashMap<SimulationHandle, RemoteLoader> subloaders;
 	
 	public RemoteLoader(ClassLoader parent, SimulationHandle source) throws IOException{
 		super(parent);
 		this.version = source.getVersion();
 		this.source = source;
-		this.subloaders = new ArrayList<>();
+		this.subloaders = new HashMap<>();
+	}
+	
+	public void registerSubloader(SimulationHandle handle, RemoteLoader loader) {
+		RemoteLoader prev = this.subloaders.put(handle, loader);
+		assert prev == null;
+	}
+
+	public RemoteLoader getSubloader(SimulationHandle handle) {
+		return this.subloaders.get(handle);
 	}
 	
 	public boolean isUptoDate() throws IOException{
-		for (RemoteLoader sub: subloaders){
-			if (!sub.isUptoDate()){
-				return false;
-			}
-		}
 		return source.getVersion().equals(version);
-	}
-	
-	public void addDependentLoader(RemoteLoader subloader) {
-		this.subloaders.add(subloader);
 	}
 	
 	public String getOwner() {

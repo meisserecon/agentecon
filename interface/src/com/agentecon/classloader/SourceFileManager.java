@@ -69,17 +69,7 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 				return list;
 			} else if (location.equals(StandardLocation.CLASS_PATH) && kinds.contains(Kind.CLASS) && simulationJar != null) {
 				ArrayList<JavaFileObject> list = copyList(objects);
-				simulationJar.forEach(new BiConsumer<String, byte[]>() {
-
-					@Override
-					public void accept(String name, byte[] byteCode) {
-						if (name.startsWith(packageName)) {
-							if (recurse || name.substring(packageName.length() + 1).indexOf('.') == -1) {
-								list.add(getClassFile(name, byteCode));
-							}
-						}
-					}
-				});
+				addJarClasses(packageName, recurse, list);
 				return list;
 			} else {
 				return objects;
@@ -87,6 +77,20 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 		} else {
 			return objects;
 		}
+	}
+
+	private void addJarClasses(String packageName, boolean recurse, ArrayList<JavaFileObject> list) {
+		simulationJar.forEach(new BiConsumer<String, byte[]>() {
+
+			@Override
+			public void accept(String name, byte[] byteCode) {
+				if (name.startsWith(packageName)) {
+					if (recurse || name.substring(packageName.length() + 1).indexOf('.') == -1) {
+						list.add(getClassFile(name, byteCode));
+					}
+				}
+			}
+		});
 	}
 
 	private SimpleJavaFileObject getJavaSourceFile(String name) {
@@ -133,9 +137,10 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	@Override
 	public String inferBinaryName(Location location, JavaFileObject file) {
-		if (location.equals(StandardLocation.SOURCE_PATH)){
+		if (file instanceof SimpleJavaFileObject){
 			String name = file.getName();
-			return name.substring(0, name.length() - ".java".length()).replace('/', '.');
+			String extension = file.getKind().extension;
+			return name.substring(0, name.length() - extension.length()).replace('/', '.');
 		} else {
 			return super.inferBinaryName(location, file);
 		}
@@ -148,7 +153,7 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	@Override
 	public boolean handleOption(String current, Iterator<String> remaining) {
-		throw new RuntimeException("not implemented");
+		return true;
 	}
 
 	@Override
@@ -157,6 +162,7 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 		switch (loc) {
 		case CLASS_OUTPUT:
 		case SOURCE_PATH:
+		case CLASS_PATH:
 			return true;
 		default:
 			return super.hasLocation(location);

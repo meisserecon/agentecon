@@ -2,30 +2,47 @@
 
 package com.agentecon.runner;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Iterator;
 
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.RemoteJarLoader;
+import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.classloader.SimulationHandle;
 
+	
 public class SimulationLoader extends RemoteJarLoader {
 
 	public static final String SIM_CLASS = "com.agentecon.Simulation";
 
 	private Checksum checksum;
 
-	public SimulationLoader(File basePath) throws IOException {
-		super(basePath);
-	}
-	
 	public SimulationLoader(SimulationHandle handle) throws SocketTimeoutException, IOException {
 		super(handle);
 	}
 
 	public Checksum getChecksum(){
 		return checksum;
+	}
+	
+	public SimulationLoader refresh(boolean[] changed) throws SocketTimeoutException, IOException{
+		Iterator<RemoteLoader> iter = subloaders.values().iterator();
+		while (iter.hasNext()){
+			RemoteLoader next = iter.next();
+			if (!next.isUptoDate()){
+				iter.remove();
+				changed[0] = true;
+			}
+		}
+		if (isUptoDate()){
+			return this;
+		} else {
+			changed[0] = true;
+			SimulationLoader newLoader = new SimulationLoader(source);
+			newLoader.subloaders.putAll(this.subloaders);
+			return newLoader;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

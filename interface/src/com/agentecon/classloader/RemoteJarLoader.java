@@ -82,7 +82,7 @@ public class RemoteJarLoader extends RemoteLoader {
 
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		byte[] data = this.data.remove(name);
+		byte[] data = this.data.get(name);
 		if (data == null) {
 			throw new ClassNotFoundException(name);
 		} else {

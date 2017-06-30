@@ -11,24 +11,42 @@ import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.classloader.CompilingClassLoader;
 import com.agentecon.classloader.GitSimulationHandle;
+import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.RemoteJarLoader;
+import com.agentecon.classloader.RemoteLoader;
+import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 
 public class CompilingAgentFactory implements IAgentFactory {
 	
-	private ClassLoader loader;
+	private RemoteLoader loader;
 	
 	public CompilingAgentFactory(String owner, String repo) throws SocketTimeoutException, IOException {
 		this(owner, repo, "master");
 	}
 
 	public CompilingAgentFactory(String owner, String repo, String branch) throws SocketTimeoutException, IOException {
-		this.loader = new CompilingClassLoader(getSimulationJarLoader(), new GitSimulationHandle(owner, repo, branch));
+		this(new GitSimulationHandle(owner, repo, branch));
 	}
 	
 	public CompilingAgentFactory(File basePath) throws SocketTimeoutException, IOException {
-		this.loader = new CompilingClassLoader(basePath);
+		this(new LocalSimulationHandle(basePath));
+	}
+
+	public CompilingAgentFactory(SimulationHandle handle) throws SocketTimeoutException, IOException {
+		RemoteJarLoader parent = getSimulationJarLoader();
+		if (parent == null){
+			this.loader = new CompilingClassLoader(getSimulationJarLoader(), handle);
+		} else {
+			RemoteLoader loader = parent.getSubloader(handle);
+			if (loader == null){
+				this.loader = new CompilingClassLoader(getSimulationJarLoader(), handle);
+				parent.registerSubloader(handle, this.loader);
+			} else {
+				this.loader = loader;
+			}
+		}
 	}
 
 	private RemoteJarLoader getSimulationJarLoader() {
@@ -43,6 +61,7 @@ public class CompilingAgentFactory implements IAgentFactory {
 			@SuppressWarnings("unchecked")
 			Class<? extends IConsumer> clazz = (Class<? extends IConsumer>) loader.loadClass(consumerName);
 			Constructor<? extends IConsumer> constructor = clazz.getConstructor(Endowment.class, IUtility.class);
+			assert clazz.getClassLoader() == loader;
 			return constructor.newInstance(endowment, utilityFunction);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);

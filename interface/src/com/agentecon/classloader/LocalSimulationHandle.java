@@ -17,7 +17,7 @@ public class LocalSimulationHandle extends SimulationHandle {
 	private HashMap<String, Long> touchedFiles;
 
 	public LocalSimulationHandle() {
-		this(new File("../simulation"));
+		this(new File(".."));
 	}
 
 	public LocalSimulationHandle(File basePath) {

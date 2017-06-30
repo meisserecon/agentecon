@@ -1,51 +1,80 @@
 package com.agentecon.runner;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.data.AgentQuery;
-import com.agentecon.data.JsonData;
-import com.agentecon.data.TradeGraph;
 import com.agentecon.util.LogClock;
 
 public class SimulationStepper {
-	
-	private ISimulation simulation;
-	private SimulationLoader loader;
+
+	private AtomicReference<ISimulation> simulation;
+	private AtomicReference<SimulationLoader> loader;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
-		this.loader = new SimulationLoader(handle);
-		this.simulation = loader.loadSimulation();
+		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
+		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
+		this.enablePeriodicUpdate();
 	}
 
 	public ISimulation getSimulation(int day) throws IOException {
+		ISimulation simulation = this.simulation.get();
 		assert day <= simulation.getConfig().getRounds();
 		if (simulation.getDay() > day) {
-			simulation = loader.loadSimulation(); // reload, cannot step backwards
+			simulation = loader.get().loadSimulation(); // reload, cannot step backwards
 		}
 		simulation.forwardTo(day);
 		return simulation;
 	}
-	
-//	public static void main(String[] args) throws IOException, InterruptedException {
-//		LogClock clock = new LogClock();
-//		LocalSimulationHandle local = new LocalSimulationHandle();
-//		clock.time("Created handle");
-//		SimulationStepper stepper = new SimulationStepper(local);
-//		clock.time("Created stepper");
-//		JsonData graph1 = stepper.getData(100, Arrays.asList("consumers", "firms"), 10);
-//		clock.time("Stepped to day 100");
-//		JsonData graph2 = stepper.getData(110, Arrays.asList("consumers", "firms"), 10);
-//		JsonData agentData = stepper.getAgentData(200, "firms");
-//		System.out.println("Agent 13: " + agentData.getJson());
-//		clock.time("Stepped to day 110");
-//		JsonData graph3 = stepper.getData(100, Arrays.asList("consumers", "firms"), 10);
-//		clock.time("Stepped to day 100");
-//	}
+
+	public void enablePeriodicUpdate() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (true) {
+						Thread.sleep(60000);
+						try {
+							refreshSimulation();
+						} catch (SocketTimeoutException e) {
+							// try again in a minute
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				} catch (InterruptedException e) {
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();
+
+	}
+
+	private void refreshSimulation() throws SocketTimeoutException, IOException {
+		SimulationLoader loader = SimulationStepper.this.loader.get();
+		boolean[] changed = new boolean[] { false };
+		loader = loader.refresh(changed);
+		if (changed[0]) {
+			loader.loadSimulation();
+			this.loader.set(loader);
+			ISimulation prevSim = this.simulation.get();
+			ISimulation newSimulation = loader.loadSimulation();
+			newSimulation.forwardTo(prevSim.getDay());
+			this.simulation.compareAndSet(prevSim, newSimulation);
+		}
+	}
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+		LogClock clock = new LogClock();
+//		SimulationHandle local = new GitSimulationHandle("meisserecon", "agentecon", "master");
+		SimulationHandle local = new LocalSimulationHandle();
+		clock.time("Created handle");
+		SimulationStepper stepper = new SimulationStepper(local);
+		stepper.getSimulation(100);
+		stepper.getSimulation(50);
+	}
 
 }

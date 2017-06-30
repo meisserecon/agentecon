@@ -43,5 +43,16 @@ public abstract class SimulationHandle {
 	public abstract Collection<String> listSourceFiles(String packageName) throws IOException;
 
 	public abstract String getVersion() throws IOException;
+	
+	@Override
+	public int hashCode(){
+		return owner.hashCode() ^ name.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		SimulationHandle other = (SimulationHandle) o;
+		return other.owner.equals(owner) && other.name.equals(name);
+	}
 
 }

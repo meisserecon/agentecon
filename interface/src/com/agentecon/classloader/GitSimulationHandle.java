@@ -120,8 +120,19 @@ public class GitSimulationHandle extends SimulationHandle {
 	public String getVersion() throws IOException {
 		String commitUrl = "https://api.github.com/repos/" + getOwner() + "/" + repo + "/commits/" + getName();
 		String commitDesc = WebUtil.readHttp(commitUrl);
-		String hash = WebUtil.extract(commitDesc, "hash", new int[]{0});
+		String hash = WebUtil.extract(commitDesc, "sha", new int[]{0});
+//		String name = WebUtil.extract(commitDesc, "name", new int[]{0});
+//		String email = WebUtil.extract(commitDesc, "email", new int[]{0});
 		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof GitSimulationHandle){
+			return super.equals(o) && ((GitSimulationHandle)o).repo.equals(repo);
+		} else {
+			return false;
+		}
 	}
 
 }
