@@ -29,7 +29,7 @@ public class GitSimulationHandle extends SimulationHandle {
 	@Override
 	public URL getBrowsableURL(String classname) {
 		try {
-			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/src/" + classname.replace(".", "/") + ".java");
+			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/simulation/src/" + classname.replace(".", "/") + ".java");
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}

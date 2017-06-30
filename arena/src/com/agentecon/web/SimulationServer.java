@@ -33,7 +33,7 @@ public class SimulationServer extends FileServer {
 		this.simulations = new ListMethod();
 		this.simulations.add(new LocalSimulationHandle());
 		this.simulations.add(new GitSimulationHandle(owner, repo, "master"));
-		this.simulations.add(new GitSimulationHandle(owner, repo, "cobbdouglas"));
+		this.simulations.add(new GitSimulationHandle(owner, repo, "multigood"));
 
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);
@@ -89,10 +89,6 @@ public class SimulationServer extends FileServer {
 
 	protected Response serve(IHTTPSession session, JsonData json) {
 		return Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());
-	}
-
-	private Response serveObjectAsJson(IHTTPSession session, Object object) {
-		return Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), new Gson().toJson(object));
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

@@ -47,7 +47,7 @@
 				document.getElementById('simlist').innerHTML = "Found " + sims.length + " simulations:";
 				for (var i = 0; i < sims.length; i++) {
 					var element = document.createElement('div');
-					element.innerHTML = '<a href=' + sims[i].path + '>' + sims[i].path + '</a> by ' + sims[i].owner + ' (<a href=' + sims[i].sourceUrl + '>source</a>)';
+					element.innerHTML = '<a href=' + sims[i].path + '/children?day=133&selection=firms' + '>' + sims[i].path + '</a> by ' + sims[i].owner + ' (<a href=' + sims[i].sourceUrl + '>source</a>)';
 					document.getElementById('simlist').appendChild(element);
 				}
 			});
