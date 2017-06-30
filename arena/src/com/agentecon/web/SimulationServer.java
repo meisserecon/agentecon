@@ -33,6 +33,7 @@ public class SimulationServer extends FileServer {
 		this.simulations = new ListMethod();
 		this.simulations.add(new LocalSimulationHandle());
 		this.simulations.add(new GitSimulationHandle(owner, repo, "master"));
+		this.simulations.add(new GitSimulationHandle(owner, repo, "cobbdouglas"));
 
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);

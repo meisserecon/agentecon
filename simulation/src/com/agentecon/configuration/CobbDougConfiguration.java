@@ -2,6 +2,7 @@ package com.agentecon.configuration;
 
 import java.util.ArrayList;
 
+import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.EvolvingEvent;
@@ -11,17 +12,15 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.Stock;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.sim.SimulationConfig;
+import com.agentecon.verification.PriceMetric;
 
 public class CobbDougConfiguration implements IConfiguration {
 
 	public static final Good MONEY = new Good("Taler");
 	
 	public static final int ROUNDS = 1000;
-	public static final int WOBBLES = 50;
-	public static final int MAX_ITERATIONS = 22;
-
-	public static final int CONSUMERS_PER_TYPE = 100;
-	public static final int FIRMS_PER_TYPE = 10;
+	public static final int WOBBLES = 0;
+	public static final int MAX_ITERATIONS = 1;
 
 	protected int iteration = 0;
 	protected int firmsPerType;
@@ -34,7 +33,7 @@ public class CobbDougConfiguration implements IConfiguration {
 	protected ArrayList<EvolvingEvent> evolvingEvents;
 
 	public CobbDougConfiguration(int seed) {
-		this(FIRMS_PER_TYPE, CONSUMERS_PER_TYPE, 5, 5, seed);
+		this(5, 20, 5, 4, seed);
 	}
 
 	public CobbDougConfiguration(int firmsPerType, int consumersPerType, int consumerTypes, int firmTypes, int seed) {
@@ -131,4 +130,13 @@ public class CobbDougConfiguration implements IConfiguration {
 		return tot;
 	}
 
+	public static void main(String[] args) {
+		CobbDougConfiguration config = new CobbDougConfiguration(5, 20, 5, 4, 13);
+		Simulation sim = new Simulation(config);
+		PriceMetric metric = new PriceMetric(500);
+		sim.addListener(metric);
+		sim.run();
+		metric.printResult(System.out);
+	}
+	
 }
