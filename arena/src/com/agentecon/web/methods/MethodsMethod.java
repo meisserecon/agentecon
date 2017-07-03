@@ -32,7 +32,7 @@ public class MethodsMethod extends WebApiMethod {
 	}
 
 	@Override
-	public JsonData execute(StringTokenizer args, Parameters params) {
+	public JsonData doExecute(StringTokenizer args, Parameters params) {
 		return new MethodList();
 	}
 	

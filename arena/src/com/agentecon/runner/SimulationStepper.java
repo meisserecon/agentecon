@@ -17,7 +17,7 @@ public class SimulationStepper {
 	public SimulationStepper(SimulationHandle handle) throws IOException {
 		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
 		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
-		this.enablePeriodicUpdate();
+//		this.enablePeriodicUpdate();
 	}
 
 	public ISimulation getSimulation(int day) throws IOException {

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import com.agentecon.data.JsonData;
+import com.agentecon.util.LogClock;
 
 public abstract class WebApiMethod {
 	
@@ -34,6 +35,20 @@ public abstract class WebApiMethod {
 		return name;
 	}
 
-	public abstract JsonData execute(StringTokenizer path, Parameters params) throws IOException;
+	public final JsonData execute(StringTokenizer path, Parameters params) throws IOException {
+		LogClock clock = new LogClock();
+		try {
+			return doExecute(path, params);
+		} finally {
+			clock.time("Executed " + toString() + " with " + params);
+		}
+	}
+	
+	protected abstract JsonData doExecute(StringTokenizer path, Parameters params) throws IOException;
 
+	@Override
+	public String toString(){
+		return name;
+	}
+	
 }

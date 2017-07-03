@@ -45,7 +45,7 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	@Override
-	public JsonData execute(StringTokenizer path, Parameters params) {
+	public JsonData doExecute(StringTokenizer path, Parameters params) {
 		return new SimulationList(handles.values());
 	}
 
