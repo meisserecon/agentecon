@@ -16,6 +16,7 @@ import com.agentecon.sim.SimulationListenerAdapter;
 
 public class TradeGraph extends SimulationListenerAdapter implements ISimulationListener, IMarketListener {
 	
+	private int days;
 	private ISimulation simulation;
 	private ArrayList<Node> nodes;
 	private HashMap<Edge, Edge> edges;
@@ -25,6 +26,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 		this.edges = new HashMap<>();
 		this.simulation = simulation;
 		this.simulation.addListener(this);
+		this.days = 0;
 		for (String agent: agents){
 			nodes.add(new Node(agent));
 		}
@@ -32,11 +34,12 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	}
 
 	public TradeGraphData fetchData() {
+		assert days >= 1;
 		for (Node n: nodes){
 			n.fetchData(simulation.getAgents());
 		}
 		for (Edge edge: edges.values()){
-			edge.finish();
+			edge.finish(days);
 		}
 		this.simulation.removeListener(this);
 		return new TradeGraphData();
@@ -49,6 +52,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	
 	@Override
 	public void notifyGoodsMarketOpened(IMarket market) {
+		days++;
 		market.addMarketListener(this);
 	}
 
