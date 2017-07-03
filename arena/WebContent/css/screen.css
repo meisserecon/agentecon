@@ -1,0 +1,22 @@
+body {
+  margin: 20px;
+  background-color: #f0f0f0; }
+
+.tradeview {
+  width: 100%;
+  height: 600px;
+  background-color: white; }
+
+.node {
+  fill: deepskyblue;
+  opacity: 0.8; }
+  .node.active {
+    fill: pink; }
+
+.link {
+  fill: none;
+  stroke: black;
+  stroke-width: 2px;
+  stroke-opacity: 0.5; }
+
+/*# sourceMappingURL=screen.css.map */
