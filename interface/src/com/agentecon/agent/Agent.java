@@ -32,7 +32,7 @@ public abstract class Agent implements IAgent, Cloneable {
 		assert type != null;
 	}
 	
-	private static String inferType(Class<? extends Agent> clazz) {
+	protected String inferType(Class<? extends Agent> clazz) {
 		ClassLoader loader = clazz.getClassLoader();
 		if (loader instanceof RemoteLoader){
 			return ((RemoteLoader)loader).getOwner() + "-" + getName(clazz);
