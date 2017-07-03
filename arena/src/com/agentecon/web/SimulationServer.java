@@ -16,9 +16,9 @@ import com.agentecon.web.methods.ChildrenMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.Parameters;
+import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
 import com.agentecon.web.methods.WebApiMethod;
-import com.google.gson.Gson;
 
 public class SimulationServer extends FileServer {
 
@@ -40,6 +40,7 @@ public class SimulationServer extends FileServer {
 		this.methods.add(new AgentsMethod(this.simulations));
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
+		this.methods.add(new RankingMethod(this.simulations));
 	}
 
 	@Override

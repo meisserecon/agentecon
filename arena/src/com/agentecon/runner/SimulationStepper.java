@@ -2,21 +2,26 @@ package com.agentecon.runner;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
+import com.agentecon.metric.ConsumerRanking;
+import com.agentecon.metric.Rank;
 import com.agentecon.util.LogClock;
 
 public class SimulationStepper {
 
+	private AtomicReference<ConsumerRanking> ranking;
 	private AtomicReference<ISimulation> simulation;
 	private AtomicReference<SimulationLoader> loader;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
 		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
 		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
+		this.ranking = new AtomicReference<ConsumerRanking>(createRanking(loader.get().loadSimulation()));
 //		this.enablePeriodicUpdate();
 	}
 
@@ -64,7 +69,19 @@ public class SimulationStepper {
 			ISimulation newSimulation = loader.loadSimulation();
 			newSimulation.forwardTo(prevSim.getDay());
 			this.simulation.compareAndSet(prevSim, newSimulation);
+			this.ranking.set(createRanking(loader.loadSimulation()));
 		}
+	}
+
+	private ConsumerRanking createRanking(ISimulation sim) {
+		ConsumerRanking ranking = new ConsumerRanking();
+		sim.addListener(ranking);
+		sim.run();
+		return ranking;
+	}
+	
+	public Collection<Rank> getRanking(){
+		return ranking.get().getRanking();
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

@@ -27,9 +27,13 @@ public abstract class SimSpecificMethod extends WebApiMethod {
 	protected String createExamplePath() {
 		return new LocalSimulationHandle().getPath() + "/" + super.createExamplePath() + "?" + Parameters.DAY + "=133";
 	}
+	
+	protected SimulationStepper getSimulation(StringTokenizer tok) throws IOException{
+		return sims.getSimulation(tok);
+	}
 
 	public ISimulation getSimulation(StringTokenizer tok, int day) throws IOException{
-		SimulationStepper stepper = sims.getSimulation(tok);
+		SimulationStepper stepper = getSimulation(tok);
 		return stepper.getSimulation(day);
 	}
 	

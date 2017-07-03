@@ -3,7 +3,11 @@ package com.agentecon.configuration;
 import java.util.ArrayList;
 
 import com.agentecon.Simulation;
+import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
+import com.agentecon.consumer.Consumer;
+import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IUtility;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.EvolvingEvent;
 import com.agentecon.events.FirmEvent;
@@ -17,7 +21,7 @@ import com.agentecon.verification.PriceMetric;
 public class CobbDougConfiguration implements IConfiguration {
 
 	public static final Good MONEY = new Good("Taler");
-	
+
 	public static final int ROUNDS = 1000;
 	public static final int WOBBLES = 0;
 	public static final int MAX_ITERATIONS = 1;
@@ -105,7 +109,18 @@ public class CobbDougConfiguration implements IConfiguration {
 	protected void addConsumers(ArrayList<SimEvent> config, ArrayList<EvolvingEvent> newList, ConsumptionWeights defaultPrefs) {
 		for (int i = 0; i < inputs.length; i++) {
 			Endowment end = new Endowment(MONEY, new Stock(inputs[i], Endowment.HOURS_PER_DAY));
-			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)));
+			final int type = i;
+			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)) {
+				@Override
+				protected IConsumer createConsumer(Endowment end, IUtility util) {
+					return new Consumer(end, util) {
+						@Override
+						protected String inferType(Class<? extends Agent> clazz) {
+							return "Consumer-Type-" + type;
+						}
+					};
+				}
+			});
 		}
 	}
 
@@ -138,5 +153,5 @@ public class CobbDougConfiguration implements IConfiguration {
 		sim.run();
 		metric.printResult(System.out);
 	}
-	
+
 }

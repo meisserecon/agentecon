@@ -61,16 +61,16 @@ public class Hermit extends Consumer implements IFounder {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-//		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
+		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
 		
-		double weight = prodFun.getWeight(manhours).weight;
-		double fixedCost = prodFun.getFixedCost(manhours);
-		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost)/(1+weight);
-		double optimalLeisureTime = currentManhours.getAmount() - optimalWorkAmount;
+//		double weight = prodFun.getWeight(manhours).weight;
+//		double fixedCost = prodFun.getFixedCost(manhours);
+//		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost)/(1+weight);
+//		double optimalLeisureTime = currentManhours.getAmount() - optimalWorkAmount;
 		
 		// The hide function creates allows to hide parts of the inventory from the
 		// production function, preserving it for later consumption.
-		Inventory productionInventory = inventory.hide(manhours, optimalLeisureTime);
+		Inventory productionInventory = inventory.hide(manhours, plannedLeisureTime);
 		prodFun.produce(productionInventory);
 	}
 	

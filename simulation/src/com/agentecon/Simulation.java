@@ -35,7 +35,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private StockMarket stocks;
 
 	public Simulation() throws IOException {
-		this(new CobbDougConfiguration(1313));
+		this(new HermitConfiguration());
 	}
 
 	public Simulation(IConfiguration metaConfig) {

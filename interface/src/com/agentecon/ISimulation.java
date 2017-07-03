@@ -32,4 +32,6 @@ public interface ISimulation {
 	
 	public boolean isFinished();
 	
+	public void run();
+	
 }
