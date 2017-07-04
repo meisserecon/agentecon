@@ -15,8 +15,11 @@ body {
 
 .link {
   fill: none;
-  stroke: black;
-  stroke-width: 2px;
-  stroke-opacity: 0.5; }
+  stroke: grey;
+  stroke-width: 2px; }
+
+.marker {
+  fill: grey;
+  stroke: none; }
 
 /*# sourceMappingURL=screen.css.map */
