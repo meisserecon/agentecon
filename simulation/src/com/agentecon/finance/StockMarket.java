@@ -5,6 +5,8 @@ import java.util.Collection;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
+import com.agentecon.market.IMarketStatistics;
+import com.agentecon.market.MarketStatistics;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Agents;
 import com.agentecon.world.Country;
@@ -12,11 +14,13 @@ import com.agentecon.world.Country;
 public class StockMarket {
 
 	private Country country;
+	private MarketStatistics stockStats;
 	private SimulationListeners listeners;
 
 	public StockMarket(Country world, SimulationListeners listeners) {
 		this.listeners = listeners;
 		this.country = world;
+		this.stockStats = new MarketStatistics();
 	}
 
 	public void trade(int day) {
@@ -33,6 +37,7 @@ public class StockMarket {
 			shareholder.getPortfolio().collectDividends();
 		}
 		DailyStockMarket dsm = new DailyStockMarket(country.getRand());
+		dsm.addMarketListener(stockStats);
 		listeners.notifyStockMarketOpened(dsm);
 
 		for (IMarketMaker mm : mms) {
@@ -47,6 +52,11 @@ public class StockMarket {
 			con.managePortfolio(dsm);
 		}
 		dsm.close(day);
+		stockStats.notifyMarketClosed(day);
+	}
+
+	public IMarketStatistics getStats() {
+		return stockStats;
 	}
 
 }

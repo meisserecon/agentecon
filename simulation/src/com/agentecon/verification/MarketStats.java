@@ -23,7 +23,7 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 	public static boolean PRINT_TICKER = true;
 
 	private IAgents world;
-	private Good index = new Good("Stock Index");
+	private Good index = new Good("Index");
 	private HashMap<Good, Average> averages;
 
 	public MarketStats(IAgents world) {
@@ -80,13 +80,12 @@ public class MarketStats extends SimulationListenerAdapter implements IMarketLis
 			}
 		};
 		for (Entry<Good, Average> e : averages.entrySet()) {
+			Average avgPrice = e.getValue();
+			indexPoints.add(avgPrice);
 			if (e.getKey() instanceof Ticker) {
 				Ticker firm = (Ticker)e.getKey();
 				Good sector = new Good(firm.getType());
-				Average avgPrice = e.getValue();
-				indexPoints.add(avgPrice);
 				sectorIndices.get(sector).add(avgPrice);
-
 				double dividends = world.getFirm(firm).getShareRegister().getAverageDividend();
 				if (dividends > 1) {
 					double peratio = avgPrice.getAverage() / dividends;

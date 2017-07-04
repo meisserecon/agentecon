@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
-import com.agentecon.firm.Producer;
 import com.agentecon.goods.Good;
-import com.agentecon.market.IMarketListener;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.util.Average;
@@ -20,10 +17,12 @@ public class RepeatedMarket {
 
 	private final Country world;
 	private final SimulationListeners listeners;
+	private final MarketStatistics stats;
 
-	public RepeatedMarket(Country world, SimulationListeners listeners) {
+	public RepeatedMarket(Country world, SimulationListeners listeners, MarketStatistics stats) {
 		this.world = world;
 		this.listeners = listeners; 
+		this.stats = stats;
 	}
 
 	public void iterate(int day, int iterations) {
@@ -34,6 +33,7 @@ public class RepeatedMarket {
 			Collection<IConsumer> cons = world.getAgents().getRandomConsumers();
 			Market market = new Market(world.getRand());
 			market.addMarketListener(observer);
+			market.addMarketListener(stats);
 			listeners.notifyGoodsMarketOpened(market);
 			for (IProducer firm : firms) {
 				firm.offer(market);
