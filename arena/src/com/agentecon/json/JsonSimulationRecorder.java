@@ -3,7 +3,6 @@ package com.agentecon.json;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.agentecon.ISimulation;
@@ -38,8 +37,7 @@ public class JsonSimulationRecorder {
 	}
 
 	public void generateLocal(File simulationJarFile) throws IOException {
-		LocalSimulationHandle handle = new LocalSimulationHandle(simulationJarFile);
-		SimulationLoader loader = new SimulationLoader(simulationJarFile);
+		SimulationLoader loader = new SimulationLoader(new LocalSimulationHandle(simulationJarFile));
 		SimulationInfo info = new SimulationInfo(loader.getChecksum(), "local");
 		generate(info, loader);
 	}

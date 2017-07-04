@@ -19,7 +19,7 @@ public class SinConsumerEventTest implements ICountry {
 
 	@Test
 	public void test() {
-		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(new Stock(getMoney(), 1)), new LogUtilWithFloor());
+		SinConsumerEvent e = new SinConsumerEvent(50, 7, 100, 500, 150, "test", new Endowment(getMoney(), new Stock(new Good("hours"))), new LogUtilWithFloor());
 		for (day = 50; day<200; day++){
 			e.execute(day, this);
 		}

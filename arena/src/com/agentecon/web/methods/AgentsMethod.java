@@ -27,7 +27,7 @@ public class AgentsMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData execute(StringTokenizer path, Parameters params) throws IOException {
+	public JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
 		ISimulation sim = super.getSimulation(path, params.getDay());
 		AgentQuery query = new AgentQuery(params.getSelection());
 		return query.getAgentData(sim.getAgents());

@@ -79,7 +79,7 @@ public class FileServer extends NanoHTTPD {
 		start();
 		try {
 			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().browse(new URI("http://localhost:8080"));
+				Desktop.getDesktop().browse(new URI("http://" + (getHostname() == null ? "localhost" : getHostname()) + ":" + getListeningPort()));
 			}
 			while (true) {
 				Thread.sleep(60000);

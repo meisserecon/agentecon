@@ -33,9 +33,9 @@ public class Edge {
 		this.price.add(amount, payment / amount);
 	}
 
-	public void finish() {
+	public void finish(int steps) {
 		this.label = (int) price.getTotWeight() + " " + good + " @ " + Numbers.toShortString(price.getAverage()) + "$";
-		this.weight = calcWeight(price.getTotal());
+		this.weight = calcWeight(price.getTotal() / steps);
 	}
 
 	/**

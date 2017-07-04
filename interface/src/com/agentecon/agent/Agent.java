@@ -1,6 +1,6 @@
 package com.agentecon.agent;
 
-import com.agentecon.classloader.AgentLoader;
+import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.firm.IFirm;
@@ -22,14 +22,37 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	private AgentRef ref;
 
-	public Agent(Endowment end, int number) {
-		this.type = AgentLoader.getType(getClass());
+	public Agent(Endowment end) {
+		this.type = inferType(getClass());
 		this.inv = end.getInitialInventory();
 		this.end = end;
 		this.alive = true;
-		this.number = number;
+		this.number = 0;
 		this.ref = new AgentRef(this);
 		assert type != null;
+	}
+	
+	protected String inferType(Class<? extends Agent> clazz) {
+		ClassLoader loader = clazz.getClassLoader();
+		if (loader instanceof RemoteLoader){
+			return ((RemoteLoader)loader).getOwner() + "-" + getName(clazz);
+		} else {
+			return getName(clazz);
+		}
+	}
+	
+	private static String getName(Class<?> clazz) {
+		String name = clazz.getSimpleName();
+		while (name.length() == 0) {
+			clazz = clazz.getSuperclass();
+			name = clazz.getSimpleName();
+		}
+		return name;
+	}
+
+	public void setId(int id){
+		assert this.number == 0;
+		this.number = id;
 	}
 	
 	public void addListener(Object listener) {

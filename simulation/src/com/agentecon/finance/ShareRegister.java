@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IRegister;
-import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;

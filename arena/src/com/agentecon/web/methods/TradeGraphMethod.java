@@ -28,7 +28,7 @@ public class TradeGraphMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData execute(StringTokenizer path, Parameters params) throws IOException {
+	public JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
 		int day = params.getDay();
 		int stepSize = params.getIntParam("step");
 		ISimulation simulation = getSimulation(path, day - stepSize);

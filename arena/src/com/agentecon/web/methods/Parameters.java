@@ -52,5 +52,10 @@ public class Parameters {
 		}
 		return list;
 	}
+	
+	@Override
+	public String toString(){
+		return params.toString();
+	}
 
 }

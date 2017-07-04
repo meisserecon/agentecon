@@ -4,7 +4,7 @@ package com.agentecon.consumer;
 
 import java.util.Collection;
 
-import com.agentecon.SimAgent;
+import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
 import com.agentecon.finance.TradingPortfolio;
 import com.agentecon.firm.IShareholder;
@@ -18,7 +18,7 @@ import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.util.Numbers;
 
-public class Consumer extends SimAgent implements IConsumer, IShareholder {
+public class Consumer extends Agent implements IConsumer, IShareholder {
 
 	private int age;
 	private Good soldGood;

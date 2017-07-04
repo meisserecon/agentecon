@@ -16,9 +16,9 @@ import com.agentecon.web.methods.ChildrenMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.Parameters;
+import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
 import com.agentecon.web.methods.WebApiMethod;
-import com.google.gson.Gson;
 
 public class SimulationServer extends FileServer {
 
@@ -33,12 +33,14 @@ public class SimulationServer extends FileServer {
 		this.simulations = new ListMethod();
 		this.simulations.add(new LocalSimulationHandle());
 		this.simulations.add(new GitSimulationHandle(owner, repo, "master"));
+		this.simulations.add(new GitSimulationHandle(owner, repo, "multigood"));
 
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);
 		this.methods.add(new AgentsMethod(this.simulations));
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
+		this.methods.add(new RankingMethod(this.simulations));
 	}
 
 	@Override
@@ -90,12 +92,8 @@ public class SimulationServer extends FileServer {
 		return Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());
 	}
 
-	private Response serveObjectAsJson(IHTTPSession session, Object object) {
-		return Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), new Gson().toJson(object));
-	}
-
 	public static void main(String[] args) throws IOException, InterruptedException {
-		SimulationServer server = new SimulationServer(8080);
+		SimulationServer server = new SimulationServer(8081);
 		server.run();
 	}
 

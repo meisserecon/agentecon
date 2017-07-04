@@ -24,7 +24,7 @@ public class LogUtilTest {
 	
 	@Test
 	public void testLogUtil(){
-		LogUtilWithFloor util = new LogUtilWithFloor(new Weight(PIZZA, 8.0), new Weight(FONDUE, 2.0), new Weight(SWISSTIME, 14.0));
+		IUtility util = new LogUtilWithAdjustment(new Weight(PIZZA, 8.0), new Weight(FONDUE, 2.0), new Weight(SWISSTIME, 14.0));
 		assert util.getUtility(Collections.<IStock>emptyList()) == 0.0;
 		Stock s1 = new Stock(SWISSTIME, 10);
 		Stock s2 = new Stock(PIZZA, 10);
@@ -34,7 +34,7 @@ public class LogUtilTest {
 	
 	@Test
 	public void testLogUtil2(){
-		LogUtilWithFloor util = new LogUtilWithFloor(new Weight(PIZZA, 8.0), new Weight(SWISSTIME, 14.0));
+		IUtility util = new LogUtilWithAdjustment(new Weight(PIZZA, 8.0), new Weight(SWISSTIME, 14.0));
 		assert util.getUtility(Collections.<IStock>emptyList()) == 0.0;
 		Stock s1 = new Stock(SWISSTIME, 24.0 - 2.27272727273);
 		Stock s2 = new Stock(PIZZA, 1.99997508071);
@@ -43,7 +43,7 @@ public class LogUtilTest {
 	
 	@Test
 	public void testEquilibrium(){
-		LogUtilWithFloor utilFun = new LogUtilWithFloor(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
+		IUtility utilFun = new LogUtilWithAdjustment(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
 		Stock s1 = new Stock(SWISSTIME, 24 - 3.03683);
 		Stock s2 = new Stock(FONDUE, 3.5458);
 		double utility = utilFun.getUtility(Arrays.<IStock>asList(s1, s2));
