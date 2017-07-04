@@ -2,20 +2,23 @@ class Tradeview {
   constructor(options) {
     this.stage;
     this.NODE_RADIUS = 50;
+    this.data = {
+      nodes: [
+        { label: 'firms', children: 4 },
+        { label: 'consumers', children: 4 }
+      ],
+      edges: [
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' }
+      ]
+    }
     this.nodes = [
-      { x: '200', y: '500' },
-      { x: '700', y: '400' }
-    ];
-    this.links = [
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      { source: [this.nodes[0].x,this.nodes[0].y], target: [this.nodes[1].x, this.nodes[1].y] },
-      // { source: [this.nodes[1].x,this.nodes[1].y], target: [this.nodes[0].x, this.nodes[0].y] },
-      // { source: [this.nodes[1].x,this.nodes[1].y], target: [this.nodes[0].x, this.nodes[0].y] },
-      // { source: [this.nodes[1].x,this.nodes[1].y], target: [this.nodes[0].x, this.nodes[0].y] }
+      { label: this.data.nodes[0].label, children: this.data.nodes[0].children, x: '200', y: '400' },
+      { label: this.data.nodes[1].label, children: this.data.nodes[1].children, x: '700', y: '300' }
     ];
 
     this.init();
@@ -36,14 +39,13 @@ class Tradeview {
 
     d3.select('button')
       .on('click', function() {
-
-        let iv0 = setInterval(function() {
-          _this.links.push({ source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] })
-        }, 1000);
-
-        let iv1 = setInterval(function() {
-          _this.updateLinks();
-        }, 1005);
+        _this.links.push(
+          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
+          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
+          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
+          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] }
+        );
+        _this.updateLinks();
       });
   }
 
@@ -75,33 +77,43 @@ class Tradeview {
 
     let _this = this;
 
+    // create the links wrapper with local
+    // coordinate system for links
+    let linksWrapper = this.stage.append('g')
+      .attr('class', 'links__wrapper')
+
+    // create the enter join
+    let linksEnterJoin = linksWrapper.selectAll('.link')
+      .data(this.data.edges)
+      .enter();
+
     let oppositeLeg = this.nodes[1].y - this.nodes[0].y;
     let adjacentLeg = this.nodes[1].x - this.nodes[0].x;
     let alphaRad = Math.atan(oppositeLeg/adjacentLeg) * (180 / Math.PI);
 
-    let linksWrapper = this.stage.append('g')
-      .attr('class', 'links__wrapper')
-      .attr('transform', 'translate(' + this.nodes[0].x + ',' + this.nodes[0].y + ') rotate(' + alphaRad + ')');
-
-    linksWrapper.append('path')
-      .attr('d', 'M0 0 L500 0')
-      .attr('stroke', 'pink');
-
-    // coordinates for target node in local coordinate system
+    // coordinates for target node in local
+    // coordinate system
     let xSource = 0;
     let ySource = 0;
-    let xTarget = (this.nodes[1].x - this.nodes[0].x)/Math.cos(alphaRad * Math.PI / 180);
+    let xTarget = (this.nodes[1].x - this.nodes[0].x) / Math.cos(alphaRad * Math.PI / 180);
     let yTarget = 0;
 
-    linksWrapper.append('circle')
+    // transform g node (links wrapper),
+    // append direction of x axis,
+    // and append circle in center of target node
+    linksWrapper
+      .attr('transform', 'translate(' + this.nodes[0].x + ',' + this.nodes[0].y + ') rotate(' + alphaRad + ')')
+      .append('path')
+      .attr('d', 'M0 0 L500 0')
+      .attr('stroke', 'pink');
+    linksWrapper
+      .append('circle')
       .attr('cx', xTarget)
       .attr('cy', yTarget)
       .attr('r', 10)
       .attr('fill', 'black');
 
-    let link = linksWrapper.selectAll('.link')
-      .data(this.links)
-      .enter()
+    linksEnterJoin
       .append('path')
       .attr('class', 'link')
       .attr('d', function(d, i) {
@@ -116,34 +128,12 @@ class Tradeview {
         let cy0 = j * (y0);
         let cy1 = j * (y1 - yTarget);
 
-        linksWrapper
-          .append('circle')
-          .attr('cx', x0)
-          .attr('cy', y0)
-          .attr('r', 5)
-          .attr('fill', 'red');
+        linksWrapper.append('circle').attr('cx', x0).attr('cy', y0).attr('r', 5).attr('fill', 'red');
+        linksWrapper.append('circle').attr('cx', x1).attr('cy', y1).attr('r', 2).attr('fill', 'red');
+        linksWrapper.append('circle').attr('cx', cx0).attr('cy', cy0).attr('r', 5).attr('fill', 'deepskyblue');
+        linksWrapper.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
 
-        linksWrapper
-          .append('circle')
-          .attr('cx', x1)
-          .attr('cy', y1)
-          .attr('r', 2)
-          .attr('fill', 'red');
-
-        linksWrapper
-          .append('circle')
-          .attr('cx', cx0)
-          .attr('cy', cy0)
-          .attr('r', 5)
-          .attr('fill', 'deepskyblue');
-
-        linksWrapper
-          .append('circle')
-          .attr('cx', cx1)
-          .attr('cy', cy1)
-          .attr('r', 3)
-          .attr('fill', 'deepskyblue');
-
+        // Bezier curve string
         return 'M' + x0 + ' ' + y0 + ' C ' + cx0 + ' ' + cy0 + ', ' + cx1 + ' ' + cy1 + ', ' + x1 + ' ' + y1;
       })
       .attr('marker-end', function(d) { return 'url(#marker)'; });
