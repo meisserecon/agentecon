@@ -8,11 +8,12 @@ import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
-import com.agentecon.configuration.CobbDougConfiguration;
 import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
+import com.agentecon.market.IMarketStatistics;
+import com.agentecon.market.MarketStatistics;
 import com.agentecon.market.RepeatedMarket;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.Event;
@@ -34,6 +35,8 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	private Country world;
 	private StockMarket stocks;
 
+	private MarketStatistics goodsMarketStats;
+
 	public Simulation() throws IOException {
 		this(new HermitConfiguration());
 	}
@@ -49,6 +52,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 		this.listeners = new SimulationListeners();
 		this.world = new Country(config, listeners);
 		this.stocks = new StockMarket(world, listeners);
+		this.goodsMarketStats = new MarketStatistics();
 		this.day = 0;
 	}
 
@@ -87,7 +91,7 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 			processEvents(day); // must happen before daily endowments
 			world.prepareDay(day);
 			stocks.trade(day);
-			RepeatedMarket market = new RepeatedMarket(world, listeners);
+			RepeatedMarket market = new RepeatedMarket(world, listeners, goodsMarketStats);
 			market.iterate(day, config.getIntradayIterations());
 			for (IProducer firm : world.getAgents().getProducers()) {
 				firm.produce();
@@ -146,6 +150,16 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public String toString() {
 		return "Simulation at day " + day + " with " + world.getAgents().getAgents().size() + " agents";
+	}
+
+	@Override
+	public IMarketStatistics getGoodsMarketStats() {
+		return goodsMarketStats;
+	}
+
+	@Override
+	public IMarketStatistics getStockMarketStats() {
+		return stocks.getStats();
 	}
 
 }

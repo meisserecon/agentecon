@@ -6,4 +6,6 @@ public interface IAverage {
 
 	public double getVariance();
 
+	public void add(double value);
+
 }
