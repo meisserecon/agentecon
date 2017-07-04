@@ -1,5 +1,12 @@
 package com.agentecon.price;
 
+/**
+ * Implements dynamic exponential search as desribed in the paper
+ * "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
+ * 
+ * See also the illustration in ExpSearchBelief.pdf as well as my blog post:
+ * http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
+ */
 public class ExpSearchBelief extends AdjustableBelief {
 
 	public static final double MAX_ADAPTION_FACTOR = 0.5;

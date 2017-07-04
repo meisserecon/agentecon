@@ -34,7 +34,11 @@ public interface IStock {
 
 	public void transfer(IStock source, double amount);
 
-	public void absorb(IStock s);
+	/**
+	 * Take everything that is available (i.e. not hidden) from the provided source
+	 * and add it to 'this' stock.
+	 */
+	public void absorb(IStock source);
 
 	/**
 	 * Returns a reference to this stock with an absolute part of the amount hidden

@@ -28,7 +28,7 @@ public class SimulationServer extends FileServer {
 	public SimulationServer(int port) throws IOException, InterruptedException {
 		super(port);
 		String owner = "meisserecon";
-		String repo = "Agentecon";
+		String repo = "agentecon";
 
 		this.simulations = new ListMethod();
 		this.simulations.add(new LocalSimulationHandle());

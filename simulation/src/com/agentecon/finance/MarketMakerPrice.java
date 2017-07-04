@@ -1,7 +1,6 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
-import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.ExpSearchBelief;
@@ -17,7 +16,7 @@ public class MarketMakerPrice {
 	private FloorFactor floor;
 	private CeilingFactor ceiling;
 
-	public MarketMakerPrice(Position pos) {
+	public MarketMakerPrice(IStock pos) {
 		this.floor = new FloorFactor(pos, new ExpSearchBelief(0.1, INITIAL_PRICE_BELIEF / SPREAD_MULTIPLIER){
 			@Override
 			protected double getMax(){

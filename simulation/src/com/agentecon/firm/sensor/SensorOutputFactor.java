@@ -11,6 +11,13 @@ import com.agentecon.market.Price;
 import com.agentecon.price.AdjustableBelief;
 import com.agentecon.price.IBelief;
 
+/**
+ * Implements sensor pricing for an input factor as described
+ * "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
+ * 
+ * See also the illustration in SensorIllusrtation.pdf as well as my blog post:
+ * http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
+ */
 public class SensorOutputFactor extends OutputFactor {
 	
 	private Ask prevRealAsk;
