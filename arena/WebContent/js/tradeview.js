@@ -116,11 +116,6 @@ class Tradeview {
         let cy0 = j * (y0);
         let cy1 = j * (y1 - yTarget);
 
-        // if (i === 0) {
-        //   cy0 = y0 - _this.NODE_RADIUS * 0.5;
-        //   cy1 = y1 - _this.NODE_RADIUS * 0.5;
-        // }
-
         linksWrapper
           .append('circle')
           .attr('cx', x0)
