@@ -3,7 +3,7 @@ package com.agentecon.firm.sensor;
 public class SensorAccuracy {
 	
 	public static final double MIN = 0.01;
-	public static final double MAX = 0.5;
+	public static final double MAX = 0.1;
 	public static final double DEFAULT = MAX / 2;
 	
 	private double accuracy;

@@ -34,7 +34,7 @@ public class Country implements ICountry {
 		this.listeners = listeners;
 		this.randomBaseSeed = config.getSeed() + 123123453;
 		this.rand = new Random(config.getSeed());
-		this.agents = new Agents(listeners, rand.nextLong());
+		this.agents = new Agents(listeners, rand.nextLong(), 1);
 		this.innovation = config.getInnovation();
 	}
 	

@@ -25,20 +25,22 @@ import com.agentecon.production.ProducerListeners;
 public class AdaptiveFarm extends Firm implements IProducer {
 
 	private static final double SPENDING_FRACTION = 0.2; // let's spend 20% of our money every day
-	
+
+	private double workingCapital;
 	private IProductionFunction prodFun;
 	private ProducerListeners listeners;
 	private MarketingDepartment marketing;
-	
+
 	public AdaptiveFarm(IShareholder owner, IStock money, IStock land, IProductionFunction prodFun) {
 		super(owner, new Endowment(money.getGood()));
 		this.prodFun = prodFun;
 		this.listeners = new ProducerListeners();
+		this.workingCapital = money.getAmount();
 		this.marketing = new MarketingDepartment(getMoney(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
 	}
-	
+
 	@Override
 	public void addProducerMonitor(IProducerListener listener) {
 		this.listeners.add(listener);
@@ -59,22 +61,35 @@ public class AdaptiveFarm extends Firm implements IProducer {
 		double budget = getMoney().getAmount() * SPENDING_FRACTION;
 		marketing.createOffers(market, this, budget);
 	}
-	
+
 	@Override
 	public void adaptPrices() {
 		marketing.adaptPrices();
+//		System.out.println("Adjusting price beliefs to " + marketing);
 	}
 
 	@Override
 	public void produce() {
 		Quantity[] inputs = getInventory().getQuantities(getInputs());
+//		checkWaste(inputs);
 		Quantity produced = prodFun.produce(getInventory());
 		listeners.notifyProduced(this, inputs, produced);
 	}
 
+	private boolean checkWaste(Quantity[] inputs) {
+		for (Quantity input : inputs) {
+			double min = prodFun.getFixedCost(input.getGood());
+			if (input.getAmount() < min) {
+				System.out.println(this + " wasted input " + input + " as it was provided in a quantity below the fixed costs of " + min);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	protected double calculateDividends(int day) {
-		return Math.max(0, getMoney().getAmount() - 104); // return everyhing above 100
+		return Math.max(0, getMoney().getAmount() - workingCapital); // return everyhing above what was initially provided
 	}
 
 }

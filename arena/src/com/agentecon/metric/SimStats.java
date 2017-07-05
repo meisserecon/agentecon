@@ -1,5 +1,6 @@
 package com.agentecon.metric;
 
+import java.io.PrintStream;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
@@ -30,5 +31,26 @@ public abstract class SimStats extends SimulationListenerAdapter {
 	}
 	
 	public abstract Collection<TimeSeries> getTimeSeries();
+	
+	public void print(PrintStream out) {
+		out.println("***" + getClass().getSimpleName() + "***");
+		out.print("Day");
+		Collection<TimeSeries> series = getTimeSeries();
+		int start = Integer.MAX_VALUE;
+		int end = 0;
+		for (TimeSeries ts: series){
+			out.print("\t" + ts.getName());
+			start = Math.min(start, ts.getStart());
+			end = Math.max(end, ts.getEnd());
+		}
+		out.println();
+		for (int day=start; day<=end; day++){
+			System.out.print(day);
+			for (TimeSeries ts: getTimeSeries()){
+				out.print("\t" + ts.get(day));
+			}
+			out.println();
+		}
+	}
 	
 }

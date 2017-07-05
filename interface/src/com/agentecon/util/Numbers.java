@@ -42,4 +42,12 @@ public class Numbers {
 		}
 	}
 	
+	public static String toTabString(String...strings){
+		String base = strings[0];
+		for (int i=1; i<strings.length; i++){
+			base += "\t" + strings[i];
+		}
+		return base;
+	}
+	
 }

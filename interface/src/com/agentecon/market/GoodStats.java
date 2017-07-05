@@ -2,9 +2,10 @@ package com.agentecon.market;
 
 import com.agentecon.util.Average;
 import com.agentecon.util.MovingAverage;
+import com.agentecon.util.Numbers;
 
 public class GoodStats {
-	
+
 	private Average current;
 	private Average yesterday;
 	private MovingAverage moving;
@@ -14,27 +15,38 @@ public class GoodStats {
 		this.yesterday = new Average();
 		this.moving = new MovingAverage();
 	}
-	
-	public MovingAverage getMovingAverage(){
+
+	public MovingAverage getMovingAverage() {
 		return moving;
 	}
-	
-	public Average getYesterday(){
+
+	public Average getYesterday() {
 		return yesterday;
 	}
-	
-	void resetCurrent(){
+
+	void resetCurrent() {
 		this.current = new Average();
 	}
-	
-	void commitCurrent(){
-		this.moving.add(current.getAverage());
+
+	void commitCurrent() {
+		if (current.hasValue()) {
+			this.moving.add(current.getAverage());
+		}
 		this.yesterday = current;
 		this.current = new Average();
 	}
 
 	void notifyTraded(double quantity, double price) {
 		this.current.add(quantity, price);
+	}
+
+	@Override
+	public String toString() {
+		return toTabString();
+	}
+
+	public String toTabString() {
+		return Numbers.toShortString(yesterday.getAverage()) + "\t" + Numbers.toShortString(yesterday.getTotWeight());
 	}
 
 }

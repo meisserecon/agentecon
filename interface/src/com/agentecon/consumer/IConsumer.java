@@ -15,12 +15,14 @@ public interface IConsumer extends IAgent {
 	public void collectDailyEndowment();
 
 	/**
-	 * Buy and sell goods on the market in a hopefully optimal way.
+	 * Buy and sell goods on the market in a hopefully optimal way given the
+	 * offers provided by the market makers of the goods market.
+	 * This method is invoked on all IConsumers before consumption.
 	 */
 	public void tradeGoods(IPriceTakerMarket market);
 	
 	/**
-	 * Time to consume, called once per day in the evening.
+	 * Time to consume, called once per day in the evening after trading goods.
 	 * @return the utility gained from consumption.
 	 */
 	public double consume();

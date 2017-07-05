@@ -105,6 +105,15 @@ public abstract class Agent implements IAgent, Cloneable {
 	public final IStock getMoney() {
 		return inv.getMoney();
 	}
+	
+	public final double getDailyEndowment(Good good){
+		for (IStock stock: end.getDaily()){
+			if (stock.getGood().equals(good)){
+				return stock.getAmount();
+			}
+		}
+		return 0.0;
+	}
 
 	public final void collectDailyEndowment() {
 		assert alive;

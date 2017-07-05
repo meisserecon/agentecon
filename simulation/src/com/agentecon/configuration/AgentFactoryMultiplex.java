@@ -37,9 +37,9 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 //	}
 
 	@Override
-	public IConsumer createConsumer(EConsumerType type, Endowment endowment, IUtility utilityFunction) {
-		IConsumer consumer =  getCurrent().createConsumer(type, endowment, utilityFunction);
-		return consumer == null ? createConsumer(type, endowment, utilityFunction) : consumer;
+	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
+		IConsumer consumer =  getCurrent().createConsumer(endowment, utilityFunction);
+		return consumer == null ? createConsumer(endowment, utilityFunction) : consumer;
 	}
 
 }

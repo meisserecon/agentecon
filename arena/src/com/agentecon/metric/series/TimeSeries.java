@@ -147,6 +147,14 @@ public class TimeSeries {
 			return covariance / Math.sqrt(avg1.getVariance() * avg2.getVariance());
 		}
 	}
+	
+	public int getEnd() {
+		return line.getEnd();
+	}
+
+	public int getStart() {
+		return line.getStart();
+	}
 
 	private int getStart(ArrayList<Point> p1, int start) {
 		int pos = 0;

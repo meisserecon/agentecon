@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import com.agentecon.EConsumerType;
 import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
@@ -33,12 +32,16 @@ import com.agentecon.research.IResearchProject;
 import com.agentecon.sim.SimulationConfig;
 
 public class HermitConfiguration extends SimulationConfig implements IInnovation {
+	
+	public static final String AGENT_CLASS_NAME = "com.agentecon.exercise1.Hermit";
 
 	public static final Good POTATOE = new Good("Potatoe", 0.95);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
 	public static final Good LAND = new Good("Land", 1.0);
 	
-	private static final int ROUNDS = 100;
+	private static final int ROUNDS = 500;
+
+	public static final Quantity FIXED_COSTS = new Quantity(MAN_HOUR, 6.0);;
 	
 	public HermitConfiguration() throws IOException {
 		this(createFactory(), 10);
@@ -53,7 +56,7 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 		addEvent(new ConsumerEvent(agents, end, utility){
 			@Override
 			protected IConsumer createConsumer(Endowment end, IUtility util){
-				return factory.createConsumer(EConsumerType.HERMIT, end, util);
+				return factory.createConsumer(end, util);
 			}
 		});
 	}
@@ -66,7 +69,7 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	@Override
 	public IProductionFunction createProductionFunction(Good desiredOutput) {
 		Quantity fixedCost = new Quantity(MAN_HOUR, 2);
-		return new CobbDouglasProductionWithFixedCost(POTATOE, fixedCost, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, fixedCost, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
 	}
 
 	@Override
@@ -75,8 +78,8 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	}
 
 	private static IAgentFactory createFactory() throws SocketTimeoutException, IOException {
-		IAgentFactory defaultFactory = new CompilingAgentFactory(new File("../exercises/src")); // this factory loads agents from the local disk
-		IAgentFactory meisserFactory = new CompilingAgentFactory("meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
+		IAgentFactory defaultFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, new File("../exercises/src")); // this factory loads agents from the local disk
+		IAgentFactory meisserFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, "meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
 		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, meisserFactory);
 		return factory;
 	}

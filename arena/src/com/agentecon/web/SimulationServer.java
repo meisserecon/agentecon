@@ -93,7 +93,7 @@ public class SimulationServer extends FileServer {
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		SimulationServer server = new SimulationServer(8081);
+		SimulationServer server = new SimulationServer(8080);
 		server.run();
 	}
 

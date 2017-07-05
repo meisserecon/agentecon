@@ -11,11 +11,11 @@ import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.production.IPriceProvider;
 
 public class MarketingDepartment implements IPriceProvider {
-	
+
 	private IStock money;
 	private InputFactor input;
 	private OutputFactor output;
-	
+
 	public MarketingDepartment(IStock money, IStock input, IStock output) {
 		this.money = money;
 		this.input = new SensorInputFactor(input, new ExpSearchBelief());
@@ -24,7 +24,7 @@ public class MarketingDepartment implements IPriceProvider {
 
 	@Override
 	public double getPriceBelief(Good good) {
-		if (input.getGood().equals(good)){
+		if (input.getGood().equals(good)) {
 			return input.getPrice();
 		} else {
 			assert output.getGood().equals(good);
@@ -40,6 +40,11 @@ public class MarketingDepartment implements IPriceProvider {
 	public void adaptPrices() {
 		input.adaptPrice();
 		output.adaptPrice();
+	}
+
+	@Override
+	public String toString() {
+		return "Input " + input + ", output " + output;
 	}
 
 }

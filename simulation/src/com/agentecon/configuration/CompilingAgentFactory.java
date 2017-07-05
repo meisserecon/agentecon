@@ -6,7 +6,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketTimeoutException;
 
-import com.agentecon.EConsumerType;
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.classloader.CompilingClassLoader;
@@ -20,21 +19,23 @@ import com.agentecon.consumer.IUtility;
 
 public class CompilingAgentFactory implements IAgentFactory {
 	
+	private String classname;
 	private RemoteLoader loader;
 	
-	public CompilingAgentFactory(String owner, String repo) throws SocketTimeoutException, IOException {
-		this(owner, repo, "master");
+	public CompilingAgentFactory(String classname, String owner, String repo) throws SocketTimeoutException, IOException {
+		this(classname, owner, repo, "master");
 	}
 
-	public CompilingAgentFactory(String owner, String repo, String branch) throws SocketTimeoutException, IOException {
-		this(new GitSimulationHandle(owner, repo, branch));
+	public CompilingAgentFactory(String classname, String owner, String repo, String branch) throws SocketTimeoutException, IOException {
+		this(classname, new GitSimulationHandle(owner, repo, branch));
 	}
 	
-	public CompilingAgentFactory(File basePath) throws SocketTimeoutException, IOException {
-		this(new LocalSimulationHandle(basePath));
+	public CompilingAgentFactory(String classname, File basePath) throws SocketTimeoutException, IOException {
+		this(classname, new LocalSimulationHandle(basePath));
 	}
 
-	public CompilingAgentFactory(SimulationHandle handle) throws SocketTimeoutException, IOException {
+	public CompilingAgentFactory(String classname, SimulationHandle handle) throws SocketTimeoutException, IOException {
+		this.classname = classname;
 		RemoteJarLoader parent = getSimulationJarLoader();
 		if (parent == null){
 			this.loader = new CompilingClassLoader(getSimulationJarLoader(), handle);
@@ -55,11 +56,10 @@ public class CompilingAgentFactory implements IAgentFactory {
 	}
 
 	@Override
-	public IConsumer createConsumer(EConsumerType type, Endowment endowment, IUtility utilityFunction) {
+	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
 		try {
-			String consumerName = type.getConsumerClassName();
 			@SuppressWarnings("unchecked")
-			Class<? extends IConsumer> clazz = (Class<? extends IConsumer>) loader.loadClass(consumerName);
+			Class<? extends IConsumer> clazz = (Class<? extends IConsumer>) loader.loadClass(classname);
 			Constructor<? extends IConsumer> constructor = clazz.getConstructor(Endowment.class, IUtility.class);
 			assert clazz.getClassLoader() == loader;
 			return constructor.newInstance(endowment, utilityFunction);

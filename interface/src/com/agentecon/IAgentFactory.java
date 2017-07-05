@@ -6,6 +6,6 @@ import com.agentecon.consumer.IUtility;
 
 public interface IAgentFactory {
 
-	public IConsumer createConsumer(EConsumerType type, Endowment endowment, IUtility utilityFunction);
+	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction);
 	
 }

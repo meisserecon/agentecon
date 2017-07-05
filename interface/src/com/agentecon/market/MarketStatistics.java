@@ -1,7 +1,9 @@
 package com.agentecon.market;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
@@ -49,6 +51,18 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 	@Override
 	public GoodStats getStats(Good good) {
 		return prices.get(good);
+	}
+
+	@Override
+	public void print(PrintStream out) {
+		System.out.println("Good\tPrice\tVolume");
+		prices.forEach(new BiConsumer<Good, GoodStats>() {
+
+			@Override
+			public void accept(Good t, GoodStats u) {
+				out.println(t + "\t" + u.toTabString());
+			}
+		});
 	}
 
 }

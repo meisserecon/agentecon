@@ -111,6 +111,25 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		}
 		notifySpent(spendings);
 	}
+	
+	public void workAtLeast(IPriceTakerMarket market, double minimumWorkAmount) {
+		if (isRetired()){
+			// still not working
+		} else {
+			IStock timeLeft = getStock(soldGood);
+			double endowment = getDailyEndowment(soldGood);
+			double worked = endowment - timeLeft.getAmount();
+			while (worked < minimumWorkAmount){
+				IOffer offer = market.getOffer(soldGood, true);
+				if (offer == null){
+					break;
+				} else {
+					offer.accept(this, getMoney(), timeLeft, minimumWorkAmount - worked);
+				}
+				worked = endowment - timeLeft.getAmount();
+			}
+		}
+	}
 
 	protected void notifySpent(double spendings) {
 	}

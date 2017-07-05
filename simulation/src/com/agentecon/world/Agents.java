@@ -37,7 +37,7 @@ public class Agents implements IAgents {
 
 	private ISimulationListener listeners;
 
-	public Agents(ISimulationListener listeners, long seed) {
+	public Agents(ISimulationListener listeners, long seed, int newAgentId) {
 		this.firms = new HashMap<>();
 		this.all = new HashMap<>();
 		this.consumers = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Agents implements IAgents {
 		this.firmTypes = new HashSet<>();
 		this.listeners = listeners;
 		this.seed = seed;
-		this.agentId = 1;
+		this.agentId = newAgentId;
 	}
 
 	public Collection<IFirm> getFirms() {
@@ -80,7 +80,8 @@ public class Agents implements IAgents {
 		if (newAgent){
 			agent.setId(agentId++);
 		}
-		all.put(agent.getAgentId(), agent);
+		Agent prev = all.put(agent.getAgentId(), agent);
+		assert prev == null : "Cannot register " + agent + " because there already is another agent with that id: " + prev;
 		if (agent instanceof IFirm) {
 			IFirm firm = (IFirm) agent;
 			firms.put(firm.getTicker(), firm);
@@ -163,7 +164,7 @@ public class Agents implements IAgents {
 	}
 
 	public Agents renew(long seed) {
-		Agents copy = new Agents(listeners, seed);
+		Agents copy = new Agents(listeners, seed, agentId);
 		for (Agent a : all.values()) {
 			if (a.isAlive()) {
 				copy.include(a, false);
@@ -177,7 +178,7 @@ public class Agents implements IAgents {
 	public Agents duplicate() {
 		long seed = getCurrentSeed();
 		assert rand == null;
-		Agents duplicate = new Agents(listeners, seed);
+		Agents duplicate = new Agents(listeners, seed, agentId);
 		for (Agent a : all.values()) {
 			duplicate.include(a.clone(), false);
 		}

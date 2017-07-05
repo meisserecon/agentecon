@@ -48,10 +48,6 @@ public class Line {
 		return points.isEmpty() ? 0.0f : points.get(points.size() - 1).y;
 	}
 
-	public String toString() {
-		return points.toString();
-	}
-
 	public boolean has(int pos) {
 		return Collections.binarySearch(points, new Point(pos)) >= 0;
 	}
@@ -65,6 +61,20 @@ public class Line {
 		} else {
 			return points.get(-index - 2).y; // previous value. (-index - 1) would be next value.
 		}
+	}
+	
+	public int getStart(){
+		return points.get(0).x;
+	}
+	
+	public int getEnd(){
+		return points.get(points.size() - 1).x;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return points.toString();
 	}
 
 }
