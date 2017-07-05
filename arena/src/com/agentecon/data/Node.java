@@ -35,5 +35,10 @@ public class Node implements Comparable<Node>{
 	public int compareTo(Node o) {
 		return query.compareTo(o.query);
 	}
+	
+	@Override
+	public String toString(){
+		return label;
+	}
 
 }

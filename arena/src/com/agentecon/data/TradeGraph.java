@@ -42,12 +42,20 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 			edge.finish(days);
 		}
 		this.simulation.removeListener(this);
-		return new TradeGraphData();
+		return new TradeGraphData(nodes, edges.values());
 	}
 	
 	class TradeGraphData extends JsonData {
-		public Collection<Node> nodes = TradeGraph.this.nodes;
-		public Collection<Edge> edges = TradeGraph.this.edges.values();
+		
+		private Collection<Node> nodes;
+		private ArrayList<Edge> edges;
+
+		public TradeGraphData(ArrayList<Node> nodes, Collection<Edge> values) {
+			this.nodes = nodes;
+			this.edges = new ArrayList<>(values);
+			Collections.sort(edges);
+		}
+		
 	}
 	
 	@Override

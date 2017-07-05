@@ -12,7 +12,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.util.Average;
 import com.agentecon.util.Numbers;
 
-public class Edge {
+public class Edge implements Comparable<Edge> {
 
 	public String label;
 	public double weight;
@@ -54,5 +54,15 @@ public class Edge {
 	public boolean equals(Object other) {
 		Edge otherEdge = (Edge) other;
 		return source.equals(otherEdge.source) && destination.equals(otherEdge.destination) && good.equals(otherEdge.good);
+	}
+
+	@Override
+	public int compareTo(Edge o) {
+		int levelOne = -source.compareTo(o.source);
+		if (levelOne == 0){
+			return -destination.compareTo(o.destination);
+		} else {
+			return levelOne;
+		}
 	}
 }
