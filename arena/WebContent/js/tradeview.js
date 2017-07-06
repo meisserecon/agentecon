@@ -4,30 +4,45 @@ class Tradeview {
     this.NODE_RADIUS = 50;
     this.data = {
       nodes: [
-        { label: 'firms', children: 4 },
-        { label: 'consumers', children: 4 }
+        { label: 'firm', children: 4 },
+        { label: 'consumer0', children: 4 },
+        { label: 'consumer1', children: 4 },
+        { label: 'consumer2', children: 4 },
+        { label: 'consumer3', children: 4 }
       ],
       edges: [
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumers',destination: 'firms' }
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer1' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer3' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer0', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer1', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer2', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' }
       ]
     }
-    this.nodes = [
-      { label: this.data.nodes[0].label, children: this.data.nodes[0].children, x: '200', y: '400' },
-      { label: this.data.nodes[1].label, children: this.data.nodes[1].children, x: '700', y: '300' }
-    ];
+
+    this.nodeCoordinates = {
+      firm: { x: '500', y: '400' },
+      consumer0: { x: '700', y: '200' },
+      consumer1: { x: '300', y: '250' },
+      consumer2: { x: '300', y: '550' },
+      consumer3: { x: '800', y: '550' }
+    }
 
     this.init();
-    this.updateNodes();
-    this.updateLinks();
+    this.drawNodes(this.data.nodes, this.nodeCoordinates);
+    this.drawLinks(this.data.edges);
   }
 
   init() {
-    console.log('init TradeView');
+    console.log('Init TradeView');
 
     let _this = this;
 
@@ -36,120 +51,144 @@ class Tradeview {
       .append('svg')
       .attr('xmlns', 'http://www.w3.org/2000/svg')
       .attr('class', 'tradeview');
-
-    d3.select('button')
-      .on('click', function() {
-        _this.links.push(
-          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
-          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
-          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] },
-          { source: [_this.nodes[0].x,_this.nodes[0].y], target: [_this.nodes[1].x, _this.nodes[1].y] }
-        );
-        _this.updateLinks();
-      });
   }
 
-  updateNodes() {
-    console.log('updating nodes');
+  drawNodes(nodes, coordinates) {
+    console.log('%cdrawNodes()', 'color: deepskyblue;');
 
-    let nodes = this.stage.selectAll('.node')
-      .data(this.nodes)
+    this.stage.selectAll('.node')
+      .data(nodes)
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('cx', function(d) { return d.x; })
-      .attr('cy', function(d) { return d.y; })
+      .attr('cx', function(d) { return coordinates[d.label].x; })
+      .attr('cy', function(d) { return coordinates[d.label].y; })
       .attr('r', this.NODE_RADIUS);
-
-    // node event listeners
-    nodes.on('click', function(d) {
-      d3.select(this)
-        .classed('active', true);
-    });
-
-    let type;
-    let author;
-    let instance;
   }
 
-  updateLinks() {
-    console.log('updating links');
+  drawLinks(links) {
+    console.log(' ');
+    console.log('%cdrawLinks()', 'color: deepskyblue;');
 
     let _this = this;
+    let currentSource = links[0].source,
+        currentDestination = links[0].destination;
 
-    // create the links wrapper with local
-    // coordinate system for links
-    let linksWrapper = this.stage.append('g')
+    // create initial group to append links to
+    let group = this.stage.append('g')
       .attr('class', 'links__wrapper')
 
-    // create the enter join
-    let linksEnterJoin = linksWrapper.selectAll('.link')
-      .data(this.data.edges)
-      .enter();
-
-    let oppositeLeg = this.nodes[1].y - this.nodes[0].y;
-    let adjacentLeg = this.nodes[1].x - this.nodes[0].x;
-    let alphaRad = Math.atan(oppositeLeg/adjacentLeg) * (180 / Math.PI);
-
-    // coordinates for target node in local
-    // coordinate system
+    let globalSourceX = 0;
+    let globalSourceY = 0;
+    let globalDestinationX = 0;
+    let globalDestinationY = 0;
+    let deltaX = 0;
+    let deltaY = 0;
+    let alpha = 0;
     let xSource = 0;
     let ySource = 0;
-    let xTarget = (this.nodes[1].x - this.nodes[0].x) / Math.cos(alphaRad * Math.PI / 180);
-    let yTarget = 0;
+    let xDestination = 0;
+    let yDestination = 0;
+    let localEdgeCount = 0;
 
-    // transform g node (links wrapper),
-    // append direction of x axis,
-    // and append circle in center of target node
-    linksWrapper
-      .attr('transform', 'translate(' + this.nodes[0].x + ',' + this.nodes[0].y + ') rotate(' + alphaRad + ')')
-      .append('path')
-      .attr('d', 'M0 0 L500 0')
-      .attr('stroke', 'pink');
-    linksWrapper
-      .append('circle')
-      .attr('cx', xTarget)
-      .attr('cy', yTarget)
-      .attr('r', 10)
-      .attr('fill', 'black');
+    // create the enter join
+    let linksEnterJoin = group.selectAll('.link')
+      .data(links)
+      .enter()
+      .each(function(d, i) {
+        if (i !== 0) {
+          console.log(' ');
+        }
+        console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
 
-    linksEnterJoin
-      .append('path')
-      .attr('class', 'link')
-      .attr('d', function(d, i) {
-        let j = i + 2;
-        let x0 = xSource + _this.NODE_RADIUS * Math.cos((i + 1) * 0.3); // 0.3 rad ^= 17.2 deg
-        let y0 = ySource - _this.NODE_RADIUS * Math.sin((i + 1) * 0.3);
-        let x1 = xTarget - _this.NODE_RADIUS * Math.cos((i + 1) * 0.3);
-        let y1 = yTarget - _this.NODE_RADIUS * Math.sin((i + 1) * 0.3);
+        if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
+          localEdgeCount += 1;
+        } else {
+          console.log('Creating new group node on iteration ' + i);
 
-        let cx0 = j * (x0);
-        let cx1 = j * (x1 - xTarget) + xTarget;
-        let cy0 = j * (y0);
-        let cy1 = j * (y1 - yTarget);
+          localEdgeCount = 0;
 
-        linksWrapper.append('circle').attr('cx', x0).attr('cy', y0).attr('r', 5).attr('fill', 'red');
-        linksWrapper.append('circle').attr('cx', x1).attr('cy', y1).attr('r', 2).attr('fill', 'red');
-        linksWrapper.append('circle').attr('cx', cx0).attr('cy', cy0).attr('r', 5).attr('fill', 'deepskyblue');
-        linksWrapper.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
+          // create new svg group
+          // note: first group has already been created
+          if (i !== 0) {
+            group = _this.stage.append('g').attr('class', 'links__wrapper');
+          }
 
-        // Bezier curve string
-        return 'M' + x0 + ' ' + y0 + ' C ' + cx0 + ' ' + cy0 + ', ' + cx1 + ' ' + cy1 + ', ' + x1 + ' ' + y1;
-      })
-      .attr('marker-end', function(d) { return 'url(#marker)'; });
+          globalSourceX = _this.nodeCoordinates[d.source].x;
+          globalSourceY = _this.nodeCoordinates[d.source].y;
 
-    this.stage.append('svg:defs')
-      .append('svg:marker')
-        .attr('id', 'marker')
-        .attr('class', 'marker')
-        .attr('viewBox', '0 -5 10 10')
-        .attr('refX', 9)
-        .attr('refY', 0)
-        .attr('markerWidth', 6)
-        .attr('markerHeight', 6)
-        .attr('orient', 'auto')
-      .append('svg:path')
-        .attr('d', 'M0,-5L10,0L0,5');
+          globalDestinationX = _this.nodeCoordinates[d.destination].x;
+          globalDestinationY = _this.nodeCoordinates[d.destination].y;
+
+          console.log('Destination coordinates: ' + globalDestinationX + ', ' + globalDestinationY);
+          deltaX = globalDestinationX - globalSourceX;
+          deltaY = globalDestinationY - globalSourceY;
+          let rotationCorrection = 0;
+
+          alpha = Math.atan(deltaY / deltaX) * (180 / Math.PI);
+
+          if (deltaX < 0) {
+            rotationCorrection = -180;
+          }
+          alpha += rotationCorrection;
+
+          console.log('Z rotation: ' + Math.round(alpha) + 'deg');
+
+          group
+            .attr('transform', 'translate(' + globalSourceX + ',' + globalSourceY + ') rotate(' + alpha + ')')
+
+          currentSource = d.source;
+          currentDestination = d.destination;
+        }
+
+        console.log('Delta X: ' + deltaX);
+        console.log('Delta Y: ' + deltaY);
+
+        let j =  localEdgeCount + 2,
+            deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180),
+            x0 = xSource + _this.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3), // 0.3 rad ^= 17.2 deg
+            y0 = ySource - _this.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3),
+            x1 = deltaXLocal - _this.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3),
+            y1 = - _this.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3);
+
+        let cx0 = j * x0,
+            cx1 = j * (x1 - deltaXLocal) + deltaXLocal,
+            cy0 = j * y0,
+            cy1 = j * y1;
+
+        // append bezier control points
+        group.append('circle').attr('cx', x0).attr('cy', y0).attr('r', 5).attr('fill', 'red');
+        group.append('circle').attr('cx', x1).attr('cy', y1).attr('r', 2).attr('fill', 'red');
+        group.append('circle').attr('cx', cx0).attr('cy', cy0).attr('r', 5).attr('fill', 'deepskyblue');
+        group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
+        group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
+        group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
+
+        // append the bezier curve and marker
+        group
+          .append('path')
+          .attr('class', 'link')
+          .attr('d', 'M' + x0 + ' ' + y0 + ' C ' + cx0 + ' ' + cy0 + ', ' + cx1 + ' ' + cy1 + ', ' + x1 + ' ' + y1)
+          .attr('marker-end', function(d) { return 'url(#marker)'; });
+      });
+
+      // create reference marker
+      this.stage.append('defs')
+        .append('marker')
+          .attr('id', 'marker')
+          .attr('class', 'marker')
+          .attr('viewBox', '0 -5 10 10')
+          .attr('refX', 6)
+          .attr('refY', 0)
+          .attr('markerWidth', 14)
+          .attr('markerHeight', 14)
+          .attr('orient', 'auto')
+          .attr('markerUnits', 'userSpaceOnUse')
+        .append('path')
+          .attr('d', 'M0,-5L10,0L0,5');
+
+    console.log('%cend', 'color: deepskyblue;');
+    console.log(' ');
   }
 }
 

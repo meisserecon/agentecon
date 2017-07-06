@@ -4,35 +4,55 @@ body
 
 .tradeview
   width: 100%
-  height: 600px
+  height: 1000px
   background-color: white
 
 .node
   fill: deepskyblue
   opacity: .8
+  &:nth-child(2)
+    fill: pink
   &.active
     fill: pink
 
 .link
   fill: none
-  stroke: grey
+  stroke: #333
   stroke-width: 2px
-  &:nth-child(3)
-    stroke-width: 1px
-  &:nth-child(4)
-    stroke-width: 2px
-  &:nth-child(5)
-    stroke-width: 3px
-  &:nth-child(6)
-    stroke-width: 4px
-  &:nth-child(7)
-    stroke-width: 5px
-  &:nth-child(8)
-    stroke-width: 6px
+  animation: pulsate 2s ease-out
+  animation-iteration-count: infinite
   &:hover
     stroke: red
     cursor: pointer
+  &:nth-child(even)
+    animation-delay: 1s
+  &:nth-child(1)
+    stroke-width: 1px
+    animation-delay: .2s
+  &:nth-child(2)
+    stroke-width: 2px
+    animation-delay: 1s
+  &:nth-child(3)
+    stroke-width: 3px
+    animation-delay: .7s
+  &:nth-child(4)
+    stroke-width: 4px
+    animation-delay: 1.5s
+  &:nth-child(5)
+    stroke-width: 5px
+    animation-delay: 1.1s
+  &:nth-child(6)
+    stroke-width: 10px
+    animation-delay: .9s
 
 .marker
-  fill: grey
-  stroke: none
+  fill: #333
+  stroke-width: 2px
+
+@keyframes pulsate
+  0%
+    opacity: 1
+  50%
+    opacity: .3
+  100%
+    opacity: 1
