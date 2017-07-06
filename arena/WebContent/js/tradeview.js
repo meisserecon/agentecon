@@ -11,20 +11,20 @@ class Tradeview {
         { label: 'consumer3', children: 4 }
       ],
       edges: [
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer1' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer2' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'firm', destination: 'consumer3' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer0', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer1', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer2', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1.9027487371710157, source: 'consumer3', destination: 'firm' }
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer1' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 4, source: 'firm', destination: 'consumer3' },
+        { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 3, source: 'consumer1', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 10, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
+        { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer3', destination: 'firm' }
       ]
     }
 
@@ -163,13 +163,14 @@ class Tradeview {
         group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
         group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
         group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
-
+        console.log(d.weight);
         // append the bezier curve and marker
         group
           .append('path')
           .attr('class', 'link')
           .attr('d', 'M' + x0 + ' ' + y0 + ' C ' + cx0 + ' ' + cy0 + ', ' + cx1 + ' ' + cy1 + ', ' + x1 + ' ' + y1)
-          .attr('marker-end', function(d) { return 'url(#marker)'; });
+          .attr('stroke-width', d.weight + 'px')
+          .attr('marker-end', function() { return 'url(#marker)'; });
       });
 
       // create reference marker
