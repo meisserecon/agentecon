@@ -56,14 +56,27 @@ class Tradeview {
   drawNodes(nodes, coordinates) {
     console.log('%cdrawNodes()', 'color: deepskyblue;');
 
-    this.stage.selectAll('.node')
+    let nodesEnterJoin = this.stage.selectAll('.node')
       .data(nodes)
-      .enter()
+      .enter();
+
+    let group = nodesEnterJoin
+      .append('g')
+      .attr('transform', function(d) { return 'translate(' + coordinates[d.label].x + ',' + coordinates[d.label].y + ')'; })
+
+    group
       .append('circle')
       .attr('class', 'node')
-      .attr('cx', function(d) { return coordinates[d.label].x; })
-      .attr('cy', function(d) { return coordinates[d.label].y; })
+      .attr('cx', 0)
+      .attr('cy', 0)
       .attr('r', this.NODE_RADIUS);
+
+    group
+      .append('text')
+      .attr('class', 'node-text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', 5)
+      .text(function(d) { return d.label; });
   }
 
   drawLinks(links) {
@@ -99,12 +112,11 @@ class Tradeview {
         if (i !== 0) {
           console.log(' ');
         }
-        console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
 
         if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
           localEdgeCount += 1;
         } else {
-          console.log('Creating new group node on iteration ' + i);
+          console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
 
           localEdgeCount = 0;
 
@@ -132,8 +144,6 @@ class Tradeview {
           }
           alpha += rotationCorrection;
 
-          console.log('Z rotation: ' + Math.round(alpha) + 'deg');
-
           group
             .attr('transform', 'translate(' + globalSourceX + ',' + globalSourceY + ') rotate(' + alpha + ')')
 
@@ -141,8 +151,11 @@ class Tradeview {
           currentDestination = d.destination;
         }
 
+        console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
+        console.log('Z rotation: ' + Math.round(alpha) + 'deg');
         console.log('Delta X: ' + deltaX);
         console.log('Delta Y: ' + deltaY);
+        console.log('Link weight: ' + d.weight);
 
         let j =  localEdgeCount + 2,
             deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180),
@@ -163,7 +176,7 @@ class Tradeview {
         group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
         group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
         group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
-        console.log(d.weight);
+
         // append the bezier curve and marker
         group
           .append('path')

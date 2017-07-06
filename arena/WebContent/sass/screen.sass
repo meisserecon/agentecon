@@ -2,6 +2,10 @@ body
   margin: 20px
   background-color: #f0f0f0
 
+h1
+  font: bold 26px/1 Helvetica, Arial, sans-serif
+  text-transform: uppercase
+
 .tradeview
   width: 100%
   height: 1000px
@@ -10,10 +14,11 @@ body
 .node
   fill: deepskyblue
   opacity: .8
-  &:nth-child(2)
-    fill: pink
-  &.active
-    fill: pink
+
+  &-text
+    font: bold 14px/1 Helvetica, Arial sans-serif
+    text-transform: uppercase
+    fill: white
 
 .link
   fill: none

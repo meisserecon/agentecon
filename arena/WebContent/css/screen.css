@@ -2,6 +2,10 @@ body {
   margin: 20px;
   background-color: #f0f0f0; }
 
+h1 {
+  font: bold 26px/1 Helvetica, Arial, sans-serif;
+  text-transform: uppercase; }
+
 .tradeview {
   width: 100%;
   height: 1000px;
@@ -10,10 +14,10 @@ body {
 .node {
   fill: deepskyblue;
   opacity: 0.8; }
-  .node:nth-child(2) {
-    fill: pink; }
-  .node.active {
-    fill: pink; }
+  .node-text {
+    font: bold 14px/1 Helvetica, Arial sans-serif;
+    text-transform: uppercase;
+    fill: white; }
 
 .link {
   fill: none;
@@ -24,25 +28,25 @@ body {
     stroke: red;
     cursor: pointer; }
   .link:nth-child(1) {
-    animation-delay: 2.8s; }
+    animation-delay: 2.2s; }
   .link:nth-child(2) {
-    animation-delay: 1.6s; }
+    animation-delay: 1.3s; }
   .link:nth-child(3) {
-    animation-delay: 1.3s; }
+    animation-delay: 1.1s; }
   .link:nth-child(4) {
-    animation-delay: 0.2s; }
+    animation-delay: 2.1s; }
   .link:nth-child(5) {
-    animation-delay: 1.3s; }
+    animation-delay: 0.4s; }
   .link:nth-child(6) {
-    animation-delay: 2.7s; }
+    animation-delay: 2.2s; }
   .link:nth-child(7) {
-    animation-delay: 2.7s; }
+    animation-delay: 1.2s; }
   .link:nth-child(8) {
-    animation-delay: 0.2s; }
+    animation-delay: 0.1s; }
   .link:nth-child(9) {
-    animation-delay: 0.8s; }
+    animation-delay: 3s; }
   .link:nth-child(10) {
-    animation-delay: 2.4s; }
+    animation-delay: 2.6s; }
 
 .marker {
   fill: #333;
