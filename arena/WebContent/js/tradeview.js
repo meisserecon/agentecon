@@ -42,15 +42,14 @@ class Tradeview {
   }
 
   init() {
-    console.log('Init TradeView');
-
-    let _this = this;
+    console.log('%cinit()', 'color: deepskyblue;');
+    console.log(' ');
 
     // set stage
     this.stage = d3.select('body')
       .append('svg')
       .attr('xmlns', 'http://www.w3.org/2000/svg')
-      .attr('class', 'tradeview');
+      .attr('class', 'tradeview')
   }
 
   drawNodes(nodes, coordinates) {
@@ -63,7 +62,9 @@ class Tradeview {
     let group = nodesEnterJoin
       .append('g')
       .attr('transform', function(d) { return 'translate(' + coordinates[d.label].x + ',' + coordinates[d.label].y + ')'; })
+      .each(function(d, i) { console.log(d.label + ' coordinates: ' + coordinates[d.label].x + ', ' + coordinates[d.label].y) });
 
+    // append node to node group
     group
       .append('circle')
       .attr('class', 'node')
@@ -71,16 +72,19 @@ class Tradeview {
       .attr('cy', 0)
       .attr('r', this.NODE_RADIUS);
 
+    // append labels to node group
     group
       .append('text')
       .attr('class', 'node-text')
       .attr('text-anchor', 'middle')
       .attr('dy', 5)
       .text(function(d) { return d.label; });
+
+    console.log('%cend', 'color: deepskyblue;');
+    console.log(' ');
   }
 
   drawLinks(links) {
-    console.log(' ');
     console.log('%cdrawLinks()', 'color: deepskyblue;');
 
     let _this = this;
@@ -132,7 +136,6 @@ class Tradeview {
           globalDestinationX = _this.nodeCoordinates[d.destination].x;
           globalDestinationY = _this.nodeCoordinates[d.destination].y;
 
-          console.log('Destination coordinates: ' + globalDestinationX + ', ' + globalDestinationY);
           deltaX = globalDestinationX - globalSourceX;
           deltaY = globalDestinationY - globalSourceY;
           let rotationCorrection = 0;
@@ -143,6 +146,8 @@ class Tradeview {
             rotationCorrection = -180;
           }
           alpha += rotationCorrection;
+          console.log('Z rotation: ' + Math.round(alpha) + 'deg');
+          console.log('Delta vector: ' + deltaX + ', ' + deltaY);
 
           group
             .attr('transform', 'translate(' + globalSourceX + ',' + globalSourceY + ') rotate(' + alpha + ')')
@@ -152,9 +157,6 @@ class Tradeview {
         }
 
         console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
-        console.log('Z rotation: ' + Math.round(alpha) + 'deg');
-        console.log('Delta X: ' + deltaX);
-        console.log('Delta Y: ' + deltaY);
         console.log('Link weight: ' + d.weight);
 
         let j =  localEdgeCount + 2,
