@@ -1,6 +1,7 @@
 package com.agentecon.agent;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
@@ -24,9 +25,9 @@ public Collection<? extends IAgent> getAgents();
 
 	public IAgent getAgent(int agentId);
 
-	public Collection<String> getFirmTypes();
+	public Set<String> getFirmTypes();
 	
-	public Collection<String> getConsumerTypes();
+	public Set<String> getConsumerTypes();
 
 	public Collection<IAgent> getAgents(String type);
 

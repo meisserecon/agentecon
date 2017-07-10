@@ -19,7 +19,7 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.web.methods.Parameters;
 
 public class AgentQuery {
-	
+
 	private EQueryType type;
 	private String query;
 	private int id;
@@ -31,11 +31,64 @@ public class AgentQuery {
 			this.id = Integer.parseInt(query);
 		}
 	}
-	
-	public static final String getExample(){
+
+	public static final String getExample() {
 		return Parameters.SELECTION + "=" + EQueryType.FIRMS_QUERY;
 	}
-	
+
+	public ENodeType getType(IAgents agents) {
+		switch (type) {
+		case CONSUMERS:
+			return ENodeType.CONSUMER;
+		case FIRMS:
+			return ENodeType.FIRM;
+		default:
+			return ENodeType.UNKNOWN;
+		case TYPE:
+			if (agents.getFirmTypes().contains(query)) {
+				return ENodeType.FIRM;
+			} else if (agents.getConsumerTypes().contains(query)) {
+				return ENodeType.CONSUMER;
+			} else {
+				return ENodeType.UNKNOWN;
+			}
+		case ID:
+			IAgent agent = agents.getAgent(id);
+			if (agent == null) {
+				return ENodeType.UNKNOWN;
+			} else if (agent instanceof IConsumer){
+				return ENodeType.CONSUMER;
+			} else {
+				assert agent instanceof IFirm;
+				return ENodeType.FIRM;
+			}
+		}
+	}
+
+	public String getParent(IAgents agents) {
+		switch (type) {
+		default:
+		case CONSUMERS:
+		case FIRMS:
+			return "";
+		case TYPE:
+			if (agents.getFirmTypes().contains(query)) {
+				return EQueryType.FIRMS_QUERY;
+			} else if (agents.getConsumerTypes().contains(query)) {
+				return EQueryType.CONSUMERS_QUERY;
+			} else {
+				return EQueryType.UNKNOWN;
+			}
+		case ID:
+			IAgent agent = agents.getAgent(id);
+			if (agent == null) {
+				return EQueryType.UNKNOWN;
+			} else {
+				return agent.getType();
+			}
+		}
+	}
+
 	public Collection<String> getChildren(IAgents agents) {
 		switch (type) {
 		case CONSUMERS:

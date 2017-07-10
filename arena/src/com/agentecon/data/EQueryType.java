@@ -14,6 +14,7 @@ public enum EQueryType {
 
 	public static final String CONSUMERS_QUERY = "consumers";
 	public static final String FIRMS_QUERY = "firms";
+	public static final String UNKNOWN = "unknown";
 
 	public static EQueryType derive(String agent) {
 		switch (agent) {

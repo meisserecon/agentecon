@@ -14,6 +14,7 @@ import com.agentecon.agent.IAgents;
 public class Node implements Comparable<Node>{
 
 	public String label;
+	public String parent;
 	public int children;
 	
 	private transient AgentQuery query;
@@ -22,12 +23,17 @@ public class Node implements Comparable<Node>{
 		this.label = agent;
 		this.query = new AgentQuery(agent);
 	}
+	
+	public ENodeType getType(IAgents agents) {
+		return query.getType(agents);
+	}
 
 	public boolean contains(IAgent agent) {
 		return query.matches(agent);
 	}
 
 	public void fetchData(IAgents agents) {
+		this.parent = query.getParent(agents);
 		this.children = query.getChildren(agents).size();
 	}
 
@@ -40,5 +46,5 @@ public class Node implements Comparable<Node>{
 	public String toString(){
 		return label;
 	}
-
+	
 }
