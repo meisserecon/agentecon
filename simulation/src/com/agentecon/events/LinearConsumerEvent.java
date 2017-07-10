@@ -1,6 +1,7 @@
 package com.agentecon.events;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
@@ -34,15 +35,15 @@ public class LinearConsumerEvent extends ConsumerEvent {
 			int step = maxAge / initialPopulation;
 			for (; initialPopulation > 0; initialPopulation--) {
 				int maxAge = Math.max(this.maxAge - initialPopulation * step, step);
-				sim.add(new MortalConsumer(maxAge, end, utilFun.create(count++)));
+				sim.add(new MortalConsumer(sim, maxAge, end, utilFun.create(count++)));
 			}
 		}
 		super.execute(day, sim);
 	}
 	
 	@Override
-	protected IConsumer createConsumer(Endowment end, IUtility util){
-		return new MortalConsumer(this.maxAge, end, util);
+	protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util){
+		return new MortalConsumer(id, this.maxAge, end, util);
 	}
 
 }

@@ -2,6 +2,7 @@ package com.agentecon.events;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
@@ -39,12 +40,12 @@ public class ConsumerEvent extends SimEvent {
 	@Override
 	public void execute(int day, ICountry sim) {
 		for (int i = 0; i < cardinality; i++) {
-			sim.add((Agent) createConsumer(end, utilFun.create(count++)));
+			sim.add((Agent) createConsumer(sim, end, utilFun.create(count++)));
 		}
 	}
 
-	protected IConsumer createConsumer(Endowment end, IUtility util){
-		return new Consumer(end, util);
+	protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util){
+		return new Consumer(id, end, util);
 	}
 
 	public String toString() {

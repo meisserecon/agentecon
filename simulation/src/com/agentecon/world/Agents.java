@@ -9,6 +9,7 @@ import java.util.Random;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
@@ -18,7 +19,7 @@ import com.agentecon.firm.Ticker;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.ISimulationListener;
 
-public class Agents implements IAgents {
+public class Agents implements IAgents, IAgentId {
 
 	private long seed;
 	private Random rand;
@@ -77,14 +78,12 @@ public class Agents implements IAgents {
 	}
 
 	private void include(Agent agent, boolean newAgent) {
-		if (newAgent){
-			agent.setId(agentId++);
-		}
 		Agent prev = all.put(agent.getAgentId(), agent);
 		assert prev == null : "Cannot register " + agent + " because there already is another agent with that id: " + prev;
 		if (agent instanceof IFirm) {
 			IFirm firm = (IFirm) agent;
-			firms.put(firm.getTicker(), firm);
+			IFirm prevFirm = firms.put(firm.getTicker(), firm);
+			assert prevFirm == null : "firms must have unique tickers";
 			firmTypes.add(firm.getType());
 			if (newAgent) {
 				for (IMarketMaker mm : marketMakers) {
@@ -251,6 +250,11 @@ public class Agents implements IAgents {
 			}
 		}
 		return matches;
+	}
+
+	@Override
+	public int createUniqueAgentId() {
+		return agentId++;
 	}
 
 }

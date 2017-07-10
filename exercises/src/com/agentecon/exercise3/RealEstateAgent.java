@@ -9,6 +9,7 @@
 package com.agentecon.exercise3;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.finance.Firm;
 import com.agentecon.finance.MarketMakerPrice;
 import com.agentecon.firm.IShareholder;
@@ -24,15 +25,15 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	private FinanceDepartment finance;
 	private MarketMakerPrice priceBelief;
 
-	public RealEstateAgent(IShareholder owner, IStock initialMoney, IStock initialLand) {
-		super(owner, new Endowment(initialMoney.getGood()));
+	public RealEstateAgent(IAgentId id, IShareholder owner, IStock initialMoney, IStock initialLand) {
+		super(id, owner, new Endowment(initialMoney.getGood()));
 		getMoney().absorb(initialMoney);
 		
 		this.land = initialLand.getGood();
 		IStock ownedLand = getStock(this.land);
 		ownedLand.absorb(initialLand);
 		this.priceBelief = new MarketMakerPrice(ownedLand);
-		this.finance = new FinanceDepartment();
+		this.finance = new FinanceDepartment(null);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	protected double calculateDividends(int day) {
 		double profits = 0.0;
 		double size = getMoney().getAmount();
-		return finance.calculateDividends(profits, size);
+		return finance.calculateDividends();
 	}
 
 }

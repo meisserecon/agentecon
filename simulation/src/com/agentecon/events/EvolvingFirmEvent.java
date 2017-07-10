@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.firm.Producer;
 import com.agentecon.firm.production.LogProdFun;
 import com.agentecon.goods.IStock;
@@ -13,19 +14,21 @@ import com.agentecon.world.ICountry;
 
 public class EvolvingFirmEvent extends EvolvingEvent {
 
+	private IAgentId id;
 	private Endowment end;
 	private FirstDayProduction prod;
 	private LogProdFun prodFun;
 	private ArrayList<Producer> firms;
 
-	public EvolvingFirmEvent(int firmsPerType, String type, Endowment end, LogProdFun fun, Random rand) {
+	public EvolvingFirmEvent(IAgentId id, int firmsPerType, String type, Endowment end, LogProdFun fun, Random rand) {
 		super(0, firmsPerType);
 		this.end = end;
 		this.prodFun = fun;
 		this.firms = new ArrayList<>();
 		for (int i = 0; i < getCardinality(); i++) {
-			firms.add(new Producer(end, fun));
+			firms.add(new Producer(id, end, fun));
 		}
+		this.id = id;
 		initListener();
 	}
 
@@ -50,7 +53,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 		ArrayList<Producer> newFirms = new ArrayList<>();
 		adaptEndowment();
 		for (Producer firm : firms) {
-			newFirms.add(firm.createNextGeneration(end, prodFun));
+			newFirms.add(firm.createNextGeneration(id, end, prodFun));
 		}
 		return new EvolvingFirmEvent(getCardinality(), end, prodFun, newFirms);
 	}
@@ -64,7 +67,7 @@ public class EvolvingFirmEvent extends EvolvingEvent {
 		} else {
 			stock.remove(-diff);
 		}
-		end = new Endowment(inv.getMoney().getGood(), inv.getAll().toArray(new IStock[]{}), end.getDaily());
+		end = new Endowment(inv.getMoney().getGood(), inv.getAll().toArray(new IStock[] {}), end.getDaily());
 	}
 
 	@Override

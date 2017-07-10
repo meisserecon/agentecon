@@ -3,6 +3,7 @@
 package com.agentecon.consumer;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.goods.Inventory;
@@ -15,8 +16,8 @@ public class MortalConsumer extends Consumer {
 	private double savingsTarget;
 	private MovingAverage dailySpendings;
 
-	public MortalConsumer(int maxAge, Endowment end, IUtility utility) {
-		super(end, utility);
+	public MortalConsumer(IAgentId id, int maxAge, Endowment end, IUtility utility) {
+		super(id, end, utility);
 		this.maxAge = maxAge;
 		this.dailySpendings = new MovingAverage(0.95);
 	}

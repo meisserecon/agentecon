@@ -5,6 +5,7 @@ package com.agentecon.firm;
 import java.util.Arrays;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFirmDecisions;
@@ -31,12 +32,12 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 
 	private ProducerListeners listeners;
 
-	public Producer(Endowment end, IProductionFunction prod) {
-		this(end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
+	public Producer(IAgentId id,Endowment end, IProductionFunction prod) {
+		this(id, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
 	}
 
-	public Producer(Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
-		super(end);
+	public Producer(IAgentId id,Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
+		super(id, end);
 		this.prod = prod;
 		this.strategy = strategy;
 
@@ -116,7 +117,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 	@Override
 	protected double calculateDividends(int day) {
 		IStock wallet = getMoney();
-		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(new Financials(wallet, inputs, output) {
+		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(new Financials(wallet, output, inputs) {
 
 			@Override
 			public double getIdealCogs() {
@@ -146,8 +147,8 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 		return output.getPrice();
 	}
 
-	public Producer createNextGeneration(Endowment end, IProductionFunction prod) {
-		return new Producer(end, prod, strategy);
+	public Producer createNextGeneration(IAgentId id, Endowment end, IProductionFunction prod) {
+		return new Producer(id, end, prod, strategy);
 	}
 
 	private Factor getFactor(Good good) {

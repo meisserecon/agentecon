@@ -9,9 +9,13 @@
 package com.agentecon.exercise2;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.finance.Firm;
+import com.agentecon.firm.Financials;
 import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
+import com.agentecon.firm.decisions.FinanceDepartment;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Quantity;
@@ -26,17 +30,19 @@ public class AdaptiveFarm extends Firm implements IProducer {
 
 	private static final double SPENDING_FRACTION = 0.2; // let's spend 20% of our money every day
 
-	private double workingCapital;
 	private IProductionFunction prodFun;
 	private ProducerListeners listeners;
 	private MarketingDepartment marketing;
+//	private IFirmDecisions strategy;
+	private FinanceDepartment finance;
 
-	public AdaptiveFarm(IShareholder owner, IStock money, IStock land, IProductionFunction prodFun) {
-		super(owner, new Endowment(money.getGood()));
+	public AdaptiveFarm(IAgentId id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun) {
+		super(id, owner, new Endowment(money.getGood()));
 		this.prodFun = prodFun;
 		this.listeners = new ProducerListeners();
-		this.workingCapital = money.getAmount();
 		this.marketing = new MarketingDepartment(getMoney(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
+		this.finance = new FinanceDepartment(marketing.getFinancials(getInventory(), prodFun));
+//		this.strategy = new ExpectedRevenueBasedStrategy(prodFun.getWeight(FarmingConfiguration.MAN_HOUR).weight);
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
 	}
@@ -59,37 +65,33 @@ public class AdaptiveFarm extends Firm implements IProducer {
 	@Override
 	public void offer(IPriceMakerMarket market) {
 		double budget = getMoney().getAmount() * SPENDING_FRACTION;
+//		double budget = strategy.calcCogs(getMoney().getAmount(), prodFun.getCostOfMaximumProfit(getInventory(), marketing));
+//		double optimal = prodFun.getCostOfMaximumProfit(getInventory(), marketing);
+//		System.out.println("Budget " + budget + ", optimal: " + optimal);
 		marketing.createOffers(market, this, budget);
 	}
 
 	@Override
 	public void adaptPrices() {
 		marketing.adaptPrices();
-//		System.out.println("Adjusting price beliefs to " + marketing);
+		// System.out.println("Adjusting price beliefs to " + marketing);
 	}
 
 	@Override
 	public void produce() {
 		Quantity[] inputs = getInventory().getQuantities(getInputs());
-//		checkWaste(inputs);
 		Quantity produced = prodFun.produce(getInventory());
 		listeners.notifyProduced(this, inputs, produced);
 	}
 
-	private boolean checkWaste(Quantity[] inputs) {
-		for (Quantity input : inputs) {
-			double min = prodFun.getFixedCost(input.getGood());
-			if (input.getAmount() < min) {
-				System.out.println(this + " wasted input " + input + " as it was provided in a quantity below the fixed costs of " + min);
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	protected double calculateDividends(int day) {
-		return Math.max(0, getMoney().getAmount() - workingCapital); // return everyhing above what was initially provided
+		return finance.calculateDividends();
+//		double plainDividend = strategy.calcDividend(marketing.getFinancials(getInventory(), prodFun));
+//		double fixedCosts = prodFun.getFixedCost(FarmingConfiguration.MAN_HOUR) * marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
+//		return plainDividend - fixedCosts;
+		// return Math.max(0, getMoney().getAmount() - workingCapital); //
+		// return everyhing above what was initially provided
 	}
 
 }

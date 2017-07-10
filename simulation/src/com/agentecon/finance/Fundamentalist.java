@@ -27,7 +27,7 @@ public class Fundamentalist extends Firm implements IShareholder {
 	private Portfolio portfolio;
 
 	public Fundamentalist(ICountry world) {
-		super(new Endowment(new Stock(world.getMoney(), CASH)));
+		super(world, new Endowment(new Stock(world.getMoney(), CASH)));
 		this.world = world;
 		this.portfolio = new Portfolio(getMoney());
 	}

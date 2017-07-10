@@ -50,4 +50,9 @@ public class SinConsumerEventTest implements ICountry {
 		return new Good("Taler");
 	}
 
+	@Override
+	public int createUniqueAgentId() {
+		return 1;
+	}
+
 }

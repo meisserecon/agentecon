@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
@@ -30,7 +31,7 @@ import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.util.Numbers;
 
-public class FirmTest {
+public class FirmTest implements IAgentId {
 	
 	public static final Good MONEY = new Good("Taler");
 	public static final Good PIZZA = new Good("Pizza", 1.0);
@@ -54,7 +55,7 @@ public class FirmTest {
 	@Test
 	public void testPriceFinding() {
 		TestConsumer tc = new TestConsumer(MONEY, new Price(PIZZA, 30), new Price(SWISSTIME, 10), new Price(ITALTIME, 15));
-		Producer firm = new Producer(end, new LogProdFun(PIZZA, new Weight(ITALTIME, 5.0), new Weight(SWISSTIME, 5.0)), new DifferentialDividend());
+		Producer firm = new Producer(this, end, new LogProdFun(PIZZA, new Weight(ITALTIME, 5.0), new Weight(SWISSTIME, 5.0)), new DifferentialDividend());
 		for (int i = 0; i < 100; i++) {
 			Market market = new Market(rand);
 			firm.offer(market);
@@ -79,7 +80,7 @@ public class FirmTest {
 	public void testOptimalProduction(){
 		final double hourPrice = 2.972868529894414d;
 		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000), new Stock(FONDUE, 36.156428643107d) }, new Stock[] {});
-		Producer firm = new Producer(end, new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0)), new DifferentialDividend()){
+		Producer firm = new Producer(this, end, new LogProdFun(FONDUE, new Weight(SWISSTIME, 10.0)), new DifferentialDividend()){
 			
 			@Override
 			protected IBelief createPriceBelief(Good good){
@@ -125,7 +126,7 @@ public class FirmTest {
 		this.end = new Endowment(MONEY, new Stock[] { new Stock(MONEY, 1000) }, new Stock[] {});
 		double alpha = 0.5;
 		IProductionFunction prodFun = new CobbDouglasProduction(FONDUE, 1.0, new Weight(SWISSTIME, alpha));
-		Producer firm = new Producer(end, prodFun, new DifferentialDividend()){
+		Producer firm = new Producer(this, end, prodFun, new DifferentialDividend()){
 
 			@Override
 			public IBelief createPriceBelief(Good good) {
@@ -193,7 +194,7 @@ public class FirmTest {
 		double beta = 0.25;
 		double factor = 2.0;
 		IProductionFunction prodFun = new CobbDouglasProduction(FONDUE, factor, new Weight(SWISSTIME, alpha), new Weight(ITALTIME, beta));
-		Producer firm = new Producer(end, prodFun, new DifferentialDividend()){
+		Producer firm = new Producer(this, end, prodFun, new DifferentialDividend()){
 
 			@Override
 			public IBelief createPriceBelief(Good good) {
@@ -233,6 +234,11 @@ public class FirmTest {
 		Quantity production2 = prodFun.produce(new Inventory(MONEY, new Stock(SWISSTIME, x1), new Stock(ITALTIME, x2)));
 		System.out.println(production2);
 		assert Numbers.equals(production, production2.getAmount());
+	}
+
+	@Override
+	public int createUniqueAgentId() {
+		return 1;
 	}
 	
 }

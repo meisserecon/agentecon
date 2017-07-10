@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.finance.TradingPortfolio;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.IStockMarket;
@@ -26,8 +27,8 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 	protected TradingPortfolio portfolio;
 	protected ConsumerListeners listeners;
 
-	public Consumer(Endowment end, IUtility utility) {
-		super(end);
+	public Consumer(IAgentId id, Endowment end, IUtility utility) {
+		super(id, end);
 		this.age = 0;
 		this.soldGood = end.getDaily()[0].getGood();
 		this.utility = utility;

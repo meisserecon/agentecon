@@ -1,14 +1,18 @@
 package com.agentecon.price;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.firm.Financials;
 import com.agentecon.firm.InputFactor;
 import com.agentecon.firm.OutputFactor;
+import com.agentecon.firm.decisions.IFinancials;
 import com.agentecon.firm.sensor.SensorInputFactor;
 import com.agentecon.firm.sensor.SensorOutputFactor;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.IProductionFunction;
 
 public class MarketingDepartment implements IPriceProvider {
 
@@ -45,6 +49,16 @@ public class MarketingDepartment implements IPriceProvider {
 	@Override
 	public String toString() {
 		return "Input " + input + ", output " + output;
+	}
+
+	public IFinancials getFinancials(final Inventory inv, IProductionFunction prodFun) {
+		return new Financials(money, output, input) {
+			
+			@Override
+			public double getIdealCogs() {
+				return prodFun.getCostOfMaximumProfit(inv, MarketingDepartment.this);
+			}
+		};
 	}
 
 }

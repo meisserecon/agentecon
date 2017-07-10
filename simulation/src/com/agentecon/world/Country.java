@@ -62,7 +62,7 @@ public class Country implements ICountry {
 		for (IShareholder shareholder : agents.getShareholders()) {
 			if (shareholder instanceof IFounder){
 				IFounder founder = (IFounder) shareholder;
-				IFirm firm = founder.considerCreatingFirm(innovation);
+				IFirm firm = founder.considerCreatingFirm(this, innovation);
 				if (firm != null){
 					add(firm);
 				}
@@ -126,6 +126,11 @@ public class Country implements ICountry {
 
 	public String toString() {
 		return "World at day " + day + " with " + agents.getAgents().size() + " agents";
+	}
+
+	@Override
+	public int createUniqueAgentId() {
+		return agents.createUniqueAgentId();
 	}
 
 }

@@ -15,6 +15,7 @@ import java.net.SocketTimeoutException;
 import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
@@ -56,8 +57,8 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 		LogUtilWithFloor utility = new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 		addEvent(new ConsumerEvent(agents, end, utility) {
 			@Override
-			protected IConsumer createConsumer(Endowment end, IUtility util) {
-				return factory.createConsumer(end, util);
+			protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util) {
+				return factory.createConsumer(id, end, util);
 			}
 		});
 	}
