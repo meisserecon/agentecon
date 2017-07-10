@@ -130,15 +130,28 @@ class Tradeview {
         // in drawLinks function
         _this.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y};
 
-        console.log(d.data.id + ', x:' + d.data.x + ', y:' + d.data.y);
+        console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
 
         return 'translate(' + d.data.x + ', ' + d.data.y + ')';
       });
 
+    // append node links
+    group
+    .append('path')
+    .attr('class', 'node-link')
+    .attr('d', function(d, i) {
+      if (i > 0) {
+        console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
+        return 'M 0 0 L' + (d.parent.data.x - d.data.x) + ' ' + (d.parent.data.y - d.data.y);
+      }
+    });
+
     // append node to node group
     group
       .append('circle')
-      .attr('class', function(d) { return 'node node__' + nodes.data.id; })
+      .attr('class', function(d) {
+        return 'node node__' + nodes.data.id + (d.children ? '' : ' node--leaf');
+      })
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', this.NODE_RADIUS);
@@ -186,10 +199,6 @@ class Tradeview {
       .data(links)
       .enter()
       .each(function(d, i) {
-        if (i !== 0) {
-          console.log(' ');
-        }
-
         if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
           localEdgeCount += 1;
         } else {
@@ -245,12 +254,12 @@ class Tradeview {
             cy1 = j * y1;
 
         // append bezier control points
-        group.append('circle').attr('cx', x0).attr('cy', y0).attr('r', 5).attr('fill', 'red');
-        group.append('circle').attr('cx', x1).attr('cy', y1).attr('r', 2).attr('fill', 'red');
-        group.append('circle').attr('cx', cx0).attr('cy', cy0).attr('r', 5).attr('fill', 'deepskyblue');
-        group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
-        group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
-        group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
+        // group.append('circle').attr('cx', x0).attr('cy', y0).attr('r', 5).attr('fill', 'red');
+        // group.append('circle').attr('cx', x1).attr('cy', y1).attr('r', 2).attr('fill', 'red');
+        // group.append('circle').attr('cx', cx0).attr('cy', cy0).attr('r', 5).attr('fill', 'deepskyblue');
+        // group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
+        // group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
+        // group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
 
         // append the bezier curve and marker
         group

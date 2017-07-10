@@ -12,8 +12,14 @@ h1 {
   background-color: white; }
 
 .node {
-  fill: deepskyblue;
-  opacity: 0.8; }
+  fill: deepskyblue; }
+  .node--leaf {
+    stroke: rgba(0, 0, 0, 0.5);
+    stroke-width: 4px; }
+  .node-link {
+    stroke: deepskyblue;
+    stroke-width: 5px;
+    opacity: 0.5; }
   .node-text {
     font: bold 14px/1 Helvetica, Arial sans-serif;
     text-transform: uppercase;
