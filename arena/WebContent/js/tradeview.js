@@ -3,71 +3,123 @@ class Tradeview {
     this.stage;
     this.NODE_RADIUS = 50;
     this.data = {
-      nodes: [
-        { label: 'firm', children: 4 },
-        { label: 'consumer0', children: 4 },
-        { label: 'consumer1', children: 4 },
-        { label: 'consumer2', children: 4 },
-        { label: 'consumer3', children: 4 }
+      firms: [
+        { label: 'firms', children: 4, parent: '' },
+        { label: 'firm0', children: 4, parent: 'firms' },
+        { label: 'firm1', children: 4, parent: 'firms' }
+      ],
+      consumers: [
+        { label: 'consumers', children: 4, parent: '' },
+        { label: 'consumer0', children: 4, parent: 'consumers' },
+        { label: 'consumer1', children: 4, parent: 'consumers' },
+        { label: 'consumer2', children: 4, parent: 'consumers' },
+        { label: 'consumer3', children: 4 , parent: 'consumer1'},
+        { label: 'consumer4', children: 4 , parent: 'consumer3'},
+        { label: 'consumer5', children: 4 , parent: 'consumer3'}
       ],
       edges: [
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer1' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer2' },
-        { label: '35 input 3 @ 3.81$', weight: 4, source: 'firm', destination: 'consumer3' },
-        { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 3, source: 'consumer1', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 10, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
-        { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer3', destination: 'firm' }
+        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm0', destination: 'consumer0' }
+        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
+        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer0' },
+        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
+        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer1' },
+        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer2' },
+        // { label: '35 input 3 @ 3.81$', weight: 4, source: 'firm', destination: 'consumer3' },
+        // { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 3, source: 'consumer1', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 10, source: 'consumer3', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer3', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
+        // { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer3', destination: 'firm' }
       ]
     }
 
-    this.nodeCoordinates = {
-      firm: { x: '500', y: '400' },
-      consumer0: { x: '700', y: '200' },
-      consumer1: { x: '300', y: '250' },
-      consumer2: { x: '300', y: '550' },
-      consumer3: { x: '800', y: '550' }
-    }
-
     this.init();
-    this.drawNodes(this.data.nodes, this.nodeCoordinates);
-    this.drawLinks(this.data.edges);
+    this.drawNodes(this.data.consumers, [350, 100], -1);
+    this.drawNodes(this.data.firms, [700, 100], +1);
+    // TODO: temp disable for node positioning
+    // this.drawLinks(this.data.edges);
   }
 
   init() {
     console.log('%cinit()', 'color: deepskyblue;');
-    console.log(' ');
 
     // set stage
     this.stage = d3.select('body')
       .append('svg')
       .attr('xmlns', 'http://www.w3.org/2000/svg')
       .attr('class', 'tradeview')
+
+    console.log('Prepare stage');
+    console.log(' ');
   }
 
-  drawNodes(nodes, coordinates) {
+  drawNodes(nodeData, offset, direction) {
     console.log('%cdrawNodes()', 'color: deepskyblue;');
 
-    let nodesEnterJoin = this.stage.selectAll('.node')
-      .data(nodes)
+    let LAYER_GAP = 110,
+        ROOT_OFFSET = offset || [300, 100],
+        horizontalDistance = (direction === -1 ? -110 : 110), // to draw to the left, use negative values
+        _this = this;
+
+    // stratify data
+    let treeData = d3.stratify()
+      .id(function(d) { return d.label; })
+      .parentId(function(d) { return d.parent; })
+      (nodeData);
+
+    // get nodes in hierarchical structure
+    let nodes = d3.hierarchy(treeData, function(d) { return d.children; })
+
+    let nodesEnterJoin = this.stage.selectAll('.node__' + nodes.data.id)
+      .data(nodes.descendants())
       .enter();
 
+    console.log('%cRoot node: ' + nodes.data.id, 'color: pink;');
+    if (horizontalDistance > 0) {
+      console.log('%cDrawing in positive x direction', 'color: pink;');
+    } else {
+      console.log('%cDrawing in negative x direction', 'color: pink;');
+    }
+
+    let previousDepth = 0,
+        layerIterator = 0,
+        additionalLayerGap = 50,
+        accumulatedLayerGap = -additionalLayerGap;
+
+    // calculate translation for group
     let group = nodesEnterJoin
       .append('g')
-      .attr('transform', function(d) { return 'translate(' + coordinates[d.label].x + ',' + coordinates[d.label].y + ')'; })
-      .each(function(d, i) { console.log(d.label + ' coordinates: ' + coordinates[d.label].x + ', ' + coordinates[d.label].y) });
+      .attr('transform', function(d, i) {
+
+        // set x coordinate
+        if (d.depth === previousDepth && i !== 0) {
+          layerIterator++;
+          d.data.x = ROOT_OFFSET[0] + layerIterator * horizontalDistance;
+        } else {
+          console.log('Create new layer');
+          d.data.x = ROOT_OFFSET[0];
+          layerIterator = 0;
+          accumulatedLayerGap+= 50;
+        }
+
+        // set y coordinate
+        d.data.y = LAYER_GAP * i + accumulatedLayerGap + ROOT_OFFSET[1];
+
+        // update previousDepth
+        previousDepth = d.depth;
+
+        console.log(d.data.id + ', x:' + d.data.x + ', y:' + d.data.y);
+
+        return 'translate(' + d.data.x + ', ' + d.data.y + ')';
+      });
 
     // append node to node group
     group
       .append('circle')
-      .attr('class', 'node')
+      .attr('class', function(d) { return 'node node__' + nodes.data.id; })
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', this.NODE_RADIUS);
@@ -78,7 +130,7 @@ class Tradeview {
       .attr('class', 'node-text')
       .attr('text-anchor', 'middle')
       .attr('dy', 5)
-      .text(function(d) { return d.label; });
+      .text(function(d) { return d.data.id; });
 
     console.log('%cend', 'color: deepskyblue;');
     console.log(' ');
