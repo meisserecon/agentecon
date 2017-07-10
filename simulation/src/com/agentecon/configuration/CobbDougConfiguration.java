@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
@@ -112,8 +113,8 @@ public class CobbDougConfiguration implements IConfiguration {
 			final int type = i;
 			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)) {
 				@Override
-				protected IConsumer createConsumer(Endowment end, IUtility util) {
-					return new Consumer(end, util) {
+				protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util) {
+					return new Consumer(id, end, util) {
 						@Override
 						protected String inferType(Class<? extends Agent> clazz) {
 							return "Consumer-Type-" + type;

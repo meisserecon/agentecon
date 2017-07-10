@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
@@ -69,7 +70,7 @@ public class TechnologyConfiguration implements IConfiguration {
 			@Override
 			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
-					sim.add(new MarketMaker(MONEY, sim.getAgents().getFirms()));
+					sim.add(new MarketMaker(sim, MONEY, sim.getAgents().getFirms()));
 				}
 			}
 		});
@@ -85,8 +86,8 @@ public class TechnologyConfiguration implements IConfiguration {
 			Endowment end = new Endowment(MONEY, new Stock(inputs[i], Endowment.HOURS_PER_DAY));
 			config.add(new ConsumerEvent(consumersPerType, end, defaultPrefs.getFactory(i)) {
 				@Override
-				protected IConsumer createConsumer(Endowment end, IUtility util){
-					return new Consumer(end, utilFun.create(count++));
+				protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util){
+					return new Consumer(id, end, utilFun.create(count++));
 				}
 			});
 		}

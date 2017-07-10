@@ -1,6 +1,8 @@
 package com.agentecon.market;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
@@ -55,7 +57,7 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 
 	@Override
 	public void print(PrintStream out) {
-		System.out.println("Good\tPrice\tVolume");
+		out.println("Good\tPrice\tVolume");
 		prices.forEach(new BiConsumer<Good, GoodStats>() {
 
 			@Override
@@ -63,6 +65,19 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 				out.println(t + "\t" + u.toTabString());
 			}
 		});
+	}
+	
+	@Override
+	public String toString(){
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+		print(stream);
+		return new String(out.toByteArray());
+	}
+
+	@Override
+	public double getPriceBelief(Good good) {
+		return prices.get(good).getMovingAverage().getAverage();
 	}
 
 }

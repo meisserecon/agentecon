@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
@@ -22,7 +23,7 @@ import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.market.Price;
 import com.agentecon.util.Numbers;
 
-public class ConsumerTest {
+public class ConsumerTest implements IAgentId {
 	
 	public static final Good MONEY = new Good("Taler");
 	public static final Good PIZZA = new Good("Pizza", 1.0);
@@ -57,7 +58,7 @@ public class ConsumerTest {
 	@Test
 	public void test() {
 		IUtility utilFun = new LogUtilWithAdjustment(new Weight(FONDUE, 10), new Weight(SWISSTIME, 14));
-		Consumer cons = new Consumer(createEndowment(), utilFun);
+		Consumer cons = new Consumer(this, createEndowment(), utilFun);
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {
 
@@ -96,7 +97,7 @@ public class ConsumerTest {
 	@Test
 	public void test2() {
 		IUtility utilFun = new LogUtilWithAdjustment(new Weight(PIZZA, 8), new Weight(ITALTIME, 14));
-		Consumer cons = new Consumer(createEndowment2(), utilFun);
+		Consumer cons = new Consumer(this, createEndowment2(), utilFun);
 		cons.collectDailyEndowment();
 		cons.tradeGoods(new IPriceTakerMarket() {
 
@@ -129,6 +130,11 @@ public class ConsumerTest {
 			}
 		});
 		assert Numbers.equals(cons.consume(), cons.getUtilityFunction().getUtility(Arrays.<IStock>asList(new Stock(PIZZA, 2.116844127999999), new Stock(ITALTIME, 21.331651435017676))));
+	}
+
+	@Override
+	public int createUniqueAgentId() {
+		return 1;
 	}
 
 }

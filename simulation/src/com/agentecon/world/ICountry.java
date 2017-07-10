@@ -3,10 +3,11 @@ package com.agentecon.world;
 import java.util.Random;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.goods.Good;
 
 
-public interface ICountry {
+public interface ICountry extends IAgentId {
 	
 	public Random getRand();
 

@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.classloader.CompilingClassLoader;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
@@ -56,13 +57,13 @@ public class CompilingAgentFactory implements IAgentFactory {
 	}
 
 	@Override
-	public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
+	public IConsumer createConsumer(IAgentId id, Endowment endowment, IUtility utilityFunction) {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends IConsumer> clazz = (Class<? extends IConsumer>) loader.loadClass(classname);
-			Constructor<? extends IConsumer> constructor = clazz.getConstructor(Endowment.class, IUtility.class);
+			Constructor<? extends IConsumer> constructor = clazz.getConstructor(IAgentId.class, Endowment.class, IUtility.class);
 			assert clazz.getClassLoader() == loader;
-			return constructor.newInstance(endowment, utilityFunction);
+			return constructor.newInstance(id, endowment, utilityFunction);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {

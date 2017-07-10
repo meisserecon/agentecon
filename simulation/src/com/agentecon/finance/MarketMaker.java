@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IStockMarket;
@@ -24,8 +25,8 @@ public class MarketMaker extends Firm implements IMarketMaker {
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMakerPrice> priceBeliefs;
 
-	public MarketMaker(Good money, Collection<IFirm> firms) {
-		super(new Endowment(money, new IStock[] { new Stock(money, MARKET_MAKER_CASH) }, new IStock[] {}));
+	public MarketMaker(IAgentId id,Good money, Collection<IFirm> firms) {
+		super(id, new Endowment(money, new IStock[] { new Stock(money, MARKET_MAKER_CASH) }, new IStock[] {}));
 		this.portfolio = new Portfolio(getMoney());
 		this.reserve = 0.0;
 		this.priceBeliefs = new HashMap<Ticker, MarketMakerPrice>();

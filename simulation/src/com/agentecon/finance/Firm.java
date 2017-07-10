@@ -2,6 +2,7 @@ package com.agentecon.finance;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.firm.FirmListeners;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
@@ -13,24 +14,24 @@ import com.agentecon.goods.IStock;
 
 public abstract class Firm extends Agent implements IFirm {
 
-	private Ticker ticker;
-	private ShareRegister register;
-	private FirmListeners monitor;
+	private final Ticker ticker;
+	private final ShareRegister register;
+	private final FirmListeners monitor;
 
-	public Firm(IShareholder owner, Endowment end) {
-		this(end);
+	public Firm(IAgentId ids, IShareholder owner, Endowment end) {
+		this(ids, end);
 		Position ownerPosition = this.register.createPosition();
 		this.register.claimCompanyShares(ownerPosition);
 		owner.getPortfolio().addPosition(ownerPosition);
 	}
 	
-	public Firm(Endowment end) {
-		super(end);
+	public Firm(IAgentId ids, Endowment end) {
+		super(ids, end);
 		this.ticker = new Ticker(getType(), getAgentId());
 		this.register = new ShareRegister(ticker, getDividendWallet());
 		this.monitor = new FirmListeners();
 	}
-
+	
 	@Override
 	public ShareRegister getShareRegister() {
 		return register;
@@ -61,6 +62,8 @@ public abstract class Firm extends Agent implements IFirm {
 	public final void payDividends(int day) {
 		double dividend = calculateDividends(day);
 		if (dividend > 0) {
+			// pay at most 20% of the available cash
+			dividend = Math.min(dividend, getDividendWallet().getAmount() * 0.2);
 			monitor.reportDividend(this, dividend);
 			register.payDividend(getDividendWallet(), dividend);
 		}

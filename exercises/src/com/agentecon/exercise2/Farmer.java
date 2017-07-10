@@ -14,6 +14,7 @@ import java.net.SocketTimeoutException;
 import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
@@ -39,14 +40,14 @@ public class Farmer extends Consumer implements IFounder {
 	
 	private Good manhours;
 
-	public Farmer(Endowment end, IUtility utility) {
-		super(end, utility);
+	public Farmer(IAgentId id, Endowment end, IUtility utility) {
+		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
 		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
 
 	@Override
-	public IFirm considerCreatingFirm(IInnovation research) {
+	public IFirm considerCreatingFirm(IAgentId id, IInnovation research) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
 		if (myLand.getAmount() >= 100.0 && getAgentId() > 5) {
 			// I have plenty of land, lets create a new farm with me as owner
@@ -56,7 +57,7 @@ public class Farmer extends Consumer implements IFounder {
 			IStock wallet = getMoney();
 			IStock firmMoney = wallet.hideRelative(0.5);
 
-			AdaptiveFarm farm = new AdaptiveFarm(owner, firmMoney, myLand, prod);
+			AdaptiveFarm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod);
 			farm.getInventory().getStock(manhours).transfer(getStock(manhours), 10);
 			return farm;
 		} else {
@@ -85,8 +86,8 @@ public class Farmer extends Consumer implements IFounder {
 		FarmingConfiguration config = new FarmingConfiguration(new IAgentFactory() {
 
 			@Override
-			public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
-				return new Farmer(endowment, utilityFunction);
+			public IConsumer createConsumer(IAgentId id, Endowment endowment, IUtility utilityFunction) {
+				return new Farmer(id, endowment, utilityFunction);
 			}
 		}, 10); // Create the configuration
 		Simulation sim = new Simulation(config); // Create the simulation

@@ -14,20 +14,20 @@ import com.agentecon.sim.AgentRef;
 
 public abstract class Agent implements IAgent, Cloneable {
 
-	private int number;
-	private String type;
-	private Endowment end;
+	private final int number;
+	private final String type;
+	private final Endowment end;
 	private Inventory inv;
 	private boolean alive;
 
 	private AgentRef ref;
 
-	public Agent(Endowment end) {
+	public Agent(IAgentId agentRegistry, Endowment end) {
 		this.type = inferType(getClass());
 		this.inv = end.getInitialInventory();
+		this.number = agentRegistry.createUniqueAgentId();
 		this.end = end;
 		this.alive = true;
-		this.number = 0;
 		this.ref = new AgentRef(this);
 		assert type != null;
 	}
@@ -50,11 +50,6 @@ public abstract class Agent implements IAgent, Cloneable {
 		return name;
 	}
 
-	public void setId(int id){
-		assert this.number == 0;
-		this.number = id;
-	}
-	
 	public void addListener(Object listener) {
 		if (listener instanceof IConsumerListener && this instanceof IConsumer) {
 			((IConsumer) this).addListener((IConsumerListener) listener);
@@ -87,6 +82,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public int getAgentId() {
+		assert this.number > 0;
 		return number;
 	}
 

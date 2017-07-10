@@ -9,7 +9,7 @@ public abstract class Financials implements IFinancials {
 	private OutputFactor output;
 	private InputFactor[] inputs;
 
-	public Financials(IStock money, InputFactor[] inputs, OutputFactor output) {
+	public Financials(IStock money, OutputFactor output, InputFactor... inputs) {
 		this.money = money;
 		this.inputs = inputs;
 		this.output = output;

@@ -14,6 +14,7 @@ import java.net.SocketTimeoutException;
 import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgentId;
 import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
@@ -29,29 +30,30 @@ import com.agentecon.research.IFounder;
 import com.agentecon.research.IInnovation;
 
 /**
- * An autarkic consumer that produces its own food and does not
- * interact with others.
+ * An autarkic consumer that produces its own food and does not interact with
+ * others.
  */
 public class Hermit extends Consumer implements IFounder {
-	
+
 	private Good manhours;
 	private IProductionFunction prodFun;
 
-	public Hermit(Endowment end, IUtility utility) {
-		super(end, utility);
+	public Hermit(IAgentId id, Endowment end, IUtility utility) {
+		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
 		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
-	
+
 	@Override
-	public IFirm considerCreatingFirm(IInnovation research) {
-		if (this.prodFun == null){
-			// instead of creating a firm, the hermit will use the production function himself
+	public IFirm considerCreatingFirm(IAgentId id, IInnovation research) {
+		if (this.prodFun == null) {
+			// instead of creating a firm, the hermit will use the production
+			// function himself
 			this.prodFun = research.createProductionFunction(HermitConfiguration.POTATOE);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void tradeGoods(IPriceTakerMarket market) {
 		// Hermit does not trade, produces instead for himself
@@ -65,21 +67,23 @@ public class Hermit extends Consumer implements IFounder {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-//		double plannedLeisureTime = currentManhours.getAmount() * 0.6;
-		
+		// double plannedLeisureTime = currentManhours.getAmount() * 0.6;
+
 		double weight = prodFun.getWeight(manhours).weight;
 		double fixedCost = prodFun.getFixedCost(manhours);
-		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost)/(1+weight);
+		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost) / (1 + weight);
 		double optimalLeisureTime = currentManhours.getAmount() - optimalWorkAmount;
-		
-		// The hide function creates allows to hide parts of the inventory from the
+
+		// The hide function creates allows to hide parts of the inventory from
+		// the
 		// production function, preserving it for later consumption.
 		Inventory productionInventory = inventory.hide(manhours, optimalLeisureTime);
 		prodFun.produce(productionInventory);
 	}
-	
+
 	@Override
-	// this method is not needed and only here for better explanation what is going on
+	// this method is not needed and only here for better explanation what is
+	// going on
 	public double consume() {
 		// super class already knows how to consume, let it do the work
 		System.out.println("Eating " + getInventory());
@@ -89,15 +93,16 @@ public class Hermit extends Consumer implements IFounder {
 	// The "static void main" method is executed when running a class
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		HermitConfiguration config = new HermitConfiguration(new IAgentFactory() {
-			
+
 			@Override
-			public IConsumer createConsumer(Endowment endowment, IUtility utilityFunction) {
-				return new Hermit(endowment, utilityFunction);
+			public IConsumer createConsumer(IAgentId id, Endowment endowment, IUtility utilityFunction) {
+				return new Hermit(id, endowment, utilityFunction);
 			}
 		}, 10); // Create the configuration
 		Simulation sim = new Simulation(config); // Create the simulation
 		ConsumerRanking ranking = new ConsumerRanking(); // Create a ranking
-		sim.addListener(ranking); // register the ranking as a listener interested in what is going on
+		sim.addListener(ranking); // register the ranking as a listener
+									// interested in what is going on
 		sim.run(); // run the simulation
 		ranking.print(System.out); // print the resulting ranking
 	}

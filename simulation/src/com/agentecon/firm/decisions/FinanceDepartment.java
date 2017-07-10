@@ -18,16 +18,36 @@ import com.agentecon.util.MovingCovariance;
 public class FinanceDepartment {
 	
 	private MovingCovariance cov;
+	private IFinancials financials;
+	private ExpectedRevenueBasedStrategy strat;
 	
-	public FinanceDepartment(){
-		
+	public FinanceDepartment(IFinancials financials){
+		this.financials = financials;
+		this.cov = new MovingCovariance(0.98);
+		this.strat = new ExpectedRevenueBasedStrategy(0.75);
 	}
 
-	public double calculateDividends(double profits, double size) {
-//		double correlation = covariance.getCorrelation();
-//		System.out.println(profits + "\t" + size + "\t" + correlation);
-//		return profits - size / 200 * (correlation + 0*(rand.nextDouble() - 0.5));
-		return 0.0;
+	public double calculateDividends() {
+		double profits = financials.getLatestRevenue() - financials.getLatestCogs();
+		double size = financials.getCash();
+		this.cov.add(size, profits);
+		
+//		double targetSize = calculateTargetSize(size);
+		double targetSize = financials.getIdealCogs() * 5;
+		// once ideal size is reached, all profits are distributed
+		double dividend = profits + size - targetSize; // once ideal size is reached
+		System.out.println("Size " + size + " target " + targetSize + ", dividend: " + dividend);
+		return strat.calcDividend(financials) - 100;
+	}
+	
+	private double calculateTargetSize(double currentSize){
+		double correlation = cov.getCorrelation(); // between -1 and 1
+		double adjustmentFactor = 1 + Math.abs(correlation/10);
+		if (correlation > 0){
+			return currentSize * adjustmentFactor; // grow
+		} else {
+			return currentSize / adjustmentFactor; // shrink
+		}
 	}
 
 }
