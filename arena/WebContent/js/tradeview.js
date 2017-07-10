@@ -1,6 +1,11 @@
 class Tradeview {
   constructor(options) {
     this.stage;
+    this.firmsTree;
+    this.consumersTree;
+    // object that stores coordinates of all nodes
+    // used to draw links between nodes
+    this.nodeCoordinates = {};
     this.NODE_RADIUS = 50;
     this.data = {
       firms: [
@@ -18,29 +23,39 @@ class Tradeview {
         { label: 'consumer5', children: 4 , parent: 'consumer3'}
       ],
       edges: [
-        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm0', destination: 'consumer0' }
-        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
-        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer0' },
-        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer0' },
-        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm', destination: 'consumer1' },
-        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm', destination: 'consumer2' },
-        // { label: '35 input 3 @ 3.81$', weight: 4, source: 'firm', destination: 'consumer3' },
-        // { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 3, source: 'consumer1', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 10, source: 'consumer3', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer3', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer3', destination: 'firm' },
-        // { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer3', destination: 'firm' }
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm0', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer0', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm1' },
+        { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
+        { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer5' },
+        { label: '35 input 3 @ 3.81$', weight: 3, source: 'firm1', destination: 'consumer5' },
+        { label: '35 input 3 @ 3.81$', weight: 6, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer4', destination: 'firm0' }
       ]
     }
 
     this.init();
-    this.drawNodes(this.data.consumers, [350, 100], -1);
-    this.drawNodes(this.data.firms, [700, 100], +1);
+    this.consumersTree = this.drawNodes(this.data.consumers, [350, 100], -1);
+    this.firmsTree = this.drawNodes(this.data.firms, [700, 100], +1);
     // TODO: temp disable for node positioning
-    // this.drawLinks(this.data.edges);
+    this.drawLinks(this.data.edges);
   }
 
   init() {
@@ -111,6 +126,10 @@ class Tradeview {
         // update previousDepth
         previousDepth = d.depth;
 
+        // update nodeCoordinates for later use
+        // in drawLinks function
+        _this.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y};
+
         console.log(d.data.id + ', x:' + d.data.x + ', y:' + d.data.y);
 
         return 'translate(' + d.data.x + ', ' + d.data.y + ')';
@@ -134,6 +153,8 @@ class Tradeview {
 
     console.log('%cend', 'color: deepskyblue;');
     console.log(' ');
+
+    return nodes;
   }
 
   drawLinks(links) {
