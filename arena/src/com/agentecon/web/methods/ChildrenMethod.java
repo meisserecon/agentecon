@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.data.AgentQuery;
+import com.agentecon.data.Child;
 import com.agentecon.data.JsonData;
 
 public class ChildrenMethod extends SimSpecificMethod {
@@ -36,9 +37,9 @@ public class ChildrenMethod extends SimSpecificMethod {
 	
 	class Children extends JsonData {
 		
-		Collection<String> children;
+		Collection<Child> children;
 		
-		public Children(Collection<String> children) {
+		public Children(Collection<Child> children) {
 			this.children = children;
 		}
 

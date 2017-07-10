@@ -89,17 +89,17 @@ public class AgentQuery {
 		}
 	}
 
-	public Collection<String> getChildren(IAgents agents) {
+	public Collection<Child> getChildren(IAgents agents) {
 		switch (type) {
 		case CONSUMERS:
-			return agents.getConsumerTypes();
+			return Child.wrap(agents.getConsumers());
 		case FIRMS:
-			return agents.getFirmTypes();
+			return Child.wrap(agents.getFirms());
 		case TYPE:
 			Collection<IAgent> agentsOfType = agents.getAgents(query);
-			ArrayList<String> ids = new ArrayList<>(agentsOfType.size());
+			ArrayList<Child> ids = new ArrayList<>(agentsOfType.size());
 			for (IAgent agent : agentsOfType) {
-				ids.add(Integer.toString(agent.getAgentId()));
+				ids.add(new Child(Integer.toString(agent.getAgentId()), agent));
 			}
 			return ids;
 		default:

@@ -35,13 +35,22 @@ public abstract class Agent implements IAgent, Cloneable {
 	protected String inferType(Class<? extends Agent> clazz) {
 		ClassLoader loader = clazz.getClassLoader();
 		if (loader instanceof RemoteLoader){
-			return ((RemoteLoader)loader).getOwner() + "-" + getName(clazz);
+			return ((RemoteLoader)loader).getOwner() + "-" + findType(clazz);
 		} else {
-			return getName(clazz);
+			return findType(clazz);
 		}
 	}
 	
-	private static String getName(Class<?> clazz) {
+	public static String findAuthor(Class<? extends IAgent> clazz){
+		ClassLoader loader = clazz.getClassLoader();
+		if (loader instanceof RemoteLoader){
+			return ((RemoteLoader)loader).getOwner();
+		} else {
+			return "Local";
+		}
+	}
+	
+	public static String findType(Class<?> clazz) {
 		String name = clazz.getSimpleName();
 		while (name.length() == 0) {
 			clazz = clazz.getSuperclass();

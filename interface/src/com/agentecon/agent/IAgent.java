@@ -7,7 +7,7 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.sim.AgentRef;
 
 public interface IAgent extends Cloneable {
-	
+
 	/**
 	 * A human-readable type of the agent for display purposes. "Fred's Consumer"
 	 */
