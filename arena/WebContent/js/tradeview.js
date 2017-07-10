@@ -245,8 +245,8 @@ class Tradeview {
             deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180),
             x0 = xSource + _this.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3), // 0.3 rad ^= 17.2 deg
             y0 = ySource - _this.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3),
-            x1 = deltaXLocal - _this.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3),
-            y1 = - _this.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3);
+            x1 = deltaXLocal - (_this.NODE_RADIUS + 10) * Math.cos((localEdgeCount + 1) * 0.3),
+            y1 = - (_this.NODE_RADIUS + 10) * Math.sin((localEdgeCount + 1) * 0.3);
 
         let cx0 = j * x0,
             cx1 = j * (x1 - deltaXLocal) + deltaXLocal,
@@ -276,7 +276,7 @@ class Tradeview {
           .attr('id', 'marker')
           .attr('class', 'marker')
           .attr('viewBox', '0 -5 10 10')
-          .attr('refX', 6)
+          .attr('refX', 1)
           .attr('refY', 0)
           .attr('markerWidth', 14)
           .attr('markerHeight', 14)
