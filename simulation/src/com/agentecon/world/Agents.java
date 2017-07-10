@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
@@ -223,12 +224,12 @@ public class Agents implements IAgents, IAgentId {
 	}
 
 	@Override
-	public Collection<String> getFirmTypes() {
+	public Set<String> getFirmTypes() {
 		return firmTypes;
 	}
 
 	@Override
-	public Collection<String> getConsumerTypes() {
+	public Set<String> getConsumerTypes() {
 		return consumerTypes;
 	}
 
