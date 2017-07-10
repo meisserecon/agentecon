@@ -11,27 +11,35 @@ h1 {
   height: 1000px;
   background-color: white; }
 
-.node {
-  fill: deepskyblue; }
-  .node--leaf {
-    stroke: rgba(0, 0, 0, 0.5);
-    stroke-width: 4px; }
-  .node-link {
-    stroke: deepskyblue;
-    stroke-width: 5px;
-    opacity: 0.5; }
-  .node-text {
-    font: bold 14px/1 Helvetica, Arial sans-serif;
-    text-transform: uppercase;
-    fill: white; }
+.node__link {
+  stroke-width: 5px;
+  opacity: 0.3; }
+.node__text {
+  font: bold 14px/1 Helvetica, Arial sans-serif;
+  text-transform: uppercase;
+  fill: white; }
+.node--firms .node__circle {
+  fill: #ff6557; }
+.node--firms .node__link {
+  stroke: #ff6557; }
+.node--consumers .node__circle {
+  fill: #33ccff; }
+.node--consumers .node__link {
+  stroke: #33ccff; }
+.node--branch .node__circle {
+  stroke-width: 4px; }
+.node--branch.node--firms .node__circle {
+  stroke: #ff3624; }
+.node--branch.node--consumers .node__circle {
+  stroke: #00ace6; }
 
 .link {
   fill: none;
-  stroke: #333;
+  stroke: #676767;
   animation: pulsate 3s;
   animation-iteration-count: infinite; }
   .link:hover {
-    stroke: red;
+    stroke: #97e582;
     cursor: pointer; }
   .link:nth-child(1) {
     animation-delay: 0.2s; }
@@ -67,7 +75,7 @@ h1 {
     animation-delay: 1.9s; }
 
 .marker {
-  fill: #333;
+  fill: #676767;
   stroke-width: 2px; }
 
 @keyframes pulsate {

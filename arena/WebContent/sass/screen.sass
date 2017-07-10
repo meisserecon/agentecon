@@ -1,3 +1,8 @@
+$blue:                                     #33ccff
+$coral:                                    #ff6557
+$green:                                    #97e582
+$grey:                                     #676767
+
 body
   margin: 20px
   background-color: #f0f0f0
@@ -12,29 +17,51 @@ h1
   background-color: white
 
 .node
-  fill: deepskyblue
 
-  &--leaf
-    stroke: rgba(0,0,0,.5)
-    stroke-width: 4px
-
-  &-link
-    stroke: deepskyblue
+  &__link
     stroke-width: 5px
-    opacity: .5
+    opacity: .3
 
-  &-text
+  &__text
     font: bold 14px/1 Helvetica, Arial sans-serif
     text-transform: uppercase
     fill: white
 
+  &--firms
+    .node
+      &__circle
+        fill: $coral
+      &__link
+        stroke: $coral
+
+  &--consumers
+    .node
+      &__circle
+        fill: $blue
+      &__link
+        stroke: $blue
+
+  &--branch
+    .node
+      &__circle
+        stroke-width: 4px
+    &.node
+      &--firms
+        .node
+          &__circle
+            stroke: darken($coral, 10%)
+      &--consumers
+        .node
+          &__circle
+            stroke: darken($blue, 15%)
+
 .link
   fill: none
-  stroke: #333
+  stroke: $grey
   animation: pulsate 3s
   animation-iteration-count: infinite
   &:hover
-    stroke: red
+    stroke: $green
     cursor: pointer
   &:nth-child(1)
     animation-delay: 0.2s
@@ -70,7 +97,7 @@ h1
     animation-delay: 1.9s
 
 .marker
-  fill: #333
+  fill: $grey
   stroke-width: 2px
 
 @keyframes pulsate

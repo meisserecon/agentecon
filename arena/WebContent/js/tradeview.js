@@ -88,7 +88,7 @@ class Tradeview {
     // get nodes in hierarchical structure
     let nodes = d3.hierarchy(treeData, function(d) { return d.children; })
 
-    let nodesEnterJoin = this.stage.selectAll('.node__' + nodes.data.id)
+    let nodesEnterJoin = this.stage.selectAll('.node--' + nodes.data.id)
       .data(nodes.descendants())
       .enter();
 
@@ -107,6 +107,9 @@ class Tradeview {
     // calculate translation for group
     let group = nodesEnterJoin
       .append('g')
+      .attr('class', function(d) {
+        return 'node node--' + nodes.data.id + (d.children ? ' node--branch' : ' node--leaf');
+      })
       .attr('transform', function(d, i) {
 
         // set x coordinate
@@ -138,7 +141,7 @@ class Tradeview {
     // append node links
     group
     .append('path')
-    .attr('class', 'node-link')
+    .attr('class', 'node__link')
     .attr('d', function(d, i) {
       if (i > 0) {
         console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
@@ -149,9 +152,7 @@ class Tradeview {
     // append node to node group
     group
       .append('circle')
-      .attr('class', function(d) {
-        return 'node node__' + nodes.data.id + (d.children ? '' : ' node--leaf');
-      })
+      .attr('class', 'node__circle')
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', this.NODE_RADIUS);
@@ -159,7 +160,7 @@ class Tradeview {
     // append labels to node group
     group
       .append('text')
-      .attr('class', 'node-text')
+      .attr('class', 'node__text')
       .attr('text-anchor', 'middle')
       .attr('dy', 5)
       .text(function(d) { return d.data.id; });
