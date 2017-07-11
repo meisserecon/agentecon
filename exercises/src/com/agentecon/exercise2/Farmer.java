@@ -36,9 +36,8 @@ import com.agentecon.research.IInnovation;
  */
 public class Farmer extends Consumer implements IFounder {
 
-	private static final double MINIMUM_WORKING_HOURS = 5;
-	
 	private Good manhours;
+	private AdaptiveFarm myFarm;
 
 	public Farmer(IAgentId id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -48,14 +47,14 @@ public class Farmer extends Consumer implements IFounder {
 
 	@Override
 	public IFirm considerCreatingFirm(IAgentId id, IInnovation research) {
-		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.getAmount() >= 100.0 && getAgentId() > 5) {
+		if (myFarm == null) {
 			// I have plenty of land, lets create a new farm with me as owner
 			IShareholder owner = Farmer.this;
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 
 			IStock wallet = getMoney();
 			IStock firmMoney = wallet.hideRelative(0.5);
+			IStock myLand = getStock(FarmingConfiguration.LAND);
 
 			AdaptiveFarm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod);
 			farm.getInventory().getStock(manhours).transfer(getStock(manhours), 10);
@@ -67,11 +66,6 @@ public class Farmer extends Consumer implements IFounder {
 
 	@Override
 	public void tradeGoods(IPriceTakerMarket market) {
-		// In the beginning, shelves can be empty and thus there is no incentive to work (sell man-hours) either.
-		// To kick-start the economy, we require the farmer to sell some of his man-hours anyway, even if he cannot
-		// buy anything with the earned money.
-		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-		
 		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
 		super.tradeGoods(market);
 	}

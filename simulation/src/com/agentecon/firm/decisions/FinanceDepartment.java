@@ -36,7 +36,7 @@ public class FinanceDepartment {
 		double targetSize = financials.getIdealCogs() * 5;
 		// once ideal size is reached, all profits are distributed
 		double dividend = profits + size - targetSize; // once ideal size is reached
-		System.out.println("Size " + size + " target " + targetSize + ", dividend: " + dividend);
+//		System.out.println("Size " + size + " target " + targetSize + ", dividend: " + dividend);
 		return strat.calcDividend(financials) - 100;
 	}
 	

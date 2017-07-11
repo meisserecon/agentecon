@@ -31,7 +31,7 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 		IStock fixedGood = inventory.getStock(fixedCost.getGood());
 		if (fixedGood.getAmount() <= fixedCost.getAmount()) {
 			fixedGood.consume();
-			return 1.0; // TEMP minimum production
+			return 0.0; 
 		} else {
 			fixedGood.remove(fixedCost.getAmount());
 			return super.useInputs(inventory);
