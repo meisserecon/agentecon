@@ -49,5 +49,9 @@ public class Numbers {
 		}
 		return base;
 	}
+
+	public static double normalize(double average) {
+		return Math.min(10.0, Math.max(1.0, average));
+	}
 	
 }

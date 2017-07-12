@@ -54,5 +54,5 @@ public interface IAgent extends Cloneable {
 	public int getAgentId();
 	
 	public IAgent clone();
-	
+
 }

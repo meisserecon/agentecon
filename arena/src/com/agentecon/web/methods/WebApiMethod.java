@@ -38,13 +38,13 @@ public abstract class WebApiMethod {
 	public final JsonData execute(StringTokenizer path, Parameters params) throws IOException {
 		LogClock clock = new LogClock();
 		try {
-			return doExecute(path, params);
+			return doExecute(params);
 		} finally {
 			clock.time("Executed " + toString() + " with " + params);
 		}
 	}
 	
-	protected abstract JsonData doExecute(StringTokenizer path, Parameters params) throws IOException;
+	protected abstract JsonData doExecute(Parameters params) throws IOException;
 
 	@Override
 	public String toString(){

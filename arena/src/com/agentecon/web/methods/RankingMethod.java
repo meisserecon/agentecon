@@ -10,7 +10,6 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.StringTokenizer;
 
 import com.agentecon.metric.Rank;
 import com.agentecon.runner.SimulationStepper;
@@ -23,8 +22,8 @@ public class RankingMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
-		SimulationStepper simulation = getSimulation(path);
+	public JsonData doExecute(Parameters params) throws IOException {
+		SimulationStepper simulation = getSimulation(params);
 		return new Ranking(simulation.getRanking());
 	}
 	

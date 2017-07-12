@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.runner.SimulationLoader;
@@ -21,7 +20,7 @@ import com.agentecon.web.SimulationCache;
 import com.agentecon.web.data.JsonData;
 
 public class ListMethod extends WebApiMethod {
-
+	
 	private transient HashMap<String, SimulationHandle> handles;
 	private transient SimulationCache simulations;
 
@@ -31,21 +30,20 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	public void add(SimulationHandle handle) {
-		this.handles.put(handle.getPath(), handle);
+		this.handles.put(handle.getName(), handle);
 	}
 	
-	public boolean hasSimulation(String owner, String repo, String name) {
-		return handles.containsKey(owner + "/" + repo + "/" + name);
-	}
-
-	public SimulationStepper getSimulation(StringTokenizer subPath) throws IOException{
-		String path = subPath.nextToken() + "/" + subPath.nextToken() + "/" + subPath.nextToken();
-		SimulationHandle handle = handles.get(path);
+	public SimulationStepper getSimulation(String name) throws IOException{
+		SimulationHandle handle = handles.get(name);
 		return simulations.getSimulation(handle);
+	}
+	
+	public SimulationHandle getHandle(String simulation) {
+		return handles.get(simulation);
 	}
 
 	@Override
-	public JsonData doExecute(StringTokenizer path, Parameters params) {
+	public JsonData doExecute(Parameters params) {
 		return new SimulationList(handles.values());
 	}
 
@@ -73,5 +71,4 @@ public class ListMethod extends WebApiMethod {
 		}
 		
 	}
-
 }

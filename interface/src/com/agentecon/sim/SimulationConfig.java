@@ -5,6 +5,7 @@ package com.agentecon.sim;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agentecon.agent.Agent;
 import com.agentecon.goods.Good;
 import com.agentecon.research.IInnovation;
 
@@ -68,6 +69,16 @@ public class SimulationConfig {
 
 	public IInnovation getInnovation() {
 		return null;
+	}
+	
+	public String getName(){
+		String suffix = "Configuration";
+		String simple = Agent.findType(getClass());
+		if (simple.endsWith(suffix)){
+			return simple.substring(0, simple.length() - suffix.length());
+		} else {
+			return simple;
+		}
 	}
 
 }

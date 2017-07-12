@@ -18,12 +18,17 @@ import org.nanohttpd.protocols.http.IHTTPSession;
 public class Parameters {
 	
 	public static final String DAY = "day";
+	public static final String SIM = "sim";
 	public static final String SELECTION = "selection";
 	
 	private Map<String, List<String>> params;
 	
 	public Parameters(IHTTPSession session){
 		this.params = session.getParameters();
+	}
+	
+	public String getSimulation() {
+		return getParam(SIM);
 	}
 	
 	public int getDay(){

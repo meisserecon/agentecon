@@ -11,7 +11,7 @@ package com.agentecon.metric;
 public class Rank implements Comparable<Rank> {
 	
 	private String type;
-	private double lifeTimeUtility;
+	private double averageUtility;
 	private transient int count;
 
 	public Rank(String type){
@@ -23,19 +23,19 @@ public class Rank implements Comparable<Rank> {
 	}
 	
 	public void add(double lifeTimeUtility){
-		this.lifeTimeUtility *= count++;
-		this.lifeTimeUtility += lifeTimeUtility;
-		this.lifeTimeUtility /= count;
+		this.averageUtility *= count++;
+		this.averageUtility += lifeTimeUtility;
+		this.averageUtility /= count;
 	}
 	
 	@Override
 	public int compareTo(Rank o) {
-		return -Double.compare(lifeTimeUtility, o.lifeTimeUtility);
+		return -Double.compare(averageUtility, o.averageUtility);
 	}
 	
 	@Override
 	public String toString() {
-		return getType() + "\t" + lifeTimeUtility;
+		return getType() + "\t" + averageUtility;
 	}
 	
 }

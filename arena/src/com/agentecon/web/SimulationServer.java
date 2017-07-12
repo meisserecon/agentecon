@@ -13,6 +13,7 @@ import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.web.data.JsonData;
 import com.agentecon.web.methods.AgentsMethod;
 import com.agentecon.web.methods.ChildrenMethod;
+import com.agentecon.web.methods.InfoMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.Parameters;
@@ -39,6 +40,7 @@ public class SimulationServer extends FileServer {
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);
 		this.methods.add(new SizeTypesMethod());
+		this.methods.add(new InfoMethod(this.simulations));
 		this.methods.add(new AgentsMethod(this.simulations));
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
@@ -59,14 +61,7 @@ public class SimulationServer extends FileServer {
 					JsonData answer = calledMethod.execute(tok, new Parameters(session));
 					return serve(session, answer);
 				} else {
-					String owner = methodName;
-					String repo = tok.hasMoreTokens() ? tok.nextToken() : "";
-					String name = tok.hasMoreTokens() ? tok.nextToken() : "";
-					if (simulations.hasSimulation(owner, repo, name)) {
-						return serveSimulation(session, uri, tok);
-					} else {
-						return super.serve(session);
-					}
+					return super.serve(session);
 				}
 			} catch (IOException e) {
 				return Response.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), "Failed to handle call due to " + e.toString());
@@ -76,19 +71,19 @@ public class SimulationServer extends FileServer {
 		}
 	}
 
-	protected Response serveSimulation(IHTTPSession session, String uri, StringTokenizer tok) throws IOException {
-		if (tok.hasMoreTokens()) {
-			String methodName = tok.nextToken();
-			WebApiMethod calledMethod = methods.getMethod(methodName);
-			if (calledMethod != null) {
-				return serve(session, calledMethod.execute(new StringTokenizer(uri, "\\/"), new Parameters(session)));
-			} else {
-				return super.serve(session, "sim.html");
-			}
-		} else {
-			return super.serve(session, "sim.html");
-		}
-	}
+//	protected Response serveSimulation(IHTTPSession session, String uri, StringTokenizer tok) throws IOException {
+//		if (tok.hasMoreTokens()) {
+//			String methodName = tok.nextToken();
+//			WebApiMethod calledMethod = methods.getMethod(methodName);
+//			if (calledMethod != null) {
+//				return serve(session, calledMethod.execute(new StringTokenizer(uri, "\\/"), new Parameters(session)));
+//			} else {
+//				return super.serve(session, "sim.html");
+//			}
+//		} else {
+//			return super.serve(session, "sim.html");
+//		}
+//	}
 
 	protected Response serve(IHTTPSession session, JsonData json) {
 		Response res = Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());

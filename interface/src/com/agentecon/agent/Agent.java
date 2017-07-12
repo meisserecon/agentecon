@@ -8,6 +8,7 @@ import com.agentecon.firm.IFirmListener;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.sim.AgentRef;
@@ -126,6 +127,10 @@ public abstract class Agent implements IAgent, Cloneable {
 		inv.receive(end.getDaily());
 	}
 
+	public double getWealth(IStatistics stats) {
+		return inv.calculateValue(stats.getGoodsMarketStats());
+	}
+	
 	@Override
 	public int hashCode() {
 		return number;
@@ -146,13 +151,14 @@ public abstract class Agent implements IAgent, Cloneable {
 			throw new java.lang.RuntimeException(e);
 		}
 	}
-
-	public String toString() {
-		return getType() + " with " + inv;
-	}
-
+	
 	public void refreshRef() {
 		this.ref.set(this);
+	}
+	
+	@Override
+	public String toString() {
+		return getType() + " with " + inv;
 	}
 
 }

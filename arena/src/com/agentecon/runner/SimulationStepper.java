@@ -24,6 +24,10 @@ public class SimulationStepper {
 		this.ranking = new AtomicReference<ConsumerRanking>(createRanking(loader.get().loadSimulation()));
 //		this.enablePeriodicUpdate();
 	}
+	
+	public ISimulation getSimulation() throws IOException {
+		return this.simulation.get();
+	}
 
 	public ISimulation getSimulation(int day) throws IOException {
 		ISimulation simulation = this.simulation.get();

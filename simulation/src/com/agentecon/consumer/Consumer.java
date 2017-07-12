@@ -17,6 +17,7 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
+import com.agentecon.market.IStatistics;
 import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {

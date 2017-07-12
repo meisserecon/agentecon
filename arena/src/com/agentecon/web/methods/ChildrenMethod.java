@@ -10,7 +10,6 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.web.data.JsonData;
@@ -29,8 +28,8 @@ public class ChildrenMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
-		ISimulation sim = getSimulation(path, params.getDay());
+	public JsonData doExecute(Parameters params) throws IOException {
+		ISimulation sim = getSimulation(params, params.getDay());
 		AgentQuery query = new AgentQuery(params.getSelection());
 		return new Children(query.getChildren(sim.getAgents()));
 	}

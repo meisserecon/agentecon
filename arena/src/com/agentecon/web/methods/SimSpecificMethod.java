@@ -9,10 +9,10 @@
 package com.agentecon.web.methods;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
+import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.runner.SimulationStepper;
 
 public abstract class SimSpecificMethod extends WebApiMethod {
@@ -25,14 +25,18 @@ public abstract class SimSpecificMethod extends WebApiMethod {
 	
 	@Override
 	protected String createExamplePath() {
-		return new LocalSimulationHandle().getPath() + "/" + super.createExamplePath() + "?" + Parameters.DAY + "=133";
+		return super.createExamplePath() + "?" + Parameters.SIM + "=" + new LocalSimulationHandle().getName() + "&" + Parameters.DAY + "=313";
 	}
 	
-	protected SimulationStepper getSimulation(StringTokenizer tok) throws IOException{
-		return sims.getSimulation(tok);
+	protected SimulationHandle getHandle(Parameters params){
+		return sims.getHandle(params.getSimulation());
+	}
+	
+	protected SimulationStepper getSimulation(Parameters params) throws IOException{
+		return sims.getSimulation(params.getSimulation());
 	}
 
-	public ISimulation getSimulation(StringTokenizer tok, int day) throws IOException{
+	public ISimulation getSimulation(Parameters tok, int day) throws IOException{
 		SimulationStepper stepper = getSimulation(tok);
 		return stepper.getSimulation(day);
 	}

@@ -10,7 +10,6 @@ package com.agentecon.web.methods;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 import com.agentecon.web.data.JsonData;
 
@@ -32,7 +31,7 @@ public class MethodsMethod extends WebApiMethod {
 	}
 
 	@Override
-	public JsonData doExecute(StringTokenizer args, Parameters params) {
+	public JsonData doExecute(Parameters params) {
 		return new MethodList();
 	}
 	

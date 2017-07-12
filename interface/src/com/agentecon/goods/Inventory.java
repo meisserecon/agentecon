@@ -3,6 +3,9 @@ package com.agentecon.goods;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.agentecon.market.IMarketStatistics;
+import com.agentecon.production.PriceUnknownException;
+
 public class Inventory {
 
 	private final Good money;
@@ -73,6 +76,21 @@ public class Inventory {
 
 	public Collection<IStock> getAll() {
 		return inv.values();
+	}
+	
+	public double calculateValue(IMarketStatistics stats) {
+		double value = 0.0;
+		for (IStock stock: inv.values()){
+			if (stock.getGood().equals(money)){
+				value += stock.getAmount();
+			} else {
+				try {
+					value += stats.getPriceBelief(stock.getQuantity());
+				} catch (PriceUnknownException e) {
+				}
+			}
+		}
+		return value;
 	}
 
 	public IStock getStock(Good type) {

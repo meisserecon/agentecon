@@ -10,6 +10,7 @@ package com.agentecon.web.graph;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
+import com.agentecon.market.IStatistics;
 import com.agentecon.web.query.AgentQuery;
 import com.agentecon.web.query.ENodeType;
 
@@ -24,13 +25,12 @@ public class Node implements Comparable<Node>{
 	private transient AgentSize sizeQuery;
 	
 	public Node(String agent) {
-		this(agent, null);
-	}
-	
-	public Node(String agent, ESizeType sizeType) {
 		this.label = agent;
 		this.query = new AgentQuery(agent);
-		this.sizeQuery = 
+	}
+
+	public void initializeSizeQuery(ESizeType type, IAgents agents) {
+		this.sizeQuery = type.createQuery(query, agents);
 	}
 	
 	public ENodeType getType(IAgents agents) {
@@ -41,10 +41,10 @@ public class Node implements Comparable<Node>{
 		return query.matches(agent);
 	}
 
-	public void fetchData(IAgents agents) {
+	public void fetchData(IStatistics stats, IAgents agents) {
 		this.parent = query.getParent(agents);
 		this.children = query.getChildren(agents).size();
-		this.size = sizeQuery.complete(agents);
+		this.size = sizeQuery.getSize(stats, query, agents);
 	}
 
 	@Override

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import com.agentecon.goods.IStock;
+import com.agentecon.market.IMarketStatistics;
+import com.agentecon.production.PriceUnknownException;
 
 public class Portfolio implements Cloneable {
 
@@ -28,7 +30,7 @@ public class Portfolio implements Cloneable {
 			}
 		}
 	}
-	
+
 	public void absorbPositions(double ratio, Portfolio other) {
 		for (Position p : other.inv.values()) {
 			Position myPosition = inv.get(p.getTicker());
@@ -86,6 +88,17 @@ public class Portfolio implements Cloneable {
 
 	public double getCash() {
 		return wallet.getAmount();
+	}
+
+	public double calculateValue(IMarketStatistics stats) {
+		double value = 0.0;
+		for (IStock stock : inv.values()) {
+			try {
+				value += stats.getPriceBelief(stock.getQuantity());
+			} catch (PriceUnknownException e) {
+			}
+		}
+		return value;
 	}
 
 	public Portfolio clone(IStock wallet) {

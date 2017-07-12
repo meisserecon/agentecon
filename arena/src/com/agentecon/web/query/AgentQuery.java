@@ -11,6 +11,7 @@ package com.agentecon.web.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
@@ -62,7 +63,7 @@ public class AgentQuery {
 			IAgent agent = agents.getAgent(id);
 			if (agent == null) {
 				return ENodeType.UNKNOWN;
-			} else if (agent instanceof IConsumer){
+			} else if (agent instanceof IConsumer) {
 				return ENodeType.CONSUMER;
 			} else {
 				assert agent instanceof IFirm;
@@ -92,6 +93,24 @@ public class AgentQuery {
 			} else {
 				return agent.getType();
 			}
+		}
+	}
+
+	public void forEach(IAgents agents, Consumer<IAgent> consumer) {
+		switch (type) {
+		case CONSUMERS:
+			agents.getConsumers().forEach(consumer);
+			break;
+		case FIRMS:
+			agents.getFirms().forEach(consumer);
+			break;
+		case TYPE:
+			agents.getAgents(query).forEach(consumer);
+			break;
+		case ID:
+			consumer.accept(agents.getAgent(id));
+			break;
+		default:
 		}
 	}
 

@@ -10,7 +10,6 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.web.data.JsonData;
@@ -28,10 +27,10 @@ public class TradeGraphMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
+	public JsonData doExecute(Parameters params) throws IOException {
 		int day = params.getDay();
 		int stepSize = params.getIntParam("step");
-		ISimulation simulation = getSimulation(path, day - stepSize);
+		ISimulation simulation = getSimulation(params, day - stepSize);
 		List<String> agents = params.getFromCommaSeparatedList("agents");
 		TradeGraph graph = new TradeGraph(simulation, agents);
 		simulation.forwardTo(day);

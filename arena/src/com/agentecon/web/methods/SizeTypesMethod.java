@@ -10,7 +10,6 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.StringTokenizer;
 
 import com.agentecon.web.data.JsonData;
 import com.agentecon.web.graph.ESizeType;
@@ -18,7 +17,7 @@ import com.agentecon.web.graph.ESizeType;
 public class SizeTypesMethod extends WebApiMethod {
 
 	@Override
-	protected JsonData doExecute(StringTokenizer path, Parameters params) throws IOException {
+	protected JsonData doExecute(Parameters params) throws IOException {
 		return new SizeTypes();
 	}
 	

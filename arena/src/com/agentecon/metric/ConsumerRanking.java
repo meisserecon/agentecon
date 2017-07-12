@@ -56,7 +56,7 @@ public class ConsumerRanking extends SimulationListenerAdapter {
 			}
 		};
 		for (ConsumerListener listener: list){
-			ranking.get(listener.getType()).add(listener.getAverage().getTotal());
+			ranking.get(listener.getType()).add(listener.getAverage().getAverage());
 		}
 		ArrayList<Rank> list = new ArrayList<>(ranking.values());
 		Collections.sort(list);
