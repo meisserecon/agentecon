@@ -24,6 +24,14 @@ public class Inventory {
 		}
 	}
 	
+	public Inventory(Quantity... inputs) {
+		this.money = null; // not needed for now
+		this.inv = new HashMap<Good, IStock>();
+		for (Quantity q: inputs){
+			getStock(q.getGood()).add(q.getAmount());
+		}
+	}
+
 	public IStock getMoney(){
 		return getStock(money);
 	}
@@ -85,6 +93,12 @@ public class Inventory {
 			receive(s);
 		}
 	}
+	
+	public void absorb(double ratio, Inventory other) {
+		for (IStock s: other.inv.values()){
+			receive(s.hideRelative(1.0 - ratio));
+		}
+	}
 
 	public void receive(IStock[] daily) {
 		for (IStock s : daily) {
@@ -133,5 +147,5 @@ public class Inventory {
 		}
 		return inputAmounts;
 	}
-	
+
 }

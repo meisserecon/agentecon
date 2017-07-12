@@ -13,7 +13,9 @@ import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Stock;
+import com.agentecon.market.IStatistics;
 import com.agentecon.research.IFounder;
 import com.agentecon.research.IInnovation;
 import com.agentecon.sim.SimulationConfig;
@@ -37,8 +39,8 @@ public class Country implements ICountry {
 		this.agents = new Agents(listeners, rand.nextLong(), 1);
 		this.innovation = config.getInnovation();
 	}
-	
-	public Good getMoney(){
+
+	public Good getMoney() {
 		return money;
 	}
 
@@ -48,26 +50,55 @@ public class Country implements ICountry {
 		}
 	}
 
-	public void prepareDay(int day) {
-		this.day = day;
-		// reset random every day to get more consistent results on small changes
+	public void prepareDay(IStatistics stats) {
+		this.day = stats.getDay();
+		// reset random every day to get more consistent results on small
+		// changes
 		this.rand = new Random(day ^ randomBaseSeed);
 		this.agents = this.agents.renew(rand.nextLong());
 		this.handoutEndowments();
-		this.createFirms();
+		this.createFirms(stats);
 		this.listeners.notifyDayStarted(day);
 	}
 
-	private void createFirms() {
+	private void dismantleFirms(IStatistics stats) {
+		for (IFirm firm : agents.getFirms()) {
+			if (firm.wantsBankruptcy(stats)) {
+				Inventory inv = new Inventory(getMoney());
+				Portfolio port = new Portfolio(inv.getMoney());
+				double totalshares = firm.dispose(inv, port);
+				IShareholder last = null;
+				for (IShareholder shareholder : agents.getShareholders()) {
+					Position pos = shareholder.getPortfolio().getPosition(firm.getTicker());
+					if (pos != null) {
+						last = shareholder;
+						double shares = pos.getAmount();
+						double ratio = Math.min(shares / totalshares, 1.0);
+						shareholder.getInventory().absorb(ratio, inv);
+						shareholder.getPortfolio().absorbPositions(ratio, port);
+						totalshares -= shares;
+						if (totalshares <= 0.0) {
+							break;
+						}
+					}
+				}
+				last.getInventory().absorb(inv);
+				last.getPortfolio().absorb(port);
+				port.dispose();
+			}
+		}
+	}
+
+	private void createFirms(IStatistics stats) {
 		for (IShareholder shareholder : agents.getShareholders()) {
-			if (shareholder instanceof IFounder){
+			if (shareholder instanceof IFounder) {
 				IFounder founder = (IFounder) shareholder;
-				IFirm firm = founder.considerCreatingFirm(this, innovation);
-				if (firm != null){
+				IFirm firm = founder.considerCreatingFirm(stats, innovation, this);
+				if (firm != null) {
 					add(firm);
 				}
 			}
-		}		
+		}
 	}
 
 	@Override
@@ -80,7 +111,7 @@ public class Country implements ICountry {
 		return day;
 	}
 
-	public void finishDay(int day) {
+	public void finishDay(IStatistics stats) {
 		IStock inheritedMoney = new Stock(money);
 		Portfolio inheritance = new Portfolio(inheritedMoney);
 		Collection<IConsumer> consumers = agents.getConsumers();
@@ -98,6 +129,8 @@ public class Country implements ICountry {
 		if (inheritedMoney.getAmount() > 0) {
 			agents.getRandomConsumer().getMoney().absorb(inheritedMoney);
 		}
+		
+		dismantleFirms(stats);
 
 		listeners.notifyDayEnded(day, util / consumers.size());
 	}

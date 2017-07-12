@@ -24,14 +24,12 @@ public class ExpSearchBelief extends AdjustableBelief {
 		this.speed = 1.1;
 	}
 
-	public ExpSearchBelief(double initialDelta) {
-		this.delta = initialDelta;
-		this.sameDirectionInARow = 0;
-		this.speed = 1.1;
+	public ExpSearchBelief(double initialPrice) {
+		this(DEFAULT_ACCURACY, initialPrice == 0.0 ? DEFAULT_PRICE : initialPrice);
 	}
 	
 	public ExpSearchBelief() {
-		this(DEFAULT_ACCURACY);
+		this(DEFAULT_ACCURACY, DEFAULT_PRICE);
 	}
 	
 	protected double getMax(){

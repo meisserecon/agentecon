@@ -1,13 +1,16 @@
 package com.agentecon.firm.decisions;
 
+import com.agentecon.production.PriceUnknownException;
+
 public interface IFinancials {
 	
 	public double getCash();
 	
 	/**
 	 * How much should be spent to achieve maximum profits, given the current price beliefs
+	 * @throws PriceUnknownException 
 	 */
-	public double getIdealCogs();
+	public double getIdealCogs() throws PriceUnknownException;
 	
 	/**
 	 * How much was actually spent on input goods yesterday 

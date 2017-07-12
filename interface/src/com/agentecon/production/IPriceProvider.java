@@ -1,9 +1,19 @@
 package com.agentecon.production;
 
 import com.agentecon.goods.Good;
+import com.agentecon.goods.Quantity;
 
 public interface IPriceProvider {
 
-	public double getPriceBelief(Good good);
+	/**
+	 * Returns the price for the given good or throws an exception if no price is known.
+	 */
+	public double getPriceBelief(Good good) throws PriceUnknownException;
+
+	/**
+	 * Convenience method for
+	 * getPriceBelief(quantity.getGood()) * quantity.getAmount()
+	 */
+	public double getPriceBelief(Quantity quantity) throws PriceUnknownException;
 
 }

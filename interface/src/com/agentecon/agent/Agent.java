@@ -22,7 +22,7 @@ public abstract class Agent implements IAgent, Cloneable {
 
 	private AgentRef ref;
 
-	public Agent(IAgentId agentRegistry, Endowment end) {
+	public Agent(IAgentIdGenerator agentRegistry, Endowment end) {
 		this.type = inferType(getClass());
 		this.inv = end.getInitialInventory();
 		this.number = agentRegistry.createUniqueAgentId();

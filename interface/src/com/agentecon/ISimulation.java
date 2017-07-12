@@ -3,7 +3,7 @@
 package com.agentecon;
 
 import com.agentecon.agent.IAgents;
-import com.agentecon.market.IMarketStatistics;
+import com.agentecon.market.IStatistics;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationConfig;
 
@@ -16,13 +16,11 @@ public interface ISimulation {
 	
 	public int getDay();
 	
+	public IStatistics getStatistics();
+	
 	public SimulationConfig getConfig();
 	
 	public IAgents getAgents();
-	
-	public IMarketStatistics getGoodsMarketStats();
-	
-	public IMarketStatistics getStockMarketStats();
 	
 	public void addListener(ISimulationListener listener);
 	

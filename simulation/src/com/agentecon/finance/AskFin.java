@@ -19,7 +19,7 @@ public class AskFin extends Ask {
 	
 	public Position accept(IAgent acceptor, IStock payer, Position target, double budget) {
 		if (target == null){
-			target = getStock().split();
+			target = getStock().createNewPosition();
 		}
 		super.accept(acceptor, payer, target, budget / getPrice().getPrice());
 		return target;

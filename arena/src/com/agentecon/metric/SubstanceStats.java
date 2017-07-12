@@ -35,7 +35,7 @@ public class SubstanceStats extends SimStats {
 	@Override
 	public void notifyDayEnded(int day, double utility) {
 		try {
-			Collection<? extends IShareholder> holders = agents.getShareHolders();
+			Collection<? extends IShareholder> holders = agents.getShareholders();
 			double outerValue = 0.0;
 			double innerValue = 0.0;
 			for (IShareholder holder : holders) {

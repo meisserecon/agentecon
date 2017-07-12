@@ -9,7 +9,7 @@
 package com.agentecon.exercise2;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.IShareholder;
@@ -34,7 +34,7 @@ public class Farm extends Firm implements IProducer {
 	private IProductionFunction prodFun;
 	private ProducerListeners listeners;
 	
-	public Farm(IAgentId id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun) {
+	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun) {
 		super(id, owner, new Endowment(money.getGood()));
 		this.prodFun = prodFun;
 		this.listeners = new ProducerListeners();

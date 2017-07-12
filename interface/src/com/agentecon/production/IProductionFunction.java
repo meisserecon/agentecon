@@ -52,16 +52,24 @@ public interface IProductionFunction {
 	public Quantity produce(Inventory inventory);
 	
 	/**
+	 * Calculates the hypothetical output from the given input quantities, but does
+	 * not actually produce anything.
+	 */
+	public Quantity calculateOutput(Quantity... inputs);
+	
+	/**
 	 * Returns how much should optimally be spent on the input goods given the provided
 	 * price beliefs.
 	 * Capital inputs are assumed as given and provided through inventory.
+	 * @throws PriceUnknownException 
 	 */
-	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices);
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) throws PriceUnknownException;
 	
 	/**
 	 * Tells how how much to optimally spend on each input good given total spendings.
 	 * Capital inputs are not taken into account.
+	 * @throws PriceUnknownException 
 	 */
-	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings);
-
+	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) throws PriceUnknownException;
+	
 }

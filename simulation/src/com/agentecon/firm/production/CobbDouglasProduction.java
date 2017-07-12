@@ -5,6 +5,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.PriceUnknownException;
 
 public class CobbDouglasProduction extends AbstractProductionFunction {
 
@@ -55,7 +56,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) throws PriceUnknownException {
 		if (getReturnsToScaleExcludingCapital() >= 1.0) {
 			// increasing returns to scale
 			return Double.MAX_VALUE;
@@ -67,7 +68,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 			return totWeight * factor;
 		}
 	}
-
+	
 	private double getMultiplier(Inventory inv) {
 		double multiplier = constantFactor;
 		for (Weight w : inputs) {
@@ -78,7 +79,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 		return multiplier;
 	}
 
-	private double getCBHelperProduct(double constantFactor, IPriceProvider prices) {
+	private double getCBHelperProduct(double constantFactor, IPriceProvider prices) throws PriceUnknownException {
 		double tot = constantFactor;
 		for (Weight in : inputs) {
 			if (!in.capital) {
@@ -94,7 +95,7 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) {
+	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) throws PriceUnknownException {
 		double offerPerWeight = totalSpendings / getTotalConsumedWeight();
 		return offerPerWeight * getWeight(good).weight;
 	}

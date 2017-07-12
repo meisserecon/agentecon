@@ -11,9 +11,13 @@ public class MovingAverage implements Cloneable, IAverage {
 		this(0.95);
 	}
 
-	public MovingAverage(double d) {
-		this.memory = d;
-		this.mean = 0.0;
+	public MovingAverage(double memory) {
+		this(memory, 0.0);
+	}
+	
+	public MovingAverage(double memory, double start) {
+		this.memory = memory;
+		this.mean = start;
 		this.var = 1.0;
 	}
 

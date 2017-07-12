@@ -28,6 +28,17 @@ public class Portfolio implements Cloneable {
 			}
 		}
 	}
+	
+	public void absorbPositions(double ratio, Portfolio other) {
+		for (Position p : other.inv.values()) {
+			Position myPosition = inv.get(p.getTicker());
+			if (myPosition == null) {
+				myPosition = p.createNewPosition();
+				inv.put(p.getTicker(), myPosition);
+			}
+			myPosition.transfer(p, p.getAmount() * ratio);
+		}
+	}
 
 	public void addPosition(Position pos) {
 		if (pos != null) {
@@ -87,7 +98,7 @@ public class Portfolio implements Cloneable {
 			throw new java.lang.RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return wallet + ", " + inv.values();

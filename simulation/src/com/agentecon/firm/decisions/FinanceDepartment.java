@@ -8,6 +8,7 @@
  */
 package com.agentecon.firm.decisions;
 
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.MovingCovariance;
 
 /**
@@ -27,7 +28,7 @@ public class FinanceDepartment {
 		this.strat = new ExpectedRevenueBasedStrategy(0.75);
 	}
 
-	public double calculateDividends() {
+	public double calculateDividends() throws PriceUnknownException {
 		double profits = financials.getLatestRevenue() - financials.getLatestCogs();
 		double size = financials.getCash();
 		this.cov.add(size, profits);

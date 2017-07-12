@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
@@ -23,7 +23,7 @@ import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.market.Price;
 import com.agentecon.util.Numbers;
 
-public class ConsumerTest implements IAgentId {
+public class ConsumerTest implements IAgentIdGenerator {
 	
 	public static final Good MONEY = new Good("Taler");
 	public static final Good PIZZA = new Good("Pizza", 1.0);

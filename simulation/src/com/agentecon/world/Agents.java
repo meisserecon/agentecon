@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
@@ -20,7 +20,7 @@ import com.agentecon.firm.Ticker;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.ISimulationListener;
 
-public class Agents implements IAgents, IAgentId {
+public class Agents implements IAgents, IAgentIdGenerator {
 
 	private long seed;
 	private Random rand;
@@ -153,10 +153,6 @@ public class Agents implements IAgents, IAgentId {
 		return rand;
 	}
 
-	public Collection<? extends IShareholder> getShareholders() {
-		return shareholders;
-	}
-
 	@SuppressWarnings("unchecked")
 	public Collection<IShareholder> getRandomShareholders() {
 		Collections.shuffle(shareholders, getRand());
@@ -209,7 +205,7 @@ public class Agents implements IAgents, IAgentId {
 	}
 
 	@Override
-	public Collection<? extends IShareholder> getShareHolders() {
+	public Collection<? extends IShareholder> getShareholders() {
 		return shareholders;
 	}
 

@@ -7,6 +7,7 @@ import com.agentecon.util.Numbers;
 public abstract class AdjustableBelief implements IBelief {
 	
 	public static final double DEFAULT_ACCURACY = 0.03;
+	public static final double DEFAULT_PRICE = 10.0;
 
 	public static final double MIN = 0.000001;
 	public static final double MAX = 100000;
@@ -14,7 +15,7 @@ public abstract class AdjustableBelief implements IBelief {
 	private double price;
 	
 	public AdjustableBelief() {
-		this(10.0);
+		this(DEFAULT_PRICE);
 	}
 
 	public AdjustableBelief(double initial) {

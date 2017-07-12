@@ -5,15 +5,16 @@ package com.agentecon;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
-import com.agentecon.configuration.CobbDougConfiguration;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.market.IMarketStatistics;
+import com.agentecon.market.IStatistics;
 import com.agentecon.market.MarketStatistics;
 import com.agentecon.market.RepeatedMarket;
 import com.agentecon.production.IProducer;
@@ -24,7 +25,7 @@ import com.agentecon.sim.SimulationListeners;
 import com.agentecon.world.Country;
 
 // The world
-public class Simulation implements ISimulation, IIteratedSimulation {
+public class Simulation implements ISimulation, IStatistics, IIteratedSimulation {
 
 	private IConfiguration metaConfig;
 
@@ -90,15 +91,19 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	public void forwardTo(int targetDay) {
 		for (; day < targetDay; day++) {
 			processEvents(day); // must happen before daily endowments
-			world.prepareDay(day);
+			world.prepareDay(getStatistics());
 			stocks.trade(day);
 			RepeatedMarket market = new RepeatedMarket(world, listeners, goodsMarketStats);
 			market.iterate(day, config.getIntradayIterations());
 			for (IProducer firm : world.getAgents().getProducers()) {
 				firm.produce();
 			}
-			world.finishDay(day);
+			world.finishDay(getStatistics());
 		}
+	}
+
+	public IStatistics getStatistics() {
+		return this;
 	}
 
 	public int getDay() {
@@ -161,6 +166,11 @@ public class Simulation implements ISimulation, IIteratedSimulation {
 	@Override
 	public IMarketStatistics getStockMarketStats() {
 		return stocks.getStats();
+	}
+
+	@Override
+	public Random getRandomNumberGenerator() {
+		return world.getRand();
 	}
 
 }

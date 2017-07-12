@@ -19,7 +19,7 @@ public Collection<? extends IAgent> getAgents();
 	
 	public Collection<? extends IProducer> getProducers();
 	
-	public Collection<? extends IShareholder> getShareHolders();
+	public Collection<? extends IShareholder> getShareholders();
 	
 	public IFirm getFirm(Ticker ticker);
 

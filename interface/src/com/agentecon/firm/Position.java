@@ -26,7 +26,7 @@ public class Position extends Stock {
 		super.transfer(source, amount);
 	}
 	
-	public Position split(){
+	public Position createNewPosition(){
 		assert !disposed;
 		double prevAmount = getAmount();
 		Position pos = register.createPosition();

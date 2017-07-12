@@ -6,6 +6,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Quantity;
 import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.PriceUnknownException;
 
 public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 
@@ -20,7 +21,7 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 		this.fixedCost = fixedCost;
 		assert !getWeight(fixedCost.getGood()).capital : "Fixed costs for capital goods not yet supported";
 	}
-	
+
 	@Override
 	public double getFixedCost(Good good) {
 		return fixedCost.getGood().equals(good) ? fixedCost.getAmount() : 0.0;
@@ -30,8 +31,8 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	public double useInputs(Inventory inventory) {
 		IStock fixedGood = inventory.getStock(fixedCost.getGood());
 		if (fixedGood.getAmount() <= fixedCost.getAmount()) {
-			fixedGood.consume();
-			return 0.0; 
+				fixedGood.consume();
+			return 0.0;
 		} else {
 			fixedGood.remove(fixedCost.getAmount());
 			return super.useInputs(inventory);
@@ -39,14 +40,14 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	}
 
 	@Override
-	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) throws PriceUnknownException {
 		double costsExcludingFixedCosts = super.getCostOfMaximumProfit(inv, prices);
-		if (costsExcludingFixedCosts == Double.MAX_VALUE){
+		if (costsExcludingFixedCosts == Double.MAX_VALUE) {
 			return costsExcludingFixedCosts;
 		} else {
-			double profitBeforeFixedCosts = costsExcludingFixedCosts / getTotalConsumedWeight() * getProfitAndCapitalShare(); 
+			double profitBeforeFixedCosts = costsExcludingFixedCosts / getTotalConsumedWeight() * getProfitAndCapitalShare();
 			double fixedCosts = getFixedCosts(prices);
-			if (fixedCosts >= profitBeforeFixedCosts){
+			if (fixedCosts >= profitBeforeFixedCosts) {
 				return 0.0;
 			} else {
 				return costsExcludingFixedCosts + fixedCosts;
@@ -55,7 +56,7 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	}
 
 	@Override
-	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) {
+	public double getExpenses(Good good, IPriceProvider prices, double totalSpendings) throws PriceUnknownException {
 		double fixedCosts = getFixedCosts(prices);
 		double spendingsAfterCoveringFixedCosts = totalSpendings - fixedCosts;
 		if (good.equals(fixedCost.getGood())) {
@@ -65,13 +66,8 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 		}
 	}
 
-	private double getFixedCosts(IPriceProvider prices) {
-		double price = prices.getPriceBelief(fixedCost.getGood());
-		if (Double.isInfinite(price)) {
-			return 0.0; // TODO
-		} else {
-			return fixedCost.getAmount() * price;
-		}
+	private double getFixedCosts(IPriceProvider prices) throws PriceUnknownException {
+		return fixedCost.getAmount() * prices.getPriceBelief(fixedCost.getGood());
 	}
 
 }

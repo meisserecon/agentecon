@@ -10,20 +10,31 @@ import com.agentecon.firm.sensor.SensorOutputFactor;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.AbstractPriceProvider;
 import com.agentecon.production.IProductionFunction;
+import com.agentecon.production.PriceUnknownException;
 
-public class MarketingDepartment implements IPriceProvider {
+public class MarketingDepartment extends AbstractPriceProvider {
 
 	private IStock money;
 	private InputFactor input;
 	private OutputFactor output;
 
-	public MarketingDepartment(IStock money, IStock input, IStock output) {
+	public MarketingDepartment(IStock money, IMarketStatistics stats, IStock input, IStock output) {
 		this.money = money;
-		this.input = new SensorInputFactor(input, new ExpSearchBelief());
-		this.output = new SensorOutputFactor(output, new ExpSearchBelief());
+		this.input = new SensorInputFactor(input, getPriceBelief(stats, input.getGood()));
+		this.output = new SensorOutputFactor(output, getPriceBelief(stats, output.getGood()));
+	}
+
+	private IBelief getPriceBelief(IMarketStatistics stats, Good good) {
+		try {
+			return new ExpSearchBelief(stats.getPriceBelief(good));
+		} catch (PriceUnknownException e) {
+			// price not known, use default belief
+			return new ExpSearchBelief();
+		}
 	}
 
 	@Override
@@ -53,9 +64,9 @@ public class MarketingDepartment implements IPriceProvider {
 
 	public IFinancials getFinancials(final Inventory inv, IProductionFunction prodFun) {
 		return new Financials(money, output, input) {
-			
+
 			@Override
-			public double getIdealCogs() {
+			public double getIdealCogs() throws PriceUnknownException {
 				return prodFun.getCostOfMaximumProfit(inv, MarketingDepartment.this);
 			}
 		};

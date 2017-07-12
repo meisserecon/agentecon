@@ -40,6 +40,12 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 		return new Quantity(output, production);
 	}
 	
+	@Override
+	public final Quantity calculateOutput(Quantity... inputs) {
+		Inventory inv = new Inventory(inputs);
+		return new Quantity(output, useInputs(inv));
+	}
+	
 	protected abstract double useInputs(Inventory inventory);
 
 	public double getTotalWeight() {

@@ -10,6 +10,7 @@ import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
 import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.Numbers;
 
 public class TradingPortfolio extends Portfolio {
@@ -18,7 +19,7 @@ public class TradingPortfolio extends Portfolio {
 		super(money);
 	}
 
-	public double getCombinedValue(IPriceProvider prices, int timeHorizon) {
+	public double getCombinedValue(IPriceProvider prices, int timeHorizon) throws PriceUnknownException {
 		return getSubstanceValue(prices) + getEarningsValue(timeHorizon);
 	}
 
@@ -26,7 +27,7 @@ public class TradingPortfolio extends Portfolio {
 		return getLatestDividendIncome() * timeHorizon;
 	}
 
-	public double getSubstanceValue(IPriceProvider prices) {
+	public double getSubstanceValue(IPriceProvider prices) throws PriceUnknownException {
 		double value = wallet.getAmount();
 		for (Position p : inv.values()) {
 			value += p.getAmount() * prices.getPriceBelief(p.getTicker());

@@ -14,7 +14,7 @@ import java.net.SocketTimeoutException;
 import com.agentecon.IAgentFactory;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
@@ -24,6 +24,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IPriceTakerMarket;
+import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.ranking.ConsumerRanking;
 import com.agentecon.research.IFounder;
@@ -38,14 +39,14 @@ public class Hermit extends Consumer implements IFounder {
 	private Good manhours;
 	private IProductionFunction prodFun;
 
-	public Hermit(IAgentId id, Endowment end, IUtility utility) {
+	public Hermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
 		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
 
 	@Override
-	public IFirm considerCreatingFirm(IAgentId id, IInnovation research) {
+	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		if (this.prodFun == null) {
 			// instead of creating a firm, the hermit will use the production
 			// function himself
@@ -95,7 +96,7 @@ public class Hermit extends Consumer implements IFounder {
 		HermitConfiguration config = new HermitConfiguration(new IAgentFactory() {
 
 			@Override
-			public IConsumer createConsumer(IAgentId id, Endowment endowment, IUtility utilityFunction) {
+			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
 				return new Hermit(id, endowment, utilityFunction);
 			}
 		}, 10); // Create the configuration

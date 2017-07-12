@@ -5,6 +5,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.production.IPriceProvider;
+import com.agentecon.production.PriceUnknownException;
 
 public class LogProdFun extends AbstractProductionFunction {
 
@@ -25,7 +26,7 @@ public class LogProdFun extends AbstractProductionFunction {
 	}
 	
 	@Override
-	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) {
+	public double getCostOfMaximumProfit(Inventory inv, IPriceProvider prices) throws PriceUnknownException {
 		// is this really correct?
 		double totWeight = getTotalWeight();
 		double outprice = prices.getPriceBelief(output);
@@ -33,7 +34,7 @@ public class LogProdFun extends AbstractProductionFunction {
 	}
 
 	@Override
-	public double getExpenses(Good good, IPriceProvider price, double totalSpendings) {
+	public double getExpenses(Good good, IPriceProvider price, double totalSpendings) throws PriceUnknownException {
 		double offerPerWeight = totalSpendings / getTotalConsumedWeight();
 		Weight weight = getWeight(good);
 		assert !weight.capital : "this function does not help you with expenses on capital goods";

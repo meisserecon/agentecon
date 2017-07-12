@@ -45,7 +45,7 @@ public class ShareRegister implements IRegister {
 	public void collectRootDividend(IStock wallet){
 		rootPosition.collectDividend(wallet);
 	}
-
+	
 	public void payDividend(IStock sourceWallet, double totalDividends) {
 		dividend.add(totalDividends);
 
@@ -96,6 +96,10 @@ public class ShareRegister implements IRegister {
 	
 	public int getShareholderCount(){
 		return all.size();
+	}
+	
+	public double getFreeFloatShares() {
+		return SHARES_PER_COMPANY - rootPosition.getAmount();
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class OwnershipStats extends SimStats {
 						return new OwnershipStructure(key);
 					}
 				};
-				for (IShareholder pc : agents.getShareHolders()) {
+				for (IShareholder pc : agents.getShareholders()) {
 					String ownerType = pc.getType();
 					if (pc instanceof IConsumer && ((IConsumer) pc).isRetired()) {
 						ownerType = "Retiree";

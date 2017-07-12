@@ -13,7 +13,7 @@ import java.io.IOException;
 import com.agentecon.EConsumerType;
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 
@@ -38,7 +38,7 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 //	}
 
 	@Override
-	public IConsumer createConsumer(IAgentId id, Endowment endowment, IUtility utilityFunction) {
+	public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
 		IConsumer consumer =  getCurrent().createConsumer(id, endowment, utilityFunction);
 		return consumer == null ? createConsumer(id, endowment, utilityFunction) : consumer;
 	}

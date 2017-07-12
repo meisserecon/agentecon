@@ -1,8 +1,9 @@
 package com.agentecon.research;
 
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
+import com.agentecon.market.IStatistics;
 
 public interface IFounder extends IShareholder {
 	
@@ -17,6 +18,6 @@ public interface IFounder extends IShareholder {
 	 * in order to kick-start them.
 	 * @param id TODO
 	 */
-	public IFirm considerCreatingFirm(IAgentId id, IInnovation research);
-
+	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id);
+	
 }

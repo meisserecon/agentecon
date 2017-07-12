@@ -1,11 +1,11 @@
 package com.agentecon.events;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
-import com.agentecon.consumer.MortalConsumer;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
+import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.world.ICountry;
 
 public class LinearConsumerEvent extends ConsumerEvent {
@@ -42,7 +42,7 @@ public class LinearConsumerEvent extends ConsumerEvent {
 	}
 	
 	@Override
-	protected IConsumer createConsumer(IAgentId id, Endowment end, IUtility util){
+	protected IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility util){
 		return new MortalConsumer(id, this.maxAge, end, util);
 	}
 

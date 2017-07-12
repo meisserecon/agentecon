@@ -5,7 +5,7 @@ package com.agentecon.firm;
 import java.util.Arrays;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.decisions.ExpectedRevenueBasedStrategy;
 import com.agentecon.firm.decisions.IFirmDecisions;
@@ -16,13 +16,15 @@ import com.agentecon.goods.Quantity;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.price.IBelief;
+import com.agentecon.production.AbstractPriceProvider;
 import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.production.ProducerListeners;
 
-public class Producer extends Firm implements IProducer, IPriceProvider {
+public class Producer extends Firm implements IProducer {
 
 	protected InputFactor[] inputs;
 	protected OutputFactor output;
@@ -32,11 +34,11 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 
 	private ProducerListeners listeners;
 
-	public Producer(IAgentId id,Endowment end, IProductionFunction prod) {
+	public Producer(IAgentIdGenerator id,Endowment end, IProductionFunction prod) {
 		this(id, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
 	}
 
-	public Producer(IAgentId id,Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
+	public Producer(IAgentIdGenerator id,Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
 		super(id, end);
 		this.prod = prod;
 		this.strategy = strategy;
@@ -60,28 +62,42 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 	protected IBelief createPriceBelief(Good good) {
 		return new ExpSearchBelief();
 	}
+	
+	private IPriceProvider getPrices(){
+		return new AbstractPriceProvider() {
+			
+			@Override
+			public double getPriceBelief(Good good) throws PriceUnknownException {
+				return Producer.this.getFactor(good).getPrice();
+			}
+		};
+	}
 
 	public void offer(IPriceMakerMarket market) {
-		double budget = getMoney().getAmount();
-		double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(getInventory(), this));
-		if (!getMoney().isEmpty()) {
-			for (InputFactor f : inputs) {
-				if (f.isObtainable()) {
-					double amount = prod.getExpenses(f.getGood(), this, totSalaries);
-					if (amount > 0) {
-						f.createOffers(market, this, getMoney(), amount);
+		try {
+			double budget = getMoney().getAmount();
+			double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(getInventory(), getPrices()));
+			if (!getMoney().isEmpty()) {
+				for (InputFactor f : inputs) {
+					if (f.isObtainable()) {
+						double amount = prod.getExpenses(f.getGood(), getPrices(), totSalaries);
+						if (amount > 0) {
+							f.createOffers(market, this, getMoney(), amount);
+						} else {
+							// so we find out about the true price even if we are not interested
+							createSymbolicOffer(market, f);
+						}
 					} else {
-						// so we find out about the true price even if we are not interested
+						// in case it becomes available
 						createSymbolicOffer(market, f);
 					}
-				} else {
-					// in case it becomes available
-					createSymbolicOffer(market, f);
 				}
 			}
-		}
-		if (!output.getStock().isEmpty()) {
-			output.createOffers(market, this, getMoney(), output.getStock().getAmount());
+			if (!output.getStock().isEmpty()) {
+				output.createOffers(market, this, getMoney(), output.getStock().getAmount());
+			}
+		} catch (PriceUnknownException e) {
+			throw new RuntimeException(e); // should never happen
 		}
 	}
 
@@ -120,14 +136,8 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(new Financials(wallet, output, inputs) {
 
 			@Override
-			public double getIdealCogs() {
-				return prod.getCostOfMaximumProfit(getInventory(), new IPriceProvider() {
-
-					@Override
-					public double getPriceBelief(Good good) {
-						return Producer.this.getFactor(good).getPrice();
-					}
-				});
+			public double getIdealCogs() throws PriceUnknownException {
+				return prod.getCostOfMaximumProfit(getInventory(), getPrices());
 			}
 
 		}));
@@ -147,7 +157,7 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 		return output.getPrice();
 	}
 
-	public Producer createNextGeneration(IAgentId id, Endowment end, IProductionFunction prod) {
+	public Producer createNextGeneration(IAgentIdGenerator id, Endowment end, IProductionFunction prod) {
 		return new Producer(id, end, prod, strategy);
 	}
 
@@ -193,11 +203,6 @@ public class Producer extends Firm implements IProducer, IPriceProvider {
 	@Override
 	public String toString() {
 		return getType() + " with " + getMoney() + ", " + output + ", " + Arrays.toString(inputs);
-	}
-
-	@Override
-	public double getPriceBelief(Good good) {
-		return getFactor(good).getPrice();
 	}
 
 }

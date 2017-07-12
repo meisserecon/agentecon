@@ -9,7 +9,7 @@
 package com.agentecon.exercise3;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.finance.Firm;
 import com.agentecon.finance.MarketMakerPrice;
 import com.agentecon.firm.IShareholder;
@@ -18,6 +18,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.production.IGoodsTrader;
+import com.agentecon.production.PriceUnknownException;
 
 public class RealEstateAgent extends Firm implements IGoodsTrader {
 	
@@ -25,7 +26,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	private FinanceDepartment finance;
 	private MarketMakerPrice priceBelief;
 
-	public RealEstateAgent(IAgentId id, IShareholder owner, IStock initialMoney, IStock initialLand) {
+	public RealEstateAgent(IAgentIdGenerator id, IShareholder owner, IStock initialMoney, IStock initialLand) {
 		super(id, owner, new Endowment(initialMoney.getGood()));
 		getMoney().absorb(initialMoney);
 		
@@ -45,7 +46,11 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 	protected double calculateDividends(int day) {
 		double profits = 0.0;
 		double size = getMoney().getAmount();
-		return finance.calculateDividends();
+		try {
+			return finance.calculateDividends();
+		} catch (PriceUnknownException e) {
+			return 0.0;
+		}
 	}
 
 }

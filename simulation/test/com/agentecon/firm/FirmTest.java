@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentId;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Weight;
 import com.agentecon.firm.decisions.DifferentialDividend;
 import com.agentecon.firm.production.CobbDouglasProduction;
@@ -31,7 +31,7 @@ import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.util.Numbers;
 
-public class FirmTest implements IAgentId {
+public class FirmTest implements IAgentIdGenerator {
 	
 	public static final Good MONEY = new Good("Taler");
 	public static final Good PIZZA = new Good("Pizza", 1.0);
