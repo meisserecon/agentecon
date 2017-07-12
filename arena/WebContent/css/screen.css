@@ -26,17 +26,18 @@ h1 {
   fill: #33ccff; }
 .node--consumers .node__link {
   stroke: #33ccff; }
-.node--branch .node__circle {
-  stroke-width: 4px; }
-.node--branch.node--firms .node__circle {
-  stroke: #ff3624; }
-.node--branch.node--consumers .node__circle {
-  stroke: #00ace6; }
+.node--branch {
+  cursor: pointer; }
+  .node--branch .node__circle {
+    stroke-width: 4px; }
+  .node--branch.node--firms .node__circle {
+    stroke: #ff3624; }
+  .node--branch.node--consumers .node__circle {
+    stroke: #00ace6; }
 
 .link {
   fill: none;
   stroke: #676767;
-  animation: pulsate 3s;
   animation-iteration-count: infinite; }
   .link:hover {
     stroke: #97e582;

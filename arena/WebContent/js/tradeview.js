@@ -2,7 +2,11 @@ class Tradeview {
   constructor(options) {
     this.stage;
     this.firmsTree;
+    this.firmsTreeOffset = [700, 100];
+    this.firmsTreeDirection = +1;
     this.consumersTree;
+    this.consumersTreeOffset = [350, 100];
+    this.consumersTreeDirection = -1;
     // object that stores coordinates of all nodes
     // used to draw links between nodes
     this.nodeCoordinates = {};
@@ -11,7 +15,8 @@ class Tradeview {
       firms: [
         { label: 'firms', children: 4, parent: '' },
         { label: 'firm0', children: 4, parent: 'firms' },
-        { label: 'firm1', children: 4, parent: 'firms' }
+        { label: 'firm1', children: 4, parent: 'firms' },
+        { label: 'firm2', children: 4, parent: 'firm1' }
       ],
       consumers: [
         { label: 'consumers', children: 4, parent: '' },
@@ -52,10 +57,10 @@ class Tradeview {
     }
 
     this.init();
-    this.consumersTree = this.drawNodes(this.data.consumers, [350, 100], -1);
-    this.firmsTree = this.drawNodes(this.data.firms, [700, 100], +1);
+    this.consumersTree = this.drawNodes(this.data.consumers, true);
+    this.firmsTree = this.drawNodes(this.data.firms, false);
     // TODO: temp disable for node positioning
-    this.drawLinks(this.data.edges);
+    this.drawLinks(this.data.edges, false);
   }
 
   init() {
@@ -71,13 +76,11 @@ class Tradeview {
     console.log(' ');
   }
 
-  drawNodes(nodeData, offset, direction) {
-    console.log('%cdrawNodes()', 'color: deepskyblue;');
+  drawNodes(nodeData, log) {
+    if (log)
+      console.log('%cdrawNodes()', 'color: deepskyblue;');
 
-    let LAYER_GAP = 110,
-        ROOT_OFFSET = offset || [300, 100],
-        horizontalDistance = (direction === -1 ? -110 : 110), // to draw to the left, use negative values
-        _this = this;
+    let _this = this;
 
     // stratify data
     let treeData = d3.stratify()
@@ -88,91 +91,160 @@ class Tradeview {
     // get nodes in hierarchical structure
     let nodes = d3.hierarchy(treeData, function(d) { return d.children; })
 
-    let nodesEnterJoin = this.stage.selectAll('.node--' + nodes.data.id)
-      .data(nodes.descendants())
-      .enter();
-
-    console.log('%cRoot node: ' + nodes.data.id, 'color: pink;');
-    if (horizontalDistance > 0) {
-      console.log('%cDrawing in positive x direction', 'color: pink;');
-    } else {
-      console.log('%cDrawing in negative x direction', 'color: pink;');
+    function toggleChildren(d) {
+      if (d.children) {
+        d.childrenHidden = d.children;
+        d.children = null;
+      } else {
+        d.children = d.childrenHidden;
+        d.childrenHidden = null;
+      }
+      return d;
     }
 
-    let previousDepth = 0,
-        layerIterator = 0,
-        additionalLayerGap = 50,
-        accumulatedLayerGap = -additionalLayerGap;
+    function addClickToNodes() {
+      // bind click event to nodes
+      d3.selectAll('.node')
+        .on('click', function(d) {
+          // only continue when node is not a leaf
+          if (d.children || d.childrenHidden) {
+            let tree = _this.consumersTree;
 
-    // calculate translation for group
-    let group = nodesEnterJoin
-      .append('g')
-      .attr('class', function(d) {
-        return 'node node--' + nodes.data.id + (d.children ? ' node--branch' : ' node--leaf');
-      })
-      .attr('transform', function(d, i) {
+            d = toggleChildren(d);
 
-        // set x coordinate
-        if (d.depth === previousDepth && i !== 0) {
-          layerIterator++;
-          d.data.x = ROOT_OFFSET[0] + layerIterator * horizontalDistance;
-        } else {
-          console.log('Create new layer');
-          d.data.x = ROOT_OFFSET[0];
-          layerIterator = 0;
-          accumulatedLayerGap+= 50;
-        }
+            if (d3.select(this).classed('node--firms')) {
+              tree = _this.firmsTree;
+            }
 
-        // set y coordinate
-        d.data.y = LAYER_GAP * i + accumulatedLayerGap + ROOT_OFFSET[1];
+            updateNodes(tree, _this);
+          }
+        });
+    }
 
-        // update previousDepth
-        previousDepth = d.depth;
+    function updateNodes(nodes, _this) {
 
-        // update nodeCoordinates for later use
-        // in drawLinks function
-        _this.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y};
+      let LAYER_GAP = 110,
+          rootOffset,
+          horizontalDistance;
 
-        console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
-
-        return 'translate(' + d.data.x + ', ' + d.data.y + ')';
-      });
-
-    // append node links
-    group
-    .append('path')
-    .attr('class', 'node__link')
-    .attr('d', function(d, i) {
-      if (i > 0) {
-        console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
-        return 'M 0 0 L' + (d.parent.data.x - d.data.x) + ' ' + (d.parent.data.y - d.data.y);
+      // check what tree we are updating and
+      // set corresponding offset and horizontal distance
+      if (nodes.data.id === 'firms') {
+        rootOffset = _this.firmsTreeOffset;
+        horizontalDistance = _this.firmsTreeDirection * 110;
+      } else if (nodes.data.id === 'consumers') {
+        rootOffset = _this.consumersTreeOffset;
+        horizontalDistance = _this.consumersTreeDirection * 110;
       }
-    });
 
-    // append node to node group
-    group
-      .append('circle')
-      .attr('class', 'node__circle')
-      .attr('cx', 0)
-      .attr('cy', 0)
-      .attr('r', this.NODE_RADIUS);
+      if (log) {
+        console.log('%cRoot node: ' + nodes.data.id, 'color: pink;');
+        if (horizontalDistance > 0) {
+          console.log('%cDrawing in positive x direction', 'color: pink;');
+        } else {
+          console.log('%cDrawing in negative x direction', 'color: pink;');
+        }
+      }
 
-    // append labels to node group
-    group
-      .append('text')
-      .attr('class', 'node__text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', 5)
-      .text(function(d) { return d.data.id; });
+      // create joins
+      let nodesJoin = _this.stage.selectAll('.node--' + nodes.data.id)
+        .data(nodes.descendants())
 
-    console.log('%cend', 'color: deepskyblue;');
-    console.log(' ');
+      let previousDepth = 0,
+          layerIterator = 0,
+          additionalLayerGap = 50,
+          accumulatedLayerGap = -additionalLayerGap;
+
+      // exit join
+      nodesJoin.exit().remove();
+
+      // add group elements in enter join
+      let group = nodesJoin.enter()
+        .append('g')
+        .attr('class', function(d) {
+          return 'node node--' + nodes.data.id + (d.children ? ' node--branch' : ' node--leaf');
+        });
+
+      // merge enter join with update
+      // transform nodes to calculated position
+      nodesJoin
+        .merge(group)
+        .attr('transform', function(d, i) {
+
+          // set x coordinate
+          if (d.depth === previousDepth && i !== 0) {
+            layerIterator++;
+            d.data.x = rootOffset[0] + layerIterator * horizontalDistance;
+          } else {
+            if (log)
+              console.log('Create new layer');
+            d.data.x = rootOffset[0];
+            layerIterator = 0;
+            accumulatedLayerGap+= 50;
+          }
+
+          // set y coordinate
+          d.data.y = LAYER_GAP * i + accumulatedLayerGap + rootOffset[1];
+
+          // update previousDepth
+          previousDepth = d.depth;
+
+          // update nodeCoordinates for later use
+          // in drawLinks function
+          _this.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y};
+
+          if (log)
+            console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
+
+          return 'translate(' + d.data.x + ', ' + d.data.y + ')';
+        });
+
+      // append node links
+      group
+        .append('path')
+        .attr('class', 'node__link')
+        .attr('d', function(d, i) {
+          if (i > 0) {
+            if (log)
+              console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
+            return 'M 0 0 L' + (d.parent.data.x - d.data.x) + ' ' + (d.parent.data.y - d.data.y);
+          }
+        });
+
+      // append node to node group
+      group
+        .append('circle')
+        .attr('class', 'node__circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', _this.NODE_RADIUS);
+
+      // append labels to node group
+      group
+        .append('text')
+        .attr('class', 'node__text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', 5)
+        .text(function(d) { return d.data.id; });
+
+      // add click events to nodes
+      addClickToNodes();
+    }
+
+    // update nodes after prepping data
+    updateNodes(nodes, this);
+
+    if (log) {
+      console.log('%cend', 'color: deepskyblue;');
+      console.log(' ');
+    }
 
     return nodes;
   }
 
-  drawLinks(links) {
-    console.log('%cdrawLinks()', 'color: deepskyblue;');
+  drawLinks(links, log) {
+    if (log)
+      console.log('%cdrawLinks()', 'color: deepskyblue;');
 
     let _this = this;
     let currentSource = links[0].source,
@@ -203,7 +275,8 @@ class Tradeview {
         if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
           localEdgeCount += 1;
         } else {
-          console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
+          if (log)
+            console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
 
           localEdgeCount = 0;
 
@@ -229,8 +302,10 @@ class Tradeview {
             rotationCorrection = -180;
           }
           alpha += rotationCorrection;
-          console.log('Z rotation: ' + Math.round(alpha) + 'deg');
-          console.log('Delta vector: ' + deltaX + ', ' + deltaY);
+          if (log) {
+            console.log('Z rotation: ' + Math.round(alpha) + 'deg');
+            console.log('Delta vector: ' + deltaX + ', ' + deltaY);
+          }
 
           group
             .attr('transform', 'translate(' + globalSourceX + ',' + globalSourceY + ') rotate(' + alpha + ')')
@@ -239,8 +314,10 @@ class Tradeview {
           currentDestination = d.destination;
         }
 
-        console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
-        console.log('Link weight: ' + d.weight);
+        if (log) {
+          console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
+          console.log('Link weight: ' + d.weight);
+        }
 
         let j =  localEdgeCount + 2,
             deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180),
@@ -286,8 +363,10 @@ class Tradeview {
         .append('path')
           .attr('d', 'M0,-5L10,0L0,5');
 
-    console.log('%cend', 'color: deepskyblue;');
-    console.log(' ');
+    if (log) {
+      console.log('%cend', 'color: deepskyblue;');
+      console.log(' ');
+    }
   }
 }
 
