@@ -89,7 +89,9 @@ public class SimulationServer extends FileServer {
 	}
 
 	protected Response serve(IHTTPSession session, JsonData json) {
-		return Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());
+		Response res = Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		return res;
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
