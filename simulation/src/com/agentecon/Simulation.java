@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
+import com.agentecon.configuration.CobbDougConfiguration;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
@@ -39,8 +40,12 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 
 	private MarketStatistics goodsMarketStats;
 
+//	public Simulation() throws IOException {
+//		this(new FarmingConfiguration(50));
+//	}
+	
 	public Simulation() throws IOException {
-		this(new FarmingConfiguration(50));
+		this(new CobbDougConfiguration(50));
 	}
 
 	public Simulation(IConfiguration metaConfig) {

@@ -30,6 +30,9 @@ public class TradeGraphMethod extends SimSpecificMethod {
 	public JsonData doExecute(Parameters params) throws IOException {
 		int day = params.getDay();
 		int stepSize = params.getIntParam("step");
+		if (stepSize <= 0){
+			stepSize = 1;
+		}
 		ISimulation simulation = getSimulation(params, day - stepSize);
 		List<String> agents = params.getFromCommaSeparatedList("agents");
 		TradeGraph graph = new TradeGraph(simulation, agents);

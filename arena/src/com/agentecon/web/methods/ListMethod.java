@@ -66,7 +66,7 @@ public class ListMethod extends WebApiMethod {
 
 		public SimulationInfo(SimulationHandle handle) {
 			this.owner = handle.getOwner();
-			this.path = handle.getPath();
+			this.path = handle.getName();
 			this.sourceUrl = handle.getBrowsableURL(SimulationLoader.SIM_CLASS).toExternalForm();
 		}
 		
