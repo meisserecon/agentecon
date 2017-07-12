@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import com.agentecon.data.JsonData;
+import com.agentecon.web.data.JsonData;
 
 public class MethodsMethod extends WebApiMethod {
 	

@@ -1,4 +1,4 @@
-package com.agentecon.json;
+package com.agentecon.oldarena;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
-import com.agentecon.data.SimulationInfo;
-import com.agentecon.data.SimulationList;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.runner.SimulationLoader;
 import com.agentecon.runner.SimulationRunner;

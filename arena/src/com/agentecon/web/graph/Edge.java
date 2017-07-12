@@ -6,7 +6,7 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.data;
+package com.agentecon.web.graph;
 
 import com.agentecon.goods.Good;
 import com.agentecon.util.Average;

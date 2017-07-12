@@ -1,8 +1,7 @@
-package com.agentecon.data;
+package com.agentecon.oldarena;
 
 import java.util.ArrayList;
 
-import com.agentecon.json.Persistable;
 import com.agentecon.runner.Checksum;
 
 public class SimulationList extends Persistable {

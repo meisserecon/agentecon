@@ -10,13 +10,14 @@ import org.nanohttpd.protocols.http.response.Status;
 
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
-import com.agentecon.data.JsonData;
+import com.agentecon.web.data.JsonData;
 import com.agentecon.web.methods.AgentsMethod;
 import com.agentecon.web.methods.ChildrenMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.Parameters;
 import com.agentecon.web.methods.RankingMethod;
+import com.agentecon.web.methods.SizeTypesMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
 import com.agentecon.web.methods.WebApiMethod;
 
@@ -37,6 +38,7 @@ public class SimulationServer extends FileServer {
 
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);
+		this.methods.add(new SizeTypesMethod());
 		this.methods.add(new AgentsMethod(this.simulations));
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));

@@ -1,4 +1,4 @@
-package com.agentecon.data;
+package com.agentecon.web.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +15,8 @@ import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationListenerAdapter;
+import com.agentecon.web.data.JsonData;
+import com.agentecon.web.query.ENodeType;
 
 public class TradeGraph extends SimulationListenerAdapter implements ISimulationListener, IMarketListener {
 

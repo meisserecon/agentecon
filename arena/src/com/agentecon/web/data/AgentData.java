@@ -1,4 +1,4 @@
-package com.agentecon.data;
+package com.agentecon.web.data;
 
 import java.util.Collection;
 

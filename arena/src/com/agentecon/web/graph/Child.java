@@ -1,4 +1,4 @@
-package com.agentecon.data;
+package com.agentecon.web.graph;
 
 import java.util.Collection;
 import java.util.HashMap;

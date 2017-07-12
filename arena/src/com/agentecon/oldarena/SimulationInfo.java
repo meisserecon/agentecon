@@ -1,12 +1,10 @@
 // Created on Jun 8, 2015 by Luzius Meisser
 
-package com.agentecon.data;
+package com.agentecon.oldarena;
 
-import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
 import com.agentecon.classloader.GitSimulationHandle;
-import com.agentecon.json.Persistable;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.runner.Checksum;
 import com.agentecon.runner.SimulationRunner;

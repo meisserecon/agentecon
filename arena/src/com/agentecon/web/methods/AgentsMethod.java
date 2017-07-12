@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
-import com.agentecon.data.AgentQuery;
-import com.agentecon.data.JsonData;
+import com.agentecon.web.data.JsonData;
+import com.agentecon.web.query.AgentQuery;
 
 public class AgentsMethod extends SimSpecificMethod {
 

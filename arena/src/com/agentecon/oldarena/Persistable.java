@@ -1,4 +1,4 @@
-package com.agentecon.json;
+package com.agentecon.oldarena;
 
 public class Persistable implements IPersistable {
 	

@@ -6,7 +6,7 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.data;
+package com.agentecon.web.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +16,12 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
+import com.agentecon.web.data.CollectiveConsumerData;
+import com.agentecon.web.data.CollectiveFirmData;
+import com.agentecon.web.data.ConsumerData;
+import com.agentecon.web.data.FirmData;
+import com.agentecon.web.data.JsonData;
+import com.agentecon.web.graph.Child;
 import com.agentecon.web.methods.Parameters;
 
 public class AgentQuery {

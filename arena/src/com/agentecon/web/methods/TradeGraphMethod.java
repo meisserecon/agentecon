@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.agentecon.ISimulation;
-import com.agentecon.data.JsonData;
-import com.agentecon.data.TradeGraph;
+import com.agentecon.web.data.JsonData;
+import com.agentecon.web.graph.TradeGraph;
 
 public class TradeGraphMethod extends SimSpecificMethod {
 	

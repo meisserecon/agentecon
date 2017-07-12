@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
-import com.agentecon.data.JsonData;
 import com.agentecon.metric.Rank;
 import com.agentecon.runner.SimulationStepper;
+import com.agentecon.web.data.JsonData;
 
 public class RankingMethod extends SimSpecificMethod {
 

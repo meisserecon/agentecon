@@ -11,8 +11,8 @@ package com.agentecon.web.methods;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import com.agentecon.data.JsonData;
 import com.agentecon.util.LogClock;
+import com.agentecon.web.data.JsonData;
 
 public abstract class WebApiMethod {
 	
