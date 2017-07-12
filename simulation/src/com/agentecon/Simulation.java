@@ -89,6 +89,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 
 	@Override
 	public void forwardTo(int targetDay) {
+		targetDay = Math.min(targetDay, getConfig().getRounds());
 		for (; day < targetDay; day++) {
 			processEvents(day); // must happen before daily endowments
 			world.prepareDay(getStatistics());
