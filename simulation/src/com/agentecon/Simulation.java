@@ -40,14 +40,10 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 
 	private MarketStatistics goodsMarketStats;
 
-//	public Simulation() throws IOException {
-//		this(new FarmingConfiguration(50));
-//	}
-	
 	public Simulation() throws IOException {
-		this(new CobbDougConfiguration(50));
+		this(new FarmingConfiguration(50));
 	}
-
+	
 	public Simulation(IConfiguration metaConfig) {
 		this(metaConfig.createNextConfig());
 		this.metaConfig = metaConfig;
