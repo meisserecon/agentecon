@@ -15,8 +15,7 @@ class Tradeview {
       firms: [
         { label: 'firms', children: 4, parent: '' },
         { label: 'firm0', children: 4, parent: 'firms' },
-        { label: 'firm1', children: 4, parent: 'firms' },
-        { label: 'firm2', children: 4, parent: 'firm1' }
+        { label: 'firm1', children: 4, parent: 'firms' }
       ],
       consumers: [
         { label: 'consumers', children: 4, parent: '' },
@@ -31,36 +30,35 @@ class Tradeview {
         { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm0', destination: 'consumer0' },
         { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer0', destination: 'firm0' },
         { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm1' },
         { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
         { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
         { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
-        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer0', destination: 'firm0' },
         { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
         { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
         { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
         { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
+        { label: '35 input 3 @ 3.81$', weight: 6, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm1' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+        { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
         { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
         { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
         { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
         { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer5' },
         { label: '35 input 3 @ 3.81$', weight: 3, source: 'firm1', destination: 'consumer5' },
-        { label: '35 input 3 @ 3.81$', weight: 6, source: 'consumer5', destination: 'firm0' },
         { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer4', destination: 'firm0' }
       ]
     }
 
     this.init();
-    this.consumersTree = this.drawNodes(this.data.consumers, true);
+    this.consumersTree = this.drawNodes(this.data.consumers, false);
     this.firmsTree = this.drawNodes(this.data.firms, false);
-    // TODO: temp disable for node positioning
-    this.drawLinks(this.data.edges, false);
+    this.drawLinks(this.data.edges, true);
   }
 
   init() {
@@ -76,9 +74,81 @@ class Tradeview {
     console.log(' ');
   }
 
+  addClickToNodes() {
+    let _this = this;
+
+    // bind click event to nodes
+    d3.selectAll('.node')
+      .on('click', function(d) {
+
+        // TODO: request new data from server
+        // for now, prepped for action after click
+        // on consumer1
+
+        // Nodes
+        if (_this.data.consumers.length > 4) {
+          _this.data.consumers.splice(4);
+        } else {
+          _this.data.consumers.push(
+            { label: 'consumer3', children: 4 , parent: 'consumer1'},
+            { label: 'consumer4', children: 4 , parent: 'consumer3'},
+            { label: 'consumer5', children: 4 , parent: 'consumer3'}
+          );
+        }
+
+        _this.consumersTree = _this.drawNodes(_this.data.consumers, false);
+        _this.firmsTree = _this.drawNodes(_this.data.firms, false);
+
+        // Links
+        if (_this.data.edges.length > 11) {
+          _this.data.edges.splice(11);
+        } else {
+          _this.data.edges.push(
+            { label: '35 input 3 @ 3.81$', weight: 6, source: 'consumer5', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm1' },
+            { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+            { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
+            { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer5' },
+            { label: '35 input 3 @ 3.81$', weight: 3, source: 'firm1', destination: 'consumer5' },
+            { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer4', destination: 'firm0' }
+          );
+        }
+
+        _this.drawLinks(_this.data.edges, false);
+
+        // // only continue when node is not a leaf
+        // if (d.children || d.childrenHidden) {
+        //   let tree = _this.consumersTree;
+
+        //   d = toggleChildren(d);
+
+        //   if (d3.select(this).classed('node--firms')) {
+        //     tree = _this.firmsTree;
+        //   }
+
+        //   _this.drawNodes(tree, false);
+
+
+        //   // TODO: move links of hidden children
+        //   // to hidden layer and the drawLinks
+        //   // or better: don't draw links with nodes
+        //   // that are not defined
+        //   _this.drawLinks(_this.data.edges);
+        // }
+      });
+  }
+
   drawNodes(nodeData, log) {
-    if (log)
+    if (log) {
       console.log('%cdrawNodes()', 'color: deepskyblue;');
+    }
 
     let _this = this;
 
@@ -90,36 +160,6 @@ class Tradeview {
 
     // get nodes in hierarchical structure
     let nodes = d3.hierarchy(treeData, function(d) { return d.children; })
-
-    function toggleChildren(d) {
-      if (d.children) {
-        d.childrenHidden = d.children;
-        d.children = null;
-      } else {
-        d.children = d.childrenHidden;
-        d.childrenHidden = null;
-      }
-      return d;
-    }
-
-    function addClickToNodes() {
-      // bind click event to nodes
-      d3.selectAll('.node')
-        .on('click', function(d) {
-          // only continue when node is not a leaf
-          if (d.children || d.childrenHidden) {
-            let tree = _this.consumersTree;
-
-            d = toggleChildren(d);
-
-            if (d3.select(this).classed('node--firms')) {
-              tree = _this.firmsTree;
-            }
-
-            updateNodes(tree, _this);
-          }
-        });
-    }
 
     function updateNodes(nodes, _this) {
 
@@ -176,8 +216,9 @@ class Tradeview {
             layerIterator++;
             d.data.x = rootOffset[0] + layerIterator * horizontalDistance;
           } else {
-            if (log)
+            if (log) {
               console.log('Create new layer');
+            }
             d.data.x = rootOffset[0];
             layerIterator = 0;
             accumulatedLayerGap+= 50;
@@ -193,8 +234,9 @@ class Tradeview {
           // in drawLinks function
           _this.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y};
 
-          if (log)
+          if (log) {
             console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
+          }
 
           return 'translate(' + d.data.x + ', ' + d.data.y + ')';
         });
@@ -205,8 +247,9 @@ class Tradeview {
         .attr('class', 'node__link')
         .attr('d', function(d, i) {
           if (i > 0) {
-            if (log)
+            if (log) {
               console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
+            }
             return 'M 0 0 L' + (d.parent.data.x - d.data.x) + ' ' + (d.parent.data.y - d.data.y);
           }
         });
@@ -226,13 +269,13 @@ class Tradeview {
         .attr('text-anchor', 'middle')
         .attr('dy', 5)
         .text(function(d) { return d.data.id; });
-
-      // add click events to nodes
-      addClickToNodes();
     }
 
     // update nodes after prepping data
     updateNodes(nodes, this);
+
+    // add click events to nodes
+    this.addClickToNodes();
 
     if (log) {
       console.log('%cend', 'color: deepskyblue;');
@@ -243,43 +286,56 @@ class Tradeview {
   }
 
   drawLinks(links, log) {
-    if (log)
+    if (log) {
       console.log('%cdrawLinks()', 'color: deepskyblue;');
+    }
 
     let _this = this;
     let currentSource = links[0].source,
         currentDestination = links[0].destination;
 
+    let globalSourceX = 0,
+        globalSourceY = 0,
+        globalDestinationX = 0,
+        globalDestinationY = 0,
+        deltaX = 0,
+        deltaY = 0,
+        alpha = 0,
+        xSource = 0,
+        ySource = 0,
+        xDestination = 0,
+        yDestination = 0,
+        localEdgeCount = 0;
+
+    // remove all groups and defs
+    d3.selectAll('.links__wrapper').remove();
+    d3.selectAll('defs').remove();
+
     // create initial group to append links to
     let group = this.stage.append('g')
       .attr('class', 'links__wrapper')
 
-    let globalSourceX = 0;
-    let globalSourceY = 0;
-    let globalDestinationX = 0;
-    let globalDestinationY = 0;
-    let deltaX = 0;
-    let deltaY = 0;
-    let alpha = 0;
-    let xSource = 0;
-    let ySource = 0;
-    let xDestination = 0;
-    let yDestination = 0;
-    let localEdgeCount = 0;
-
     // create the enter join
-    let linksEnterJoin = group.selectAll('.link')
-      .data(links)
-      .enter()
+    let linksJoin = group.selectAll('link')
+      .data(links);
+
+    // exit join
+    linksJoin.exit().remove();
+
+    let linksEnterJoin = linksJoin
+      .enter();
+
+    linksJoin
+      .merge(linksEnterJoin)
       .each(function(d, i) {
         if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
           localEdgeCount += 1;
         } else {
-          if (log)
-            console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
-
           localEdgeCount = 0;
 
+          if (log) {
+            console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
+          }
           // create new svg group
           // note: first group has already been created
           if (i !== 0) {
@@ -338,6 +394,7 @@ class Tradeview {
         // group.append('circle').attr('cx', cx1).attr('cy', cy1).attr('r', 3).attr('fill', 'deepskyblue');
         // group.append('path').attr('d', 'M ' + cx0 + ' ' + cy0 + ' L ' + xSource + ' ' + ySource).attr('stroke', 'silver');
         // group.append('path').attr('d', 'M ' + cx1 + ' ' + cy1 + ' L ' + deltaXLocal + ' ' + 0).attr('stroke', 'silver');
+
 
         // append the bezier curve and marker
         group
