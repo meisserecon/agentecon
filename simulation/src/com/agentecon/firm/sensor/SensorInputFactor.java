@@ -12,21 +12,19 @@ import com.agentecon.market.Price;
 import com.agentecon.price.IBelief;
 
 /**
- * Implements sensor pricing for an input factor as described
- * "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
+ * Implements sensor pricing for an input factor as described "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
  * 
- * See also the illustration in SensorIllusrtation.pdf as well as my blog post:
- * http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
+ * See also the illustration in SensorIllusrtation.pdf as well as my blog post: http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
  */
 public class SensorInputFactor extends InputFactor {
-	
+
 	private Bid prevRealBid;
 	private SensorAccuracy acc;
 
 	public SensorInputFactor(IStock stock, IBelief price) {
 		this(stock, price, new SensorAccuracy());
 	}
-	
+
 	public SensorInputFactor(IStock stock, IBelief price, double accuracy) {
 		this(stock, price, new SensorAccuracy(accuracy));
 	}
@@ -45,7 +43,7 @@ public class SensorInputFactor extends InputFactor {
 	public double getQuantity() {
 		return super.getQuantity() + (prevRealBid == null ? 0.0 : prevRealBid.getTransactionVolume() / prevRealBid.getPrice().getPrice());
 	}
-	
+
 	@Override
 	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double moneySpentOnBid) {
 		double sensorSize = acc.getOfferSize();
@@ -54,8 +52,12 @@ public class SensorInputFactor extends InputFactor {
 		double left = moneySpentOnBid - sensorAmount;
 		double safePrice = getSafePrice();
 		double planned = left / safePrice;
-		prevRealBid = new Bid(owner, money, getStock(), new Price(getGood(), safePrice), planned);
-		market.offer(prevRealBid);
+		if (planned > 0) {
+			prevRealBid = new Bid(owner, money, getStock(), new Price(getGood(), safePrice), planned);
+			market.offer(prevRealBid);
+		} else {
+			prevRealBid = null;
+		}
 	}
 
 	@Override

@@ -69,6 +69,7 @@ public class MarketingDepartment extends AbstractPriceProvider {
 			public double getIdealCogs() throws PriceUnknownException {
 				return prodFun.getCostOfMaximumProfit(inv, MarketingDepartment.this);
 			}
+
 		};
 	}
 

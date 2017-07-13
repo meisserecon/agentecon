@@ -30,24 +30,31 @@ public abstract class SimStats extends SimulationListenerAdapter {
 	public void notifySimEnded(ISimulation sim) {
 	}
 	
+	public String getName(){
+		return getClass().getSimpleName();
+	}
+	
 	public abstract Collection<TimeSeries> getTimeSeries();
 	
 	public void print(PrintStream out) {
-		out.println("***" + getClass().getSimpleName() + "***");
+		print(out, "\t");
+	}
+	
+	public void print(PrintStream out, String separator) {
 		out.print("Day");
 		Collection<TimeSeries> series = getTimeSeries();
 		int start = Integer.MAX_VALUE;
 		int end = 0;
 		for (TimeSeries ts: series){
-			out.print("\t" + ts.getName());
+			out.print(separator + ts.getName());
 			start = Math.min(start, ts.getStart());
 			end = Math.max(end, ts.getEnd());
 		}
 		out.println();
 		for (int day=start; day<=end; day++){
-			System.out.print(day);
+			out.print(day);
 			for (TimeSeries ts: getTimeSeries()){
-				out.print("\t" + ts.get(day));
+				out.print(separator + ts.get(day));
 			}
 			out.println();
 		}

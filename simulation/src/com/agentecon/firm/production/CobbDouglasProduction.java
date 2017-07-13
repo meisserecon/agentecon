@@ -100,4 +100,9 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 		return offerPerWeight * getWeight(good).weight;
 	}
 
+	@Override
+	public double getFixedCosts(IPriceProvider prices) throws PriceUnknownException {
+		return 0.0;
+	}
+
 }

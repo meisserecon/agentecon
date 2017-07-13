@@ -10,7 +10,6 @@ package com.agentecon.configuration;
 
 import java.io.IOException;
 
-import com.agentecon.EConsumerType;
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;

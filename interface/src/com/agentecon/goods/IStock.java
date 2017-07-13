@@ -51,6 +51,14 @@ public interface IStock {
 	 */
 	public IStock hideRelative(double fraction);
 	
+	/**
+	 * Positive opposite of "isEmpty". Should be preferred as negative formulations tend to confuse more.
+	 */
+	public boolean hasSome();
+	
+	/**
+	 * The same as !hasSome()
+	 */
 	public boolean isEmpty();
 
 	public void deprecate();

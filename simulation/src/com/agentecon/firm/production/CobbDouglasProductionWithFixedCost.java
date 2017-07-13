@@ -26,6 +26,11 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	public double getFixedCost(Good good) {
 		return fixedCost.getGood().equals(good) ? fixedCost.getAmount() : 0.0;
 	}
+	
+	@Override
+	public double getFixedCosts(IPriceProvider prices) throws PriceUnknownException {
+		return prices.getPriceBelief(fixedCost);
+	}
 
 	@Override
 	public double useInputs(Inventory inventory) {
@@ -64,10 +69,6 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 		} else {
 			return super.getExpenses(good, prices, spendingsAfterCoveringFixedCosts);
 		}
-	}
-
-	private double getFixedCosts(IPriceProvider prices) throws PriceUnknownException {
-		return fixedCost.getAmount() * prices.getPriceBelief(fixedCost.getGood());
 	}
 
 }
