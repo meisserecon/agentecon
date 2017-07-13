@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from '@/components/Home';
-import Tradegraph from '@/components/Tradegraph';
-
-import Hello from '@/components/Hello';
+import Tradeview from '@/components/Tradeview';
 
 Vue.use(Router);
 
@@ -18,12 +16,7 @@ export default new Router({
     {
       path: '/trades',
       name: 'trades',
-      component: Tradegraph,
-    },
-    {
-      path: '/hello',
-      name: 'hello',
-      component: Hello,
+      component: Tradeview,
     },
   ],
 });
