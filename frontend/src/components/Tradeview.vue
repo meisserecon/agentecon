@@ -52,8 +52,7 @@ export default {
   data() {
     return {
       // TODO: move apiURL to configuration
-      // apiUrl: 'http://192.168.79.102:8080/luziu/local/local',
-      apiUrl: 'http://localhost:8080/static',
+      apiUrl: 'http://192.168.79.102:8080',
       tradeGraphData: null,
       loading: false,
       playing: false,
@@ -117,9 +116,7 @@ export default {
 
       // TODO: error handling when something breaks on server or network
       fetch(
-        // `${thisApiUrl}/tradegraph?sim=${this.simulationId}&day=
-        // ${this.simulationDay}&agents=${this.simulationAgents}&step=${this.simulationStep}`,
-        `${this.apiUrl}/test.json?sim=${this.simulationId}&day=${this.simulationDay}&agents=${this.simulationAgents}&step=${this.simulationStep}`,
+        `${this.apiUrl}/tradegraph?sim=${this.simulationId}&day=${this.simulationDay}&agents=${this.simulationAgents}&step=${this.simulationStep}`,
         xhrConfig,
       ).then(
         (response) => {
