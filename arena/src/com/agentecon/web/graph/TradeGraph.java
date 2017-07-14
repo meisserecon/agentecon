@@ -53,7 +53,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	}
 
 	public TradeGraphData fetchData() {
-		assert days >= 1;
+		assert days >= 0;
 		for (Node n : firms) {
 			n.fetchData(simulation.getStatistics(), simulation.getAgents());
 		}
