@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Tradegraph</h1>
-    <p>Data: {{ graphData }}</p>
+    <p>{{ graphdata }}</p>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ import * as d3 from 'd3';
 
 export default {
   name: 'tradegraph',
+  props: ['graphdata'],
   data() {
     return {
       graph: {
@@ -24,49 +25,6 @@ export default {
         // used to draw links between nodes
         nodeCoordinates: {},
         NODE_RADIUS: 50,
-      },
-      graphData: {
-        firms: [
-          { label: 'firms', children: 4, parent: '' },
-          { label: 'firm0', children: 4, parent: 'firms' },
-          { label: 'firm1', children: 4, parent: 'firms' },
-        ],
-        consumers: [
-          { label: 'consumers', children: 4, parent: '' },
-          { label: 'consumer0', children: 4, parent: 'consumers' },
-          { label: 'consumer1', children: 4, parent: 'consumers' },
-          { label: 'consumer2', children: 4, parent: 'consumers' },
-          { label: 'consumer3', children: 4, parent: 'consumer1' },
-          { label: 'consumer4', children: 4, parent: 'consumer3' },
-          { label: 'consumer5', children: 4, parent: 'consumer3' },
-        ],
-        edges: [
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm0', destination: 'consumer0' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer0', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer0' },
-          { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
-          { label: '35 input 3 @ 3.81$', weight: 7, source: 'consumer0', destination: 'firm1' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer2', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer0', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
-          { label: '35 input 3 @ 3.81$', weight: 5, source: 'firm0', destination: 'consumer2' },
-          { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
-          { label: '35 input 3 @ 3.81$', weight: 10, source: 'firm1', destination: 'consumer2' },
-          { label: '35 input 3 @ 3.81$', weight: 6, source: 'consumer5', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm1' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'consumer5', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'consumer4', destination: 'firm0' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
-          { label: '35 input 3 @ 3.81$', weight: 2, source: 'firm1', destination: 'consumer5' },
-          { label: '35 input 3 @ 3.81$', weight: 1, source: 'firm1', destination: 'consumer1' },
-          { label: '35 input 3 @ 3.81$', weight: 3, source: 'firm1', destination: 'consumer5' },
-          { label: '35 input 3 @ 3.81$', weight: 8, source: 'consumer4', destination: 'firm0' },
-        ],
       },
     };
   },
@@ -206,160 +164,162 @@ export default {
       return nodesHierarchy;
     },
     drawLinks(links) {
-      const log = false;
+      if (links.length > 0) {
+        const log = false;
 
-      if (log) {
-        // console.log('%cdrawLinks()', 'color: deepskyblue;');
-      }
+        if (log) {
+          // console.log('%cdrawLinks()', 'color: deepskyblue;');
+        }
 
-      let currentSource = links[0].source;
-      let currentDestination = links[0].destination;
+        let currentSource = links[0].source;
+        let currentDestination = links[0].destination;
 
-      let globalSourceX = 0;
-      let globalSourceY = 0;
-      let globalDestinationX = 0;
-      let globalDestinationY = 0;
-      let deltaX = 0;
-      let deltaY = 0;
-      let alpha = 0;
-      const xSource = 0;
-      const ySource = 0;
-      let localEdgeCount = 0;
+        let globalSourceX = 0;
+        let globalSourceY = 0;
+        let globalDestinationX = 0;
+        let globalDestinationY = 0;
+        let deltaX = 0;
+        let deltaY = 0;
+        let alpha = 0;
+        const xSource = 0;
+        const ySource = 0;
+        let localEdgeCount = 0;
 
-      // remove all groups and defs
-      d3.selectAll('.links__wrapper').remove();
-      d3.selectAll('defs').remove();
+        // remove all groups and defs
+        d3.selectAll('.links__wrapper').remove();
+        d3.selectAll('defs').remove();
 
-      // create initial group to append links to
-      let group = this.graph.stage.append('g')
-        .attr('class', 'links__wrapper');
+        // create initial group to append links to
+        let group = this.graph.stage.append('g')
+          .attr('class', 'links__wrapper');
 
-      // create the enter join
-      const linksJoin = group.selectAll('.link')
-        .data(links);
+        // create the enter join
+        const linksJoin = group.selectAll('.link')
+          .data(links);
 
-      // exit join
-      linksJoin.exit().remove();
+        // exit join
+        linksJoin.exit().remove();
 
-      const linksEnterJoin = linksJoin
-        .enter();
+        const linksEnterJoin = linksJoin
+          .enter();
 
-      linksJoin
-        .merge(linksEnterJoin)
-        .each((d, i) => {
-          if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
-            localEdgeCount += 1;
-          } else {
-            localEdgeCount = 0;
+        linksJoin
+          .merge(linksEnterJoin)
+          .each((d, i) => {
+            if (d.source === currentSource && d.destination === currentDestination && i !== 0) {
+              localEdgeCount += 1;
+            } else {
+              localEdgeCount = 0;
+
+              if (log) {
+                // console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
+              }
+              // create new svg group
+              // note: first group has already been created
+              if (i !== 0) {
+                group = this.graph.stage.append('g').attr('class', 'links__wrapper');
+              }
+
+              globalSourceX = this.graph.nodeCoordinates[d.source].x;
+              globalSourceY = this.graph.nodeCoordinates[d.source].y;
+
+              globalDestinationX = this.graph.nodeCoordinates[d.destination].x;
+              globalDestinationY = this.graph.nodeCoordinates[d.destination].y;
+
+              deltaX = globalDestinationX - globalSourceX;
+              deltaY = globalDestinationY - globalSourceY;
+              let rotationCorrection = 0;
+
+              alpha = Math.atan(deltaY / deltaX) * (180 / Math.PI);
+
+              if (deltaX < 0) {
+                rotationCorrection = -180;
+              }
+              alpha += rotationCorrection;
+              if (log) {
+                // console.log('Z rotation: ' + Math.round(alpha) + 'deg');
+                // console.log('Delta vector: ' + deltaX + ', ' + deltaY);
+              }
+
+              group
+                .attr('transform', `translate(${globalSourceX}, ${globalSourceY}) rotate(${alpha})`);
+
+              currentSource = d.source;
+              currentDestination = d.destination;
+            }
 
             if (log) {
-              // console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
-            }
-            // create new svg group
-            // note: first group has already been created
-            if (i !== 0) {
-              group = this.graph.stage.append('g').attr('class', 'links__wrapper');
+              // console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
+              // console.log('Link weight: ' + d.weight);
             }
 
-            globalSourceX = this.graph.nodeCoordinates[d.source].x;
-            globalSourceY = this.graph.nodeCoordinates[d.source].y;
+            const j = localEdgeCount + 2;
+            const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
+            // 0.3 rad ^= 17.2 deg
+            const x0 = xSource + (this.graph.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3));
+            const y0 = ySource - (this.graph.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3));
+            let x1 = deltaXLocal;
+            x1 -= ((this.graph.NODE_RADIUS + 10) * Math.cos((localEdgeCount + 1) * 0.3));
+            const y1 = -(this.graph.NODE_RADIUS + 10) * Math.sin((localEdgeCount + 1) * 0.3);
 
-            globalDestinationX = this.graph.nodeCoordinates[d.destination].x;
-            globalDestinationY = this.graph.nodeCoordinates[d.destination].y;
+            const cx0 = j * x0;
+            const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
+            const cy0 = j * y0;
+            const cy1 = j * y1;
 
-            deltaX = globalDestinationX - globalSourceX;
-            deltaY = globalDestinationY - globalSourceY;
-            let rotationCorrection = 0;
+            // append bezier control points
+            // group.append('circle')
+            //   .attr('cx', x0)
+            //   .attr('cy', y0)
+            //   .attr('r', 5)
+            //   .attr('fill', 'red');
+            // group.append('circle')
+            //   .attr('cx', x1)
+            //   .attr('cy', y1)
+            //   .attr('r', 10)
+            //   .attr('fill', 'green');
+            // group.append('circle')
+            //   .attr('cx', cx0)
+            //   .attr('cy', cy0)
+            //   .attr('r', 5)
+            //   .attr('fill', 'deepskyblue');
+            // group.append('circle')
+            //   .attr('cx', cx1)
+            //   .attr('cy', cy1)
+            //   .attr('r', 3)
+            //   .attr('fill', 'deepskyblue');
+            // group.append('path').attr('d', `M ${cx0} ${cy0} L ${xSource} ${ySource}`);
+            // group.append('path').attr('d', `M ${cx1} ${cy1} L ${deltaXLocal} 0`);
 
-            alpha = Math.atan(deltaY / deltaX) * (180 / Math.PI);
 
-            if (deltaX < 0) {
-              rotationCorrection = -180;
-            }
-            alpha += rotationCorrection;
-            if (log) {
-              // console.log('Z rotation: ' + Math.round(alpha) + 'deg');
-              // console.log('Delta vector: ' + deltaX + ', ' + deltaY);
-            }
-
+            // append the bezier curve and marker
             group
-              .attr('transform', `translate(${globalSourceX}, ${globalSourceY}) rotate(${alpha})`);
+              .append('path')
+              .attr('class', 'link')
+              .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
+              .attr('stroke-width', `${d.weight}px`)
+              .attr('marker-end', () => 'url(#marker)');
+          });
 
-            currentSource = d.source;
-            currentDestination = d.destination;
-          }
+        // create reference marker
+        this.graph.stage.append('defs')
+          .append('marker')
+            .attr('id', 'marker')
+            .attr('class', 'marker')
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 1)
+            .attr('refY', 0)
+            .attr('markerWidth', 14)
+            .attr('markerHeight', 14)
+            .attr('orient', 'auto')
+            .attr('markerUnits', 'userSpaceOnUse')
+          .append('path')
+            .attr('d', 'M0,-5L10,0L0,5');
 
-          if (log) {
-            // console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
-            // console.log('Link weight: ' + d.weight);
-          }
-
-          const j = localEdgeCount + 2;
-          const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
-          // 0.3 rad ^= 17.2 deg
-          const x0 = xSource + (this.graph.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3));
-          const y0 = ySource - (this.graph.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3));
-          let x1 = deltaXLocal;
-          x1 -= ((this.graph.NODE_RADIUS + 10) * Math.cos((localEdgeCount + 1) * 0.3));
-          const y1 = -(this.graph.NODE_RADIUS + 10) * Math.sin((localEdgeCount + 1) * 0.3);
-
-          const cx0 = j * x0;
-          const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
-          const cy0 = j * y0;
-          const cy1 = j * y1;
-
-          // append bezier control points
-          // group.append('circle')
-          //   .attr('cx', x0)
-          //   .attr('cy', y0)
-          //   .attr('r', 5)
-          //   .attr('fill', 'red');
-          // group.append('circle')
-          //   .attr('cx', x1)
-          //   .attr('cy', y1)
-          //   .attr('r', 10)
-          //   .attr('fill', 'green');
-          // group.append('circle')
-          //   .attr('cx', cx0)
-          //   .attr('cy', cy0)
-          //   .attr('r', 5)
-          //   .attr('fill', 'deepskyblue');
-          // group.append('circle')
-          //   .attr('cx', cx1)
-          //   .attr('cy', cy1)
-          //   .attr('r', 3)
-          //   .attr('fill', 'deepskyblue');
-          // group.append('path').attr('d', `M ${cx0} ${cy0} L ${xSource} ${ySource}`);
-          // group.append('path').attr('d', `M ${cx1} ${cy1} L ${deltaXLocal} 0`);
-
-
-          // append the bezier curve and marker
-          group
-            .append('path')
-            .attr('class', 'link')
-            .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
-            .attr('stroke-width', `${d.weight}px`)
-            .attr('marker-end', () => 'url(#marker)');
-        });
-
-      // create reference marker
-      this.graph.stage.append('defs')
-        .append('marker')
-          .attr('id', 'marker')
-          .attr('class', 'marker')
-          .attr('viewBox', '0 -5 10 10')
-          .attr('refX', 1)
-          .attr('refY', 0)
-          .attr('markerWidth', 14)
-          .attr('markerHeight', 14)
-          .attr('orient', 'auto')
-          .attr('markerUnits', 'userSpaceOnUse')
-        .append('path')
-          .attr('d', 'M0,-5L10,0L0,5');
-
-      if (log) {
-        // console.log('%cend', 'color: deepskyblue;');
-        // console.log(' ');
+        if (log) {
+          // console.log('%cend', 'color: deepskyblue;');
+          // console.log(' ');
+        }
       }
     },
   },
@@ -369,11 +329,13 @@ export default {
       .append('svg')
       .attr('xmlns', 'http://www.w3.org/2000/svg')
       .attr('class', 'tradeview');
-
-    this.consumersTree = this.drawNodes(this.graphData.consumers);
-    this.firmsTree = this.drawNodes(this.graphData.firms);
-
-    this.drawLinks(this.graphData.edges);
+  },
+  updated() {
+    setTimeout(() => {
+      this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
+      this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
+      this.drawLinks(this.graphdata.edges);
+    }, 50);
   },
 };
 </script>

@@ -37,7 +37,7 @@
       <p>{{ tradeGraphData }}</p>
     </div>
 
-    <tradegraph :data="tradeGraphData"></tradegraph>
+    <tradegraph :graphdata="tradeGraphData"></tradegraph>
   </div>
 </template>
 
