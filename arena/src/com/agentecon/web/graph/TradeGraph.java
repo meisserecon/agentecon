@@ -53,7 +53,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	}
 
 	public TradeGraphData fetchData() {
-		assert days >= 1;
+		assert days >= 0;
 		for (Node n : firms) {
 			n.fetchData(simulation.getStatistics(), simulation.getAgents());
 		}
@@ -107,7 +107,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	}
 
 	private Node findMostSpecific(IAgent agent) {
-		if (agent instanceof IConsumer){
+		if (agent instanceof IConsumer) {
 			return findMostSpecific(consumers, agent);
 		} else {
 			assert agent instanceof IFirm;
@@ -116,8 +116,9 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	}
 
 	private Node findMostSpecific(ArrayList<Node> candidates, IAgent agent) {
-		for (Node n: candidates){
-			if (n.contains(agent)){
+		for (int i = candidates.size() - 1; i >= 0; i--) {
+			Node n = candidates.get(i);
+			if (n.contains(agent)) {
 				return n;
 			}
 		}
