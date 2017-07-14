@@ -50,7 +50,7 @@ public class SimulationServer extends FileServer {
 	@Override
 	public Response serve(IHTTPSession session) {
 		Method method = session.getMethod();
-		assert method == Method.GET;
+		assert method == Method.GET : "Received a " + method;
 		String uri = session.getUri();
 		StringTokenizer tok = new StringTokenizer(uri, "\\/");
 		if (tok.hasMoreTokens()) {
