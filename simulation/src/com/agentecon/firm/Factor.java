@@ -34,11 +34,15 @@ public abstract class Factor {
 	}
 
 	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double amount) {
-		prevOffer = newOffer(owner, money, price.getPrice(), amount);
-		if (prevOffer.isBid()) {
-			market.offer((Bid) prevOffer);
+		if (amount > 0) {
+			prevOffer = newOffer(owner, money, price.getPrice(), amount);
+			if (prevOffer.isBid()) {
+				market.offer((Bid) prevOffer);
+			} else {
+				market.offer((Ask) prevOffer);
+			}
 		} else {
-			market.offer((Ask) prevOffer);
+			prevOffer = null;
 		}
 	}
 
@@ -54,10 +58,6 @@ public abstract class Factor {
 
 	public boolean isObtainable() {
 		return !price.isProbablyUnobtainable();
-	}
-
-	protected double getCurrentSuccessRate() {
-		return prevOffer.isUsed() ? 1.0 : 0.0;
 	}
 
 	public final Good getGood() {

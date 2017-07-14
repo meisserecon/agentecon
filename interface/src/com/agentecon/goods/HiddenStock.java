@@ -63,7 +63,12 @@ public class HiddenStock implements IStock {
 
 	@Override
 	public boolean isEmpty() {
-		return getAmount() <= Numbers.EPSILON;
+		return !hasSome();
+	}
+	
+	@Override
+	public boolean hasSome() {
+		return getAmount() > Numbers.EPSILON;
 	}
 
 	@Override

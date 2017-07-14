@@ -31,6 +31,7 @@ import com.agentecon.production.ProducerListeners;
 public class AdaptiveFarm extends Firm implements IProducer {
 
 	private static final double SPENDING_FRACTION = 0.2; // let's spend 20% of our money every day
+	private static final double MINIMUM_TARGET_INPUT = 14;
 
 	private IProductionFunction prodFun;
 	private ProducerListeners listeners;
@@ -67,11 +68,18 @@ public class AdaptiveFarm extends Firm implements IProducer {
 
 	@Override
 	public void offer(IPriceMakerMarket market) {
-		double budget = getMoney().getAmount() * SPENDING_FRACTION;
-//		double budget = strategy.calcCogs(getMoney().getAmount(), prodFun.getCostOfMaximumProfit(getInventory(), marketing));
-//		double optimal = prodFun.getCostOfMaximumProfit(getInventory(), marketing);
-//		System.out.println("Budget " + budget + ", optimal: " + optimal);
+		double budget = calculateBudget();
 		marketing.createOffers(market, this, budget);
+	}
+	
+	private double calculateBudget(){
+		double defaultBudget = getMoney().getAmount() * SPENDING_FRACTION;
+		double minimumReasonableSpending = MINIMUM_TARGET_INPUT * marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
+		if (getMoney().getAmount() < minimumReasonableSpending){
+			return 0;
+		} else {
+			return Math.max(defaultBudget, minimumReasonableSpending);
+		}
 	}
 
 	@Override
@@ -79,7 +87,7 @@ public class AdaptiveFarm extends Firm implements IProducer {
 		marketing.adaptPrices();
 		// System.out.println("Adjusting price beliefs to " + marketing);
 	}
-
+	
 	@Override
 	public void produce() {
 		Quantity[] inputs = getInventory().getQuantities(getInputs());
@@ -94,17 +102,24 @@ public class AdaptiveFarm extends Firm implements IProducer {
 	@Override
 	protected double calculateDividends(int day) {
 		double div = strategy.calcDividend(getFinancials());
+//		if (getAgentId() == 60){
+//			return 0;
+//		}
 		return div;
-//		double plainDividend = strategy.calcDividend(marketing.getFinancials(getInventory(), prodFun));
-//		double fixedCosts = prodFun.getFixedCost(FarmingConfiguration.MAN_HOUR) * marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
-//		return plainDividend - fixedCosts;
-		// return Math.max(0, getMoney().getAmount() - workingCapital); //
-		// return everyhing above what was initially provided
 	}
+	
+	private int daysWithoutProfit = 0;
 	
 	@Override
 	public boolean wantsBankruptcy(IStatistics stats){
-		return getMoney().getAmount() < 1.0; // we ran out of money, go bankrupt
+		double profits = getFinancials().getProfits();
+		if (profits <= 0){
+			daysWithoutProfit++;
+		} else {
+			daysWithoutProfit = 0;
+		}
+		return daysWithoutProfit > 5 && stats.getRandomNumberGenerator().nextDouble() < 0.2;
+//		return getMoney().getAmount() < 10.0; // we ran out of money, go bankrupt
 	}
 
 }

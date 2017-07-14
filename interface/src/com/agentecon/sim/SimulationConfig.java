@@ -2,9 +2,11 @@
 
 package com.agentecon.sim;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agentecon.ISimulation;
 import com.agentecon.agent.Agent;
 import com.agentecon.goods.Good;
 import com.agentecon.research.IInnovation;
@@ -79,6 +81,9 @@ public class SimulationConfig {
 		} else {
 			return simple;
 		}
+	}
+
+	public void diagnoseResult(PrintStream out, ISimulation stats) {
 	}
 
 }

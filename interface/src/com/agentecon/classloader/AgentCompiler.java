@@ -36,7 +36,7 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 			if (byteCode == null) {
 				JavaFileObject object = manager.getJavaFileForInput(StandardLocation.SOURCE_PATH, name, Kind.SOURCE);
 				System.out.println("Compiling " + name);
-				boolean success = this.compiler.getTask(null, manager, this, Arrays.asList("-cp","loaded.jar"), null, Collections.singleton(object)).call();
+				boolean success = this.compiler.getTask(null, manager, this, Arrays.asList("-cp","loaded.jar","-g"), null, Collections.singleton(object)).call();
 				assert success;
 				byteCode = manager.getByteCode(name);
 			}

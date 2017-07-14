@@ -3,6 +3,7 @@
 package com.agentecon.metric.series;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,6 +81,10 @@ public class Chart extends Persistable {
 
 	public boolean hasContent() {
 		return !data.isEmpty();
+	}
+
+	public void print(PrintWriter writer) {
+		throw new RuntimeException("not implemented");
 	}
 	
 	@Override

@@ -38,5 +38,10 @@ public abstract class Financials implements IFinancials {
 	public double getExpectedRevenue() {
 		return output.getPrice() * output.getStock().getAmount();
 	}
+	
+	@Override
+	public double getProfits() {
+		return getExpectedRevenue() - getLatestCogs();
+	}
 
 }

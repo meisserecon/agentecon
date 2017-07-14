@@ -40,5 +40,10 @@ public class LogProdFun extends AbstractProductionFunction {
 		assert !weight.capital : "this function does not help you with expenses on capital goods";
 		return offerPerWeight * weight.weight - price.getPriceBelief(good) * ADJUSTMENT;
 	}
+	
+	@Override
+	public double getFixedCosts(IPriceProvider prices) {
+		return 0.0;
+	}
 
 }

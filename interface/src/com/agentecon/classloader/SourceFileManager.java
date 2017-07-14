@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -199,8 +200,9 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	public JavaFileObject getClassFileOutput(final String className) {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		ByteArrayOutputStream prev = byteCode.put(className, outStream);
-		assert prev == null;
+		if (!byteCode.containsKey(className)){
+			byteCode.put(className, outStream);
+		}
 		return new SimpleJavaFileObject(URI.create(className.replace('.', '/') + ".class"), Kind.CLASS) {
 			@Override
 			public ByteArrayOutputStream openOutputStream() {

@@ -37,4 +37,9 @@ public class LinearProdFun extends AbstractProductionFunction {
 	public double getExpenses(Good good, IPriceProvider price, double totalSpendings) {
 		return Double.MAX_VALUE;
 	}
+	
+	@Override
+	public double getFixedCosts(IPriceProvider prices) {
+		return 0.0;
+	}
 }

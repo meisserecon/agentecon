@@ -32,6 +32,13 @@ public interface IProductionFunction {
 	public double getFixedCost(Good good);
 
 	/**
+	 * Returns the amount that needs to be spent on inputs to cover all fixed costs.
+	 * Assuming the provided prices are correct, trying to spend less than that is pointless.
+	 * @throws PriceUnknownException 
+	 */
+	public double getFixedCosts(IPriceProvider prices) throws PriceUnknownException;
+
+	/**
 	 * Returns the output produced by this production function.
 	 */
 	public Good getOutput();

@@ -12,14 +12,12 @@ import com.agentecon.price.AdjustableBelief;
 import com.agentecon.price.IBelief;
 
 /**
- * Implements sensor pricing for an input factor as described
- * "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
+ * Implements sensor pricing for an input factor as described "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics
  * 
- * See also the illustration in SensorIllusrtation.pdf as well as my blog post:
- * http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
+ * See also the illustration in SensorIllusrtation.pdf as well as my blog post: http://meissereconomics.com/2016/08/09/StolperSamuelson.html#main
  */
 public class SensorOutputFactor extends OutputFactor {
-	
+
 	private Ask prevRealAsk;
 	private SensorAccuracy accuracy;
 
@@ -30,17 +28,10 @@ public class SensorOutputFactor extends OutputFactor {
 	public SensorOutputFactor(IStock stock, IBelief price, double accuracy) {
 		this(stock, price, new SensorAccuracy(accuracy));
 	}
-	
+
 	public SensorOutputFactor(IStock stock, IBelief price, SensorAccuracy accuracy) {
 		super(stock, price);
 		this.accuracy = accuracy;
-	}
-	
-	@Override
-	protected double getCurrentSuccessRate() {
-		double sensorSize = accuracy.getOfferSize();
-		double bulkSuccess = prevRealAsk.isUsed() ? 1.0 : 0.0;
-		return sensorSize * super.getCurrentSuccessRate() + (1-sensorSize)*bulkSuccess;
 	}
 
 	@Override
@@ -52,8 +43,12 @@ public class SensorOutputFactor extends OutputFactor {
 	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double amount) {
 		double sensorSize = accuracy.getOfferSize() * amount;
 		super.createOffers(market, owner, money, sensorSize);
-		prevRealAsk = new Ask(owner, money, getStock(), new Price(getGood(), getSafePrice()), amount - sensorSize);
-		market.offer(prevRealAsk);
+		if (amount > 0) {
+			prevRealAsk = new Ask(owner, money, getStock(), new Price(getGood(), getSafePrice()), amount - sensorSize);
+			market.offer(prevRealAsk);
+		} else {
+			prevRealAsk = null;
+		}
 	}
 
 	@Override

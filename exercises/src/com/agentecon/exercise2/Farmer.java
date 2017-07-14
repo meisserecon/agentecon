@@ -44,24 +44,27 @@ public class Farmer extends Consumer implements IFounder {
 	private static final double MINIMUM_WORKING_HOURS = 3;
 
 	private Good manhours;
+	private boolean triedFounding;
 
 	public Farmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
+		this.triedFounding = false;
 		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
 
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (!myLand.isEmpty() && !getMoney().isEmpty() && statistics.getRandomNumberGenerator().nextDouble() < 0.1) {
+		if (myLand.hasSome() && !triedFounding && statistics.getRandomNumberGenerator().nextDouble() < 0.1){
+			triedFounding = true;
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
 				IStock firmMoney = getMoney().hideRelative(0.5);
 				AdaptiveFarm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
-				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 10);
+				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
 				return null;
@@ -92,8 +95,10 @@ public class Farmer extends Consumer implements IFounder {
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
 
 		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
-		// However, we should spend at most half the money we own
-		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.5);
+		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
+		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
+		// the daily amount spent is the same, but more smooth over time.
+		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		super.trade(reducedInv, market);
 	}
 
@@ -119,6 +124,7 @@ public class Farmer extends Consumer implements IFounder {
 			sim.forwardTo(sim.getDay() + 1);
 			System.out.println("Market stats at end of day " + sim.getDay());
 			sim.getGoodsMarketStats().print(System.out);
+			System.out.println();
 		}
 		ranking.print(System.out); // print the resulting ranking
 	}

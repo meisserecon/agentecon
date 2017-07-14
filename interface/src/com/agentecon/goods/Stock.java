@@ -52,25 +52,16 @@ public class Stock implements IStock {
 		return new Stock(good, amount);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#getGood()
-	 */
 	@Override
 	public Good getGood(){
 		return good;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#getAmount()
-	 */
 	@Override
 	public double getAmount() {
 		return amount;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#consume()
-	 */
 	@Override
 	public double consume() {
 		double amount = getAmount();
@@ -78,9 +69,6 @@ public class Stock implements IStock {
 		return amount;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#remove(double)
-	 */
 	@Override
 	public void remove(double quantity) {
 		assert Math.abs(quantity - amount) >= -Numbers.EPSILON;
@@ -91,18 +79,12 @@ public class Stock implements IStock {
 		this.amount -= quantity;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#add(double)
-	 */
 	@Override
 	public void add(double quantity) {
 		assert this.amount >= -quantity;
 		this.amount += quantity;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#transfer(com.agentecon.good.Stock, double)
-	 */
 	@Override
 	public void transfer(IStock source, double amount) {
 		assert source.getGood().equals(getGood());
@@ -115,9 +97,6 @@ public class Stock implements IStock {
 		assert getAmount() < 10000000;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#absorb(com.agentecon.good.Stock)
-	 */
 	@Override
 	public void absorb(IStock s) {
 		assert s.getGood() == getGood();
@@ -125,13 +104,9 @@ public class Stock implements IStock {
 		this.amount += s.consume();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.agentecon.good.IStock#isEmpty()
-	 */
 	@Override
-	public boolean isEmpty() {
-		assert amount >= 0.0;
-		return amount <= Numbers.EPSILON;
+	public final boolean isEmpty() {
+		return !hasSome();
 	}
 	
 	@Override
@@ -142,6 +117,12 @@ public class Stock implements IStock {
 	@Override
 	public Quantity getQuantity() {
 		return new Quantity(good, amount);
+	}
+
+	@Override
+	public boolean hasSome() {
+		assert amount >= 0.0;
+		return amount > Numbers.EPSILON;
 	}
 
 }
