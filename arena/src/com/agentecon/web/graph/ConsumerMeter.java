@@ -10,12 +10,14 @@ package com.agentecon.web.graph;
 
 import java.util.function.Consumer;
 
+import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IStatistics;
+import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 import com.agentecon.util.Numbers;
 import com.agentecon.web.query.AgentQuery;
@@ -24,13 +26,19 @@ public class ConsumerMeter extends AgentSize implements IConsumerListener {
 	
 	private Average utility;
 	
-	public ConsumerMeter(AgentQuery query, IAgents agents){
+	public ConsumerMeter(AgentQuery query, ISimulation sim){
 		this.utility = new Average();
-		query.forEach(agents, new Consumer<IAgent>() {
+		query.forEach(sim.getAgents(), new Consumer<IAgent>() {
 			
 			@Override
 			public void accept(IAgent t) {
 				t.addListener(ConsumerMeter.this);
+			}
+		});
+		sim.addListener(new SimulationListenerAdapter(){
+			@Override
+			public void notifyConsumerCreated(IConsumer consumer){
+				consumer.addListener(ConsumerMeter.this);
 			}
 		});
 	}

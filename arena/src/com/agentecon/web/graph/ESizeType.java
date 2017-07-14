@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgents;
 import com.agentecon.web.query.AgentQuery;
 
@@ -47,7 +48,7 @@ public enum ESizeType {
 		return list;
 	}
 
-	public AgentSize createQuery(AgentQuery selection, IAgents agents) {
+	public AgentSize createQuery(AgentQuery selection, ISimulation agents) {
 		switch (this) {
 		case UTILITY:
 			return new ConsumerMeter(selection, agents);

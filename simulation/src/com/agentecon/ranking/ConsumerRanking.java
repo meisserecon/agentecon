@@ -4,11 +4,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.agentecon.agent.AgentRef;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
-import com.agentecon.sim.AgentRef;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
 

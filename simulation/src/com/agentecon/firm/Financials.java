@@ -43,5 +43,10 @@ public abstract class Financials implements IFinancials {
 	public double getProfits() {
 		return getExpectedRevenue() - getLatestCogs();
 	}
+	
+	@Override
+	public String toString(){
+		return "spent " + getLatestCogs() + " to generate expected revenues of " + getExpectedRevenue() + " at cash level " + getCash();
+	}
 
 }

@@ -70,6 +70,15 @@ public class MarketingDepartment extends AbstractPriceProvider {
 				return prodFun.getCostOfMaximumProfit(inv, MarketingDepartment.this);
 			}
 
+			@Override
+			public double getFixedCosts() {
+				try {
+					return prodFun.getFixedCosts(MarketingDepartment.this);
+				} catch (PriceUnknownException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
 		};
 	}
 

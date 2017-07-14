@@ -20,6 +20,7 @@ import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.finance.Firm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
@@ -41,8 +42,6 @@ import com.agentecon.research.IInnovation;
  */
 public class ExperimentalFarmer extends Consumer implements IFounder {
 
-	private static final double MINIMUM_WORKING_HOURS = 3;
-
 	private Good manhours;
 
 	public ExperimentalFarmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
@@ -60,7 +59,7 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = ExperimentalFarmer.this;
 				IStock firmMoney = getMoney().hideRelative(0.5);
-				AdaptiveFarm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
+				Firm farm = new ExperimentalFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
@@ -84,15 +83,8 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
-		// In the beginning, shelves can be empty and thus there is no incentive
-		// to work (sell man-hours) either.
-		// To kick-start the economy, we require the farmer to sell some of his
-		// man-hours anyway, even if he cannot
-		// buy anything with the earned money.
-		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-
-		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
-		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
+		// Work some more and buy goods for consumption in an optimal balance.
+		// But before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
 		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
 		// the daily amount spent is the same, but more smooth over time.
 		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);

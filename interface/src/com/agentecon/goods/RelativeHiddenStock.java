@@ -21,6 +21,7 @@ public class RelativeHiddenStock extends HiddenStock {
 
 	@Override
 	public void add(double quantity) {
+		assert quantity >= 0.0;
 		super.hideMore(quantity * fraction);
 		super.add(quantity);
 	}

@@ -71,6 +71,7 @@ public class Stock implements IStock {
 	
 	@Override
 	public void remove(double quantity) {
+		assert quantity >= 0.0;
 		assert Math.abs(quantity - amount) >= -Numbers.EPSILON;
 		if (quantity > amount){
 			quantity = amount; // prevent negative values due to rounding errors
@@ -81,6 +82,7 @@ public class Stock implements IStock {
 
 	@Override
 	public void add(double quantity) {
+		assert quantity >= 0.0;
 		assert this.amount >= -quantity;
 		this.amount += quantity;
 	}
@@ -92,7 +94,11 @@ public class Stock implements IStock {
 		assert source.getAmount() - amount >= -Numbers.EPSILON;
 		assert this.getAmount() + amount >= -Numbers.EPSILON;
 		this.amount = Math.max(0.0, this.amount + amount);
-		source.remove(amount);
+		if (amount > 0){
+			source.remove(amount);
+		} else {
+			source.add(-amount);
+		}
 		assert source.getAmount() < 10000000;
 		assert getAmount() < 10000000;
 	}

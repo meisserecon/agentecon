@@ -31,12 +31,12 @@ public class Line {
 		}
 		return arr;
 	}
-	
-	public Point getFirst(){
+
+	public Point getFirst() {
 		return points.get(0);
 	}
-	
-	public Point getLast(){
+
+	public Point getLast() {
 		return points.get(points.size() - 1);
 	}
 
@@ -56,22 +56,26 @@ public class Line {
 		int index = Collections.binarySearch(points, new Point(pos));
 		if (index >= 0) {
 			return points.get(index).y;
-		} else if (index == -1){
+		} else if (index == -1) {
 			return 0.0f; // start with 0
 		} else {
-			return points.get(-index - 2).y; // previous value. (-index - 1) would be next value.
+			index = -index - 1;
+			if (index == points.size()) {
+				return 0.0f;
+			} else {
+				return points.get(index - 1).y; // previous value
+			}
 		}
 	}
-	
-	public int getStart(){
+
+	public int getStart() {
 		return points.get(0).x;
 	}
-	
-	public int getEnd(){
+
+	public int getEnd() {
 		return points.get(points.size() - 1).x;
 	}
-	
-	
+
 	@Override
 	public String toString() {
 		return points.toString();

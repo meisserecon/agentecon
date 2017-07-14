@@ -11,7 +11,6 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
-import com.agentecon.sim.AgentRef;
 
 public abstract class Agent implements IAgent, Cloneable {
 

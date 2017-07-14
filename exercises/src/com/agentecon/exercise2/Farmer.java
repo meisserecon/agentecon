@@ -20,6 +20,7 @@ import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.finance.Firm;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.goods.Good;
@@ -63,7 +64,7 @@ public class Farmer extends Consumer implements IFounder {
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
 				IStock firmMoney = getMoney().hideRelative(0.5);
-				AdaptiveFarm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
+				Firm farm = new AdaptiveFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {

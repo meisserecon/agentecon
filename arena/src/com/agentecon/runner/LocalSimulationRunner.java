@@ -44,7 +44,7 @@ public class LocalSimulationRunner {
 		ranking.print(System.out);
 
 		System.out.println();
-		writer.export(prodStats);
+		writer.export(stats);
 		System.out.println();
 		sim.getConfig().diagnoseResult(System.out, sim);
 	}

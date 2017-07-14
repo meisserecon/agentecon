@@ -34,11 +34,11 @@ public class Producer extends Firm implements IProducer {
 
 	private ProducerListeners listeners;
 
-	public Producer(IAgentIdGenerator id,Endowment end, IProductionFunction prod) {
+	public Producer(IAgentIdGenerator id, Endowment end, IProductionFunction prod) {
 		this(id, end, prod, new ExpectedRevenueBasedStrategy(((CobbDouglasProduction) prod).getTotalWeight()));
 	}
 
-	public Producer(IAgentIdGenerator id,Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
+	public Producer(IAgentIdGenerator id, Endowment end, IProductionFunction prod, IFirmDecisions strategy) {
 		super(id, end);
 		this.prod = prod;
 		this.strategy = strategy;
@@ -62,10 +62,10 @@ public class Producer extends Firm implements IProducer {
 	protected IBelief createPriceBelief(Good good) {
 		return new ExpSearchBelief();
 	}
-	
-	private IPriceProvider getPrices(){
+
+	private IPriceProvider getPrices() {
 		return new AbstractPriceProvider() {
-			
+
 			@Override
 			public double getPriceBelief(Good good) throws PriceUnknownException {
 				return Producer.this.getFactor(good).getPrice();
@@ -122,7 +122,7 @@ public class Producer extends Firm implements IProducer {
 			inputQuantities[i] = inputs[i].getStock().getQuantity();
 		}
 		Quantity produced = prod.produce(getInventory());
-		listeners.notifyProduced(this, inputQuantities, produced);		
+		listeners.notifyProduced(this, inputQuantities, produced);
 		listeners.reportResults(this, output.getVolume(), cogs, produced.getAmount() * output.getPrice() - cogs);
 	}
 
@@ -138,6 +138,15 @@ public class Producer extends Firm implements IProducer {
 			@Override
 			public double getIdealCogs() throws PriceUnknownException {
 				return prod.getCostOfMaximumProfit(getInventory(), getPrices());
+			}
+
+			@Override
+			public double getFixedCosts() {
+				try {
+					return prod.getFixedCosts(getPrices());
+				} catch (PriceUnknownException e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 		}));

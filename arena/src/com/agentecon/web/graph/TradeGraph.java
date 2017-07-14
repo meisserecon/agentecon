@@ -37,11 +37,11 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 			ENodeType type = node.getType(simulation.getAgents());
 			switch (type) {
 			case CONSUMER:
-				node.initializeSizeQuery(ESizeType.DEFAULT_CONSUMER_TYPE, simulation.getAgents());
+				node.initializeSizeQuery(ESizeType.DEFAULT_CONSUMER_TYPE, simulation);
 				consumers.add(node);
 				break;
 			case FIRM:
-				node.initializeSizeQuery(ESizeType.DEFAULT_FIRM_TYPE, simulation.getAgents());
+				node.initializeSizeQuery(ESizeType.DEFAULT_FIRM_TYPE, simulation);
 				firms.add(node);
 				break;
 			default:

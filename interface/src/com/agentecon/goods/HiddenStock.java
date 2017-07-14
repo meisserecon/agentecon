@@ -28,15 +28,16 @@ public class HiddenStock implements IStock {
 	}
 
 	@Override
-	public double consume() {
+	public final double consume() {
 		double amount = getAmount();
-		wrapped.remove(amount);
+		remove(amount);
 		return amount;
 	}
 
 	@Override
 	public void remove(double quantity) {
 		assert quantity <= getAmount();
+		assert quantity >= 0;
 		wrapped.remove(quantity);
 	}
 	

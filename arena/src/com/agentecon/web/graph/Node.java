@@ -8,6 +8,7 @@
  */
 package com.agentecon.web.graph;
 
+import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
 import com.agentecon.market.IStatistics;
@@ -29,7 +30,7 @@ public class Node implements Comparable<Node>{
 		this.query = new AgentQuery(agent);
 	}
 
-	public void initializeSizeQuery(ESizeType type, IAgents agents) {
+	public void initializeSizeQuery(ESizeType type, ISimulation agents) {
 		this.sizeQuery = type.createQuery(query, agents);
 	}
 	

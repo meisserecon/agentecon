@@ -17,7 +17,6 @@ import com.agentecon.goods.Inventory;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
-import com.agentecon.market.IStatistics;
 import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {
@@ -61,6 +60,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		double spendings = 0.0;
 		while (trading) {
 			trading = false;
+			IStock money = inv.getMoney();
 			Collection<IOffer> offers = market.getOffers(new IPriceFilter() {
 
 				@Override
@@ -89,7 +89,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				// double excessStock = Math.max(s.getAmount() - allocs[pos],
 				// s.getAmount() - 19); // work at least 5 hours
 				if (excessStock > Numbers.EPSILON && offer.getGood() == soldGood) {
-					double amountAcquired = offer.accept(this, getMoney(), s, excessStock);
+					double amountAcquired = offer.accept(this, money, s, excessStock);
 					completedSales &= amountAcquired == excessStock;
 					trading = true;
 				}
@@ -102,10 +102,10 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 			for (IOffer offer : offers) {
 				IStock s = inv.getStock(offer.getGood());
 				double difference = allocs[pos] - s.getAmount();
-				if (difference > Numbers.EPSILON && offer.getGood() != soldGood && !getMoney().isEmpty()) {
-					double money = getMoney().getAmount();
-					offer.accept(this, getMoney(), s, difference);
-					spendings += (money - getMoney().getAmount());
+				if (difference > Numbers.EPSILON && offer.getGood() != soldGood && !money.isEmpty()) {
+					double moneyAmount = money.getAmount();
+					offer.accept(this, money, s, difference);
+					spendings += (moneyAmount - money.getAmount());
 					trading = true;
 				}
 				pos++;

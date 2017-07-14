@@ -11,7 +11,6 @@ import com.agentecon.firm.IFirmListener;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.InstantiatingHashMap;
-import com.agentecon.util.Numbers;
 
 public class DividendStats extends SimStats {
 
@@ -34,11 +33,7 @@ public class DividendStats extends SimStats {
 
 			@Override
 			public void reportDividend(IFirm comp, double amount) {
-				if (comp == null) {
-					DividendStats.this.reportDividend(firm.getType(), amount);
-				} else {
-					DividendStats.this.reportDividend(comp.getType(), amount);
-				}
+				DividendStats.this.reportDividend(comp.getName(), amount);
 			}
 
 		});
@@ -50,10 +45,10 @@ public class DividendStats extends SimStats {
 
 	@Override
 	public void notifyDayEnded(int day) {
-		String line = day + " dividends";
+//		String line = day + " dividends";
 		for (AveragingTimeSeries ts : dividends.values()) {
-			double value = ts.push(day);
-			line += ", " + ts.getTimeSeries().getName() + " " + Numbers.toString(value);
+			ts.push(day);
+//			line += ", " + ts.getTimeSeries().getName() + " " + Numbers.toString(value);
 		}
 		// System.out.println(line);
 	}

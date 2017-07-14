@@ -4,7 +4,6 @@ package com.agentecon.agent;
 
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
-import com.agentecon.sim.AgentRef;
 
 public interface IAgent extends Cloneable {
 

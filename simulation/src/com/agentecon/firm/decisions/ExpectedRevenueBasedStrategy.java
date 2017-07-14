@@ -23,7 +23,7 @@ public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 
 	@Override
 	public double calcDividend(IFinancials metrics) {
-		return metrics.getExpectedRevenue() * profitshare;
+		return metrics.getExpectedRevenue() * profitshare - metrics.getFixedCosts();
 	}
 
 	@Override

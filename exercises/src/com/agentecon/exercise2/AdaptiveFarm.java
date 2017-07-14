@@ -26,6 +26,7 @@ import com.agentecon.price.MarketingDepartment;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.production.ProducerListeners;
 
 public class AdaptiveFarm extends Firm implements IProducer {
@@ -101,11 +102,12 @@ public class AdaptiveFarm extends Firm implements IProducer {
 
 	@Override
 	protected double calculateDividends(int day) {
-		double div = strategy.calcDividend(getFinancials());
-//		if (getAgentId() == 60){
-//			return 0;
-//		}
-		return div;
+		try {
+			double fixedCosts = prodFun.getFixedCosts(marketing);
+			return strategy.calcDividend(getFinancials());
+		} catch (PriceUnknownException e) {
+			return 0.0; // we don't know what reasonable prices are, better not pay a dividend until we know more
+		}
 	}
 	
 	private int daysWithoutProfit = 0;
