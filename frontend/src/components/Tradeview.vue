@@ -20,6 +20,7 @@
 
 <script>
 import Tradegraph from '@/components/Tradegraph';
+import config from '../config';
 
 export default {
   name: 'tradeview',
@@ -28,8 +29,7 @@ export default {
   },
   data() {
     return {
-      // TODO: move apiURL to configuration
-      apiUrl: 'http://192.168.79.102:8080',
+      apiUrl: config.apiURL,
       tradeGraphData: null,
       loading: false,
       playing: false,
