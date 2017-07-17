@@ -65,8 +65,8 @@ export default {
     .then(config.handleFetchErrors)
     .then(response => response.json())
     .then(
-      (info) => {
-        this.simLength = info.days;
+      (response) => {
+        this.simLength = response.days;
       },
     )
     .catch(error => config.alertError(error));
@@ -131,8 +131,8 @@ export default {
       .then(config.handleFetchErrors)
       .then(response => response.json())
       .then(
-        (tradeGraphData) => {
-          this.tradeGraphData = tradeGraphData;
+        (response) => {
+          this.tradeGraphData = response;
           this.loaded = true;
         },
       )
