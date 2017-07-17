@@ -38,13 +38,25 @@ export default {
       simDay: parseInt(this.$route.query.day, 10),
       simAgents: this.$route.query.agents,
       simStep: parseInt(this.$route.query.step, 10),
-      // TODO: retrieve proper simulation length from API
-      simLength: 25,
+      simLength: null,
     };
   },
   created() {
-    // fetch the data when the view is created and the data is
-    // already being observed
+    // get length of simulation
+    fetch(
+      `${this.apiUrl}/info?sim=${this.simId}`,
+      config.xhrConfig,
+    )
+    .then(config.handleFetchErrors)
+    .then(response => response.json())
+    .then(
+      (info) => {
+        this.simLength = info.days;
+      },
+    )
+    .catch(error => config.alertError(error));
+
+    // get simulation data
     this.fetchData();
   },
   watch: {
@@ -84,17 +96,13 @@ export default {
     },
     fetchData() {
       // fetchData has all needed state data in URL
-      const xhrConfig = {
-        mode: 'cors',
-      };
-
       this.tradeGraphData = null;
       this.loading = true;
 
       // TODO: error handling when something breaks on server or network
       fetch(
         `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
-        xhrConfig,
+        config.xhrConfig,
       ).then(
         (response) => {
           this.loading = false;
