@@ -6,7 +6,7 @@
 
     <ul v-if="!loading">
       <li v-for="sim in simulations">
-        <router-link :to="{name: 'trades', query: {sim: sim.path, day: 0, agents: 'consumers,firms', step: 1}}">{{ `${sim.owner} / ${sim.path}` }}</router-link>
+        <router-link :to="{name: 'simulation', query: {sim: sim.path}}">{{ `${sim.owner} / ${sim.path}` }}</router-link>
       </li>
     </ul>
   </div>
