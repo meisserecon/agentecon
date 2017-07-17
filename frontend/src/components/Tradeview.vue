@@ -124,8 +124,6 @@ export default {
     },
     fetchData() {
       // fetchData has all needed state data in URL
-      this.tradeGraphData = null;
-
       fetch(
         `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
         config.xhrConfig,

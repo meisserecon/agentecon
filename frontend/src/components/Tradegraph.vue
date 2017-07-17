@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <p style="display:none;height:50px;overflow:hidden;">{{ graphdata }}</p> -->
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 </template>
@@ -28,6 +27,19 @@ export default {
         NODE_RADIUS_COEFFICIENT: 3,
       },
     };
+  },
+  mounted() {
+    this.graph.stage = d3.select('#stage');
+    this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
+    this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
+    this.drawLinks(this.graphdata.edges);
+  },
+  watch: {
+    graphdata() {
+      this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
+      this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
+      this.drawLinks(this.graphdata.edges);
+    },
   },
   methods: {
     drawNodes(nodeData) {
@@ -327,21 +339,6 @@ export default {
         }
       }
     },
-  },
-  mounted: function() { // eslint-disable-line
-    this.graph.stage = d3.select('#stage');
-    setTimeout(() => {
-      this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
-      this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
-      this.drawLinks(this.graphdata.edges);
-    }, 50);
-  },
-  updated() {
-    // setTimeout(() => {
-    //   this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
-    //   this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
-    //   this.drawLinks(this.graphdata.edges);
-    // }, 100);
   },
 };
 </script>
