@@ -24,7 +24,7 @@ export default {
         // used to draw links between nodes
         nodeCoordinates: {},
         NODE_RADIUS: 50,
-        NODE_RADIUS_COEFFICIENT: 5,
+        NODE_RADIUS_COEFFICIENT: 3,
       },
     };
   },
@@ -73,7 +73,7 @@ export default {
 
         let previousDepth = 0;
         let layerIterator = 0;
-        const additionalLayerGap = 50;
+        const additionalLayerGap = 30;
         let accumulatedLayerGap = -additionalLayerGap;
 
         // exit join
@@ -99,7 +99,7 @@ export default {
               }
               d.data.x = rootOffset[0];
               layerIterator = 0;
-              accumulatedLayerGap += 50;
+              accumulatedLayerGap += 30;
             }
 
             // set y coordinate
@@ -119,10 +119,10 @@ export default {
             return `translate(${d.data.x}, ${d.data.y})`;
           });
 
-        // append node links
+        // append node edges
         group
           .append('path')
-          .attr('class', 'node__link')
+          .attr('class', 'node__edge')
           .attr('d', (d, i) => {
             if (i > 0) {
               if (log) {
@@ -296,7 +296,6 @@ export default {
             // group.append('path').attr('d', `M ${cx0} ${cy0} L ${xSource} ${ySource}`);
             // group.append('path').attr('d', `M ${cx1} ${cy1} L ${deltaXLocal} 0`);
 
-
             // append the bezier curve and marker
             group
               .append('path')
@@ -367,7 +366,7 @@ h1
 
 .node
 
-  &__link
+  &__edge
     stroke-width: 2px
     opacity: .3
 
@@ -380,15 +379,17 @@ h1
     .node
       &__circle
         fill: $coral
-      &__link
+      &__edge
         stroke: $coral
+        stroke: black
 
   &--consumers
     .node
       &__circle
         fill: $blue
-      &__link
+      &__edge
         stroke: $blue
+        stroke: black
 
   &--branch
     cursor: pointer
