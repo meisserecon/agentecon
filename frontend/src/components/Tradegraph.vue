@@ -1,6 +1,7 @@
 <template>
   <div>
-    <p>{{ graphdata }}</p>
+    <!-- <p style="display:none;height:50px;overflow:hidden;">{{ graphdata }}</p> -->
+    <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 </template>
 
@@ -145,7 +146,7 @@ export default {
         group
           .append('text')
           .attr('class', 'node__text')
-          .attr('text-anchor', 'left')
+          .attr('text-anchor', 'end')
           .attr('dx', (d, i) => graph.NODE_RADIUS_COEFFICIENT / 1.5 * nodeData[i].size)
           .attr('dy', (d, i) => -graph.NODE_RADIUS_COEFFICIENT * nodeData[i].size)
           .text(d => d.data.id);
@@ -301,7 +302,7 @@ export default {
               .append('path')
               .attr('class', 'link')
               .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
-              .attr('stroke-width', `${d.weight}px`)
+              .attr('stroke-width', `${d.weight * 2}px`)
               .attr('marker-end', () => 'url(#marker)');
           });
 
@@ -327,19 +328,20 @@ export default {
       }
     },
   },
-  mounted() {
-    // set stage
-    this.graph.stage = d3.select('body')
-      .append('svg')
-      .attr('xmlns', 'http://www.w3.org/2000/svg')
-      .attr('class', 'tradeview');
-  },
-  updated() {
+  mounted: function() { // eslint-disable-line
+    this.graph.stage = d3.select('#stage');
     setTimeout(() => {
       this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
       this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
       this.drawLinks(this.graphdata.edges);
     }, 50);
+  },
+  updated() {
+    // setTimeout(() => {
+    //   this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
+    //   this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
+    //   this.drawLinks(this.graphdata.edges);
+    // }, 100);
   },
 };
 </script>
@@ -359,7 +361,7 @@ h1
   font: bold 26px/1 Helvetica, Arial, sans-serif
   text-transform: uppercase
 
-.tradeview
+.tradegraph
   width: 100%
   height: 1000px
   background-color: white
