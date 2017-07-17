@@ -16,17 +16,17 @@ export default {
         stage: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [1200, 100],
+        firmsTreeOffset: [1000, 100],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [900, 100],
+        consumersTreeOffset: [700, 100],
         consumersTreeDirection: -1,
         // object that stores coordinates of all nodes
         // used to draw links between nodes
         nodeCoordinates: {},
         NODE_RADIUS: 50,
-        NODE_RADIUS_BASE: 1.4,
+        NODE_RADIUS_BASE: 2,
         INTER_LAYER_GAP: 50,
         INTRA_LAYER_GAP: 10,
         HORIZONTAL_GAP: 50,
@@ -165,7 +165,7 @@ export default {
 
       groupJoin
         .select('.node__circle')
-        .attr('r', d => self.graph.NODE_RADIUS_BASE ** d.data.data.size);
+        .attr('r', d => self.graph.NODE_RADIUS_BASE * d.data.data.size);
 
       groupJoin
         .select('.node__text')
@@ -176,10 +176,10 @@ export default {
             offsetCoefficient = 0.5;
             offsetConstant = 0.5;
           }
-          return ((self.graph.NODE_RADIUS_BASE ** d.data.data.size) * offsetCoefficient)
+          return ((self.graph.NODE_RADIUS_BASE * d.data.data.size) * offsetCoefficient)
             + offsetConstant;
         })
-        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE ** d.data.data.size)));
+        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)));
 
       // add click events to nodes
       // this.addClickToNodes();
@@ -256,9 +256,9 @@ export default {
             }
 
             const radiusSource = this.graph.NODE_RADIUS_BASE
-              ** this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
+              * this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
             const radiusDestination = this.graph.NODE_RADIUS_BASE
-              ** this.graph.nodeCoordinates[d.destination].size || this.graph.NODE_RADIUS;
+              * this.graph.nodeCoordinates[d.destination].size || this.graph.NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
@@ -319,7 +319,7 @@ h1
 
 .tradegraph
   width: 100%
-  height: 1400px
+  height: 1000px
   background-color: white
 
 .node
