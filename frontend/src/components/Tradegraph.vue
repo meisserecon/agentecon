@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <p style="display:none;height:50px;overflow:hidden;">{{ graphdata }}</p> -->
+    <p>{{ graphdata }}</p>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 </template>
@@ -15,9 +15,11 @@ export default {
     return {
       graph: {
         stage: null,
+        firmNodes: null,
         firmsTree: null,
         firmsTreeOffset: [700, 100],
         firmsTreeDirection: +1,
+        consumersNodes: null,
         consumersTree: null,
         consumersTreeOffset: [350, 100],
         consumersTreeDirection: -1,
@@ -30,149 +32,124 @@ export default {
     };
   },
   methods: {
-    drawNodes(nodeData) {
-      const log = false;
-      if (log) {
-        // console.log('%cdrawNodes()', 'color: deepskyblue;');
-      }
-
+    stratifyData(nodeData) {
       // stratify data
       const treeData = d3.stratify()
         .id(d => d.label)
         .parentId(d => d.parent)(nodeData);
 
       // get nodes in hierarchical structure
-      const nodesHierarchy = d3.hierarchy(treeData, d => d.children);
+      return d3.hierarchy(treeData, d => d.children);
+    },
+    calculateNodeCoordinates(nodeData) {
+      const additionalLayerGap = 30;
+      const LAYER_GAP = 110;
+      let previousDepth = 0;
+      let layerIterator = 0;
+      let rootOffset;
+      let horizontalDistance;
+      let accumulatedLayerGap = -additionalLayerGap;
 
-      function updateNodes(nodes, graph) {
-        const LAYER_GAP = 110;
-        let rootOffset;
-        let horizontalDistance;
-
-        // check what tree we are updating and
-        // set corresponding offset and horizontal distance
-        if (nodes.data.id === 'firms') {
-          rootOffset = graph.firmsTreeOffset;
-          horizontalDistance = graph.firmsTreeDirection * 110;
-        } else if (nodes.data.id === 'consumers') {
-          rootOffset = graph.consumersTreeOffset;
-          horizontalDistance = graph.consumersTreeDirection * 110;
-        }
-
-        if (log) {
-          // console.log('%cRoot node: ' + nodes.data.id, 'color: pink;');
-          if (horizontalDistance > 0) {
-            // console.log('%cDrawing in positive x direction', 'color: pink;');
-          } else {
-            // console.log('%cDrawing in negative x direction', 'color: pink;');
-          }
-        }
-
-        // create joins
-        const nodesJoin = graph.stage.selectAll(`.node--${nodes.data.id}`)
-          .data(nodes.descendants());
-
-        let previousDepth = 0;
-        let layerIterator = 0;
-        const additionalLayerGap = 30;
-        let accumulatedLayerGap = -additionalLayerGap;
-
-        // exit join
-        nodesJoin.exit().remove();
-
-        // add group elements in enter join
-        const group = nodesJoin.enter()
-          .append('g')
-          .attr('class', d => `node node--${nodes.data.id} ${(d.children ? 'node--branch' : 'node--leaf')}`);
-
-        // merge enter join with update
-        // transform nodes to calculated position
-        nodesJoin
-          .merge(group)
-          .attr('transform', (d, i) => {
-            // set x coordinate
-            if (d.depth === previousDepth && i !== 0) {
-              layerIterator += 1;
-              d.data.x = rootOffset[0] + (layerIterator * horizontalDistance);
-            } else {
-              if (log) {
-                // console.log('Create new layer');
-              }
-              d.data.x = rootOffset[0];
-              layerIterator = 0;
-              accumulatedLayerGap += 30;
-            }
-
-            // set y coordinate
-            d.data.y = (LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
-
-            // update previousDepth
-            previousDepth = d.depth;
-
-            // update nodeCoordinates for later use
-            // in drawLinks function
-            graph.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: nodeData[i].size };
-
-            if (log) {
-              // console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
-            }
-
-            return `translate(${d.data.x}, ${d.data.y})`;
-          });
-
-        // append node edges
-        group
-          .append('path')
-          .attr('class', 'node__edge')
-          .attr('d', (d, i) => {
-            if (i > 0) {
-              if (log) {
-                // console.log(0, 0, d.data.x, d.data.y, d.parent.data.x, d.parent.data.y);
-              }
-              return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
-            }
-            return '';
-          });
-
-        // append node to node group
-        group
-          .append('circle')
-          .attr('class', 'node__circle')
-          .attr('cx', 0)
-          .attr('cy', 0)
-          .attr('r', (d, i) => nodeData[i].size * graph.NODE_RADIUS_COEFFICIENT);
-
-        // append labels to node group
-        group
-          .append('text')
-          .attr('class', 'node__text')
-          .attr('text-anchor', 'end')
-          .attr('dx', (d, i) => graph.NODE_RADIUS_COEFFICIENT / 1.5 * nodeData[i].size)
-          .attr('dy', (d, i) => -graph.NODE_RADIUS_COEFFICIENT * nodeData[i].size)
-          .text(d => d.data.id);
+      // check what tree we are updating and
+      // set corresponding offset and horizontal distance
+      if (nodeData.data.id === 'firms') {
+        rootOffset = this.graph.firmsTreeOffset;
+        horizontalDistance = this.graph.firmsTreeDirection * 110;
+      } else if (nodeData.data.id === 'consumers') {
+        rootOffset = this.graph.consumersTreeOffset;
+        horizontalDistance = this.graph.consumersTreeDirection * 110;
       }
 
-      // update nodes after prepping data
-      updateNodes(nodesHierarchy, this.graph);
+      nodeData.descendants()
+        .forEach((d, i) => {
+          // set x coordinate
+          if (d.depth === previousDepth && i !== 0) {
+            layerIterator += 1;
+            d.data.x = rootOffset[0] + (layerIterator * horizontalDistance);
+          } else {
+            d.data.x = rootOffset[0];
+            layerIterator = 0;
+            accumulatedLayerGap += 30;
+          }
+          // set y coordinate
+          d.data.y = (LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
+
+          // update previousDepth
+          previousDepth = d.depth;
+
+          // update nodeCoordinates for later use
+          // in drawLinks function
+          this.graph
+            .nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: d.data.data.size };
+        });
+    },
+    drawNodes(nodeData) {
+      const self = this;
+      const type = (nodeData.data.id === 'firms' ? 'firms' : 'consumers');
+
+      // create joins
+      const nodesJoin = this.graph.stage.selectAll(`.node--${nodeData.data.id}`)
+        .data(nodeData.descendants());
+
+      // exit join
+      nodesJoin.exit().remove();
+
+      // add group elements in enter join
+      const group = nodesJoin.enter()
+        .append('g')
+        .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'node--branch' : 'node--leaf')}`);
+
+      // merge enter join with update
+      // transform nodes to calculated position
+      nodesJoin
+        .merge(group)
+        .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
+            ${self.graph.nodeCoordinates[d.data.id].y})`);
+
+      // // append node edges
+      group
+        .append('path')
+        .attr('class', 'node__edge')
+        .attr('d', (d, i) => {
+          if (i > 0) {
+            return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
+          }
+          return '';
+        });
+
+      // append node to node group
+      group
+        .append('circle')
+        .attr('class', 'node__circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', d => d.data.data.size * self.graph.NODE_RADIUS_COEFFICIENT);
+
+      // append labels to node group
+      group
+        .append('text')
+        .attr('class', 'node__text')
+        .attr('text-anchor', () => {
+          if (type === 'firms') {
+            return 'start';
+          }
+          return 'end';
+        })
+        .attr('dx', (d) => {
+          let offsetConstant = -1.5;
+          if (type === 'firms') {
+            offsetConstant = 1.5;
+          }
+          return self.graph.NODE_RADIUS_COEFFICIENT / offsetConstant * d.data.data.size;
+        })
+        .attr('dy', d => -1 * self.graph.NODE_RADIUS_COEFFICIENT * d.data.data.size)
+        .text(d => d.data.id);
 
       // add click events to nodes
       // this.addClickToNodes();
-
-      if (log) {
-        // console.log('%cend', 'color: deepskyblue;');
-        // console.log(' ');
-      }
-
-      return nodesHierarchy;
     },
     drawLinks(links) {
       if (links.length > 0) {
-        const log = false;
-
-        if (log) {
-          // console.log('%cdrawLinks()', 'color: deepskyblue;');
-        }
-
         let currentSource = links[0].source;
         let currentDestination = links[0].destination;
 
@@ -212,10 +189,6 @@ export default {
               localEdgeCount += 1;
             } else {
               localEdgeCount = 0;
-
-              if (log) {
-                // console.log('%cCreating new group node on iteration ' + i, 'color: pink;');
-              }
               // create new svg group
               // note: first group has already been created
               if (i !== 0) {
@@ -238,21 +211,12 @@ export default {
                 rotationCorrection = -180;
               }
               alpha += rotationCorrection;
-              if (log) {
-                // console.log('Z rotation: ' + Math.round(alpha) + 'deg');
-                // console.log('Delta vector: ' + deltaX + ', ' + deltaY);
-              }
 
               group
                 .attr('transform', `translate(${globalSourceX}, ${globalSourceY}) rotate(${alpha})`);
 
               currentSource = d.source;
               currentDestination = d.destination;
-            }
-
-            if (log) {
-              // console.log('Link ' + i + ' goes from ' + d.source + ' to ' + d.destination);
-              // console.log('Link weight: ' + d.weight);
             }
 
             const radiusSource = this.graph.nodeCoordinates[d.source].size
@@ -273,36 +237,12 @@ export default {
             const cy0 = j * y0;
             const cy1 = j * y1;
 
-            // append bezier control points
-            // group.append('circle')
-            //   .attr('cx', x0)
-            //   .attr('cy', y0)
-            //   .attr('r', 5)
-            //   .attr('fill', 'red');
-            // group.append('circle')
-            //   .attr('cx', x1)
-            //   .attr('cy', y1)
-            //   .attr('r', 10)
-            //   .attr('fill', 'green');
-            // group.append('circle')
-            //   .attr('cx', cx0)
-            //   .attr('cy', cy0)
-            //   .attr('r', 5)
-            //   .attr('fill', 'deepskyblue');
-            // group.append('circle')
-            //   .attr('cx', cx1)
-            //   .attr('cy', cy1)
-            //   .attr('r', 3)
-            //   .attr('fill', 'deepskyblue');
-            // group.append('path').attr('d', `M ${cx0} ${cy0} L ${xSource} ${ySource}`);
-            // group.append('path').attr('d', `M ${cx1} ${cy1} L ${deltaXLocal} 0`);
-
             // append the bezier curve and marker
             group
               .append('path')
               .attr('class', 'link')
               .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
-              .attr('stroke-width', `${d.weight * 2}px`)
+              .attr('stroke-width', `${d.weight}px`)
               .attr('marker-end', () => 'url(#marker)');
           });
 
@@ -320,28 +260,26 @@ export default {
             .attr('markerUnits', 'userSpaceOnUse')
           .append('path')
             .attr('d', 'M0,-5L10,0L0,5');
-
-        if (log) {
-          // console.log('%cend', 'color: deepskyblue;');
-          // console.log(' ');
-        }
       }
     },
   },
   mounted: function() { // eslint-disable-line
     this.graph.stage = d3.select('#stage');
     setTimeout(() => {
-      this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
-      this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
+      this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
+      this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
+
+      // updates global nodeCoordinates
+      this.calculateNodeCoordinates(this.graph.firmNodes);
+      this.calculateNodeCoordinates(this.graph.consumerNodes);
+
       this.drawLinks(this.graphdata.edges);
+
+      this.drawNodes(this.graph.firmNodes);
+      this.drawNodes(this.graph.consumerNodes);
     }, 50);
   },
   updated() {
-    // setTimeout(() => {
-    //   this.graph.firmsTree = this.drawNodes(this.graphdata.firms);
-    //   this.graph.consumersTree = this.drawNodes(this.graphdata.consumers);
-    //   this.drawLinks(this.graphdata.edges);
-    // }, 100);
   },
 };
 </script>
