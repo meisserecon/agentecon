@@ -1,12 +1,43 @@
 <template>
   <div>
-    <h1>Home</h1>
-    Go to <router-link :to="{name: 'trades', query: {sim: 'local', day: 0, agents: 'consumers,firms', step: 1}}">demo trades</router-link>
+    <h1>Simulations</h1>
+
+    <div v-if="loading">Loading...</div>
+
+    <ul v-if="!loading">
+      <li v-for="sim in simulations">
+        <router-link :to="{name: 'trades', query: {sim: sim.path, day: 0, agents: 'consumers,firms', step: 1}}">{{ `${sim.owner} / ${sim.path}` }}</router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+import config from '../config';
+
 export default {
   name: 'home',
+  data() {
+    return {
+      loading: true,
+      simulations: null,
+    };
+  },
+  created() {
+    // get simulations
+    fetch(
+      `${config.apiURL}/list`,
+      config.xhrConfig,
+    )
+    .then(config.handleFetchErrors)
+    .then(response => response.json())
+    .then(
+      (response) => {
+        this.simulations = response.sims;
+        this.loading = false;
+      },
+    )
+    .catch(error => config.alertError(error));
+  },
 };
 </script>

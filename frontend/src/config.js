@@ -10,8 +10,7 @@ export default {
     return response;
   },
   alertError(error) {
-    /* eslint-disable no-alert */
+    // eslint-disable-next-line no-alert
     alert(error);
-    /* eslint-enable no-alert */
   },
 };
