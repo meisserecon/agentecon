@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.agentecon.ISimulation;
-import com.agentecon.agent.IAgents;
 import com.agentecon.web.query.AgentQuery;
 
 public enum ESizeType {
