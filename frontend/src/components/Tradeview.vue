@@ -48,7 +48,6 @@ export default {
     .then(
       (info) => {
         this.simLength = info.days;
-        this.loaded = true;
       },
     )
     .catch(error => config.alertError(error));
@@ -104,6 +103,7 @@ export default {
       .then(
         (tradeGraphData) => {
           this.tradeGraphData = tradeGraphData;
+          this.loaded = true;
         },
       )
       .catch(error => config.alertError(error));
