@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Tradegraph</h1>
     <p>{{ graphdata }}</p>
   </div>
 </template>
