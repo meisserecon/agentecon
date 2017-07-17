@@ -99,20 +99,23 @@ export default {
       this.tradeGraphData = null;
       this.loading = true;
 
-      // TODO: error handling when something breaks on server or network
       fetch(
         `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
         config.xhrConfig,
-      ).then(
+      )
+      .then(config.handleFetchErrors)
+      .then(
         (response) => {
           this.loading = false;
           return response.json();
         },
-      ).then(
+      )
+      .then(
         (tradeGraphData) => {
           this.tradeGraphData = tradeGraphData;
         },
-      );
+      )
+      .catch(error => config.alertError(error));
     },
   },
 };
