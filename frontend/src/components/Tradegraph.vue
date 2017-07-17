@@ -16,20 +16,20 @@ export default {
         stage: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [650, 100],
+        firmsTreeOffset: [1200, 100],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [350, 100],
+        consumersTreeOffset: [900, 100],
         consumersTreeDirection: -1,
         // object that stores coordinates of all nodes
         // used to draw links between nodes
         nodeCoordinates: {},
         NODE_RADIUS: 50,
-        NODE_RADIUS_BASE: 1.5,
-        INTER_LAYER_GAP: 75,
-        INTRA_LAYER_GAP: 15,
-        HORIZONTAL_GAP: 75,
+        NODE_RADIUS_BASE: 1.4,
+        INTER_LAYER_GAP: 50,
+        INTRA_LAYER_GAP: 10,
+        HORIZONTAL_GAP: 50,
       },
     };
   },
@@ -127,15 +127,15 @@ export default {
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'node--branch' : 'node--leaf')}`);
 
       // // append node edges
-      // group
-      //   .append('path')
-      //   .attr('class', 'node__edge')
-      //   .attr('d', (d, i) => {
-      //     if (i > 0) {
-      //       return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
-      //     }
-      //     return '';
-      //   });
+      group
+        .append('path')
+        .attr('class', 'node__edge')
+        .attr('d', (d, i) => {
+          if (i > 0) {
+            return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
+          }
+          return '';
+        });
 
       // append node to node group
       group
@@ -265,8 +265,8 @@ export default {
             const x0 = xSource + (radiusSource * Math.cos((localEdgeCount + 1) * 0.3));
             const y0 = ySource - (radiusSource * Math.sin((localEdgeCount + 1) * 0.3));
             let x1 = deltaXLocal;
-            x1 -= ((radiusDestination + 10) * Math.cos((localEdgeCount + 1) * 0.3));
-            const y1 = -(radiusDestination + 10) * Math.sin((localEdgeCount + 1) * 0.3);
+            x1 -= ((radiusDestination + 8) * Math.cos((localEdgeCount + 1) * 0.3));
+            const y1 = -(radiusDestination + 8) * Math.sin((localEdgeCount + 1) * 0.3);
 
             const cx0 = j * x0;
             const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
@@ -288,10 +288,10 @@ export default {
             .attr('id', 'marker')
             .attr('class', 'marker')
             .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 2)
+            .attr('refX', 0)
             .attr('refY', 0)
-            .attr('markerWidth', 14)
-            .attr('markerHeight', 14)
+            .attr('markerWidth', 10)
+            .attr('markerHeight', 10)
             .attr('orient', 'auto')
             .attr('markerUnits', 'userSpaceOnUse')
           .append('path')
@@ -307,7 +307,7 @@ $blue:                                     #33ccff
 $coral:                                    #ff6557
 $green:                                    #97e582
 $grey:                                     #676767
-$light-grey:                               #cccccc
+$light-grey:                        rgba(0,0,0,.3)
 
 body
   margin: 20px
@@ -319,13 +319,13 @@ h1
 
 .tradegraph
   width: 100%
-  height: 1000px
+  height: 1400px
   background-color: white
 
 .node
 
   &__edge
-    stroke-width: 2px
+    stroke-width: 1px
     opacity: .3
 
   &__text
@@ -339,7 +339,6 @@ h1
         fill: $coral
       &__edge
         stroke: $coral
-        stroke: black
 
   &--consumers
     .node
@@ -347,7 +346,6 @@ h1
         fill: $blue
       &__edge
         stroke: $blue
-        stroke: black
 
   &--branch
     cursor: pointer
