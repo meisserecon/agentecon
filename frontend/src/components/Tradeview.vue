@@ -2,39 +2,16 @@
   <div>
     <h1>Tradeview</h1>
 
-    <div class="loading" v-if="loading">
+    <div v-if="loading">
       Loading...
     </div>
 
-    <div class="graph" v-if="tradeGraphData">
-
-      <table>
-        <tr>
-          <td>Simulation</td>
-          <td>{{ simulationId }}</td>
-        </tr>
-        <tr>
-        <td>Day</td>
-          <td>{{ simulationDay }}</td>
-        </tr>
-        <tr>
-        <td>Agents</td>
-          <td>{{ simulationAgents }}</td>
-        </tr>
-        <tr>
-        <td>Step</td>
-          <td>{{ simulationStep }}</td>
-        </tr>
-      </table>
-
-      <button v-if="simulationDay > 0" @click="prevDay">-1</button>
-      <button v-if="simulationDay < simulationLength" @click="nextDay">+1</button>
-      <button v-if="simulationDay < simulationLength" @click="playing = !playing">{{ playing ? '||' : '>' }}</button>
-      <button v-if="simulationDay > 0" @click="simulationDay = 0"><<</button>
-
-      <input v-model.number="simulationDay">
-
-      <p>{{ tradeGraphData }}</p>
+    <div v-if="tradeGraphData">
+      <button v-if="simDay > 0" @click="prevStep"><</button>
+      <button v-if="simDay < simLength" @click="nextStep">></button>
+      <button v-if="simDay < simLength" @click="playing = !playing">{{ playing ? '||' : '|>' }}</button>
+      <button v-if="simDay > 0" @click="simDay = 0"><<</button>
+      <input v-model.number="simDay">
     </div>
 
     <tradegraph :graphdata="tradeGraphData"></tradegraph>
@@ -57,12 +34,12 @@ export default {
       loading: false,
       playing: false,
       playInterval: null,
-      simulationId: this.$route.query.sim,
-      simulationDay: parseInt(this.$route.query.day, 10),
-      simulationAgents: this.$route.query.agents,
-      simulationStep: parseInt(this.$route.query.step, 10),
+      simId: this.$route.query.sim,
+      simDay: parseInt(this.$route.query.day, 10),
+      simAgents: this.$route.query.agents,
+      simStep: parseInt(this.$route.query.step, 10),
       // TODO: retrieve proper simulation length from API
-      simulationLength: 25,
+      simLength: 25,
     };
   },
   created() {
@@ -75,33 +52,33 @@ export default {
     $route: 'fetchData',
     playing() {
       if (this.playing) {
-        this.playInterval = setInterval(this.nextDay, 1500);
+        this.playInterval = setInterval(this.nextStep, 100);
       } else {
         clearInterval(this.playInterval);
       }
     },
-    simulationDay() {
+    simDay() {
       this.goToNewDay();
     },
   },
   methods: {
-    nextDay() {
-      this.simulationDay = Math.min(this.simulationDay + 1, this.simulationLength);
-      if (this.simulationDay === this.simulationLength) {
+    nextStep() {
+      this.simDay = Math.min(this.simDay + this.simStep, this.simLength);
+      if (this.simDay === this.simLength) {
         this.playing = false;
       }
     },
-    prevDay() {
-      this.simulationDay = Math.max(this.simulationDay - 1, 0);
+    prevStep() {
+      this.simDay = Math.max(this.simDay - this.simStep, 0);
     },
     goToNewDay() {
       this.$router.replace({
         name: 'trades',
         query: {
-          sim: this.simulationId,
-          day: this.simulationDay,
-          agents: this.simulationAgents,
-          step: this.simulationStep,
+          sim: this.simId,
+          day: this.simDay,
+          agents: this.simAgents,
+          step: this.simStep,
         },
       });
     },
@@ -116,7 +93,7 @@ export default {
 
       // TODO: error handling when something breaks on server or network
       fetch(
-        `${this.apiUrl}/tradegraph?sim=${this.simulationId}&day=${this.simulationDay}&agents=${this.simulationAgents}&step=${this.simulationStep}`,
+        `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
         xhrConfig,
       ).then(
         (response) => {
