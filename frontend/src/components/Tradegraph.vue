@@ -25,6 +25,7 @@ export default {
         // used to draw links between nodes
         nodeCoordinates: {},
         NODE_RADIUS: 50,
+        NODE_RADIUS_COEFFICIENT: 5,
       },
     };
   },
@@ -110,7 +111,7 @@ export default {
 
             // update nodeCoordinates for later use
             // in drawLinks function
-            graph.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y };
+            graph.nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: nodeData[i].size };
 
             if (log) {
               // console.log(d.data.id + ' vector: ' + d.data.x + ', ' + d.data.y);
@@ -139,14 +140,15 @@ export default {
           .attr('class', 'node__circle')
           .attr('cx', 0)
           .attr('cy', 0)
-          .attr('r', graph.NODE_RADIUS);
+          .attr('r', (d, i) => nodeData[i].size * graph.NODE_RADIUS_COEFFICIENT);
 
         // append labels to node group
         group
           .append('text')
           .attr('class', 'node__text')
-          .attr('text-anchor', 'middle')
-          .attr('dy', 5)
+          .attr('text-anchor', 'left')
+          .attr('dx', (d, i) => graph.NODE_RADIUS_COEFFICIENT / 1.5 * nodeData[i].size)
+          .attr('dy', (d, i) => -graph.NODE_RADIUS_COEFFICIENT * nodeData[i].size)
           .text(d => d.data.id);
       }
 
@@ -253,14 +255,18 @@ export default {
               // console.log('Link weight: ' + d.weight);
             }
 
+            const radiusSource = this.graph.nodeCoordinates[d.source].size
+              * this.graph.NODE_RADIUS_COEFFICIENT || this.graph.NODE_RADIUS;
+            const radiusDestination = this.graph.nodeCoordinates[d.destination].size
+              * this.graph.NODE_RADIUS_COEFFICIENT || this.graph.NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
-            const x0 = xSource + (this.graph.NODE_RADIUS * Math.cos((localEdgeCount + 1) * 0.3));
-            const y0 = ySource - (this.graph.NODE_RADIUS * Math.sin((localEdgeCount + 1) * 0.3));
+            const x0 = xSource + (radiusSource * Math.cos((localEdgeCount + 1) * 0.3));
+            const y0 = ySource - (radiusSource * Math.sin((localEdgeCount + 1) * 0.3));
             let x1 = deltaXLocal;
-            x1 -= ((this.graph.NODE_RADIUS + 10) * Math.cos((localEdgeCount + 1) * 0.3));
-            const y1 = -(this.graph.NODE_RADIUS + 10) * Math.sin((localEdgeCount + 1) * 0.3);
+            x1 -= ((radiusDestination + 10) * Math.cos((localEdgeCount + 1) * 0.3));
+            const y1 = -(radiusDestination + 10) * Math.sin((localEdgeCount + 1) * 0.3);
 
             const cx0 = j * x0;
             const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
@@ -307,7 +313,7 @@ export default {
             .attr('id', 'marker')
             .attr('class', 'marker')
             .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 1)
+            .attr('refX', 2)
             .attr('refY', 0)
             .attr('markerWidth', 14)
             .attr('markerHeight', 14)
@@ -345,6 +351,7 @@ $blue:                                     #33ccff
 $coral:                                    #ff6557
 $green:                                    #97e582
 $grey:                                     #676767
+$light-grey:                               #cccccc
 
 body
   margin: 20px
@@ -362,13 +369,13 @@ h1
 .node
 
   &__link
-    stroke-width: 5px
+    stroke-width: 2px
     opacity: .3
 
   &__text
     font: bold 14px/1 Helvetica, Arial sans-serif
     text-transform: uppercase
-    fill: white
+    fill: $grey
 
   &--firms
     .node
@@ -401,7 +408,7 @@ h1
 
 .link
   fill: none
-  stroke: $grey
+  stroke: $light-grey
   // animation: pulsate 3s
   animation-iteration-count: infinite
   &:hover
@@ -441,7 +448,7 @@ h1
     animation-delay: 1.9s
 
 .marker
-  fill: $grey
+  fill: $light-grey
   stroke-width: 2px
 
 @keyframes pulsate
