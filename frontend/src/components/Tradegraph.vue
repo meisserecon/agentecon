@@ -57,6 +57,9 @@ export default {
       this.drawNodes(this.graph.firmNodes);
       this.drawNodes(this.graph.consumerNodes);
     },
+    addClickToNodes() {
+      d3.selectAll('.node').on('click', el => this.$emit('nodeclicked', el.data.id));
+    },
     stratifyData(nodeData) {
       // stratify data
       const treeData = d3.stratify()
@@ -182,7 +185,7 @@ export default {
         .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)));
 
       // add click events to nodes
-      // this.addClickToNodes();
+      this.addClickToNodes();
     },
     drawLinks(links) {
       // remove all groups and defs
