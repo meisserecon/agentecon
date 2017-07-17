@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>{{ graphdata }}</p>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 </template>
@@ -30,6 +29,36 @@ export default {
         NODE_RADIUS_COEFFICIENT: 3,
       },
     };
+  },
+  mounted() {
+    this.graph.stage = d3.select('#stage');
+
+    this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
+    this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
+
+    // updates global nodeCoordinates
+    this.calculateNodeCoordinates(this.graph.firmNodes);
+    this.calculateNodeCoordinates(this.graph.consumerNodes);
+
+    this.drawLinks(this.graphdata.edges);
+
+    this.drawNodes(this.graph.firmNodes);
+    this.drawNodes(this.graph.consumerNodes);
+  },
+  watch: {
+    graphdata() {
+      this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
+      this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
+
+      // updates global nodeCoordinates
+      this.calculateNodeCoordinates(this.graph.firmNodes);
+      this.calculateNodeCoordinates(this.graph.consumerNodes);
+
+      this.drawLinks(this.graphdata.edges);
+
+      this.drawNodes(this.graph.firmNodes);
+      this.drawNodes(this.graph.consumerNodes);
+    },
   },
   methods: {
     stratifyData(nodeData) {
@@ -262,24 +291,6 @@ export default {
             .attr('d', 'M0,-5L10,0L0,5');
       }
     },
-  },
-  mounted: function() { // eslint-disable-line
-    this.graph.stage = d3.select('#stage');
-    setTimeout(() => {
-      this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
-      this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
-
-      // updates global nodeCoordinates
-      this.calculateNodeCoordinates(this.graph.firmNodes);
-      this.calculateNodeCoordinates(this.graph.consumerNodes);
-
-      this.drawLinks(this.graphdata.edges);
-
-      this.drawNodes(this.graph.firmNodes);
-      this.drawNodes(this.graph.consumerNodes);
-    }, 50);
-  },
-  updated() {
   },
 };
 </script>
