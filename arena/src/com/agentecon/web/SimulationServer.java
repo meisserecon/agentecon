@@ -10,14 +10,13 @@ import org.nanohttpd.protocols.http.response.Status;
 
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
-import com.agentecon.web.data.JsonData;
 import com.agentecon.web.methods.AgentsMethod;
 import com.agentecon.web.methods.ChildrenMethod;
+import com.agentecon.web.methods.DownloadCSVMethod;
 import com.agentecon.web.methods.InfoMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.MetricsMethod;
-import com.agentecon.web.methods.Parameters;
 import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.SizeTypesMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
@@ -47,6 +46,7 @@ public class SimulationServer extends FileServer {
 		this.methods.add(new TradeGraphMethod(this.simulations));
 		this.methods.add(new ChildrenMethod(this.simulations));
 		this.methods.add(new RankingMethod(this.simulations));
+		this.methods.add(new DownloadCSVMethod(this.simulations));
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public class SimulationServer extends FileServer {
 				String methodName = tok.nextToken();
 				WebApiMethod calledMethod = methods.getMethod(methodName);
 				if (calledMethod != null) {
-					JsonData answer = calledMethod.execute(tok, new Parameters(session));
-					return serve(session, answer);
+					return calledMethod.execute(session);
 				} else {
 					return super.serve(session);
 				}
@@ -86,12 +85,6 @@ public class SimulationServer extends FileServer {
 //			return super.serve(session, "sim.html");
 //		}
 //	}
-
-	protected Response serve(IHTTPSession session, JsonData json) {
-		Response res = Response.newFixedLengthResponse(Status.OK, getMimeTypeForFile(".json"), json.getJson());
-		res.addHeader("Access-Control-Allow-Origin", "*");
-		return res;
-	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		SimulationServer server = new SimulationServer(8080);

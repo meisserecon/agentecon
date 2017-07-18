@@ -8,21 +8,25 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.ConsumerRanking;
-import com.agentecon.metric.Rank;
 import com.agentecon.util.LogClock;
+import com.agentecon.web.methods.Rank;
+import com.agentecon.web.methods.UtilityRanking;
 
 public class SimulationStepper {
 
-	private AtomicReference<ConsumerRanking> ranking;
+	private AtomicReference<UtilityRanking> ranking;
 	private AtomicReference<ISimulation> simulation;
 	private AtomicReference<SimulationLoader> loader;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
 		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
 		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
-		this.ranking = new AtomicReference<ConsumerRanking>(createRanking(loader.get().loadSimulation()));
+		this.ranking = new AtomicReference<UtilityRanking>(createRanking(loader.get().loadSimulation()));
 //		this.enablePeriodicUpdate();
+	}
+	
+	public ISimulation getNewSimulationInstance() throws IOException{
+		return this.loader.get().loadSimulation();
 	}
 	
 	public ISimulation getSimulation() throws IOException {
@@ -77,8 +81,8 @@ public class SimulationStepper {
 		}
 	}
 
-	private ConsumerRanking createRanking(ISimulation sim) {
-		ConsumerRanking ranking = new ConsumerRanking();
+	private UtilityRanking createRanking(ISimulation sim) {
+		UtilityRanking ranking = new UtilityRanking();
 		sim.addListener(ranking);
 		sim.run();
 		return ranking;

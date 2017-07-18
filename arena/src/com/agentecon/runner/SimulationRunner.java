@@ -5,25 +5,22 @@ package com.agentecon.runner;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import com.agentecon.IIteratedSimulation;
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgents;
-import com.agentecon.classloader.LocalSimulationHandle;
-import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.Demographics;
-import com.agentecon.metric.DividendStats;
-import com.agentecon.metric.MarketStats;
-import com.agentecon.metric.MonetaryStats;
-import com.agentecon.metric.OwnershipStats;
 import com.agentecon.metric.SimStats;
-import com.agentecon.metric.StockMarketStats;
-import com.agentecon.metric.SubstanceStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Correlator;
 import com.agentecon.metric.series.TimeSeries;
+import com.agentecon.metric.variants.Demographics;
+import com.agentecon.metric.variants.DividendStats;
+import com.agentecon.metric.variants.MarketStats;
+import com.agentecon.metric.variants.MonetaryStats;
+import com.agentecon.metric.variants.OwnershipStats;
+import com.agentecon.metric.variants.StockMarketStats;
+import com.agentecon.metric.variants.ValuationStats;
 import com.agentecon.sim.SimulationConfig;
 
 public class SimulationRunner {
@@ -37,14 +34,12 @@ public class SimulationRunner {
 	private IIteratedSimulation iter;
 	private ArrayList<SimStats> stats;
 	private ArrayList<SimStats> latestRunStats;
-	private ArrayList<OverallStats> overallStats;
 
 	private ByteArrayOutputStream output;
 
 	public SimulationRunner(ISimulation sim) {
 		this.sim = sim;
 		this.stats = new ArrayList<>();
-		this.overallStats = new ArrayList<>();
 		this.latestRunStats = new ArrayList<>();
 
 		IAgents agents = sim.getAgents();
@@ -58,7 +53,7 @@ public class SimulationRunner {
 			this.stats.add(mstats);
 			StockMarketStats sstats = new StockMarketStats(agents);
 			this.stats.add(sstats);
-			this.stats.add(new SubstanceStats(agents, sstats, mstats));
+			this.stats.add(new ValuationStats(agents));
 			this.stats.add(new OwnershipStats(agents));
 			this.stats.add(new DividendStats(agents));
 			this.stats.add(new MonetaryStats(agents));
@@ -70,7 +65,6 @@ public class SimulationRunner {
 			}
 		}
 		this.latestRunStats.addAll(stats);
-		this.stats.addAll(overallStats);
 		this.output = new ByteArrayOutputStream();
 	}
 

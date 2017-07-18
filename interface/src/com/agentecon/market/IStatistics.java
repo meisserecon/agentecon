@@ -10,11 +10,15 @@ package com.agentecon.market;
 
 import java.util.Random;
 
+import com.agentecon.util.Average;
+
 public interface IStatistics {
 	
 	public int getDay();
 	
 	public Random getRandomNumberGenerator();
+	
+	public Average getAverageUtility();
 	
 	public IMarketStatistics getGoodsMarketStats();
 	

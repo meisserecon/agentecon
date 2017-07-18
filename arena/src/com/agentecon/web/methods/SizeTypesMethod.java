@@ -17,7 +17,7 @@ import com.agentecon.web.graph.ESizeType;
 public class SizeTypesMethod extends WebApiMethod {
 
 	@Override
-	protected JsonData doExecute(Parameters params) throws IOException {
+	protected JsonData getJsonAnswer(Parameters params) throws IOException {
 		return new SizeTypes();
 	}
 	

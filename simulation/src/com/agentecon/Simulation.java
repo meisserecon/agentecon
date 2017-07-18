@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
-import com.agentecon.configuration.CobbDougConfiguration;
 import com.agentecon.configuration.FarmingConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
@@ -23,10 +22,11 @@ import com.agentecon.sim.Event;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
+import com.agentecon.util.Average;
 import com.agentecon.world.Country;
 
 // The world
-public class Simulation implements ISimulation, IStatistics, IIteratedSimulation {
+public class Simulation implements ISimulation, IIteratedSimulation {
 
 	private IConfiguration metaConfig;
 
@@ -105,7 +105,33 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	}
 
 	public IStatistics getStatistics() {
-		return this;
+		return new IStatistics() {
+			
+			@Override
+			public IMarketStatistics getGoodsMarketStats() {
+				return goodsMarketStats;
+			}
+
+			@Override
+			public IMarketStatistics getStockMarketStats() {
+				return stocks.getStats();
+			}
+
+			@Override
+			public Random getRandomNumberGenerator() {
+				return world.getRand();
+			}
+			
+			@Override
+			public int getDay() {
+				return Simulation.this.getDay();
+			}
+			
+			@Override
+			public Average getAverageUtility() {
+				return world.getAverageUtility();
+			}
+		};
 	}
 
 	public int getDay() {
@@ -158,21 +184,6 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	@Override
 	public String toString() {
 		return "Simulation at day " + day + " with " + world.getAgents().getAgents().size() + " agents";
-	}
-
-	@Override
-	public IMarketStatistics getGoodsMarketStats() {
-		return goodsMarketStats;
-	}
-
-	@Override
-	public IMarketStatistics getStockMarketStats() {
-		return stocks.getStats();
-	}
-
-	@Override
-	public Random getRandomNumberGenerator() {
-		return world.getRand();
 	}
 
 }

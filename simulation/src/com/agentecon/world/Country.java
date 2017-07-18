@@ -20,12 +20,14 @@ import com.agentecon.research.IFounder;
 import com.agentecon.research.IInnovation;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
+import com.agentecon.util.Average;
 
 public class Country implements ICountry {
 
 	private int day;
 	private Good money;
 	private Random rand;
+	private Average utility;
 	private Agents agents, backup;
 	private long randomBaseSeed;
 	private IInnovation innovation;
@@ -34,6 +36,7 @@ public class Country implements ICountry {
 	public Country(SimulationConfig config, SimulationListeners listeners) {
 		this.money = config.getMoney();
 		this.listeners = listeners;
+		this.utility = new Average();
 		this.randomBaseSeed = config.getSeed() + 123123453;
 		this.rand = new Random(config.getSeed());
 		this.agents = new Agents(listeners, rand.nextLong(), 1);
@@ -116,11 +119,12 @@ public class Country implements ICountry {
 		Portfolio inheritance = new Portfolio(inheritedMoney);
 		Collection<IConsumer> consumers = agents.getConsumers();
 		Iterator<IConsumer> iter = consumers.iterator();
-		double util = 0.0;
+		utility = new Average();
 		while (iter.hasNext()) {
 			IConsumer c = iter.next();
 			assert c.isAlive();
-			util += c.consume();
+			double util = c.consume();
+			utility.add(util);
 			c.age(inheritance);
 		}
 		for (Position pos : inheritance.getPositions()) {
@@ -132,7 +136,7 @@ public class Country implements ICountry {
 		
 		dismantleFirms(stats);
 
-		listeners.notifyDayEnded(day, util / consumers.size());
+		listeners.notifyDayEnded(stats);
 	}
 
 	public void startTransaction() {
@@ -164,6 +168,10 @@ public class Country implements ICountry {
 	@Override
 	public int createUniqueAgentId() {
 		return agents.createUniqueAgentId();
+	}
+
+	public Average getAverageUtility() {
+		return utility;
 	}
 
 }

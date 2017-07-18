@@ -4,6 +4,7 @@ package com.agentecon.sim;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.market.IMarket;
+import com.agentecon.market.IStatistics;
 import com.agentecon.util.AbstractListenerList;
 
 public class SimulationListeners extends AbstractListenerList<ISimulationListener> implements ISimulationListener {
@@ -21,11 +22,11 @@ public class SimulationListeners extends AbstractListenerList<ISimulationListene
 			l.notifyDayStarted(day);
 		}
 	}
-
+	
 	@Override
-	public void notifyDayEnded(int day, double utility) {
+	public void notifyDayEnded(IStatistics stats) {
 		for (ISimulationListener l: list){
-			l.notifyDayEnded(day, utility);
+			l.notifyDayEnded(stats);
 		}
 	}
 
@@ -56,5 +57,5 @@ public class SimulationListeners extends AbstractListenerList<ISimulationListene
 			l.notifyAgentDied(agent);
 		}	
 	}
-	
+
 }

@@ -23,7 +23,7 @@ public class MethodsMethod extends WebApiMethod {
 	}
 
 	public void add(WebApiMethod method) {
-		this.methods.put(method.getKeyword(), method);
+		this.methods.put(method.getName(), method);
 	}
 
 	public WebApiMethod getMethod(String name) {
@@ -31,7 +31,7 @@ public class MethodsMethod extends WebApiMethod {
 	}
 
 	@Override
-	public JsonData doExecute(Parameters params) {
+	public JsonData getJsonAnswer(Parameters params) {
 		return new MethodList();
 	}
 	

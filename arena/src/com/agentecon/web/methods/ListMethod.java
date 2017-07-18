@@ -43,7 +43,7 @@ public class ListMethod extends WebApiMethod {
 	}
 
 	@Override
-	public JsonData doExecute(Parameters params) {
+	public JsonData getJsonAnswer(Parameters params) {
 		return new SimulationList(handles.values());
 	}
 

@@ -80,7 +80,7 @@ public class PriceMetric extends SimulationListenerAdapter implements IMarketLis
 	}
 
 	@Override
-	public void notifyDayEnded(int day, double utility) {
+	public void notifyDayEnded(int day) {
 		if (day == startRecordingDate) {
 			notifyTradesCancelled();
 			if (verbose) {

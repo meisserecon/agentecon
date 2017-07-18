@@ -10,6 +10,7 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 
+import com.agentecon.metric.EMetrics;
 import com.agentecon.web.data.JsonData;
 
 public class MetricsMethod extends WebApiMethod {
@@ -19,19 +20,20 @@ public class MetricsMethod extends WebApiMethod {
 	}
 
 	@Override
-	protected JsonData doExecute(Parameters params) throws IOException {
-		return new Metrics();
+	protected JsonData getJsonAnswer(Parameters params) throws IOException {
+		return new Metrics(EMetrics.values());
 	}
 
 	class Metrics extends JsonData {
 
-		public EMetrics[] metrics = EMetrics.values();
+		public String[] metrics;
+		
+		public Metrics(EMetrics[] metrics){
+			this.metrics = new String[metrics.length];
+			for (int i=0; i<metrics.length; i++){
+				this.metrics[i] = metrics[i].name().toLowerCase();
+			}
+		}
 	}
-
-}
-
-enum EMetrics {
-	
-	PRODUCTION, UTILITY;
 
 }

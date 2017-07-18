@@ -9,46 +9,67 @@
 package com.agentecon.web.methods;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
+
+import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.http.response.Response;
+import org.nanohttpd.protocols.http.response.Status;
 
 import com.agentecon.util.LogClock;
 import com.agentecon.web.data.JsonData;
 
 public abstract class WebApiMethod {
-	
+
 	public final static String PLACE_HOLDER = "#NAME";
-	
+
 	public String name;
 	public String examplePath;
-	
-	public WebApiMethod(){
-		String className = getClass().getSimpleName();
-		this.name = className.substring(0, className.length() - "Method".length()).toLowerCase();
+
+	public WebApiMethod() {
+		this.name = deriveName();
 		this.examplePath = createExamplePath();
 	}
 
-	protected String createExamplePath() {
-		return this.name;
+	protected String deriveName() {
+		String className = getClass().getSimpleName();
+		return className.substring(0, className.length() - "Method".length()).toLowerCase();
 	}
 
-	public String getKeyword() {
+	protected String createExamplePath() {
+		return getName();
+	}
+
+	public final String getName() {
 		return name;
 	}
 
-	public final JsonData execute(StringTokenizer path, Parameters params) throws IOException {
+	public final Response execute(IHTTPSession session) throws IOException {
 		LogClock clock = new LogClock();
+		Parameters params = new Parameters(session);
 		try {
-			return doExecute(params);
+			return execute(session, params);
 		} finally {
 			clock.time("Executed " + toString() + " with " + params);
 		}
 	}
-	
-	protected abstract JsonData doExecute(Parameters params) throws IOException;
+
+	public Response execute(IHTTPSession session, Parameters params) throws IOException {
+		JsonData answer = getJsonAnswer(params);
+		return serveJson(session, answer);
+	}
+
+	protected Response serveJson(IHTTPSession session, JsonData json) {
+		Response res = Response.newFixedLengthResponse(Status.OK, "application/json", json.getJson());
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		return res;
+	}
+
+	protected JsonData getJsonAnswer(Parameters params) throws IOException {
+		throw new RuntimeException("Not implemented");
+	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return name;
 	}
-	
+
 }
