@@ -189,5 +189,10 @@ public class AgentQuery {
 	public int compareTo(AgentQuery query) {
 		return type.ordinal() - query.type.ordinal();
 	}
+	
+	@Override
+	public String toString(){
+		return query;
+	}
 
 }

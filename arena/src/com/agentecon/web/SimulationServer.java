@@ -17,6 +17,7 @@ import com.agentecon.web.methods.InfoMethod;
 import com.agentecon.web.methods.ListMethod;
 import com.agentecon.web.methods.MethodsMethod;
 import com.agentecon.web.methods.MetricsMethod;
+import com.agentecon.web.methods.MiniChartMethod;
 import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.SizeTypesMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
@@ -47,6 +48,7 @@ public class SimulationServer extends FileServer {
 		this.methods.add(new ChildrenMethod(this.simulations));
 		this.methods.add(new RankingMethod(this.simulations));
 		this.methods.add(new DownloadCSVMethod(this.simulations));
+		this.methods.add(new MiniChartMethod(this.simulations));
 	}
 
 	@Override
