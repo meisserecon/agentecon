@@ -21,7 +21,7 @@
       </select>
       <a v-if="selectedMetric" :href="`${apiUrl}/getMetric?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
 
-      <tradegraph :graphdata="tradeGraphData"></tradegraph>
+      <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked"></tradegraph>
     </div>
   </div>
 </template>
@@ -45,6 +45,7 @@ export default {
       metrics: [
         'ALL',
       ],
+      selectedNode: null,
       selectedMetric: '',
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
@@ -100,6 +101,9 @@ export default {
     simDay() {
       this.goToNewDay();
     },
+    selectedNode() {
+
+    },
   },
   methods: {
     nextStep() {
@@ -119,6 +123,7 @@ export default {
           day: this.simDay,
           agents: this.simAgents,
           step: this.simStep,
+          selected: this.selectedNode,
         },
       });
     },
@@ -137,6 +142,14 @@ export default {
         },
       )
       .catch(error => config.alertError(error));
+    },
+    handleNodeClicked(node) {
+      if (this.selectedNode && this.selectedNode === node) {
+        this.selectedNode = null;
+      } else {
+        this.selectedNode = node;
+      }
+      this.goToNewDay();
     },
   },
 };

@@ -9,7 +9,7 @@ import * as d3 from 'd3';
 
 export default {
   name: 'tradegraph',
-  props: ['graphdata'],
+  props: ['graphdata', 'selectednode'],
   data() {
     return {
       graph: {
