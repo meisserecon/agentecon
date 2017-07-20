@@ -59,6 +59,8 @@ export default {
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', el => this.$emit('nodeclicked', el.data.id));
+      d3.selectAll('.childrenselection').on('click', el => this.$emit('showchildren', el.data.id));
+      d3.selectAll('.infoselection').on('click', el => this.$emit('showinfo', el.data.id));
     },
     stratifyData(nodeData) {
       // stratify data
@@ -159,6 +161,23 @@ export default {
           return 'end';
         })
         .text(d => d.data.id);
+
+      // TODO: add proper UI element to select children
+      group
+        .append('circle')
+        .attr('class', 'childrenselection')
+        .attr('r', '4px')
+        .attr('cx', '-20px')
+        .attr('cy', '-10px');
+
+      // TODO: add proper UI element to select info
+      group
+        .append('circle')
+        .attr('class', 'infoselection')
+        .attr('r', '4px')
+        .attr('cx', '-20px')
+        .attr('cy', '10px');
+
 
       // merge enter join with update
       // transform nodes to calculated position

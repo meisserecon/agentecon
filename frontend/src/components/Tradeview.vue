@@ -21,19 +21,27 @@
       </select>
       <a v-if="selectedMetric" :href="`${apiUrl}/getMetric?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
 
-      <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked"></tradegraph>
+      <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
+
+      <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes"></childselection>
+
+      <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId"></nodeinfo>
     </div>
   </div>
 </template>
 
 <script>
 import Tradegraph from '@/components/Tradegraph';
+import Childselection from '@/components/Childselection';
+import Nodeinfo from '@/components/Nodeinfo';
 import config from '../config';
 
 export default {
   name: 'tradeview',
   components: {
     Tradegraph,
+    Childselection,
+    Nodeinfo,
   },
   data() {
     return {
@@ -46,6 +54,10 @@ export default {
         'ALL',
       ],
       selectedNode: this.$route.query.selected,
+      showNodeInfo: false,
+      infoOf: null,
+      showChildSelection: false,
+      childrenOf: null,
       selectedMetric: '',
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
@@ -101,8 +113,8 @@ export default {
     simDay() {
       this.goToNewDay();
     },
-    selectedNode() {
-
+    simAgents() {
+      this.goToNewDay();
     },
   },
   methods: {
@@ -150,6 +162,17 @@ export default {
         this.selectedNode = node;
       }
       this.goToNewDay();
+    },
+    handleShowInfo(node) {
+      this.infoOf = node;
+      this.showNodeInfo = true;
+    },
+    handleShowChildren(node) {
+      this.childrenOf = node;
+      this.showChildSelection = true;
+    },
+    handleSetActiveNodes(nodes) {
+      this.simAgents = nodes;
     },
   },
 };
