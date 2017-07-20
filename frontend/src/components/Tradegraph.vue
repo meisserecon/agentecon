@@ -127,7 +127,8 @@ export default {
 
       const group = nodesEnterJoin
         .append('g')
-        .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'node--branch' : 'node--leaf')}`);
+        .attr('id', d => d.data.id)
+        .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')} ${(this.selectednode && d.data.id !== this.selectednode ? 'node--out' : '')}`);
 
       // // append node edges
       group
@@ -350,7 +351,11 @@ h1
       &__edge
         stroke: $blue
 
-  &--branch
+  &--out
+    fill-opacity: .1
+    stroke-opacity: .1
+
+  &.branch
     cursor: pointer
     .node
       &__circle

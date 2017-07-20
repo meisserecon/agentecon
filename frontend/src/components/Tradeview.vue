@@ -45,7 +45,7 @@ export default {
       metrics: [
         'ALL',
       ],
-      selectedNode: null,
+      selectedNode: this.$route.query.selected,
       selectedMetric: '',
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
