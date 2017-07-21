@@ -24,8 +24,10 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	private ISimulation simulation;
 	private HashMap<Edge, Edge> edges;
 	private ArrayList<Node> firms, consumers;
+	private SelectionRecommendation selection;
 
 	public TradeGraph(ISimulation simulation, List<String> agents) {
+		this.selection = new SelectionRecommendation(simulation);
 		this.firms = new ArrayList<>();
 		this.consumers = new ArrayList<>();
 		this.edges = new HashMap<>();
@@ -64,18 +66,20 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 			edge.finish(days);
 		}
 		this.simulation.removeListener(this);
-		return new TradeGraphData(firms, consumers, edges.values());
+		return new TradeGraphData(firms, consumers, edges.values(), selection.getNewNodeSuggestions(simulation));
 	}
 
 	class TradeGraphData extends JsonData {
 
 		public Collection<Node> firms, consumers;
 		public ArrayList<Edge> edges;
+		public Collection<String> hint;
 
-		public TradeGraphData(ArrayList<Node> firms, ArrayList<Node> consumers, Collection<Edge> values) {
+		public TradeGraphData(ArrayList<Node> firms, ArrayList<Node> consumers, Collection<Edge> values, Collection<String> newTypes) {
 			this.firms = firms;
 			this.consumers = consumers;
 			this.edges = new ArrayList<>(values);
+			this.hint = newTypes;
 			Collections.sort(edges);
 		}
 
