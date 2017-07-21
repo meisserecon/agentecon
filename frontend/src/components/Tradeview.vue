@@ -193,6 +193,7 @@ export default {
   align-items: stretch
 
   &__tradegraph
+    position: relative
     flex-basis: 0
     flex-grow: 1
 

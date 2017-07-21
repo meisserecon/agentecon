@@ -1,6 +1,13 @@
 <template>
   <div>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="contextmenu" class="contextmenu">
+      <ul class="contextmenu__list">
+        <li class="contextmenu__item"><button class="contextmenu__btn">Add Minichart</button></li>
+        <li class="contextmenu__item"><button id='infoselection' class="contextmenu__btn">Show Info</button></li>
+        <li class="contextmenu__item"><button id='childrenselection' class="contextmenu__btn">Expand/Collapse Children</button></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -58,9 +65,21 @@ export default {
       this.drawNodes(this.graph.consumerNodes);
     },
     addClickToNodes() {
-      d3.selectAll('.node').on('click', el => this.$emit('nodeclicked', el.data.id));
-      d3.selectAll('.childrenselection').on('click', el => this.$emit('showchildren', el.data.id));
-      d3.selectAll('.infoselection').on('click', el => this.$emit('showinfo', el.data.id));
+      d3.selectAll('.node').on('click', (el) => {
+        const element = el;
+
+        // emit click to parent to stop simulation
+        this.$emit('nodeclicked', el.data.id);
+
+        // TODO: show context menu
+        d3.select('#contextmenu')
+          .classed('in', true)
+          .style('left', `${el.data.x}px`)
+          .style('top', `${el.data.y}px`);
+
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', element.data.id));
+        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', element.data.id));
+      });
     },
     stratifyData(nodeData) {
       // stratify data
@@ -477,6 +496,26 @@ h1
 .marker
   fill: $light-grey
   stroke-width: 2px
+
+.contextmenu
+  position: absolute
+  left: -1000em
+  top: 0
+  display: inline-block
+  padding: 10px
+  border: 3px solid black
+  box-shadow: 0 0 4px rgba(0,0,0,.2)
+  border-radius: 7px
+  background-color: white
+  opacity: 0
+  transition: opacity .2s
+  &.in
+    opacity: 1
+
+  &__list
+    padding: 0
+    margin: 0
+    list-style-type: none
 
 @keyframes pulsate
   0%
