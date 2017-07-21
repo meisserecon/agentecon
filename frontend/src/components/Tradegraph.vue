@@ -144,13 +144,11 @@ export default {
         });
 
       // append node to node group
-      const color = d3.scaleOrdinal(d3.schemeCategory10);
       group
         .append('circle')
         .attr('class', 'node__circle')
         .attr('cx', 0)
-        .attr('cy', 0)
-        .attr('fill', (d, i) => color(i));
+        .attr('cy', 0);
 
       // append labels to node group
       group
@@ -162,6 +160,13 @@ export default {
           }
           return 'end';
         });
+
+      group
+        .append('circle')
+        .attr('class', 'node__circle--active')
+        .attr('r', 0)
+        .attr('cx', 0)
+        .attr('cy', 0);
 
       // TODO: add proper UI element to select children
       group
@@ -185,7 +190,7 @@ export default {
       const groupJoin = nodesJoin
         .merge(group)
         // classed accepts true or false as second argument
-        .classed('node--out', d => this.selectednode && d.data.id !== this.selectednode)
+        .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
             ${self.graph.nodeCoordinates[d.data.id].y})`);
 
@@ -347,53 +352,86 @@ h1
   text-transform: uppercase
 
 .tradegraph
+  display: block
   width: 100%
-  height: 1000px
+  height: 800px
   background-color: white
 
 .node
+
+  &.active
+    .node__circle
+      stroke-width: 4px
+      fill: transparent
+      r: 30px
+
+      &--active
+        r: 15px
 
   &__edge
     stroke-width: 1px
     opacity: .3
 
   &__text
-    font: bold 14px/1 Helvetica, Arial sans-serif
+    font: bold 14px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
     fill: $grey
+
+  &__action
+    font: normal 12px/1 Helvetica, Arial, sans-serif
+    text-transform: uppercase
+    text-decoration: underline
+    fill: $blue
+
+  &__circle
+    position: relative
+    transition: all .2s ease-out
+    cursor: pointer
+    stroke-width: 0
+    &:hover
+      opacity: .8
+
+    &--active
+      transition: all .2s
 
   &--firms
     .node
       &__circle
-        // fill: $coral
-      &__edge
+        fill: $grey
         stroke: $coral
+        &--active
+          fill: $coral
+      // &__edge
+      //   stroke: $coral
 
   &--consumers
     .node
       &__circle
-        fill: $blue
-      &__edge
+        fill: $grey
         stroke: $blue
+        &--active
+          fill: $blue
+      // &__edge
+      //   stroke: $blue
 
   &--out
     fill-opacity: .1
     stroke-opacity: .1
 
   &.branch
-    cursor: pointer
-    .node
-      &__circle
-        stroke-width: 2px
-    &.node
-      &--firms
-        .node
-          &__circle
-            stroke: darken($coral, 10%)
-      &--consumers
-        .node
-          &__circle
-            stroke: darken($blue, 15%)
+    // cursor: pointer
+    // .node
+    //   &__circle
+    //     stroke-width: 2px
+    // &.node
+    //   &--firms
+    //     .node
+    //       &__circle
+    //         stroke: darken($coral, 10%)
+    //   &--consumers
+    //     .node
+    //       &__circle
+    //         stroke: darken($blue, 15%)
 
 .link
   fill: none
