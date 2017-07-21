@@ -119,7 +119,7 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 		while (!sim.isFinished()) {
 			sim.forwardTo(sim.getDay() + 1);
 			System.out.println("Market stats at end of day " + sim.getDay());
-			sim.getGoodsMarketStats().print(System.out);
+			sim.getStatistics().getGoodsMarketStats().print(System.out);
 			System.out.println();
 		}
 		ranking.print(System.out); // print the resulting ranking

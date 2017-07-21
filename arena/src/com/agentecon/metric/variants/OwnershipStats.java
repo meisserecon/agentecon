@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +10,7 @@ import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.Line;
 import com.agentecon.metric.series.TimeSeries;
@@ -39,29 +40,26 @@ public class OwnershipStats extends SimStats {
 	@Override
 	public void notifyDayEnded(int day) {
 		if (day % 10 == 0) {
-			try {
-				HashMap<String, OwnershipStructure> owners = new InstantiatingHashMap<String, OwnershipStats.OwnershipStructure>() {
+			HashMap<String, OwnershipStructure> owners = new InstantiatingHashMap<String, OwnershipStats.OwnershipStructure>() {
 
-					@Override
-					protected OwnershipStructure create(String key) {
-						return new OwnershipStructure(key);
-					}
-				};
-				for (IShareholder pc : agents.getShareholders()) {
-					String ownerType = pc.getType();
-					if (pc instanceof IConsumer && ((IConsumer) pc).isRetired()) {
-						ownerType = "Retiree";
-					}
-					Portfolio pf = pc.getPortfolio();
-					for (Position pos : pf.getPositions()) {
-						String ownedType = pos.getTicker().getType();
-						owners.get(ownedType).include(ownerType, pos.getAmount());
-					}
+				@Override
+				protected OwnershipStructure create(String key) {
+					return new OwnershipStructure(key);
 				}
-				for (OwnershipStructure os : owners.values()) {
-					os.push(day, structure.get(os.type));
+			};
+			for (IShareholder pc : agents.getShareholders()) {
+				String ownerType = pc.getType();
+				if (pc instanceof IConsumer && ((IConsumer) pc).isRetired()) {
+					ownerType = "Retiree";
 				}
-			} catch (AbstractMethodError e) {
+				Portfolio pf = pc.getPortfolio();
+				for (Position pos : pf.getPositions()) {
+					String ownedType = pos.getTicker().getType();
+					owners.get(ownedType).include(ownerType, pos.getAmount());
+				}
+			}
+			for (OwnershipStructure os : owners.values()) {
+				os.push(day, structure.get(os.type));
 			}
 		}
 	}

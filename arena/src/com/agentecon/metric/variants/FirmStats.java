@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,17 +9,18 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
 import com.agentecon.goods.Quantity;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 
-public class SingleFirmStats extends SimStats {
+public class FirmStats extends SimStats {
 
 	private int day;
 	private HashMap<String, FirmTimeSeries> data;
 
-	public SingleFirmStats() {
+	public FirmStats() {
 		this.data = new HashMap<>();
 	}
 

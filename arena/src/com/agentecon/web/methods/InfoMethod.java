@@ -23,7 +23,7 @@ public class InfoMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	protected JsonData doExecute(Parameters params) throws IOException {
+	protected JsonData getJsonAnswer(Parameters params) throws IOException {
 		SimulationHandle handle = getHandle(params);
 		ISimulation sim = getSimulation(params).getSimulation();
 		return new Info(handle, sim.getConfig());

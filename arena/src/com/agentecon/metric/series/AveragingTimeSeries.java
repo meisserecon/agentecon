@@ -1,10 +1,7 @@
-package com.agentecon.metric;
+package com.agentecon.metric.series;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.agentecon.metric.series.Line;
-import com.agentecon.metric.series.TimeSeries;
 
 public class AveragingTimeSeries {
 

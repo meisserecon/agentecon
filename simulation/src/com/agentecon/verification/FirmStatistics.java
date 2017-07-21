@@ -3,6 +3,7 @@ package com.agentecon.verification;
 import java.util.Map;
 
 import com.agentecon.firm.decisions.IFirmDecisions;
+import com.agentecon.market.IStatistics;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.AccumulatingAverage;
 import com.agentecon.util.InstantiatingHashMap;
@@ -22,7 +23,7 @@ public class FirmStatistics extends SimulationListenerAdapter {
 	}
 
 	@Override
-	public void notifyDayEnded(int day, double utility) {
+	public void notifyDayEnded(IStatistics stats) {
 		for (AccumulatingAverage a: avg.values()){
 			a.flush();
 		}

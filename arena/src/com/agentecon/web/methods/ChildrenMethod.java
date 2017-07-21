@@ -28,7 +28,7 @@ public class ChildrenMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData doExecute(Parameters params) throws IOException {
+	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		ISimulation sim = getSimulation(params, params.getDay());
 		AgentQuery query = new AgentQuery(params.getSelection());
 		return new Children(query.getChildren(sim.getAgents()));

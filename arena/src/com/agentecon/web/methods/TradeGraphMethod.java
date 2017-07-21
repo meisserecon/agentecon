@@ -27,7 +27,7 @@ public class TradeGraphMethod extends SimSpecificMethod {
 	}
 
 	@Override
-	public JsonData doExecute(Parameters params) throws IOException {
+	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		int day = params.getDay();
 		int stepSize = params.getIntParam("step");
 		if (stepSize <= 0){

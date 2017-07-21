@@ -14,9 +14,11 @@ import com.agentecon.util.Numbers;
 
 public class Edge implements Comparable<Edge> {
 
+	public final String type;
+	public final String source, destination;
+	
 	public String label;
 	public double weight;
-	public String source, destination;
 
 	private transient Good good;
 	private transient Average price;
@@ -26,6 +28,7 @@ public class Edge implements Comparable<Edge> {
 		this.destination = destination.label;
 		this.good = good;
 		this.weight = 0.0;
+		this.type = good.toString();
 		this.price = new Average();
 	}
 

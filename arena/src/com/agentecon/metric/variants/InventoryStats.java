@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +13,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.MinMaxTimeSeries;
 import com.agentecon.metric.series.TimeSeries;

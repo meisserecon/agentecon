@@ -1,6 +1,6 @@
 // Created on May 28, 2015 by Luzius Meisser
 
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.agentecon.firm.IFirm;
 import com.agentecon.goods.Good;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;

@@ -16,32 +16,36 @@ import java.util.StringTokenizer;
 import org.nanohttpd.protocols.http.IHTTPSession;
 
 public class Parameters {
-	
+
 	public static final String DAY = "day";
 	public static final String SIM = "sim";
 	public static final String SELECTION = "selection";
-	
+
 	private Map<String, List<String>> params;
-	
-	public Parameters(IHTTPSession session){
+
+	public Parameters(IHTTPSession session) {
 		this.params = session.getParameters();
 	}
-	
+
 	public String getSimulation() {
 		return getParam(SIM);
 	}
-	
-	public int getDay(){
+
+	public int getDay() {
 		return getIntParam(DAY);
 	}
-	
-	public String getSelection(){
+
+	public String getSelection() {
 		return getParam(SELECTION);
 	}
-	
+
 	public int getIntParam(String key) {
+		return getIntParam(key, 0);
+	}
+
+	public int getIntParam(String key, int defauld) {
 		String value = getParam(key);
-		return value.length() == 0 ? 0 : Integer.parseInt(value);
+		return value.length() == 0 ? defauld : Integer.parseInt(value);
 	}
 
 	public String getParam(String key) {
@@ -52,14 +56,14 @@ public class Parameters {
 	public List<String> getFromCommaSeparatedList(String key) {
 		ArrayList<String> list = new ArrayList<>();
 		StringTokenizer tok = new StringTokenizer(getParam(key), ",");
-		while (tok.hasMoreTokens()){
+		while (tok.hasMoreTokens()) {
 			list.add(tok.nextToken());
 		}
 		return list;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return params.toString();
 	}
 

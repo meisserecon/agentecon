@@ -15,12 +15,12 @@ import java.net.SocketTimeoutException;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.ConsumerRanking;
-import com.agentecon.metric.DividendStats;
-import com.agentecon.metric.ProductionStats;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.export.ExcelWriter;
+import com.agentecon.metric.variants.DividendStats;
+import com.agentecon.metric.variants.ProductionStats;
 import com.agentecon.production.PriceUnknownException;
+import com.agentecon.web.methods.UtilityRanking;
 
 public class LocalSimulationRunner {
 
@@ -33,7 +33,7 @@ public class LocalSimulationRunner {
 	}
 
 	private void run() throws IOException {
-		ConsumerRanking ranking = new ConsumerRanking();
+		UtilityRanking ranking = new UtilityRanking();
 		SimStats prodStats = new ProductionStats();
 		SimStats stats = new DividendStats(sim.getAgents());
 		sim.addListener(stats);

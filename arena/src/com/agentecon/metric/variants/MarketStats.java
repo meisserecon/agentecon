@@ -1,6 +1,6 @@
 // Created on Jun 23, 2015 by Luzius Meisser
 
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +15,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.Average;

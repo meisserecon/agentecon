@@ -9,23 +9,31 @@
 package com.agentecon.web.methods;
 
 import java.io.IOException;
-import java.util.Collection;
 
+import com.agentecon.metric.EMetrics;
 import com.agentecon.web.data.JsonData;
-import com.agentecon.web.graph.ESizeType;
 
-public class SizeTypesMethod extends WebApiMethod {
+public class MetricsMethod extends WebApiMethod {
+
+	public MetricsMethod() {
+		super();
+	}
 
 	@Override
 	protected JsonData getJsonAnswer(Parameters params) throws IOException {
-		return new SizeTypes();
+		return new Metrics(EMetrics.values());
 	}
-	
-	class SizeTypes extends JsonData {
-		public Collection<String> consumer = ESizeType.getConsumerTypes();
-		public Collection<String> firm = ESizeType.getFirmTypes();
+
+	class Metrics extends JsonData {
+
+		public String[] metrics;
+		
+		public Metrics(EMetrics[] metrics){
+			this.metrics = new String[metrics.length];
+			for (int i=0; i<metrics.length; i++){
+				this.metrics[i] = metrics[i].name().toLowerCase();
+			}
+		}
 	}
 
 }
-
-

@@ -8,21 +8,33 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.ConsumerRanking;
-import com.agentecon.metric.Rank;
+import com.agentecon.metric.minichart.MiniChart;
 import com.agentecon.util.LogClock;
+import com.agentecon.web.SoftCache;
+import com.agentecon.web.methods.Rank;
+import com.agentecon.web.methods.UtilityRanking;
 
 public class SimulationStepper {
 
-	private AtomicReference<ConsumerRanking> ranking;
 	private AtomicReference<ISimulation> simulation;
 	private AtomicReference<SimulationLoader> loader;
+	private AtomicReference<SoftCache<Object, Object>> cachedData;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
 		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
 		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
-		this.ranking = new AtomicReference<ConsumerRanking>(createRanking(loader.get().loadSimulation()));
+		this.cachedData = new AtomicReference<SoftCache<Object, Object>>(refreshCache());
 //		this.enablePeriodicUpdate();
+	}
+
+	private SoftCache<Object, Object> refreshCache() throws IOException {
+		SoftCache<Object, Object> cache = new SoftCache<>();
+		cache.put(UtilityRanking.class, createRanking(loader.get().loadSimulation()));
+		return cache;
+	}
+	
+	public ISimulation getNewSimulationInstance() throws IOException{
+		return this.loader.get().loadSimulation();
 	}
 	
 	public ISimulation getSimulation() throws IOException {
@@ -33,7 +45,9 @@ public class SimulationStepper {
 		ISimulation simulation = this.simulation.get();
 		assert day <= simulation.getConfig().getRounds();
 		if (simulation.getDay() > day) {
-			simulation = loader.get().loadSimulation(); // reload, cannot step backwards
+			ISimulation newSimulation = loader.get().loadSimulation(); // reload, cannot step backwards
+			this.simulation.compareAndSet(simulation, newSimulation);
+			simulation = newSimulation;
 		}
 		simulation.forwardTo(day);
 		return simulation;
@@ -73,19 +87,20 @@ public class SimulationStepper {
 			ISimulation newSimulation = loader.loadSimulation();
 			newSimulation.forwardTo(prevSim.getDay());
 			this.simulation.compareAndSet(prevSim, newSimulation);
-			this.ranking.set(createRanking(loader.loadSimulation()));
+			this.cachedData = new AtomicReference<SoftCache<Object, Object>>(refreshCache());
 		}
 	}
 
-	private ConsumerRanking createRanking(ISimulation sim) {
-		ConsumerRanking ranking = new ConsumerRanking();
+	private UtilityRanking createRanking(ISimulation sim) {
+		UtilityRanking ranking = new UtilityRanking();
 		sim.addListener(ranking);
 		sim.run();
 		return ranking;
 	}
 	
 	public Collection<Rank> getRanking(){
-		return ranking.get().getRanking();
+		UtilityRanking ranking = (UtilityRanking) cachedData.get().get(UtilityRanking.class);
+		return ranking.getRanking();
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -96,6 +111,14 @@ public class SimulationStepper {
 		SimulationStepper stepper = new SimulationStepper(local);
 		stepper.getSimulation(100);
 		stepper.getSimulation(50);
+	}
+
+	public Object getCachedItem(Object key) {
+		return cachedData.get().get(key);
+	}
+
+	public void putCached(Object string, Object chart) {
+		cachedData.get().put(string, chart);
 	}
 
 }

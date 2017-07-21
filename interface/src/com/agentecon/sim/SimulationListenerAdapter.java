@@ -6,6 +6,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.market.IMarket;
+import com.agentecon.market.IStatistics;
 
 public class SimulationListenerAdapter implements ISimulationListener {
 
@@ -16,10 +17,10 @@ public class SimulationListenerAdapter implements ISimulationListener {
 	@Override
 	public void notifyDayStarted(int day) {
 	}
-
+	
 	@Override
-	public void notifyDayEnded(int day, double utility) {
-		notifyDayEnded(day);
+	public void notifyDayEnded(IStatistics stats) {
+		notifyDayEnded(stats.getDay());
 	}
 	
 	public void notifyDayEnded(int day) {

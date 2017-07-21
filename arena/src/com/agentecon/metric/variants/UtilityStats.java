@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.agentecon.ISimulation;
+import com.agentecon.market.IStatistics;
+import com.agentecon.metric.SimStats;
+import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
-import com.agentecon.runner.OverallStats;
 
-public class UtilityStats extends OverallStats {
+public class UtilityStats extends SimStats {
 
 	private int iter;
 	private AveragingTimeSeries totUtil;
@@ -23,10 +25,10 @@ public class UtilityStats extends OverallStats {
 	}
 
 	@Override
-	public void notifyDayEnded(int day, double utility) {
-		this.totUtil.add(utility);
-		if (day >= 250) {
-			this.phase1Util.add(utility);
+	public void notifyDayEnded(IStatistics stats) {
+		this.totUtil.add(stats.getAverageUtility().getAverage());
+		if (stats.getDay() >= 250) {
+			this.phase1Util.add(stats.getAverageUtility().getAverage());
 		}
 	}
 

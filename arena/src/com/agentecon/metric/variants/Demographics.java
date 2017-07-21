@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,9 @@ import java.util.HashMap;
 
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
+import com.agentecon.market.IStatistics;
+import com.agentecon.metric.SimStats;
+import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.InstantiatingHashMap;
@@ -35,8 +38,10 @@ public class Demographics extends SimStats {
 	}
 
 	@Override
-	public void notifyDayEnded(int day, double utility) {
-		dailyutility.set(day, utility);
+	public void notifyDayEnded(IStatistics stats) {
+		int day = stats.getDay();
+		double util = stats.getAverageUtility().getAverage();
+		dailyutility.set(day, util);
 		for (AveragingTimeSeries pc : utilityOnDeath.values()) {
 			pc.push(day);
 		}

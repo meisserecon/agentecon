@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -15,6 +15,8 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.Quantity;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.market.IStatistics;
+import com.agentecon.metric.SimStats;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.production.IProducer;
@@ -121,8 +123,8 @@ public class MarketMetrics extends SimStats implements IMarketListener, IFirmLis
 	}
 
 	@Override
-	public void notifyDayEnded(int day, double utility) {
-		this.util = utility;
+	public void notifyDayEnded(IStatistics stats) {
+		this.util = stats.getAverageUtility().getAverage();
 		for (AccumulatingAverage avg : all) {
 			avg.flush();
 		}

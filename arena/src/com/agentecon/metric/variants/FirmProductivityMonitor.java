@@ -1,6 +1,6 @@
 // Created on Jun 1, 2015 by Luzius Meisser
 
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import com.agentecon.goods.Quantity;
 import com.agentecon.metric.series.TimeSeries;

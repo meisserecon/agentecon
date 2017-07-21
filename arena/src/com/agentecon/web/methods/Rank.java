@@ -6,7 +6,7 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.metric;
+package com.agentecon.web.methods;
 
 public class Rank implements Comparable<Rank> {
 	

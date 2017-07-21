@@ -1,4 +1,4 @@
-package com.agentecon.metric;
+package com.agentecon.metric.variants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,8 @@ import java.util.HashMap;
 import com.agentecon.agent.IAgents;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IFirmListener;
+import com.agentecon.metric.SimStats;
+import com.agentecon.metric.series.AveragingTimeSeries;
 import com.agentecon.metric.series.Chart;
 import com.agentecon.metric.series.TimeSeries;
 import com.agentecon.util.InstantiatingHashMap;

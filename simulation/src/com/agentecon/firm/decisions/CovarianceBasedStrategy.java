@@ -35,7 +35,7 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 			double sizeBeforeProfits = financials.getCash() - profits;
 			this.cov.add(sizeBeforeProfits, profits);
 
-			System.out.println("size\t" + sizeBeforeProfits + "\tprofits\t" + profits + "\t" + cov.getCovariance() + "\t" + cov.getCorrelation());
+//			System.out.println("size\t" + sizeBeforeProfits + "\tprofits\t" + profits + "\t" + cov.getCovariance() + "\t" + cov.getCorrelation());
 			if (age > 20) {
 				if (this.cov.getCorrelation() > 0.0) {
 					return profits * 0.9;

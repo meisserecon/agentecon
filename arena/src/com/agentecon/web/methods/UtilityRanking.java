@@ -6,7 +6,7 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.metric;
+package com.agentecon.web.methods;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ import com.agentecon.util.IAverage;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.MovingAverage;
 
-public class ConsumerRanking extends SimulationListenerAdapter {
+public class UtilityRanking extends SimulationListenerAdapter {
 	
 	private ArrayList<ConsumerListener> list;
 
-	public ConsumerRanking() {
+	public UtilityRanking() {
 		this.list = new ArrayList<>();
 	}
 

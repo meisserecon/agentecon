@@ -10,7 +10,6 @@ package com.agentecon.web.graph;
 
 import java.util.function.Consumer;
 
-import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
 import com.agentecon.firm.IShareholder;

@@ -1,6 +1,4 @@
-package com.agentecon.metric;
-
-import com.agentecon.metric.series.TimeSeries;
+package com.agentecon.metric.series;
 
 public class CumulatingTimeSeries {
 

@@ -2,7 +2,6 @@
 
 package com.agentecon.metric.series;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;

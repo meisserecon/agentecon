@@ -4,12 +4,13 @@ package com.agentecon.sim;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.market.IMarket;
+import com.agentecon.market.IStatistics;
 
 public interface ISimulationListener {
 
 	public void notifyDayStarted(int day);
 	
-	public void notifyDayEnded(int day, double utility);
+	public void notifyDayEnded(IStatistics stats);
 
 	public void notifyGoodsMarketOpened(IMarket market);
 	
