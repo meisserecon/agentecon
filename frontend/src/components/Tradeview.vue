@@ -151,6 +151,11 @@ export default {
         (response) => {
           this.tradeGraphData = response;
           this.loaded = true;
+
+          // check if we got new hints on what nodes to add
+          if (response.hint.length > 0) {
+            this.simAgents += `,${response.hint.join()}`;
+          }
         },
       )
       .catch(error => config.alertError(error));
