@@ -161,6 +161,7 @@ export default {
       .catch(error => config.alertError(error));
     },
     handleNodeClicked(node) {
+      this.playing = false;
       if (this.selectedNode && this.selectedNode === node) {
         this.selectedNode = null;
       } else {
