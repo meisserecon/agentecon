@@ -18,7 +18,7 @@
           <option>{{ option }}</option>
         </template>
       </select>
-      <a v-if="selectedMetric" :href="`${apiUrl}/downloadcsv?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
+      <a v-if="selectedMetric" :href="`${apiURL}/downloadcsv?metric=${selectedMetric}&sim=${simId}&day=${simDay}&agents=${simAgents}&step=${simStep}`" target="_blank">Download</a>
 
       <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
 
@@ -44,7 +44,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: config.apiURL,
+      apiURL: config.apiURL,
       tradeGraphData: null,
       loaded: false,
       playing: false,
@@ -69,7 +69,7 @@ export default {
 
     // get length of simulation
     fetch(
-      `${this.apiUrl}/info?sim=${this.simId}`,
+      `${config.apiURL}/info?sim=${this.simId}`,
       config.xhrConfig,
     )
     .then(config.handleFetchErrors)
@@ -83,7 +83,7 @@ export default {
 
     // get download options
     fetch(
-      `${this.apiUrl}/metrics`,
+      `${config.apiURL}/metrics`,
       config.xhrConfig,
     )
     .then(config.handleFetchErrors)
@@ -142,7 +142,7 @@ export default {
     fetchData() {
       // fetchData has all needed state data in URL
       fetch(
-        `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
+        `${config.apiURL}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
         config.xhrConfig,
       )
       .then(config.handleFetchErrors)
