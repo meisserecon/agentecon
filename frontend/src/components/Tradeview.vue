@@ -21,11 +21,14 @@
       </select>
       <a v-if="selectedMetric" :href="`${apiUrl}/getMetric?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
 
-      <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
-
-      <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes"></childselection>
-
-      <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId"></nodeinfo>
+      <div class="view">
+        <div class="main">
+          <tradegraph class="main__tradegraph" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
+          <div class="sidebar">Minicharts</div>
+        </div>
+        <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes"></childselection>
+        <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId"></nodeinfo>
+      </div>
     </div>
   </div>
 </template>
@@ -179,5 +182,16 @@ export default {
 </script>
 
 <style lang="sass">
+.main
+  display: flex
+  align-items: stretch
 
+  &__tradegraph
+    flex-basis: 0
+    flex-grow: 1
+
+.sidebar
+  flex-basis: 300px
+  box-sizing: border-box
+  border: 3px solid black
 </style>
