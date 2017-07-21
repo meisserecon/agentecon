@@ -69,8 +69,7 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 
 	@Override
 	public IProductionFunction createProductionFunction(Good desiredOutput) {
-		Quantity fixedCost = new Quantity(MAN_HOUR, 2);
-		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, fixedCost, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FIXED_COSTS, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
 	}
 
 	@Override
