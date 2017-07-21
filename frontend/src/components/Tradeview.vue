@@ -14,12 +14,11 @@
       <input v-model.number="simDay">
 
       <select v-model="selectedMetric">
-        <option value="" disabled>Please select</option>
         <template v-for="option in metrics">
           <option>{{ option }}</option>
         </template>
       </select>
-      <a v-if="selectedMetric" :href="`${apiUrl}/getMetric?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
+      <a v-if="selectedMetric" :href="`${apiUrl}/downloadcsv?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
 
       <tradegraph :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
 
@@ -50,9 +49,7 @@ export default {
       loaded: false,
       playing: false,
       playInterval: null,
-      metrics: [
-        'ALL',
-      ],
+      metrics: [],
       selectedNode: this.$route.query.selected,
       showNodeInfo: false,
       infoOf: null,
@@ -93,7 +90,10 @@ export default {
     .then(response => response.json())
     .then(
       (response) => {
-        response.metrics.forEach((element) => {
+        response.metrics.forEach((element, i) => {
+          if (i === 0) {
+            this.selectedMetric = element;
+          }
           this.metrics.push(element);
         });
       },
