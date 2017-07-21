@@ -23,6 +23,7 @@ import com.agentecon.sim.Event;
 import com.agentecon.sim.ISimulationListener;
 import com.agentecon.sim.SimulationConfig;
 import com.agentecon.sim.SimulationListeners;
+import com.agentecon.util.Average;
 import com.agentecon.world.Country;
 
 // The world
@@ -41,7 +42,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new FarmingConfiguration(50));
+		this(new FarmingConfiguration());
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
@@ -173,6 +174,11 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	@Override
 	public Random getRandomNumberGenerator() {
 		return world.getRand();
+	}
+
+	@Override
+	public Average getAverageUtility() {
+		return world.getAverageUtility();
 	}
 
 }

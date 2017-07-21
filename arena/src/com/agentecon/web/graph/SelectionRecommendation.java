@@ -3,27 +3,29 @@ package com.agentecon.web.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import com.agentecon.ISimulation;
 
 public class SelectionRecommendation {
 	
-	private HashSet<String> consumers, firms;
+	private HashSet<String> known;
 	
-	public SelectionRecommendation(ISimulation simulation){
-		this.firms = new HashSet<>(simulation.getAgents().getFirmTypes());
-		this.consumers = new HashSet<>(simulation.getAgents().getConsumerTypes());
+	public SelectionRecommendation(ISimulation simulation, List<String> agents){
+		this.known = new HashSet<>(simulation.getAgents().getFirmTypes());
+		this.known.addAll(simulation.getAgents().getConsumerTypes());
+		this.known.addAll(agents);
 	}
 
 	public Collection<String> getNewNodeSuggestions(ISimulation simulation){
 		ArrayList<String> newTypes = new ArrayList<>();
 		for (String type: simulation.getAgents().getConsumerTypes()){
-			if (!consumers.contains(type)){
+			if (!known.contains(type)){
 				newTypes.add(type);
 			}
 		}
 		for (String type: simulation.getAgents().getFirmTypes()){
-			if (!firms.contains(type)){
+			if (!known.contains(type)){
 				newTypes.add(type);
 			}
 		}

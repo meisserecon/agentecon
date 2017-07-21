@@ -27,7 +27,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	private SelectionRecommendation selection;
 
 	public TradeGraph(ISimulation simulation, List<String> agents) {
-		this.selection = new SelectionRecommendation(simulation);
+		this.selection = new SelectionRecommendation(simulation, agents);
 		this.firms = new ArrayList<>();
 		this.consumers = new ArrayList<>();
 		this.edges = new HashMap<>();
