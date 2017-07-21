@@ -14,12 +14,11 @@
       <input v-model.number="simDay">
 
       <select v-model="selectedMetric">
-        <option value="" disabled>Please select</option>
         <template v-for="option in metrics">
           <option>{{ option }}</option>
         </template>
       </select>
-      <a v-if="selectedMetric" :href="`${apiUrl}/getMetric?metric=${this.selectedMetric}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`" target="_blank">Download</a>
+      <a v-if="selectedMetric" :href="`${apiURL}/downloadcsv?metric=${selectedMetric}&sim=${simId}&day=${simDay}&agents=${simAgents}&step=${simStep}`" target="_blank">Download</a>
 
       <div class="view">
         <div class="main">
@@ -48,14 +47,12 @@ export default {
   },
   data() {
     return {
-      apiUrl: config.apiURL,
+      apiURL: config.apiURL,
       tradeGraphData: null,
       loaded: false,
       playing: false,
       playInterval: null,
-      metrics: [
-        'ALL',
-      ],
+      metrics: [],
       selectedNode: this.$route.query.selected,
       showNodeInfo: false,
       infoOf: null,
@@ -75,7 +72,7 @@ export default {
 
     // get length of simulation
     fetch(
-      `${this.apiUrl}/info?sim=${this.simId}`,
+      `${config.apiURL}/info?sim=${this.simId}`,
       config.xhrConfig,
     )
     .then(config.handleFetchErrors)
@@ -89,14 +86,17 @@ export default {
 
     // get download options
     fetch(
-      `${this.apiUrl}/metrics`,
+      `${config.apiURL}/metrics`,
       config.xhrConfig,
     )
     .then(config.handleFetchErrors)
     .then(response => response.json())
     .then(
       (response) => {
-        response.metrics.forEach((element) => {
+        response.metrics.forEach((element, i) => {
+          if (i === 0) {
+            this.selectedMetric = element;
+          }
           this.metrics.push(element);
         });
       },
@@ -145,7 +145,7 @@ export default {
     fetchData() {
       // fetchData has all needed state data in URL
       fetch(
-        `${this.apiUrl}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
+        `${config.apiURL}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
         config.xhrConfig,
       )
       .then(config.handleFetchErrors)
@@ -154,11 +154,17 @@ export default {
         (response) => {
           this.tradeGraphData = response;
           this.loaded = true;
+
+          // check if we got new hints on what nodes to add
+          if (response.hint.length > 0) {
+            this.simAgents += `,${response.hint.join()}`;
+          }
         },
       )
       .catch(error => config.alertError(error));
     },
     handleNodeClicked(node) {
+      this.playing = false;
       if (this.selectedNode && this.selectedNode === node) {
         this.selectedNode = null;
       } else {
