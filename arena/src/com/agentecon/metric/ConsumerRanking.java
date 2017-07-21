@@ -21,7 +21,9 @@ import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
 import com.agentecon.sim.SimulationListenerAdapter;
 import com.agentecon.util.Average;
+import com.agentecon.util.IAverage;
 import com.agentecon.util.InstantiatingHashMap;
+import com.agentecon.util.MovingAverage;
 
 public class ConsumerRanking extends SimulationListenerAdapter {
 	
@@ -56,7 +58,7 @@ public class ConsumerRanking extends SimulationListenerAdapter {
 			}
 		};
 		for (ConsumerListener listener: list){
-			ranking.get(listener.getType()).add(listener.getAverage().getAverage());
+			ranking.get(listener.getType()).add(listener.getAverage());
 		}
 		ArrayList<Rank> list = new ArrayList<>(ranking.values());
 		Collections.sort(list);
@@ -66,19 +68,19 @@ public class ConsumerRanking extends SimulationListenerAdapter {
 	class ConsumerListener implements IConsumerListener, Comparable<ConsumerListener> {
 
 		private AgentRef agent;
-		private Average averageUtility;
+		private IAverage averageUtility;
 
 		public ConsumerListener(IAgent agent) {
 			this.agent = agent.getReference();
-			this.averageUtility = new Average();
+			this.averageUtility = new MovingAverage(0.98);
 		}
 		
 		public String getType(){
 			return agent.get().getType();
 		}
 		
-		public Average getAverage(){
-			return averageUtility;
+		public double getAverage(){
+			return averageUtility.getAverage();
 		}
 
 		@Override

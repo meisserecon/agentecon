@@ -17,7 +17,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class CovarianceBasedStrategy implements IFirmDecisions {
 
-	private static final double SPENDING_FRACTION = 0.5;
+	private static final double SPENDING_FRACTION = 0.2;
 
 	private int age = 0;
 	private MovingCovariance cov;
@@ -25,7 +25,7 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 
 	public CovarianceBasedStrategy(IFinancials financials) {
 		this.financials = financials;
-		this.cov = new MovingCovariance(0.9);
+		this.cov = new MovingCovariance(0.95);
 	}
 	
 	@Override
@@ -70,7 +70,11 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 
 	@Override
 	public double calcCogs(double cash, double idealCogs) {
-		return cash * SPENDING_FRACTION;
+		if (age < 10){
+			return cash * SPENDING_FRACTION * 3;
+		} else {
+			return cash * SPENDING_FRACTION;
+		}
 	}
 
 	@Override

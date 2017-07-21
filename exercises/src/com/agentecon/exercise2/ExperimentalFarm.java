@@ -69,7 +69,6 @@ public class ExperimentalFarm extends Firm implements IProducer {
 	@Override
 	public void adaptPrices() {
 		marketing.adaptPrices();
-		// System.out.println("Adjusting price beliefs to " + marketing);
 	}
 	
 	@Override

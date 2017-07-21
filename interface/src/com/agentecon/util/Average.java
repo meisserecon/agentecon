@@ -4,7 +4,7 @@ package com.agentecon.util;
 
 import java.util.Collection;
 
-public class Average implements Cloneable, IAverage, Comparable<Average> {
+public class Average implements Cloneable, IAverage {
 	
 	private double weight;
 	private double sum, squaredSum;
@@ -68,6 +68,10 @@ public class Average implements Cloneable, IAverage, Comparable<Average> {
 		return max;
 	}
 	
+	public String toFullString(){
+		return getAverage() + " (" + getMin() + ", " + getMax() + ")";
+	}
+
 	@Override
 	public Average clone(){
 		try {
@@ -80,14 +84,6 @@ public class Average implements Cloneable, IAverage, Comparable<Average> {
 	@Override
 	public String toString(){
 		return "Avg: " + getAverage();
-	}
-	
-	public String toFullString(){
-		return getAverage() + " (" + getMin() + ", " + getMax() + ")";
-	}
-
-	public int compareTo(Average other) {
-		return Double.compare(getAverage(), other.getAverage());
 	}
 	
 }

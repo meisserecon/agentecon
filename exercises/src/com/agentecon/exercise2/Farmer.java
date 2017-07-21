@@ -42,23 +42,20 @@ import com.agentecon.research.IInnovation;
  */
 public class Farmer extends Consumer implements IFounder {
 
-	private static final double MINIMUM_WORKING_HOURS = 3;
+	private static final double MINIMUM_WORKING_HOURS = 5;
 
 	private Good manhours;
-	private boolean triedFounding;
 
 	public Farmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
-		this.triedFounding = false;
 		assert this.manhours.equals(HermitConfiguration.MAN_HOUR);
 	}
 
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && !triedFounding && statistics.getRandomNumberGenerator().nextDouble() < 0.1){
-			triedFounding = true;
+		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05){
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {

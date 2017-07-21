@@ -38,14 +38,14 @@ public class AdaptiveFarm extends Firm implements IProducer {
 	private ProducerListeners listeners;
 	private MarketingDepartment marketing;
 	private IFirmDecisions strategy;
-//	private FinanceDepartment finance;
+	// private FinanceDepartment finance;
 
 	public AdaptiveFarm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IMarketStatistics stats) {
 		super(id, owner, new Endowment(money.getGood()));
 		this.prodFun = prodFun;
 		this.listeners = new ProducerListeners();
 		this.marketing = new MarketingDepartment(getMoney(), stats, getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
-//		this.finance = new FinanceDepartment(marketing.getFinancials(getInventory(), prodFun));
+		// this.finance = new FinanceDepartment(marketing.getFinancials(getInventory(), prodFun));
 		this.strategy = new ExpectedRevenueBasedStrategy(prodFun.getWeight(FarmingConfiguration.MAN_HOUR).weight);
 		getStock(land.getGood()).absorb(land);
 		getMoney().absorb(money);
@@ -72,11 +72,11 @@ public class AdaptiveFarm extends Firm implements IProducer {
 		double budget = calculateBudget();
 		marketing.createOffers(market, this, budget);
 	}
-	
-	private double calculateBudget(){
+
+	private double calculateBudget() {
 		double defaultBudget = getMoney().getAmount() * SPENDING_FRACTION;
 		double minimumReasonableSpending = MINIMUM_TARGET_INPUT * marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
-		if (getMoney().getAmount() < minimumReasonableSpending){
+		if (getMoney().getAmount() < minimumReasonableSpending) {
 			return 0;
 		} else {
 			return Math.max(defaultBudget, minimumReasonableSpending);
@@ -88,40 +88,35 @@ public class AdaptiveFarm extends Firm implements IProducer {
 		marketing.adaptPrices();
 		// System.out.println("Adjusting price beliefs to " + marketing);
 	}
-	
+
 	@Override
 	public void produce() {
 		Quantity[] inputs = getInventory().getQuantities(getInputs());
 		Quantity produced = prodFun.produce(getInventory());
 		listeners.notifyProduced(this, inputs, produced);
 	}
-	
-	private IFinancials getFinancials(){
+
+	private IFinancials getFinancials() {
 		return marketing.getFinancials(getInventory(), prodFun);
 	}
 
 	@Override
 	protected double calculateDividends(int day) {
-		try {
-			double fixedCosts = prodFun.getFixedCosts(marketing);
-			return strategy.calcDividend(getFinancials());
-		} catch (PriceUnknownException e) {
-			return 0.0; // we don't know what reasonable prices are, better not pay a dividend until we know more
-		}
+		return strategy.calcDividend(getFinancials());
 	}
-	
-	private int daysWithoutProfit = 0;
-	
-	@Override
-	public boolean wantsBankruptcy(IStatistics stats){
-		double profits = getFinancials().getProfits();
-		if (profits <= 0){
-			daysWithoutProfit++;
-		} else {
-			daysWithoutProfit = 0;
-		}
-		return daysWithoutProfit > 5 && stats.getRandomNumberGenerator().nextDouble() < 0.2;
-//		return getMoney().getAmount() < 10.0; // we ran out of money, go bankrupt
-	}
+
+//	private int daysWithoutProfit = 0;
+
+	// @Override
+	// public boolean wantsBankruptcy(IStatistics stats){
+	// double profits = getFinancials().getProfits();
+	// if (profits <= 0){
+	// daysWithoutProfit++;
+	// } else {
+	// daysWithoutProfit = 0;
+	// }
+	// return daysWithoutProfit > 5 && stats.getRandomNumberGenerator().nextDouble() < 0.2;
+	//// return getMoney().getAmount() < 10.0; // we ran out of money, go bankrupt
+	// }
 
 }

@@ -52,8 +52,8 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
-		if (statistics.getDay() == 300) {
-			IStock myLand = getStock(FarmingConfiguration.LAND);
+		IStock myLand = getStock(FarmingConfiguration.LAND);
+		if (myLand.hasSome() && statistics.getDay() > 100) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
@@ -83,6 +83,13 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
+		// In the beginning, shelves can be empty and thus there is no incentive
+		// to work (sell man-hours) either.
+		// To kick-start the economy, we require the farmer to sell some of his
+		// man-hours anyway, even if he cannot
+		// buy anything with the earned money.
+		super.workAtLeast(market, 5.0);
+
 		// Work some more and buy goods for consumption in an optimal balance.
 		// But before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
 		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,

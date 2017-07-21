@@ -41,8 +41,8 @@ import com.agentecon.sim.SimulationConfig;
 
 public class FarmingConfiguration extends SimulationConfig implements IInnovation {
 
-	public static final String AGENT_CLASS_NAME = "com.agentecon.exercise2.Farmer";
-	public static final String AGENT2_CLASS_NAME = "com.agentecon.exercise2.ExperimentalFarmer";
+	public static final String FARMER = "com.agentecon.exercise2.Farmer";
+	public static final String EXPERIMENTAL_FARMER = "com.agentecon.exercise2.ExperimentalFarmer";
 
 	public static final Good GOLD = new Good("Gold", 1.0);
 	public static final Good LAND = HermitConfiguration.LAND;
@@ -53,7 +53,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
-	public FarmingConfiguration(int agents) throws IOException {
+	public FarmingConfiguration() throws IOException {
 		this(new AgentFactoryMultiplex(new IAgentFactory() {
 
 			@Override
@@ -61,21 +61,8 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 				return new Consumer(id, endowment, utilityFunction);
 			}
 
-		}, new CompilingAgentFactory(AGENT2_CLASS_NAME, new File("../exercises/src")) {
-			
-			private boolean created = false;
-
-			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-				if (created){
-					// only create one instance
-					return null;
-				} else {
-					created = true;
-					return super.createConsumer(id, endowment, utilityFunction);
-				}
-			}
-			
-		}, new CompilingAgentFactory(AGENT_CLASS_NAME, new File("../exercises/src"))), agents);
+		}, new LimitingAgentFactory(0, new CompilingAgentFactory(EXPERIMENTAL_FARMER, new File("../exercises/src"))),
+		   new LimitingAgentFactory(30, new CompilingAgentFactory(FARMER, new File("../exercises/src")))), 60);
 	}
 
 	public FarmingConfiguration(IAgentFactory factory, int agents) {
@@ -161,7 +148,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	}
 
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
-		IAgentFactory defaultFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, new File("../exercises/src")); // this factory loads your Farmer
+		IAgentFactory defaultFactory = new CompilingAgentFactory(FARMER, new File("../exercises/src")); // this factory loads your Farmer
 		IAgentFactory normalConsumerFactory = new IAgentFactory() {
 
 			@Override

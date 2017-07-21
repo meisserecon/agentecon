@@ -1,6 +1,6 @@
 package com.agentecon.util;
 
-public interface IAverage {
+public interface IAverage extends Comparable<IAverage>{
 
 	public double getAverage();
 
@@ -8,4 +8,8 @@ public interface IAverage {
 
 	public void add(double value);
 
+	default public int compareTo(IAverage other) {
+		return Double.compare(getAverage(), other.getAverage());
+	}
+	
 }

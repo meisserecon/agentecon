@@ -10,6 +10,9 @@ package com.agentecon.market;
 
 import java.util.Random;
 
+/**
+ * Provides access to daily goods and stock market statistics.
+ */
 public interface IStatistics {
 	
 	public int getDay();
