@@ -115,7 +115,7 @@ export default {
       const self = this;
       const type = (nodeData.data.id === 'firms' ? 'firms' : 'consumers');
 
-      d3.selectAll(`.node--${nodeData.data.id}`).remove();
+      // d3.selectAll(`.node--${nodeData.data.id}`).remove();
 
       // create joins
       const nodesJoin = this.graph.stage.selectAll(`.node--${nodeData.data.id}`)
@@ -130,9 +130,9 @@ export default {
       const group = nodesEnterJoin
         .append('g')
         .attr('id', d => d.data.id)
-        .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')} ${(this.selectednode && d.data.id !== this.selectednode ? 'node--out' : '')}`);
+        .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
-      // // append node edges
+      // append node edges
       group
         .append('path')
         .attr('class', 'node__edge')
@@ -144,11 +144,13 @@ export default {
         });
 
       // append node to node group
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
       group
         .append('circle')
         .attr('class', 'node__circle')
         .attr('cx', 0)
-        .attr('cy', 0);
+        .attr('cy', 0)
+        .attr('fill', (d, i) => color(i));
 
       // append labels to node group
       group
@@ -159,8 +161,7 @@ export default {
             return 'start';
           }
           return 'end';
-        })
-        .text(d => d.data.id);
+        });
 
       // TODO: add proper UI element to select children
       group
@@ -183,15 +184,19 @@ export default {
       // transform nodes to calculated position
       const groupJoin = nodesJoin
         .merge(group)
+        // classed accepts true or false as second argument
+        .classed('node--out', d => this.selectednode && d.data.id !== this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
             ${self.graph.nodeCoordinates[d.data.id].y})`);
 
       groupJoin
         .select('.node__circle')
+        .transition()
         .attr('r', d => self.graph.NODE_RADIUS_BASE * d.data.data.size);
 
       groupJoin
         .select('.node__text')
+        .transition()
         .attr('dx', (d) => {
           let offsetCoefficient = -0.5;
           let offsetConstant = -0.5;
@@ -202,7 +207,8 @@ export default {
           return ((self.graph.NODE_RADIUS_BASE * d.data.data.size) * offsetCoefficient)
             + offsetConstant;
         })
-        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)));
+        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)))
+        .text(d => d.data.id);
 
       // add click events to nodes
       this.addClickToNodes();
@@ -359,7 +365,7 @@ h1
   &--firms
     .node
       &__circle
-        fill: $coral
+        // fill: $coral
       &__edge
         stroke: $coral
 
