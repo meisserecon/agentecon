@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.minichart.MiniChart;
 import com.agentecon.util.LogClock;
 import com.agentecon.web.SoftCache;
 import com.agentecon.web.methods.Rank;
@@ -16,13 +15,14 @@ import com.agentecon.web.methods.UtilityRanking;
 
 public class SimulationStepper {
 
-	private AtomicReference<ISimulation> simulation;
+	private AtomicReference<SimulationCache> simulation;
 	private AtomicReference<SimulationLoader> loader;
 	private AtomicReference<SoftCache<Object, Object>> cachedData;
 
 	public SimulationStepper(SimulationHandle handle) throws IOException {
+		SimulationLoader loader = new SimulationLoader(handle);
 		this.loader = new AtomicReference<SimulationLoader>(new SimulationLoader(handle));
-		this.simulation = new AtomicReference<ISimulation>(loader.get().loadSimulation());
+		this.simulation = new AtomicReference<SimulationCache>(new SimulationCache(loader));
 		this.cachedData = new AtomicReference<SoftCache<Object, Object>>(refreshCache());
 //		this.enablePeriodicUpdate();
 	}
@@ -33,24 +33,18 @@ public class SimulationStepper {
 		return cache;
 	}
 	
-	public ISimulation getNewSimulationInstance() throws IOException{
-		return this.loader.get().loadSimulation();
-	}
-	
-	public ISimulation getSimulation() throws IOException {
-		return this.simulation.get();
+	public Recyclable<ISimulation> getSimulation() throws IOException {
+		return this.simulation.get().getAny();
 	}
 
-	public ISimulation getSimulation(int day) throws IOException {
-		ISimulation simulation = this.simulation.get();
+	public Recyclable<ISimulation> getSimulation(int day) throws IOException {
+		Recyclable<ISimulation> rec = this.simulation.get().borrow(day);
+		ISimulation simulation = rec.getItem();
 		assert day <= simulation.getConfig().getRounds();
-		if (simulation.getDay() > day) {
-			ISimulation newSimulation = loader.get().loadSimulation(); // reload, cannot step backwards
-			this.simulation.compareAndSet(simulation, newSimulation);
-			simulation = newSimulation;
-		}
+		assert simulation.getDay() <= day;
 		simulation.forwardTo(day);
-		return simulation;
+		assert simulation.getDay() == day;
+		return rec;
 	}
 
 	public void enablePeriodicUpdate() {
@@ -81,12 +75,7 @@ public class SimulationStepper {
 		boolean[] changed = new boolean[] { false };
 		loader = loader.refresh(changed);
 		if (changed[0]) {
-			loader.loadSimulation();
-			this.loader.set(loader);
-			ISimulation prevSim = this.simulation.get();
-			ISimulation newSimulation = loader.loadSimulation();
-			newSimulation.forwardTo(prevSim.getDay());
-			this.simulation.compareAndSet(prevSim, newSimulation);
+			this.simulation.set(new SimulationCache(loader));
 			this.cachedData = new AtomicReference<SoftCache<Object, Object>>(refreshCache());
 		}
 	}

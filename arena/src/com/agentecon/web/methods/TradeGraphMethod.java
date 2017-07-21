@@ -12,15 +12,16 @@ import java.io.IOException;
 import java.util.List;
 
 import com.agentecon.ISimulation;
+import com.agentecon.runner.Recyclable;
 import com.agentecon.web.data.JsonData;
 import com.agentecon.web.graph.TradeGraph;
 
 public class TradeGraphMethod extends SimSpecificMethod {
-	
+
 	public TradeGraphMethod(ListMethod listing) {
 		super(listing);
 	}
-	
+
 	@Override
 	protected String createExamplePath() {
 		return super.createExamplePath() + "&agents=consumers,firms&step=1";
@@ -30,14 +31,18 @@ public class TradeGraphMethod extends SimSpecificMethod {
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		int day = params.getDay();
 		int stepSize = params.getIntParam("step");
-		if (stepSize <= 0){
+		if (stepSize <= 0) {
 			stepSize = 1;
 		}
-		ISimulation simulation = getSimulation(params, day - stepSize);
-		List<String> agents = params.getFromCommaSeparatedList("agents");
-		TradeGraph graph = new TradeGraph(simulation, agents);
-		simulation.forwardTo(day);
-		return graph.fetchData();
+		Recyclable<ISimulation> simulation = getSimulation(params, Math.max(0, day - stepSize));
+		try {
+			List<String> agents = params.getFromCommaSeparatedList("agents");
+			TradeGraph graph = new TradeGraph(simulation.getItem(), agents);
+			simulation.getItem().forwardTo(day);
+			return graph.fetchData();
+		} finally {
+			simulation.recycle();
+		}
 	}
 
 }

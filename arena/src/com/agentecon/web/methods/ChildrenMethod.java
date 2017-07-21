@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
+import com.agentecon.runner.Recyclable;
 import com.agentecon.web.data.JsonData;
 import com.agentecon.web.graph.Child;
 import com.agentecon.web.query.AgentQuery;
@@ -21,7 +22,7 @@ public class ChildrenMethod extends SimSpecificMethod {
 	public ChildrenMethod(ListMethod listing) {
 		super(listing);
 	}
-	
+
 	@Override
 	protected String createExamplePath() {
 		return super.createExamplePath() + "&" + AgentQuery.getExample();
@@ -29,15 +30,19 @@ public class ChildrenMethod extends SimSpecificMethod {
 
 	@Override
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
-		ISimulation sim = getSimulation(params, params.getDay());
-		AgentQuery query = new AgentQuery(params.getSelection());
-		return new Children(query.getChildren(sim.getAgents()));
+		Recyclable<ISimulation> sim = getSimulation(params, params.getDay());
+		try {
+			AgentQuery query = new AgentQuery(params.getSelection());
+			return new Children(query.getChildren(sim.getItem().getAgents()));
+		} finally {
+			sim.recycle();
+		}
 	}
-	
+
 	class Children extends JsonData {
-		
+
 		Collection<Child> children;
-		
+
 		public Children(Collection<Child> children) {
 			this.children = children;
 		}

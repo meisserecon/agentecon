@@ -7,6 +7,7 @@ import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
+import com.agentecon.runner.Recyclable;
 import com.agentecon.runner.SimulationStepper;
 import com.agentecon.util.Average;
 import com.agentecon.web.query.AgentQuery;
@@ -16,7 +17,7 @@ public class NodeMiniChart extends MiniChart {
 
 	private AgentQuery agent;
 	private ENodeType type = ENodeType.UNKNOWN;
-	
+
 	public NodeMiniChart(AgentQuery agentQuery) {
 		this.agent = agentQuery;
 	}
@@ -28,21 +29,25 @@ public class NodeMiniChart extends MiniChart {
 	@Override
 	protected float getData(SimulationStepper stepper, int day) throws IOException {
 		final Average average = new Average();
-		ISimulation simulation = stepper.getSimulation(day);
-		agent.forEach(simulation.getAgents(), new Consumer<IAgent>() {
+		Recyclable<ISimulation> simulation = stepper.getSimulation(day);
+		try {
+			agent.forEach(simulation.getItem().getAgents(), new Consumer<IAgent>() {
 
-			@Override
-			public void accept(IAgent t) {
-				if (t instanceof IConsumer) {
-					average.add(((IConsumer) t).getUtilityFunction().getLatestExperiencedUtility());
-					type = ENodeType.CONSUMER;
-				} else {
-					average.add(((IFirm) t).getShareRegister().getAverageDividend());
-					type = ENodeType.FIRM;
+				@Override
+				public void accept(IAgent t) {
+					if (t instanceof IConsumer) {
+						average.add(((IConsumer) t).getUtilityFunction().getLatestExperiencedUtility());
+						type = ENodeType.CONSUMER;
+					} else {
+						average.add(((IFirm) t).getShareRegister().getAverageDividend());
+						type = ENodeType.FIRM;
+					}
 				}
-			}
-		});
-		return (float) average.getAverage();
+			});
+			return (float) average.getAverage();
+		} finally {
+			simulation.recycle();
+		}
 	}
 
 }

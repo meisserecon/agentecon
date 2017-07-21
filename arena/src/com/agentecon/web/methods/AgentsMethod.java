@@ -11,6 +11,7 @@ package com.agentecon.web.methods;
 import java.io.IOException;
 
 import com.agentecon.ISimulation;
+import com.agentecon.runner.Recyclable;
 import com.agentecon.web.data.JsonData;
 import com.agentecon.web.query.AgentQuery;
 
@@ -19,7 +20,7 @@ public class AgentsMethod extends SimSpecificMethod {
 	public AgentsMethod(ListMethod listing) {
 		super(listing);
 	}
-	
+
 	@Override
 	protected String createExamplePath() {
 		return super.createExamplePath() + "&" + AgentQuery.getExample();
@@ -27,9 +28,13 @@ public class AgentsMethod extends SimSpecificMethod {
 
 	@Override
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
-		ISimulation sim = super.getSimulation(params, params.getDay());
-		AgentQuery query = new AgentQuery(params.getSelection());
-		return query.getAgentData(sim.getAgents());
+		Recyclable<ISimulation> sim = super.getSimulation(params, params.getDay());
+		try {
+			AgentQuery query = new AgentQuery(params.getSelection());
+			return query.getAgentData(sim.getItem().getAgents());
+		} finally {
+			sim.recycle();
+		}
 	}
-	
+
 }

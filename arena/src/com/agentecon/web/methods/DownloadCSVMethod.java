@@ -11,6 +11,8 @@ package com.agentecon.web.methods;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.response.Response;
@@ -22,40 +24,39 @@ import com.agentecon.metric.SimStats;
 import com.agentecon.runner.SimulationStepper;
 
 public class DownloadCSVMethod extends SimSpecificMethod {
-	
+
 	public static final String CHOICE_PARAMETER = "metric";
 
 	public DownloadCSVMethod(ListMethod listing) {
 		super(listing);
 	}
-	
-	@Override
-	protected String deriveName() {
-		return "download.csv";
-	}
-	
+
 	@Override
 	protected String createExamplePath() {
 		String superSample = super.createExamplePath();
 		int dayIndex = superSample.indexOf(Parameters.DAY);
-		if (dayIndex >= 0){
+		if (dayIndex >= 0) {
 			superSample = superSample.substring(0, dayIndex);
 		}
 		return superSample + CHOICE_PARAMETER + "=" + EMetrics.PRODUCTION.getName();
 	}
-	
+
 	@Override
 	public Response execute(IHTTPSession session, Parameters params) throws IOException {
 		EMetrics metric = EMetrics.parse(params.getParam(CHOICE_PARAMETER));
 		SimulationStepper stepper = getSimulation(params);
-		ISimulation sim = stepper.getNewSimulationInstance();
+		ISimulation sim = stepper.getSimulation(0).getItem();
 		SimStats stats = metric.createAndRegister(sim);
 		sim.run();
 		ByteArrayOutputStream csvData = new ByteArrayOutputStream();
-		try (PrintStream writer = new PrintStream(csvData)){
+		try (PrintStream writer = new PrintStream(csvData)) {
 			stats.print(writer, ", ");
 		}
-		return Response.newFixedLengthResponse(Status.OK, "text/csv", csvData.toByteArray());
+		Response resp = Response.newFixedLengthResponse(Status.OK, "text/csv", csvData.toByteArray());
+		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		String simName = params.getSimulation();
+		resp.addHeader("Content-Disposition", "inline; filename=\"" + dateString + " " + simName + " " + metric.getName() + ".csv\"");
+		return resp;
 	}
-	
+
 }

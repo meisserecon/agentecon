@@ -13,6 +13,7 @@ import java.io.IOException;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
+import com.agentecon.runner.Recyclable;
 import com.agentecon.runner.SimulationStepper;
 
 public abstract class SimSpecificMethod extends WebApiMethod {
@@ -36,7 +37,7 @@ public abstract class SimSpecificMethod extends WebApiMethod {
 		return sims.getSimulation(params.getSimulation());
 	}
 
-	public ISimulation getSimulation(Parameters tok, int day) throws IOException{
+	public Recyclable<ISimulation> getSimulation(Parameters tok, int day) throws IOException{
 		SimulationStepper stepper = getSimulation(tok);
 		return stepper.getSimulation(day);
 	}
