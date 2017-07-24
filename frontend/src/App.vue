@@ -31,6 +31,11 @@ h1
   color: #2c3e50
   margin-top: 60px
 
+.nolist
+  padding: 0
+  margin: 0
+  list-style-type: none
+
 .context
   position: absolute
   left: -1000em

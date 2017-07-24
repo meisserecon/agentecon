@@ -1,13 +1,13 @@
 <template>
-  <div class="context" v-if="show">
+  <div id="childselection" class="context childselection" data-js-context>
 
-    <h2>Childselection {{ childrenof }} on day {{ simulationday }}</h2>
+    <h2 class="childselection__title">Childselection {{ childrenof }} on day {{ simulationday }}</h2>
 
     <div v-if="loading">Loading ...</div>
 
     <div v-if="!loading">
       <label><input type="checkbox" v-model="allSelected"></input> {{ allSelected ? 'Deselect all' : 'Select all' }}</label>
-      <ul>
+      <ul class="nolist">
         <li v-for="child in children">
           <label><input type="checkbox" :value="child" v-model="activeChildren"></input> {{ child }}</label>
         </li>
@@ -15,12 +15,13 @@
       <div>{{ activeNodeArray }}</div>
     </div>
 
-    <button v-if="!loading" @click="saveSelection">Save</button>
-    <button @click="cancelSelection">Cancel</button>
+    <button class="btn childselection__btn" v-if="!loading" @click="saveSelection">Save</button>
+    <button class="btn childselection__btn" @click="cancelSelection">Cancel</button>
   </div>
 </template>
 
 <script>
+import * as d3 from 'd3';
 import config from '../config';
 
 export default {
@@ -91,11 +92,27 @@ export default {
 
       this.$emit('setactivenodes', newActiveNodes.join());
 
+      this.hideChildselection();
       this.$emit('update:show', false);
     },
     cancelSelection() {
+      this.hideChildselection();
       this.$emit('update:show', false);
+    },
+    hideChildselection() {
+      d3.select('#childselection')
+        .classed('in', false)
+        .style('left', null);
     },
   },
 };
 </script>
+<style lang="sass">
+.childselection
+
+  &__title
+    margin: 0
+
+  &__btn
+    margin-top: 10px
+</style>

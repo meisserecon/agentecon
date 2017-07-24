@@ -89,7 +89,7 @@ export default {
         // Update clickcage property
         this.graph.clickcage.contextExists = true;
 
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', el.data.id));
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x, y: el.data.y }]));
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x, y: el.data.y }]));
       });
     },

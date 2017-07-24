@@ -1,12 +1,12 @@
 <template>
-  <div id="nodeinfo" class="context nodeinfo">
+  <div id="nodeinfo" class="context nodeinfo" data-js-context>
 
     <h2 class="nodeinfo__title">Info of {{ agent }} on day {{ simulationday }}</h2>
 
     <div v-if="loading">Loading ...</div>
 
     <div v-if="!loading">
-      <ul>
+      <ul class="nolist">
         <li v-for="(value, key) in info">{{ key }}: {{ value }}</li>
       </ul>
     </div>
@@ -62,11 +62,6 @@ export default {
 </script>
 <style lang="sass">
 .nodeinfo
-
-  ul
-    margin: 0
-    padding: 0
-    list-style-type: none
 
   &__title
     margin: 0
