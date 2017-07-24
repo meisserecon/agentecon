@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show">
+  <div class="context" v-if="show">
 
     <h2>Childselection {{ childrenof }} on day {{ simulationday }}</h2>
 

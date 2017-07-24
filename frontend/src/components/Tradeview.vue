@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import * as d3 from 'd3';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
 import Nodeinfo from '@/components/Nodeinfo';
@@ -172,9 +173,19 @@ export default {
       }
       this.goToNewDay();
     },
-    handleShowInfo(node) {
-      this.infoOf = node;
+    handleShowInfo(data) {
+      this.infoOf = data[0];
       this.showNodeInfo = true;
+
+      d3.selectAll('[data-js-context]')
+        .style('left', null)
+        .classed('in', false);
+
+      d3.select('#nodeinfo')
+        .attr('data-js-context', '')
+        .style('left', `${data[1].x}px`)
+        .style('top', `${data[1].y}px`)
+        .classed('in', true);
     },
     handleShowChildren(node) {
       this.childrenOf = node;

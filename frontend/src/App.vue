@@ -15,6 +15,14 @@ export default {
 </script>
 
 <style lang="sass">
+body
+  margin: 20px
+  background-color: #f0f0f0
+
+h1
+  font: bold 26px/1 Helvetica, Arial, sans-serif
+  text-transform: uppercase
+
 #app
   font-family: 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
@@ -22,6 +30,21 @@ export default {
   text-align: center
   color: #2c3e50
   margin-top: 60px
+
+.context
+  position: absolute
+  left: -1000em
+  top: 0
+  display: inline-block
+  padding: 10px
+  box-shadow: 0 0 4px rgba(0,0,0,.2)
+  border-radius: 7px
+  background-color: white
+  opacity: 0
+  transition: opacity .2s
+  text-align: left
+  &.in
+    opacity: 1
 
 .btn
   display: inline-block

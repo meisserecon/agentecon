@@ -1,7 +1,7 @@
 <template>
   <div>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div id="contextmenu" class="contextmenu">
+    <div id="contextmenu" class="context contextmenu">
       <ul class="contextmenu__list">
         <li class="contextmenu__item"><button class="btn contextmenu__btn">Add Minichart</button></li>
         <li class="contextmenu__item"><button id='infoselection' class="btn contextmenu__btn">Show Info</button></li>
@@ -21,7 +21,6 @@ export default {
     return {
       graph: {
         stage: null,
-        stageDOM: null,
         clickcage: null,
         firmNodes: null,
         firmsTree: null,
@@ -31,11 +30,11 @@ export default {
         consumersTree: null,
         consumersTreeOffset: [700, 100],
         consumersTreeDirection: -1,
-        // object that stores coordinates of all nodes
+        // Object that stores coordinates of all nodes
         // used to draw links between nodes
         nodeCoordinates: {},
         DEFAULT_NODE_RADIUS: 50,
-        // multiplies with node weight from data
+        // Multiplies with node weight from data
         // TODO: remove and use weight only => reduces complexity
         NODE_RADIUS_FACTOR: 2,
         INTER_LAYER_GAP: 50,
@@ -46,7 +45,6 @@ export default {
   },
   mounted() {
     this.graph.stage = d3.select('#stage');
-    this.graph.stageDOM = document.getElementById('stage');
     this.initClickcage();
     this.updateTradegraph();
   },
@@ -60,7 +58,7 @@ export default {
       this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
       this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
 
-      // clear and updates global nodeCoordinates
+      // Clear and update global nodeCoordinates
       this.graph.nodeCoordinates = {};
       this.calculateNodeCoordinates(this.graph.firmNodes);
       this.calculateNodeCoordinates(this.graph.consumerNodes);
@@ -72,15 +70,18 @@ export default {
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
-        const element = el;
-
         // Emit click to parent to stop simulation
         this.$emit('nodeclicked', el.data.id);
 
-        // Show contextmenu & add context class to
-        // hide after click on clickcage
+        // Hide all open context elements
+        d3.selectAll('[data-js-context]')
+          .style('left', null)
+          .classed('in', false);
+
+        // Show contextmenu & add data attribute to
+        // hide context after click on clickcage
         d3.select('#contextmenu')
-          .classed('context', true)
+          .attr('data-js-context', '')
           .classed('in', true)
           .style('left', `${el.data.x}px`)
           .style('top', `${el.data.y}px`);
@@ -88,8 +89,8 @@ export default {
         // Update clickcage property
         this.graph.clickcage.contextExists = true;
 
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', element.data.id));
-        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', element.data.id));
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', el.data.id));
+        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x, y: el.data.y }]));
       });
     },
     initClickcage() {
@@ -108,7 +109,7 @@ export default {
         if (this.graph.clickcage.contextExists) {
           // Hide context elements
           // (removing the left attribute re-applies css value)
-          d3.selectAll('.context')
+          d3.selectAll('[data-js-context]')
             .classed('in', false)
             .style('left', null);
 
@@ -121,8 +122,7 @@ export default {
       });
     },
     stratifyData(nodeData) {
-      // Stratify data
-      // https://github.com/d3/d3-hierarchy#hierarchy
+      // Prepare data for hierarchical layout
       const treeData = d3.stratify()
         .id(d => d.label)
         .parentId(d => d.parent)(nodeData);
@@ -225,11 +225,10 @@ export default {
         .attr('cx', 0)
         .attr('cy', 0);
 
-      // merge enter join with update
+      // Merge enter join with update &
       // transform nodes to calculated position
       const groupJoin = nodesJoin
         .merge(group)
-        // classed accepts true or false as second argument
         .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
             ${self.graph.nodeCoordinates[d.data.id].y})`);
@@ -255,11 +254,11 @@ export default {
         .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_FACTOR * d.data.data.size)))
         .text(d => d.data.id);
 
-      // add click events to nodes
+      // Add click events to nodes
       this.addClickToNodes();
     },
     drawLinks(links) {
-      // remove all groups and defs
+      // Remove all groups and defs
       d3.selectAll('.links__wrapper').remove();
       d3.selectAll('defs').remove();
 
@@ -278,15 +277,15 @@ export default {
         const ySource = 0;
         let localEdgeCount = 0;
 
-        // create initial group to append links to
+        // Create initial group to append links to
         let group = this.graph.stage.append('g')
           .attr('class', 'links__wrapper');
 
-        // create the enter join
+        // Create the enter join
         const linksJoin = group.selectAll('.link')
           .data(links);
 
-        // exit join
+        // Exit join
         linksJoin.exit().remove();
 
         const linksEnterJoin = linksJoin
@@ -347,7 +346,7 @@ export default {
             const cy0 = j * y0;
             const cy1 = j * y1;
 
-            // append the bezier curve and marker
+            // Append the bezier curve and marker
             group
               .append('path')
               .attr('class', 'link')
@@ -356,7 +355,7 @@ export default {
               .attr('marker-end', () => 'url(#marker)');
           });
 
-        // create reference marker
+        // Create reference marker
         this.graph.stage.append('defs')
           .append('marker')
             .attr('id', 'marker')
@@ -382,14 +381,6 @@ $coral:                                    #ff6557
 $green:                                    #97e582
 $grey:                                     #676767
 $light-grey:                        rgba(0,0,0,.3)
-
-body
-  margin: 20px
-  background-color: #f0f0f0
-
-h1
-  font: bold 26px/1 Helvetica, Arial, sans-serif
-  text-transform: uppercase
 
 .tradegraph
   display: block
@@ -521,19 +512,6 @@ h1
   stroke-width: 2px
 
 .contextmenu
-  position: absolute
-  left: -1000em
-  top: 0
-  display: inline-block
-  padding: 10px
-  box-shadow: 0 0 4px rgba(0,0,0,.2)
-  border-radius: 7px
-  background-color: white
-  opacity: 0
-  transition: opacity .2s
-  text-align: left
-  &.in
-    opacity: 1
 
   &__list
     padding: 0
