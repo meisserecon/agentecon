@@ -3,9 +3,9 @@
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="contextmenu" class="contextmenu">
       <ul class="contextmenu__list">
-        <li class="contextmenu__item"><button class="contextmenu__btn">Add Minichart</button></li>
-        <li class="contextmenu__item"><button id='infoselection' class="contextmenu__btn">Show Info</button></li>
-        <li class="contextmenu__item"><button id='childrenselection' class="contextmenu__btn">Expand/Collapse Children</button></li>
+        <li class="contextmenu__item"><button class="btn contextmenu__btn">Add Minichart</button></li>
+        <li class="contextmenu__item"><button id='infoselection' class="btn contextmenu__btn">Show Info</button></li>
+        <li class="contextmenu__item"><button id='childrenselection' class="btn contextmenu__btn">Expand/Collapse Children</button></li>
       </ul>
     </div>
   </div>
@@ -21,6 +21,8 @@ export default {
     return {
       graph: {
         stage: null,
+        stageDOM: null,
+        clickcage: null,
         firmNodes: null,
         firmsTree: null,
         firmsTreeOffset: [1000, 100],
@@ -32,8 +34,10 @@ export default {
         // object that stores coordinates of all nodes
         // used to draw links between nodes
         nodeCoordinates: {},
-        NODE_RADIUS: 50,
-        NODE_RADIUS_BASE: 2,
+        DEFAULT_NODE_RADIUS: 50,
+        // multiplies with node weight from data
+        // TODO: remove and use weight only => reduces complexity
+        NODE_RADIUS_FACTOR: 2,
         INTER_LAYER_GAP: 50,
         INTRA_LAYER_GAP: 10,
         HORIZONTAL_GAP: 50,
@@ -42,6 +46,8 @@ export default {
   },
   mounted() {
     this.graph.stage = d3.select('#stage');
+    this.graph.stageDOM = document.getElementById('stage');
+    this.initClickcage();
     this.updateTradegraph();
   },
   watch: {
@@ -68,26 +74,60 @@ export default {
       d3.selectAll('.node').on('click', (el) => {
         const element = el;
 
-        // emit click to parent to stop simulation
+        // Emit click to parent to stop simulation
         this.$emit('nodeclicked', el.data.id);
 
-        // TODO: show context menu
+        // Show contextmenu & add context class to
+        // hide after click on clickcage
         d3.select('#contextmenu')
+          .classed('context', true)
           .classed('in', true)
           .style('left', `${el.data.x}px`)
           .style('top', `${el.data.y}px`);
+
+        // Update clickcage property
+        this.graph.clickcage.contextExists = true;
 
         d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', element.data.id));
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', element.data.id));
       });
     },
+    initClickcage() {
+      // Insert click cage as first child of stage
+      this.graph.clickcage = d3.select('#stage').insert('rect', ':first-child');
+
+      // Add inital attributes for later manipulation
+      this.graph.clickcage
+        .attr('class', 'clickcage')
+        .attr('width', '100%')
+        .attr('height', '100%');
+
+      this.graph.clickcage.contextExists = false;
+
+      this.graph.clickcage.on('click', () => {
+        if (this.graph.clickcage.contextExists) {
+          // Hide context elements
+          // (removing the left attribute re-applies css value)
+          d3.selectAll('.context')
+            .classed('in', false)
+            .style('left', null);
+
+          // Update clickcage property
+          this.graph.clickcage.contextExists = false;
+        } else {
+          // Emit empty nodeclided to unselect node
+          this.$emit('nodeclicked');
+        }
+      });
+    },
     stratifyData(nodeData) {
-      // stratify data
+      // Stratify data
+      // https://github.com/d3/d3-hierarchy#hierarchy
       const treeData = d3.stratify()
         .id(d => d.label)
         .parentId(d => d.parent)(nodeData);
 
-      // get nodes in hierarchical structure
+      // Get nodes in hierarchical structure
       return d3.hierarchy(treeData, d => d.children);
     },
     calculateNodeCoordinates(nodeData) {
@@ -97,7 +137,7 @@ export default {
       let horizontalDistance;
       let accumulatedLayerGap = -this.graph.INTRA_LAYER_GAP;
 
-      // check what tree we are updating and
+      // Check what tree we are updating and
       // set corresponding offset and horizontal distance
       if (nodeData.data.id === 'firms') {
         rootOffset = this.graph.firmsTreeOffset;
@@ -109,7 +149,7 @@ export default {
 
       nodeData.descendants()
         .forEach((d, i) => {
-          // set x coordinate
+          // Set x coordinate
           if (d.depth === previousDepth && i !== 0) {
             layerIterator += 1;
             d.data.x = rootOffset[0] + (layerIterator * horizontalDistance);
@@ -118,14 +158,13 @@ export default {
             layerIterator = 0;
             accumulatedLayerGap += 15;
           }
-          // set y coordinate
+          // Set y coordinate
           d.data.y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
 
-          // update previousDepth
+          // Update previousDepth
           previousDepth = d.depth;
 
-          // update nodeCoordinates for later use
-          // in drawLinks function
+          // Update nodeCoordinates for later use in drawLinks function
           this.graph
             .nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: d.data.data.size };
         });
@@ -134,16 +173,14 @@ export default {
       const self = this;
       const type = (nodeData.data.id === 'firms' ? 'firms' : 'consumers');
 
-      // d3.selectAll(`.node--${nodeData.data.id}`).remove();
-
-      // create joins
+      // Create joins
       const nodesJoin = this.graph.stage.selectAll(`.node--${nodeData.data.id}`)
         .data(nodeData.descendants());
 
-      // exit join
+      // Exit join
       nodesJoin.exit().remove();
 
-      // add group elements in enter join
+      // Add group elements in enter join
       const nodesEnterJoin = nodesJoin.enter();
 
       const group = nodesEnterJoin
@@ -151,7 +188,7 @@ export default {
         .attr('id', d => d.data.id)
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
-      // append node edges
+      // Append node edges
       group
         .append('path')
         .attr('class', 'node__edge')
@@ -162,14 +199,14 @@ export default {
           return '';
         });
 
-      // append node to node group
+      // Append node to node group
       group
         .append('circle')
         .attr('class', 'node__circle')
         .attr('cx', 0)
         .attr('cy', 0);
 
-      // append labels to node group
+      // Append labels to node group
       group
         .append('text')
         .attr('class', 'node__text')
@@ -180,29 +217,13 @@ export default {
           return 'end';
         });
 
+      // Append circle to animate on click
       group
         .append('circle')
         .attr('class', 'node__circle--active')
         .attr('r', 0)
         .attr('cx', 0)
         .attr('cy', 0);
-
-      // TODO: add proper UI element to select children
-      group
-        .append('circle')
-        .attr('class', 'childrenselection')
-        .attr('r', '4px')
-        .attr('cx', '-20px')
-        .attr('cy', '-10px');
-
-      // TODO: add proper UI element to select info
-      group
-        .append('circle')
-        .attr('class', 'infoselection')
-        .attr('r', '4px')
-        .attr('cx', '-20px')
-        .attr('cy', '10px');
-
 
       // merge enter join with update
       // transform nodes to calculated position
@@ -216,7 +237,7 @@ export default {
       groupJoin
         .select('.node__circle')
         .transition()
-        .attr('r', d => self.graph.NODE_RADIUS_BASE * d.data.data.size);
+        .attr('r', d => self.graph.NODE_RADIUS_FACTOR * d.data.data.size);
 
       groupJoin
         .select('.node__text')
@@ -228,10 +249,10 @@ export default {
             offsetCoefficient = 0.5;
             offsetConstant = 0.5;
           }
-          return ((self.graph.NODE_RADIUS_BASE * d.data.data.size) * offsetCoefficient)
+          return ((self.graph.NODE_RADIUS_FACTOR * d.data.data.size) * offsetCoefficient)
             + offsetConstant;
         })
-        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)))
+        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_FACTOR * d.data.data.size)))
         .text(d => d.data.id);
 
       // add click events to nodes
@@ -308,10 +329,10 @@ export default {
               currentDestination = d.destination;
             }
 
-            const radiusSource = this.graph.NODE_RADIUS_BASE
+            const radiusSource = this.graph.NODE_RADIUS_FACTOR
               * this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
-            const radiusDestination = this.graph.NODE_RADIUS_BASE
-              * this.graph.nodeCoordinates[d.destination].size || this.graph.NODE_RADIUS;
+            const radiusDestination = this.graph.NODE_RADIUS_FACTOR
+              * this.graph.nodeCoordinates[d.destination].size || this.graph.DEFAULT_NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
@@ -395,6 +416,7 @@ h1
     font: bold 14px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
     fill: $grey
+    cursor: pointer
 
   &__action
     font: normal 12px/1 Helvetica, Arial, sans-serif
@@ -412,6 +434,7 @@ h1
 
     &--active
       transition: all .2s
+      pointer-events: none
 
   &--firms
     .node
@@ -503,12 +526,12 @@ h1
   top: 0
   display: inline-block
   padding: 10px
-  border: 3px solid black
   box-shadow: 0 0 4px rgba(0,0,0,.2)
   border-radius: 7px
   background-color: white
   opacity: 0
   transition: opacity .2s
+  text-align: left
   &.in
     opacity: 1
 
@@ -516,6 +539,18 @@ h1
     padding: 0
     margin: 0
     list-style-type: none
+
+  &__item
+    display: block
+    + .contextmenu__item
+      margin-top: 5px
+
+  &__btn
+    display: block
+    width: 100%
+
+.clickcage
+  fill: transparent
 
 @keyframes pulsate
   0%

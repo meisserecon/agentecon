@@ -14,13 +14,36 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="sass">
+#app
+  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  text-align: center
+  color: #2c3e50
+  margin-top: 60px
+
+.btn
+  display: inline-block
+  font-weight: 400
+  line-height: 1.25
+  text-align: center
+  white-space: nowrap
+  vertical-align: middle
+  user-select: none
+  border: 1px solid transparent
+  padding: .5rem 1rem
+  border-radius: .25rem
+  transition: all .2s ease-in-out
+  color: #292b2c
+  background-color: #fff
+  border-color: #ccc
+  cursor: pointer
+  outline: 0
+  &:hover
+    color: #292b2c
+    background-color: #e6e6e6
+    border-color: #adadad
+  &:focus
+    box-shadow: 0 0 0 2px rgba(204,204,204,.5)
 </style>
