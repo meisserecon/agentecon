@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <ul>
+    <ul class="nolist">
       <li><router-link :to="{name: 'home'}">Simulations</router-link></li>
     </ul>
 
@@ -17,7 +17,6 @@ export default {
 <style lang="sass">
 body
   margin: 20px
-  background-color: #f0f0f0
 
 h1
   font: bold 26px/1 Helvetica, Arial, sans-serif
@@ -75,4 +74,21 @@ h1
     border-color: #adadad
   &:focus
     box-shadow: 0 0 0 2px rgba(204,204,204,.5)
+
+.form-control
+  padding: .5rem .75rem
+  font-size: 1rem
+  line-height: 1.25
+  color: #464a4c
+  background-color: #fff
+  background-image: none
+  background-clip: padding-box
+  border: 1px solid rgba(0,0,0,.15)
+  border-radius: .25rem
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+  &:focus
+    color: #464a4c
+    background-color: #fff
+    border-color: #5cb3fd
+    outline: 0
 </style>

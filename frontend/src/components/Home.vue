@@ -4,7 +4,7 @@
 
     <div v-if="loading">Loading...</div>
 
-    <ul v-if="!loading">
+    <ul class="nolist" v-if="!loading">
       <li v-for="sim in simulations">
         <router-link :to="{name: 'simulation', query: {sim: sim.path}}">{{ `${sim.owner} / ${sim.path}` }}</router-link>
       </li>
