@@ -1,19 +1,17 @@
 <template>
   <div id="childselection" class="context childselection" data-js-context>
 
-    <h2 class="childselection__title">Childselection {{ childrenof }} on day {{ simulationday }}</h2>
+    <h2 class="childselection__title">{{ childrenof }} on day {{ simulationday }}</h2>
 
     <div v-if="loading">Loading ...</div>
 
     <div v-if="!loading">
-      <label><input type="checkbox" v-model="allSelected"></input> {{ allSelected ? 'Deselect all' : 'Select all' }}</label>
+      <label><input type="checkbox" v-model="allSelected"></input> all</label>
       <ul class="nolist childselection__list">
         <li class="childselection__item" v-for="child in children">
           <label><input type="checkbox" :value="child" v-model="activeChildren"></input> {{ child }}</label>
         </li>
       </ul>
-      <br>
-      <div>{{ activeNodeArray }}</div>
     </div>
 
     <button class="btn childselection__btn" v-if="!loading" @click="saveSelection">Save</button>
