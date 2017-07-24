@@ -78,16 +78,18 @@ export default {
           .style('left', null)
           .classed('in', false);
 
-        // Show contextmenu & add data attribute to
-        // hide context after click on clickcage
-        d3.select('#contextmenu')
-          .attr('data-js-context', '')
-          .classed('in', true)
-          .style('left', `${el.data.x}px`)
-          .style('top', `${el.data.y}px`);
+        if (this.selectednode !== el.data.id) {
+          // Show contextmenu & add data attribute to
+          // hide context after click on clickcage
+          d3.select('#contextmenu')
+            .attr('data-js-context', '')
+            .classed('in', true)
+            .style('left', `${el.data.x}px`)
+            .style('top', `${el.data.y}px`);
 
-        // Update clickcage property
-        this.graph.clickcage.contextExists = true;
+          // Update clickcage property
+          this.graph.clickcage.contextExists = true;
+        }
 
         d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x, y: el.data.y }]));
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x, y: el.data.y }]));
