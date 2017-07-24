@@ -21,6 +21,7 @@ export default {
     return {
       graph: {
         stage: null,
+        stageDOM: null,
         clickcage: null,
         firmNodes: null,
         firmsTree: null,
@@ -45,6 +46,7 @@ export default {
   },
   mounted() {
     this.graph.stage = d3.select('#stage');
+    this.graph.stageDOM = document.getElementById('stage');
     this.initClickcage();
     this.updateTradegraph();
   },
@@ -70,6 +72,9 @@ export default {
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
+        // Get element bounding box to correct position with stage offset
+        const rect = this.graph.stageDOM.getBoundingClientRect();
+
         // Emit click to parent to stop simulation
         this.$emit('nodeclicked', el.data.id);
 
@@ -91,8 +96,8 @@ export default {
           this.graph.clickcage.contextExists = true;
         }
 
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x, y: el.data.y }]));
-        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x, y: el.data.y }]));
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
+        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
       });
     },
     initClickcage() {

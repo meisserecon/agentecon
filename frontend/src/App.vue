@@ -41,6 +41,7 @@ h1
   left: -1000em
   top: 0
   display: inline-block
+  max-width: 500px
   padding: 10px
   box-shadow: 0 0 4px rgba(0,0,0,.2)
   border-radius: 7px

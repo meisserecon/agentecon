@@ -7,8 +7,8 @@
 
     <div v-if="!loading">
       <label><input type="checkbox" v-model="allSelected"></input> {{ allSelected ? 'Deselect all' : 'Select all' }}</label>
-      <ul class="nolist">
-        <li v-for="child in children">
+      <ul class="nolist childselection__list">
+        <li class="childselection__item" v-for="child in children">
           <label><input type="checkbox" :value="child" v-model="activeChildren"></input> {{ child }}</label>
         </li>
       </ul>
@@ -112,6 +112,13 @@ export default {
 
   &__title
     margin: 0
+
+  &__list
+    display: flex
+    flex-wrap: wrap
+
+  &__item
+    display: inline-block
 
   &__btn
     margin-top: 10px
