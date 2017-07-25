@@ -26,16 +26,16 @@ public class Inventory {
 			inv.put(s.getGood(), duplicate ? s.duplicate() : s);
 		}
 	}
-	
+
 	public Inventory(Quantity... inputs) {
 		this.money = null; // not needed for now
 		this.inv = new HashMap<Good, IStock>();
-		for (Quantity q: inputs){
+		for (Quantity q : inputs) {
 			getStock(q.getGood()).add(q.getAmount());
 		}
 	}
 
-	public IStock getMoney(){
+	public IStock getMoney() {
 		return getStock(money);
 	}
 
@@ -43,18 +43,22 @@ public class Inventory {
 	 * Returns a delegate of this inventory that hides amount of good. Changes to the delegate will also be reflected in this inventory.
 	 */
 	public Inventory hide(Good good, double amount) {
-		Inventory clone = new Inventory(money, inv.values(), false) {
-			protected IStock createStock(Good type) {
-				return Inventory.this.getStock(type);
-			}
-		};
-		clone.inv.put(good, getStock(good).hide(amount));
-		return clone;
+		if (amount > 0) {
+			Inventory clone = new Inventory(money, inv.values(), false) {
+				protected IStock createStock(Good type) {
+					return Inventory.this.getStock(type);
+				}
+			};
+			clone.inv.put(good, getStock(good).hide(amount));
+			return clone;
+		} else {
+			// hiding negative amounts has no effect
+			return this;
+		}
 	}
-	
+
 	/**
-	 * Returns a delegate of this inventory that hides the given fraction of the good including the same fraction of the income.
-	 * Changes to the delegate will also be reflected in this inventory.
+	 * Returns a delegate of this inventory that hides the given fraction of the good including the same fraction of the income. Changes to the delegate will also be reflected in this inventory.
 	 */
 	public Inventory hideRelative(Good good, double fraction) {
 		Inventory clone = new Inventory(money, inv.values(), false) {
@@ -77,11 +81,11 @@ public class Inventory {
 	public Collection<IStock> getAll() {
 		return inv.values();
 	}
-	
+
 	public double calculateValue(IMarketStatistics stats) {
 		double value = 0.0;
-		for (IStock stock: inv.values()){
-			if (stock.getGood().equals(money)){
+		for (IStock stock : inv.values()) {
+			if (stock.getGood().equals(money)) {
 				value += stock.getAmount();
 			} else {
 				try {
@@ -105,15 +109,15 @@ public class Inventory {
 	protected IStock createStock(Good type) {
 		return new Stock(type);
 	}
-	
+
 	public void absorb(Inventory other) {
-		for (IStock s: other.inv.values()){
+		for (IStock s : other.inv.values()) {
 			receive(s);
 		}
 	}
-	
+
 	public void absorb(double ratio, Inventory other) {
-		for (IStock s: other.inv.values()){
+		for (IStock s : other.inv.values()) {
 			receive(s.hideRelative(1.0 - ratio));
 		}
 	}
@@ -128,8 +132,8 @@ public class Inventory {
 		IStock present = getStock(s.getGood());
 		present.absorb(s);
 	}
-	
-	public Inventory duplicate(){
+
+	public Inventory duplicate() {
 		return new Inventory(money, inv.values(), true);
 	}
 
@@ -138,7 +142,7 @@ public class Inventory {
 			s.deprecate();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		String list = null;

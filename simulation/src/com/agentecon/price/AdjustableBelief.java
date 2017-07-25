@@ -61,7 +61,7 @@ public abstract class AdjustableBelief implements IBelief {
 		return getFactor(true) - 1.0;
 	}
 
-	public double getPrice() {
+	public double getValue() {
 		return price;
 	}
 	

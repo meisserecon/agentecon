@@ -10,9 +10,11 @@ package com.agentecon.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.IAgentFactory;
+import com.agentecon.ISimulation;
 import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
@@ -35,12 +37,15 @@ import com.agentecon.sim.SimulationConfig;
 public class HermitConfiguration extends SimulationConfig implements IInnovation {
 	
 	public static final String AGENT_CLASS_NAME = "com.agentecon.exercise1.Hermit";
+	public static final String ALT_AGENT_CLASS_NAME = "com.agentecon.exercise1.AdaptiveHermit";
 
 	public static final Good POTATOE = new Good("Potatoe", 0.95);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
+	public static final int DAILY_ENDOWMENT = 24;
+	
 	public static final Good LAND = new Good("Land", 1.0);
 	
-	private static final int ROUNDS = 500;
+	private static final int ROUNDS = 1000;
 
 	public static final Quantity FIXED_COSTS = new Quantity(MAN_HOUR, 6.0);
 	
@@ -51,7 +56,7 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	public HermitConfiguration(IAgentFactory factory, int agents){
 		super(ROUNDS);
 		IStock[] initialEndowment = new IStock[]{new Stock(LAND, 100)};
-		IStock[] dailyEndowment = new IStock[]{new Stock(MAN_HOUR, 24)};
+		IStock[] dailyEndowment = new IStock[]{new Stock(MAN_HOUR, DAILY_ENDOWMENT)};
 		Endowment end = new Endowment(getMoney(), initialEndowment, dailyEndowment);
 		LogUtilWithFloor utility = new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 		addEvent(new ConsumerEvent(agents, end, utility){
@@ -71,6 +76,17 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 	public IProductionFunction createProductionFunction(Good desiredOutput) {
 		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FIXED_COSTS, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
 	}
+	
+	@Override
+	public void diagnoseResult(PrintStream out, ISimulation stats) {
+		out.println("Achieved an average utility of " + stats.getStatistics().getAverageUtility());
+		
+		IProductionFunction prodFun = createProductionFunction(POTATOE);
+		double weight = prodFun.getWeight(MAN_HOUR).weight;
+		double fixedCost = prodFun.getFixedCost(MAN_HOUR);
+		double optimalWorkAmount = (DAILY_ENDOWMENT * weight + fixedCost) / (1 + weight);
+		out.println("Optimal work amount would be " + optimalWorkAmount);
+	}
 
 	@Override
 	public IResearchProject createResearchProject(Good desiredOutput) {
@@ -79,8 +95,9 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 
 	private static IAgentFactory createFactory() throws SocketTimeoutException, IOException {
 		IAgentFactory defaultFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, new File("../exercises/src")); // this factory loads agents from the local disk
-		IAgentFactory meisserFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, "meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
-		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, meisserFactory);
+//		IAgentFactory meisserFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, "meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
+		IAgentFactory adaptiveFactory = new CompilingAgentFactory(ALT_AGENT_CLASS_NAME, new File("../exercises/src"));
+		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, new LimitingAgentFactory(1, adaptiveFactory));
 		return factory;
 	}
 	

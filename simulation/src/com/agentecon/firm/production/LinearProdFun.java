@@ -25,7 +25,7 @@ public class LinearProdFun extends AbstractProductionFunction {
 
 	public boolean shouldProduce(IBelief inputPrice, IBelief outputPrice) {
 		double weight = inputs[0].weight;
-		return weight * outputPrice.getPrice() > inputPrice.getPrice();
+		return weight * outputPrice.getValue() > inputPrice.getValue();
 	}
 
 	@Override

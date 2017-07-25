@@ -48,8 +48,7 @@ public class Hermit extends Consumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		if (this.prodFun == null) {
-			// instead of creating a firm, the hermit will use the production
-			// function himself
+			// instead of creating a firm, the hermit will create a production function for himself
 			this.prodFun = research.createProductionFunction(HermitConfiguration.POTATOE);
 		}
 		return null;
@@ -69,12 +68,10 @@ public class Hermit extends Consumer implements IFounder {
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
 		// double plannedLeisureTime = currentManhours.getAmount() * 0.6;
-
-		double weight = prodFun.getWeight(manhours).weight;
-		double fixedCost = prodFun.getFixedCost(manhours);
-		double optimalWorkAmount = (currentManhours.getAmount() * weight + fixedCost) / (1 + weight);
+		double optimalWorkAmount = calculateWorkAmount(currentManhours);
 		double optimalLeisureTime = currentManhours.getAmount() - optimalWorkAmount;
-
+//		System.out.println("Working " + optimalWorkAmount);
+		
 		// The hide function creates allows to hide parts of the inventory from
 		// the
 		// production function, preserving it for later consumption.
@@ -82,12 +79,17 @@ public class Hermit extends Consumer implements IFounder {
 		prodFun.produce(productionInventory);
 	}
 
+	protected double calculateWorkAmount(IStock currentManhours) {
+		double weight = prodFun.getWeight(manhours).weight;
+		double fixedCost = prodFun.getFixedCost(manhours);
+		return (currentManhours.getAmount() * weight + fixedCost) / (1 + weight);
+	}
+
 	@Override
-	// this method is not needed and only here for better explanation what is
-	// going on
+	// this method is not needed and only here for better explanation what is going on
 	public double consume() {
 		// super class already knows how to consume, let it do the work
-		System.out.println("Eating " + getInventory());
+//		System.out.println("Eating from " + getInventory());
 		return super.consume();
 	}
 

@@ -35,7 +35,7 @@ public abstract class Factor {
 
 	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double amount) {
 		if (amount > 0) {
-			prevOffer = newOffer(owner, money, price.getPrice(), amount);
+			prevOffer = newOffer(owner, money, price.getValue(), amount);
 			if (prevOffer.isBid()) {
 				market.offer((Bid) prevOffer);
 			} else {
@@ -69,7 +69,7 @@ public abstract class Factor {
 	}
 
 	public double getPrice() {
-		return price.getPrice();
+		return price.getValue();
 	}
 
 	public String toString() {

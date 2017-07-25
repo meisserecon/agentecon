@@ -17,6 +17,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 
 public class ExcelWriter {
@@ -29,7 +30,7 @@ public class ExcelWriter {
 		this.folder = folder;
 	}
 	
-	public void export(SimStats stats) throws IOException{
+	public void export(SimStats stats) throws IOException, NoInterestingTimeSeriesFoundException{
 		File file = getNewFile(stats.getName());
 		try (PrintStream writer = new PrintStream(new BufferedOutputStream(new FileOutputStream(file)))){
 			stats.print(writer, ", ");

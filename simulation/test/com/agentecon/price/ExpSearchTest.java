@@ -21,8 +21,8 @@ public class ExpSearchTest {
 		ExpSearchBelief price = new ExpSearchBelief(0.05);
 		double target = 100;
 		int steps = 0;
-		while (Math.abs(price.getPrice() - target) > ExpSearchBelief.MIN_ADAPTION_FACTOR * target){
-			price.adapt(price.getPrice() < target);
+		while (Math.abs(price.getValue() - target) > ExpSearchBelief.MIN_ADAPTION_FACTOR * target){
+			price.adapt(price.getValue() < target);
 			assert steps++ < 100;
 		}
 		System.out.println(steps);

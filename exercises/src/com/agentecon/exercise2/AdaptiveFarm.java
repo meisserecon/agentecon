@@ -21,12 +21,10 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Quantity;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.market.IStatistics;
 import com.agentecon.price.MarketingDepartment;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.production.PriceUnknownException;
 import com.agentecon.production.ProducerListeners;
 
 public class AdaptiveFarm extends Firm implements IProducer {

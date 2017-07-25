@@ -18,7 +18,6 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.production.IGoodsTrader;
-import com.agentecon.production.PriceUnknownException;
 
 public class RealEstateAgent extends Firm implements IGoodsTrader {
 	

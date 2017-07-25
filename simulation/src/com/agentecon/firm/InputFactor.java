@@ -20,7 +20,7 @@ public class InputFactor extends Factor {
 	
 	@Override
 	public void createOffers(IPriceMakerMarket market, IAgent owner, IStock money, double budget) {
-		super.createOffers(market, owner, money, budget / price.getPrice());  // NOT getPrice() as overridden in subclass
+		super.createOffers(market, owner, money, budget / price.getValue());  // NOT getPrice() as overridden in subclass
 	}
 	
 	public InputFactor duplicate(IStock stock){

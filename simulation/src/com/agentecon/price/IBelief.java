@@ -4,7 +4,7 @@ package com.agentecon.price;
 
 public interface IBelief extends Cloneable {
 
-	public double getPrice();
+	public double getValue();
 	
 	public void adapt(boolean increase);
 	

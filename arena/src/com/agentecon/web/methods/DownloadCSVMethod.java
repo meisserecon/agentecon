@@ -20,6 +20,7 @@ import org.nanohttpd.protocols.http.response.Status;
 
 import com.agentecon.ISimulation;
 import com.agentecon.metric.EMetrics;
+import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 import com.agentecon.runner.SimulationStepper;
 
@@ -50,7 +51,14 @@ public class DownloadCSVMethod extends SimSpecificMethod {
 		sim.run();
 		ByteArrayOutputStream csvData = new ByteArrayOutputStream();
 		try (PrintStream writer = new PrintStream(csvData)) {
-			stats.print(writer, ", ");
+			try {
+				stats.print(writer, ", ");
+			} catch (NoInterestingTimeSeriesFoundException e) {
+				// send empty file
+				writer.println("No interesting data found.");
+				writer.println("Maybe the chosen metric is not relevant in this simulation, e.g. asking for stock market statistics in a simulation without stock market?");
+				writer.println("Or the simulation might be disfunctional, e.g. no trade taking place.");
+			}
 		}
 		Response resp = Response.newFixedLengthResponse(Status.OK, "text/csv", csvData.toByteArray());
 		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());

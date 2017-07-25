@@ -5,8 +5,8 @@ public class ConstantFactorBelief extends AdjustableBelief {
 
 	private double factor;
 	
-	public ConstantFactorBelief(double delta) {
-		super();
+	public ConstantFactorBelief(double start, double delta) {
+		super(start);
 		this.factor = 1.0 + delta;
 	}
 	

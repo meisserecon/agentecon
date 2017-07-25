@@ -13,7 +13,7 @@ public class HardcodedBelief implements IBelief {
 	}
 
 	@Override
-	public double getPrice() {
+	public double getValue() {
 		return price;
 	}
 
