@@ -25,7 +25,7 @@ public class AdaptiveHermit extends Hermit implements IFounder {
 
 	public AdaptiveHermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
-		this.control = new CovarianceControl(10, 0.9);
+		this.control = new CovarianceControl(10, 0.8);
 	}
 	
 	@Override

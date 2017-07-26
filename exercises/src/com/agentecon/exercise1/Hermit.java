@@ -31,8 +31,7 @@ import com.agentecon.research.IFounder;
 import com.agentecon.research.IInnovation;
 
 /**
- * An autarkic consumer that produces its own food and does not interact with
- * others.
+ * An autarkic consumer that produces its own food and does not interact with others.
  */
 public class Hermit extends Consumer implements IFounder {
 

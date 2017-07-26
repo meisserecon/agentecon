@@ -24,6 +24,7 @@ import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
+import com.agentecon.events.IUtilityFactory;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -39,7 +40,7 @@ import com.agentecon.research.IInnovation;
 import com.agentecon.research.IResearchProject;
 import com.agentecon.sim.SimulationConfig;
 
-public class FarmingConfiguration extends SimulationConfig implements IInnovation {
+public class FarmingConfiguration extends SimulationConfig implements IInnovation, IUtilityFactory {
 
 	public static final String FARMER = "com.agentecon.exercise2.Farmer";
 	public static final String EXPERIMENTAL_FARMER = "com.agentecon.exercise2.ExperimentalFarmer";
@@ -49,7 +50,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	public static final Good POTATOE = HermitConfiguration.POTATOE;
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
-	private static final int ROUNDS = 1000;
+	private static final int ROUNDS = 2000;
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
@@ -62,21 +63,26 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 			}
 
 		}, new LimitingAgentFactory(0, new CompilingAgentFactory(EXPERIMENTAL_FARMER, new File("../exercises/src"))),
-		   new LimitingAgentFactory(30, new CompilingAgentFactory(FARMER, new File("../exercises/src")))), 60);
+				new LimitingAgentFactory(1, new CompilingAgentFactory(HermitConfiguration.ALT_AGENT_CLASS_NAME, new File("../exercises/src"))),
+				new LimitingAgentFactory(30, new CompilingAgentFactory(FARMER, new File("../exercises/src")))), 60);
 	}
 
 	public FarmingConfiguration(IAgentFactory factory, int agents) {
 		super(ROUNDS);
 		IStock[] initialEndowment = new IStock[] { new Stock(LAND, 100), new Stock(GOLD, 1000) };
-		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, 24) };
+		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment end = new Endowment(GOLD, initialEndowment, dailyEndowment);
-		LogUtilWithFloor utility = new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
-		addEvent(new ConsumerEvent(agents, end, utility) {
+		addEvent(new ConsumerEvent(agents, end, this) {
 			@Override
 			protected IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility util) {
 				return factory.createConsumer(id, end, util);
 			}
 		});
+	}
+
+	@Override
+	public IUtility create(int number) {
+		return new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 	}
 
 	// Use gold as money

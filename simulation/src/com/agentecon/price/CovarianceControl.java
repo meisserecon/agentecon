@@ -8,25 +8,26 @@
  */
 package com.agentecon.price;
 
-import com.agentecon.util.MovingCovariance;
+import com.agentecon.util.MovingCovarianceAlt;
 
 public class CovarianceControl {
-	
-	private MovingCovariance cov;
+
+	private MovingCovarianceAlt cov;
 	private IBelief belief;
 
-	public CovarianceControl(double start, double memory){
+	public CovarianceControl(double start, double memory) {
 		this.belief = new ConstantFactorBelief(start, 0.01);
-		this.cov = new MovingCovariance(memory);
+		this.cov = new MovingCovarianceAlt(memory);
 	}
-	
-	public double getCurrentInput(){
+
+	public double getCurrentInput() {
 		return belief.getValue();
 	}
-	
-	public void reportOutput(double output){
+
+	public void reportOutput(double output) {
 		this.cov.add(getCurrentInput(), output);
-		this.belief.adapt(this.cov.getCovariance() > 0);
+		boolean upwards = this.cov.getCovariance() > 0;
+		this.belief.adapt(upwards);
 	}
 
 }

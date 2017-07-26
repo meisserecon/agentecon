@@ -26,17 +26,6 @@ public class ConsumerEvent extends SimEvent {
 		this.utilFun = utility;
 	}
 
-	public ConsumerEvent(int card, Endowment end, final LogUtilWithFloor util) {
-		this(card, end, new IUtilityFactory(){
-
-			@Override
-			public IUtility create(int number) {
-				return util;
-			}
-			
-		});
-	}
-
 	@Override
 	public void execute(int day, ICountry sim) {
 		for (int i = 0; i < cardinality; i++) {
