@@ -6,10 +6,10 @@ import com.agentecon.agent.IAgent;
 
 import com.agentecon.firm.InputFactor;
 import com.agentecon.goods.IStock;
+import com.agentecon.learning.IBelief;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.price.IBelief;
 
 /**
  * Implements sensor pricing for an input factor as described "An Agent-Based Simulation of the Stolper-Samuelson Effect", Journal of Computational Economics

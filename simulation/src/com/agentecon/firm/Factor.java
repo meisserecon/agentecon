@@ -3,11 +3,11 @@ package com.agentecon.firm;
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.learning.IBelief;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.price.IBelief;
 
 public abstract class Factor {
 

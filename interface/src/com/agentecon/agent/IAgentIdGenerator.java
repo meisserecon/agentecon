@@ -1,5 +1,7 @@
 package com.agentecon.agent;
 
+import java.util.Random;
+
 /**
  * Needed to create new Agents.
  */
@@ -13,5 +15,7 @@ public interface IAgentIdGenerator {
 	 * won't do.
 	 */
 	public int createUniqueAgentId();
+	
+	public Random getRand();
 
 }

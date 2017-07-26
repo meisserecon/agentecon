@@ -2,11 +2,11 @@ package com.agentecon.firm;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
+import com.agentecon.learning.IBelief;
 import com.agentecon.market.AbstractOffer;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Price;
-import com.agentecon.price.IBelief;
 
 public class InputFactor extends Factor {
 

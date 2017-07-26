@@ -31,4 +31,16 @@ public class MovingCovariance {
 		return getCovariance() / Math.sqrt(x.getVariance() * y.getVariance());
 	}
 
+	public double getRegressionFactor() {
+		return getCovariance() / x.getVariance(); // see "Mathematical Statistics and Data Analysis" by John A. Rice, page 561
+	}
+
+	public IAverage getX() {
+		return x;
+	}
+
+	public IAverage getY() {
+		return y;
+	}
+
 }

@@ -38,7 +38,7 @@ import com.agentecon.sim.SimulationConfig;
 public class HermitConfiguration extends SimulationConfig implements IInnovation, IUtilityFactory {
 
 	public static final String AGENT_CLASS_NAME = "com.agentecon.exercise1.Hermit";
-	public static final String ALT_AGENT_CLASS_NAME = "com.agentecon.exercise1.AdaptiveHermit";
+	public static final String ALT_AGENT_CLASS_NAME = "com.agentecon.exercise1.CovarianceHermit";
 
 	public static final Good POTATOE = new Good("Potatoe", 0.95);
 	public static final Good MAN_HOUR = new Good("Man-hour", 0.0);
@@ -102,7 +102,8 @@ public class HermitConfiguration extends SimulationConfig implements IInnovation
 		IAgentFactory defaultFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, new File("../exercises/src")); // this factory loads agents from the local disk
 		// IAgentFactory meisserFactory = new CompilingAgentFactory(AGENT_CLASS_NAME, "meisserecon", "agentecon"); // loads the Hermit implementation from the meisserecon repository
 		IAgentFactory adaptiveFactory = new CompilingAgentFactory(ALT_AGENT_CLASS_NAME, new File("../exercises/src"));
-		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, new LimitingAgentFactory(1, adaptiveFactory));
+		IAgentFactory leastSquareFactory = new CompilingAgentFactory("com.agentecon.exercise1.LeastSquaresHermit", new File("../exercises/src"));
+		IAgentFactory factory = new AgentFactoryMultiplex(defaultFactory, new LimitingAgentFactory(1, adaptiveFactory), new LimitingAgentFactory(1, leastSquareFactory));
 		return factory;
 	}
 

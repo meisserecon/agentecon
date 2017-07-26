@@ -2,8 +2,8 @@ package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
+import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.price.ExpSearchBelief;
 import com.agentecon.util.Numbers;
 
 public class MarketMakerPrice {

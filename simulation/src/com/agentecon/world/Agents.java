@@ -146,7 +146,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		return consumers.get(getRand().nextInt(consumers.size()));
 	}
 
-	private Random getRand() {
+	public Random getRand() {
 		if (rand == null) {
 			rand = new Random(seed);
 		}

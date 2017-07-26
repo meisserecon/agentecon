@@ -18,14 +18,14 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Quantity;
 import com.agentecon.goods.Stock;
+import com.agentecon.learning.HardcodedBelief;
+import com.agentecon.learning.IBelief;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.Market;
 import com.agentecon.market.Price;
-import com.agentecon.price.HardcodedBelief;
-import com.agentecon.price.IBelief;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
@@ -239,6 +239,11 @@ public class FirmTest implements IAgentIdGenerator {
 	@Override
 	public int createUniqueAgentId() {
 		return 1;
+	}
+
+	@Override
+	public Random getRand() {
+		throw new RuntimeException("Not implemented");
 	}
 	
 }

@@ -4,6 +4,7 @@ package com.agentecon.consumer;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -135,6 +136,11 @@ public class ConsumerTest implements IAgentIdGenerator {
 	@Override
 	public int createUniqueAgentId() {
 		return 1;
+	}
+
+	@Override
+	public Random getRand() {
+		throw new RuntimeException("Not implemented");
 	}
 
 }
