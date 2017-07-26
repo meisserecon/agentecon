@@ -38,9 +38,11 @@ public class NodeMiniChart extends MiniChart {
 					if (t instanceof IConsumer) {
 						average.add(((IConsumer) t).getUtilityFunction().getLatestExperiencedUtility());
 						type = ENodeType.CONSUMER;
-					} else {
+					} else if (t instanceof IFirm){
 						average.add(((IFirm) t).getShareRegister().getAverageDividend());
 						type = ENodeType.FIRM;
+					} else {
+						throw new RuntimeException("Agent " + agent + " not found");
 					}
 				}
 			});

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
@@ -26,7 +26,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 	private ArrayList<Node> firms, consumers;
 	private SelectionRecommendation selection;
 
-	public TradeGraph(ISimulation simulation, List<String> agents) {
+	public TradeGraph(ISimulation simulation, Set<String> agents) {
 		this.selection = new SelectionRecommendation(simulation, agents);
 		this.firms = new ArrayList<>();
 		this.consumers = new ArrayList<>();
@@ -36,7 +36,7 @@ public class TradeGraph extends SimulationListenerAdapter implements ISimulation
 		this.days = 0;
 		for (String agent : agents) {
 			Node node = new Node(agent);
-			ENodeType type = node.getType(simulation.getAgents());
+			ENodeType type = node.getType(simulation.getAgents(), agents);
 			switch (type) {
 			case CONSUMER:
 				node.initializeSizeQuery(ESizeType.DEFAULT_CONSUMER_TYPE, simulation);

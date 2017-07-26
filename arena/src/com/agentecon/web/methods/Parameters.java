@@ -8,9 +8,10 @@
  */
 package com.agentecon.web.methods;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
@@ -53,8 +54,8 @@ public class Parameters {
 		return values != null && values.size() == 1 ? values.get(0) : "";
 	}
 
-	public List<String> getFromCommaSeparatedList(String key) {
-		ArrayList<String> list = new ArrayList<>();
+	public Set<String> getFromCommaSeparatedList(String key) {
+		Set<String> list = new HashSet<>();
 		StringTokenizer tok = new StringTokenizer(getParam(key), ",");
 		while (tok.hasMoreTokens()) {
 			list.add(tok.nextToken());

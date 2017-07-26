@@ -3,7 +3,7 @@ package com.agentecon.web.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import com.agentecon.ISimulation;
 
@@ -11,7 +11,7 @@ public class SelectionRecommendation {
 	
 	private HashSet<String> known;
 	
-	public SelectionRecommendation(ISimulation simulation, List<String> agents){
+	public SelectionRecommendation(ISimulation simulation, Set<String> agents){
 		this.known = new HashSet<>(simulation.getAgents().getFirmTypes());
 		this.known.addAll(simulation.getAgents().getConsumerTypes());
 		this.known.addAll(agents);

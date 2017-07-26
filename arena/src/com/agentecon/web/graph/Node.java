@@ -8,6 +8,8 @@
  */
 package com.agentecon.web.graph;
 
+import java.util.Set;
+
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgents;
@@ -34,8 +36,8 @@ public class Node implements Comparable<Node>{
 		this.sizeQuery = type.createQuery(query, agents);
 	}
 	
-	public ENodeType getType(IAgents agents) {
-		return query.getType(agents);
+	public ENodeType getType(IAgents agents, Set<String> shownAgents) {
+		return query.getType(agents, shownAgents);
 	}
 
 	public boolean contains(IAgent agent) {

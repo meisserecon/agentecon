@@ -9,7 +9,7 @@
 package com.agentecon.web.methods;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 import com.agentecon.ISimulation;
 import com.agentecon.runner.Recyclable;
@@ -36,7 +36,7 @@ public class TradeGraphMethod extends SimSpecificMethod {
 		}
 		Recyclable<ISimulation> simulation = getSimulation(params, Math.max(0, day - stepSize));
 		try {
-			List<String> agents = params.getFromCommaSeparatedList("agents");
+			Set<String> agents = params.getFromCommaSeparatedList("agents");
 			TradeGraph graph = new TradeGraph(simulation.getItem(), agents);
 			simulation.getItem().forwardTo(day);
 			return graph.fetchData();

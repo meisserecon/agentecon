@@ -9,6 +9,6 @@
 package com.agentecon.web.query;
 
 public enum ENodeType {
-	CONSUMER, FIRM, UNKNOWN
+	CONSUMER, FIRM, UNKNOWN, DISCONNECTED
 
 }

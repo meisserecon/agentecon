@@ -11,6 +11,7 @@ package com.agentecon.web.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.agentecon.agent.IAgent;
@@ -43,7 +44,7 @@ public class AgentQuery {
 		return Parameters.SELECTION + "=" + EQueryType.FIRMS_QUERY;
 	}
 
-	public ENodeType getType(IAgents agents) {
+	public ENodeType getType(IAgents agents, Set<String> shownAgents) {
 		switch (type) {
 		case CONSUMERS:
 			return ENodeType.CONSUMER;
@@ -63,6 +64,8 @@ public class AgentQuery {
 			IAgent agent = agents.getAgent(id);
 			if (agent == null) {
 				return ENodeType.UNKNOWN;
+			} else if (!shownAgents.contains(agent.getType())){
+				return ENodeType.DISCONNECTED;
 			} else if (agent instanceof IConsumer) {
 				return ENodeType.CONSUMER;
 			} else {
