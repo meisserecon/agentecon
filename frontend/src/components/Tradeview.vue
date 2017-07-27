@@ -22,8 +22,10 @@
 
       <div class="view">
         <div class="main">
-          <tradegraph class="main__tradegraph" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
-          <div class="sidebar">Minicharts</div>
+          <tradegraph class="main__tradegraph" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart"  @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
+          <div class="sidebar">
+            <minicharts :agents="miniCharts" :simulationday="simDay" :simulationid="simId"></minicharts>
+          </div>
         </div>
         <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes"></childselection>
         <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId"></nodeinfo>
@@ -37,6 +39,7 @@ import * as d3 from 'd3';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
 import Nodeinfo from '@/components/Nodeinfo';
+import Minicharts from '@/components/Minicharts';
 import config from '../config';
 
 export default {
@@ -45,6 +48,7 @@ export default {
     Tradegraph,
     Childselection,
     Nodeinfo,
+    Minicharts,
   },
   data() {
     return {
@@ -55,6 +59,7 @@ export default {
       playInterval: null,
       metrics: [],
       selectedNode: this.$route.query.selected,
+      miniCharts: [],
       showNodeInfo: false,
       infoOf: null,
       showChildSelection: false,
@@ -172,6 +177,16 @@ export default {
         this.selectedNode = node;
       }
       this.goToNewDay();
+    },
+    handleAddMinichart(node) {
+      // remove chart of node if it is already there
+      this.miniCharts = this.miniCharts.filter(el => el !== node);
+      // remove last chart if there would be more than configured
+      if (this.miniCharts.length >= config.miniCharts.noOfChartsInSidebar) {
+        this.miniCharts.pop();
+      }
+      // add chart to the top of the list
+      this.miniCharts.unshift(node);
     },
     handleShowInfo(data) {
       this.infoOf = data[0];

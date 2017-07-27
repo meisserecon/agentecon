@@ -3,9 +3,9 @@
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="contextmenu" class="context contextmenu">
       <ul class="contextmenu__list">
-        <li class="contextmenu__item"><button class="btn contextmenu__btn">Add Minichart</button></li>
-        <li class="contextmenu__item"><button id='infoselection' class="btn contextmenu__btn">Show Info</button></li>
-        <li class="contextmenu__item"><button id='childrenselection' class="btn contextmenu__btn">Expand/Collapse Children</button></li>
+        <li class="contextmenu__item"><button id="minichartselection" class="btn contextmenu__btn">Add Minichart</button></li>
+        <li class="contextmenu__item"><button id="infoselection" class="btn contextmenu__btn">Show Info</button></li>
+        <li class="contextmenu__item"><button id="childrenselection" class="btn contextmenu__btn">Expand/Collapse Children</button></li>
       </ul>
     </div>
   </div>
@@ -96,8 +96,9 @@ export default {
           this.graph.clickcage.contextExists = true;
         }
 
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
+        d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id));
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
       });
     },
     initClickcage() {
