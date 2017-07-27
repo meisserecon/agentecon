@@ -92,10 +92,15 @@ export default {
 </script>
 <style lang="sass">
 .nodeinfo
+  min-width: 280px
+  padding: 20px 30px
+
+  th
+    padding-top: 10px
 
   &__title
-    margin: 0
+    margin: 0 0 10px
 
   &__btn
-    margin-top: 10px
+    margin-top: 20px
 </style>

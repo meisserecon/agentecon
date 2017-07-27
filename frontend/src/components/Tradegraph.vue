@@ -394,7 +394,7 @@ $light-grey:                        rgba(0,0,0,.3)
   display: block
   width: 100%
   height: 800px
-  background-color: white
+  background-color: #f0f0f0
 
 .node
 

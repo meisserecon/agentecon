@@ -4,7 +4,7 @@
 
     <div v-if="loading">Loading...</div>
 
-    <ul v-if="!loading">
+    <ul class="nolist" v-if="!loading">
       <li>
         <!-- TODO insert proper simulation link on github -->
         <a :href="simDescription" target="_blank">Description</a>

@@ -108,9 +108,11 @@ export default {
 </script>
 <style lang="sass">
 .childselection
+  min-width: 280px
+  padding: 20px 30px
 
   &__title
-    margin: 0
+    margin: 0 0 10px
 
   &__list
     display: flex
@@ -120,5 +122,5 @@ export default {
     display: inline-block
 
   &__btn
-    margin-top: 10px
+    margin-top: 20px
 </style>
