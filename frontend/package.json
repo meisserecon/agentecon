@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "d3": "^4.9.1",
+    "plotly.js": "^1.29.3",
     "vue": "^2.3.3",
     "vue-router": "^2.3.1"
   },

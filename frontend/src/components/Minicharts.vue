@@ -1,12 +1,13 @@
 <template>
   <div>
     <template v-for="agent in agents">
-      <div v-if="agent && chartData[agent]">
+      <div class="minichart__wrapper" v-if="agent && chartData[agent]">
         <h4>{{ agent }}</h4>
-        {{ chartData[agent].name }}
+        <div class="minichart" v-bind:id="`minichart-${agent}`"></div>
+        <!--{{ chartData[agent].name }}
         {{ chartData[agent].max }}
         {{ chartData[agent].min }}
-        {{ chartData[agent].data }}
+        {{ chartData[agent].data }}-->
       </div>
     </template>
   </div>
@@ -14,6 +15,7 @@
 
 <script>
 // import * as d3 from 'd3';
+import Plotly from 'plotly.js/dist/plotly';
 import config from '../config';
 
 export default {
@@ -51,9 +53,45 @@ export default {
             this.$set(this.chartData, agent, response);
           },
         )
+        .then(
+          () => {
+            const self = this;
+            const layout = {
+              autosize: false,
+              width: 300,
+              height: 150,
+              margin: {
+                l: 30,
+                r: 30,
+                t: 0,
+                b: 0,
+              },
+              // showlegend: false,
+              xaxis: {
+                showgrid: false,
+                zeroline: false,
+                showticklabels: false,
+              },
+            };
+
+            const data = [{
+              y: self.chartData[agent].data,
+              type: 'scatter',
+            }];
+
+            Plotly.newPlot(`minichart-${agent}`, data, layout, { displayModeBar: false });
+          },
+        )
         .catch(error => config.alertError(error));
       });
     },
   },
 };
 </script>
+
+<style lang="sass">
+.minichart
+
+  &__wrapper
+
+</style>

@@ -38,6 +38,7 @@
 
 <script>
 import * as d3 from 'd3';
+// import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
 import Nodeinfo from '@/components/Nodeinfo';
