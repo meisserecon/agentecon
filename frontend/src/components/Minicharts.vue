@@ -55,7 +55,8 @@ export default {
         )
         .then(
           () => {
-            const self = this;
+            // TODO: Need a way to update the plot without drawing it entirely for each cycle
+            // Updating should prevent the flash when redrawing
             const layout = {
               autosize: false,
               width: 300,
@@ -66,20 +67,21 @@ export default {
                 t: 0,
                 b: 0,
               },
-              // showlegend: false,
               xaxis: {
-                showgrid: false,
                 zeroline: false,
                 showticklabels: false,
               },
             };
 
             const data = [{
-              y: self.chartData[agent].data,
+              y: this.chartData[agent].data,
               type: 'scatter',
             }];
 
             Plotly.newPlot(`minichart-${agent}`, data, layout, { displayModeBar: false });
+
+            // TODO: Use restyle to update plot
+            // Plotly.restyle(`minichart-${agent}`, data);
           },
         )
         .catch(error => config.alertError(error));
