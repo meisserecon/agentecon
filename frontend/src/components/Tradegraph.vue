@@ -22,6 +22,7 @@ export default {
       graph: {
         stage: null,
         stageDOM: null,
+        defs: null,
         clickcage: null,
         firmNodes: null,
         firmsTree: null,
@@ -47,6 +48,23 @@ export default {
   mounted() {
     this.graph.stage = d3.select('#stage');
     this.graph.stageDOM = document.getElementById('stage');
+    this.graph.defs = this.graph.stage.append('defs');
+
+    // Create reference marker
+    this.graph.defs
+      .append('marker')
+        .attr('id', 'marker')
+        .attr('class', 'marker')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 0)
+        .attr('refY', 0)
+        .attr('markerWidth', 10)
+        .attr('markerHeight', 10)
+        .attr('orient', 'auto')
+        .attr('markerUnits', 'userSpaceOnUse')
+      .append('path')
+        .attr('d', 'M0,-5L10,0L0,5');
+
     this.initClickcage();
     this.updateTradegraph();
   },
@@ -266,9 +284,9 @@ export default {
       this.addClickToNodes();
     },
     drawLinks(links) {
-      // Remove all groups and defs
+      // Remove all (groups) and (links in defs)
       d3.selectAll('.links__wrapper').remove();
-      d3.selectAll('defs').remove();
+      // d3.select('#defs-links').remove();
 
       if (links.length > 0) {
         let currentSource = links[0].source;
@@ -284,6 +302,9 @@ export default {
         const xSource = 0;
         const ySource = 0;
         let localEdgeCount = 0;
+
+        // Create group in defs to define links
+        const defsGroup = this.graph.defs.append('g').attr('id', 'defs-links');
 
         // Create initial group to append links to
         let group = this.graph.stage.append('g')
@@ -355,28 +376,58 @@ export default {
             const cy1 = j * y1;
 
             // Append the bezier curve and marker
-            group
+            defsGroup
               .append('path')
+              .attr('id', `${d.source}-${d.destination}-${i}`)
+              .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`);
+
+            group
+              .append('use')
+              .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
               .attr('class', 'link')
-              .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
               .attr('stroke-width', `${d.weight}px`)
               .attr('marker-end', () => 'url(#marker)');
-          });
 
-        // Create reference marker
-        this.graph.stage.append('defs')
-          .append('marker')
-            .attr('id', 'marker')
-            .attr('class', 'marker')
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 0)
-            .attr('refY', 0)
-            .attr('markerWidth', 10)
-            .attr('markerHeight', 10)
-            .attr('orient', 'auto')
-            .attr('markerUnits', 'userSpaceOnUse')
-          .append('path')
-            .attr('d', 'M0,-5L10,0L0,5');
+            group
+              .append('text')
+              .append('textPath')
+                .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+                .text(d.label);
+
+
+            // group
+            //   .append('path')
+            //   .attr('id', `link-${i}`)
+            //   .attr('class', 'link')
+            //   .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
+            //   .attr('stroke-width', `${d.weight}px`)
+            //   .attr('marker-end', () => 'url(#marker)');
+
+            // group
+            //   .append('textPath')
+            //   .attr('xlink:href', `#link-${i}`)
+            //   .text('Text');
+
+            // group
+            //   .append('use')
+            //   .attr('xlink:href', `#link-${i}`);
+
+            // Append the link label
+            // group
+            //   .append('text')
+            //   .attr('text-anchor', 'middle')
+            //   .text('Text');
+
+
+            // svg.append("text")
+            //     .attr("id", "curve-text")
+            //   .append("textPath")
+            //     .attr("xlink:href", "#curve")
+            //     .text("We go up, then we go down, then up again.");
+            // svg.append("use")
+            //     .attr("id", "curve-line")
+            //     .attr("xlink:href", "#curve");
+          });
       }
     },
   },
