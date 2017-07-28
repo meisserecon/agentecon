@@ -26,7 +26,7 @@ public abstract class MiniChart {
 				data.add(new Point(current, getData(stepper, current)));
 			}
 		}
-		return new MiniChartData(getName(), start, LENGTH, data, height);
+		return new MiniChartData(getName(), start, Math.min(LENGTH, day), data, height);
 	}
 
 	protected abstract float getData(SimulationStepper stepper, int day) throws IOException;
