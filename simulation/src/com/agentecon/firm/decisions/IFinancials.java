@@ -27,6 +27,9 @@ public interface IFinancials {
 	 */
 	public double getExpectedRevenue();
 	
+	/**
+	 * The amount that needs to be spent on fixed costs before actual production starts at the current price estimate.
+	 */
 	public double getFixedCosts();
 
 	public double getProfits();

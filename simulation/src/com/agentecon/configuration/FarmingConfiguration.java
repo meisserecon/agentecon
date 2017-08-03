@@ -62,7 +62,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 				return new Consumer(id, endowment, utilityFunction);
 			}
 
-		}, new LimitingAgentFactory(0, new CompilingAgentFactory(EXPERIMENTAL_FARMER, new File("../exercises/src"))),
+		}, new LimitingAgentFactory(1, new CompilingAgentFactory(EXPERIMENTAL_FARMER, new File("../exercises/src"))),
 				new LimitingAgentFactory(1, new CompilingAgentFactory(HermitConfiguration.ALT_AGENT_CLASS_NAME, new File("../exercises/src"))),
 				new LimitingAgentFactory(30, new CompilingAgentFactory(FARMER, new File("../exercises/src")))), 60);
 	}

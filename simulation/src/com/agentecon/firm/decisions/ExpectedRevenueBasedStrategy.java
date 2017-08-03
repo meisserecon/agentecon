@@ -17,8 +17,8 @@ public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 		return new ExpectedRevenueBasedStrategy(laborshare);
 	}
 
-	public double calcCogs(double cash, double cogs) {
-		return cash / 5.0;
+	public double calcCogs(IFinancials financials) {
+		return financials.getCash() / 5.0;
 	}
 
 	@Override

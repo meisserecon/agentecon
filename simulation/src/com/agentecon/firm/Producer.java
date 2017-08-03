@@ -75,8 +75,7 @@ public class Producer extends Firm implements IProducer {
 
 	public void offer(IPriceMakerMarket market) {
 		try {
-			double budget = getMoney().getAmount();
-			double totSalaries = strategy.calcCogs(budget, prod.getCostOfMaximumProfit(getInventory(), getPrices()));
+			double totSalaries = strategy.calcCogs(getFinancials(getMoney()));
 			if (!getMoney().isEmpty()) {
 				for (InputFactor f : inputs) {
 					if (f.isObtainable()) {
@@ -133,7 +132,13 @@ public class Producer extends Firm implements IProducer {
 	@Override
 	protected double calculateDividends(int day) {
 		IStock wallet = getMoney();
-		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(new Financials(wallet, output, inputs) {
+		double dividend = Math.min(wallet.getAmount(), strategy.calcDividend(getFinancials(wallet)));
+		assert dividend <= wallet.getAmount();
+		return dividend;
+	}
+
+	private Financials getFinancials(IStock wallet) {
+		return new Financials(wallet, output, inputs) {
 
 			@Override
 			public double getIdealCogs() throws PriceUnknownException {
@@ -149,9 +154,7 @@ public class Producer extends Firm implements IProducer {
 				}
 			}
 
-		}));
-		assert dividend <= wallet.getAmount();
-		return dividend;
+		};
 	}
 
 	public IProductionFunction getProductionFunction() {

@@ -69,7 +69,8 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 	// }
 
 	@Override
-	public double calcCogs(double cash, double idealCogs) {
+	public double calcCogs(IFinancials financials) {
+		double cash = financials.getCash();
 		if (age < 10){
 			return cash * SPENDING_FRACTION * 3;
 		} else {

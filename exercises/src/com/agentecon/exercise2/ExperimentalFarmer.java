@@ -53,13 +53,13 @@ public class ExperimentalFarmer extends Consumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getDay() > 100) {
+		if (myLand.hasSome() && statistics.getDay() % 100 == 10) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = ExperimentalFarmer.this;
 				IStock firmMoney = getMoney().hideRelative(0.5);
-				Firm farm = new ExperimentalFarm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
+				Firm farm = new ExperimentalFarm(id, owner, firmMoney, myLand, prod, statistics);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {

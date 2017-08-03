@@ -6,7 +6,6 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.world.ICountry;
 
 public class ConsumerEvent extends SimEvent {

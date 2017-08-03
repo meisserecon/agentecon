@@ -26,7 +26,7 @@ public class LeastSquaresHermit extends Hermit implements IFounder {
 
 	public LeastSquaresHermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
-		this.control = new QuadraticMaximizer(0.95, 3, id.getRand().nextLong() + 1313, HermitConfiguration.FIXED_COSTS.getAmount(), end.getDaily()[0].getAmount());
+		this.control = new QuadraticMaximizer(0.95, id.getRand().nextLong() + 1313, HermitConfiguration.FIXED_COSTS.getAmount(), end.getDaily()[0].getAmount());
 	}
 	
 	@Override
