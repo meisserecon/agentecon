@@ -8,10 +8,10 @@
  */
 package com.agentecon.web.methods;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
@@ -21,6 +21,7 @@ public class Parameters {
 	public static final String DAY = "day";
 	public static final String SIM = "sim";
 	public static final String SELECTION = "selection";
+	public static final String ALT_SELECTION = "agents";
 
 	private Map<String, List<String>> params;
 
@@ -36,8 +37,9 @@ public class Parameters {
 		return getIntParam(DAY);
 	}
 
-	public String getSelection() {
-		return getParam(SELECTION);
+	public String getSingleSelection() {
+		Collection<String> sel = getSelection();
+		return sel.size() == 0 ? "" : sel.iterator().next();
 	}
 
 	public int getIntParam(String key) {
@@ -53,10 +55,18 @@ public class Parameters {
 		List<String> values = params.get(key);
 		return values != null && values.size() == 1 ? values.get(0) : "";
 	}
+	
+	public String getSelectionString() {
+		String sel = getParam(SELECTION);
+		if (sel == null){
+			sel = getParam(ALT_SELECTION);
+		}
+		return sel == null ? "" : sel;
+	}
 
-	public Set<String> getFromCommaSeparatedList(String key) {
-		Set<String> list = new HashSet<>();
-		StringTokenizer tok = new StringTokenizer(getParam(key), ",");
+	public List<String> getSelection() {
+		List<String> list = new ArrayList<String>();
+		StringTokenizer tok = new StringTokenizer(getSelectionString(), ",");
 		while (tok.hasMoreTokens()) {
 			list.add(tok.nextToken());
 		}

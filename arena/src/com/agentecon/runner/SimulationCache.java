@@ -10,24 +10,15 @@ import com.agentecon.ISimulation;
 
 public class SimulationCache {
 
-	private static final int MIN_CACHE_SIZE = 10;
-
 	private int max;
 	private SimulationLoader loader;
 	private TreeMap<Integer, ArrayList<SoftReference<ISimulation>>> sims;
-
-	// Keep direct references to a limited number of objects to ensure they
-	// cannot be garbage collected
-	private int current;
-	private ISimulation[] hardReferences;
 
 	public SimulationCache(SimulationLoader loader) throws IOException {
 		this.loader = loader;
 		this.sims = new TreeMap<>();
 		ISimulation sim = loader.loadSimulation();
 		this.max = sim.getConfig().getRounds();
-		this.current = 0;
-		this.hardReferences = new ISimulation[MIN_CACHE_SIZE];
 		recycle(sim);
 	}
 
@@ -80,8 +71,6 @@ public class SimulationCache {
 	}
 
 	private void insert(ISimulation sim, ArrayList<SoftReference<ISimulation>> list) {
-		hardReferences[current] = sim;
-		current = (current + 1) % hardReferences.length;
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).get() == null) {
 				list.set(i, new SoftReference<ISimulation>(sim));

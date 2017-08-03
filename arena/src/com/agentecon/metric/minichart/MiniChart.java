@@ -1,6 +1,7 @@
 package com.agentecon.metric.minichart;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.agentecon.goods.Good;
 import com.agentecon.metric.series.Line;
@@ -46,8 +47,11 @@ public abstract class MiniChart {
 			float[] temp = new float[length];
 			for (int i = 0; i < length; i++) {
 				float value = data.get(start + i);
-				this.min = Math.min(min, value);
-				this.max = Math.max(max, value);
+				if (!Float.isFinite(value)){
+					value = 0.0f; // Gson does not support NaN
+				}
+				this.min = (float) Math.min(min, Math.floor(value));
+				this.max = (float) Math.max(max, Math.ceil(value));
 				temp[i] = value;
 			}
 			this.data = new short[length];
@@ -60,16 +64,16 @@ public abstract class MiniChart {
 
 	}
 
-	public static MiniChart create(String selection) {
-		int comma = selection.indexOf(',');
-		if (comma >= 0) {
-			AgentQuery source = new AgentQuery(selection.substring(0, comma));
-			int secondComma = selection.indexOf(',', comma + 1);
-			AgentQuery dest = new AgentQuery(selection.substring(comma + 1, secondComma));
-			Good good = new Good(selection.substring(secondComma + 1));
+	public static MiniChart create(List<String> set) {
+		if (set.size() == 1) {
+			return new NodeMiniChart(new AgentQuery(set.iterator().next()));
+		} else if (set.size() == 3){
+			AgentQuery source = new AgentQuery(set.get(0));
+			AgentQuery dest = new AgentQuery(set.get(1));
+			Good good = new Good(set.get(2));
 			return new TradeMiniChart(source, dest, good);
 		} else {
-			return new NodeMiniChart(new AgentQuery(selection));
+			throw new RuntimeException("Minichart needs either one node or a tupel like selection=source,dest,good as argument, provided was: " + set);
 		}
 	}
 

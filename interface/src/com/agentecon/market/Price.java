@@ -21,7 +21,7 @@ public class Price implements Comparable<Price> {
 	}
 	
 	public boolean isAbove(Price price) {
-		assert this.good == price.good;
+		assert this.good.equals(price.good);
 		return this.price > price.price;
 	}
 	

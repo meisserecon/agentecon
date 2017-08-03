@@ -75,7 +75,7 @@ public abstract class AbstractWeightedUtil implements IUtility {
 
 	public double getWeight(Good good) {
 		for (int i = 0; i < weights.length; i++) {
-			if (weights[i].good == good) {
+			if (weights[i].good.equals(good)) {
 				return weights[i].weight;
 			}
 		}

@@ -52,7 +52,7 @@ public class TradeMiniChart extends MiniChart {
 
 	@Override
 	protected String getName() {
-		return "Selected price of " + good;
+		return good + " price on selected edge";
 	}
 
 	class MarketListener implements IMarketListener {
@@ -65,7 +65,7 @@ public class TradeMiniChart extends MiniChart {
 
 		@Override
 		public void notifyTraded(IAgent seller, IAgent buyer, Good good, double quantity, double payment) {
-			if (good == TradeMiniChart.this.good) {
+			if (good.equals(TradeMiniChart.this.good)) {
 				if (source.matches(seller) && dest.matches(buyer)) {
 					assert quantity >= 0.0;
 					price.add(payment / quantity);

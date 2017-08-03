@@ -32,7 +32,7 @@ public class ChildrenMethod extends SimSpecificMethod {
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		Recyclable<ISimulation> sim = getSimulation(params, params.getDay());
 		try {
-			AgentQuery query = new AgentQuery(params.getSelection());
+			AgentQuery query = new AgentQuery(params.getSingleSelection());
 			return new Children(query.getChildren(sim.getItem().getAgents()));
 		} finally {
 			sim.recycle();

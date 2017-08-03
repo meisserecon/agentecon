@@ -42,7 +42,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new HermitConfiguration());
+		this(new GrowthConfiguration());
 	}
 	
 	public Simulation(IConfiguration metaConfig) {

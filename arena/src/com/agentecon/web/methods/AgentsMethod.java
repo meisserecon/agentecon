@@ -30,7 +30,7 @@ public class AgentsMethod extends SimSpecificMethod {
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		Recyclable<ISimulation> sim = super.getSimulation(params, params.getDay());
 		try {
-			AgentQuery query = new AgentQuery(params.getSelection());
+			AgentQuery query = new AgentQuery(params.getSingleSelection());
 			return query.getAgentData(sim.getItem().getAgents());
 		} finally {
 			sim.recycle();

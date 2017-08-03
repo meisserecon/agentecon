@@ -9,6 +9,7 @@
 package com.agentecon.web.methods;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.agentecon.ISimulation;
@@ -24,7 +25,7 @@ public class TradeGraphMethod extends SimSpecificMethod {
 
 	@Override
 	protected String createExamplePath() {
-		return super.createExamplePath() + "&agents=consumers,firms&step=1";
+		return super.createExamplePath() + "&selection=consumers,firms&step=1";
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class TradeGraphMethod extends SimSpecificMethod {
 		}
 		Recyclable<ISimulation> simulation = getSimulation(params, Math.max(0, day - stepSize));
 		try {
-			Set<String> agents = params.getFromCommaSeparatedList("agents");
+			Set<String> agents = new HashSet<>(params.getSelection());
 			TradeGraph graph = new TradeGraph(simulation.getItem(), agents);
 			simulation.getItem().forwardTo(day);
 			return graph.fetchData();
