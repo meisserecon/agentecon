@@ -28,6 +28,10 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 		}
 	}
 	
+	public Weight[] getInputWeigths() {
+		return inputs;
+	}
+	
 	@Override
 	public double getFixedCost(Good good) {
 		return 0;
@@ -56,6 +60,10 @@ public abstract class AbstractProductionFunction implements IProductionFunction 
 		return totConsumedWeight;
 	}
 
+	public double getTotalCapitalWeight(){
+		return getTotalWeight() - getTotalConsumedWeight();
+	}
+	
 	@Override
 	public Good[] getInputs() {
 		Good[] goods = new Good[inputs.length];

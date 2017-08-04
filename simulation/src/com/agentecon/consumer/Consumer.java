@@ -14,6 +14,7 @@ import com.agentecon.firm.Portfolio;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Quantity;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceFilter;
 import com.agentecon.market.IPriceTakerMarket;
@@ -89,7 +90,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				// double excessStock = Math.max(s.getAmount() - allocs[pos],
 				// s.getAmount() - 19); // work at least 5 hours
 				if (excessStock > Numbers.EPSILON && offer.getGood() == soldGood) {
-					double amountAcquired = offer.accept(this, money, s, excessStock);
+					double amountAcquired = offer.accept(this, money, s, new Quantity(s.getGood(), excessStock));
 					completedSales &= amountAcquired == excessStock;
 					trading = true;
 				}
@@ -104,7 +105,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				double difference = allocs[pos] - s.getAmount();
 				if (difference > Numbers.EPSILON && offer.getGood() != soldGood && !money.isEmpty()) {
 					double moneyAmount = money.getAmount();
-					offer.accept(this, money, s, difference);
+					offer.accept(this, money, s, new Quantity(s.getGood(), difference));
 					spendings += (moneyAmount - money.getAmount());
 					trading = true;
 				}
@@ -126,7 +127,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 				if (offer == null){
 					break;
 				} else {
-					offer.accept(this, getMoney(), timeLeft, minimumWorkAmount - worked);
+					offer.accept(this, getMoney(), timeLeft, new Quantity(timeLeft.getGood(), minimumWorkAmount - worked));
 				}
 				worked = endowment - timeLeft.getAmount();
 			}

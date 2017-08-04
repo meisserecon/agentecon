@@ -36,6 +36,9 @@ public class CobbDouglasProduction extends AbstractProductionFunction {
 		return super.getTotalWeight();
 	}
 	
+	/**
+	 * This is equivalent to the share of revenue that goes into acquiring non-capital inputs
+	 */
 	public double getReturnsToScaleExcludingCapital() {
 		return super.getTotalConsumedWeight();
 	}

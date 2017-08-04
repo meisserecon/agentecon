@@ -5,6 +5,7 @@ package com.agentecon.market;
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.util.Numbers;
 
 public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer {
@@ -72,6 +73,10 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 			listener.notifyTraded(counterParty, owner, getGood(), goodsFlow, -moneyFlow);
 		}
 	}
+	
+	public Quantity getQuantity(){
+		return new Quantity(getGood(), quantity);
+	}
 
 	public double getAmount() {
 		return quantity;
@@ -93,7 +98,7 @@ public abstract class AbstractOffer implements Comparable<AbstractOffer>, IOffer
 		return getAmount() == 0.0;
 	}
 
-	public abstract double accept(IAgent acceptingAgent, IStock source, IStock target, double amount);
+	public abstract double accept(IAgent acceptingAgent, IStock source, IStock target, Quantity amount);
 
 	public int compareTo(AbstractOffer o) {
 		return price.compareTo(o.price);

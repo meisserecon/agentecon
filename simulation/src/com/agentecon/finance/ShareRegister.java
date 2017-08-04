@@ -37,7 +37,7 @@ public class ShareRegister implements IRegister {
 			collectRootDividend(wallet);
 			Bid bid = dsm.getBid(getTicker());
 			if (bid != null){
-				bid.accept(owner, wallet, rootPosition, rootPosition.getAmount());
+				bid.accept(owner, wallet, rootPosition, rootPosition.getQuantity());
 			}
 		}
 	}

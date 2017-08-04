@@ -49,10 +49,6 @@ public class SimulationConfig {
 		return seed;
 	}
 
-	public boolean hasAging() {
-		return false;
-	}
-
 	public Collection<Event> getEvents() {
 		return events;
 	}

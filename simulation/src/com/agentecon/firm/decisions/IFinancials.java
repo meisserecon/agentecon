@@ -33,5 +33,5 @@ public interface IFinancials {
 	public double getFixedCosts();
 
 	public double getProfits();
-	
+
 }

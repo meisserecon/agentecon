@@ -4,6 +4,7 @@ package com.agentecon.market;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.util.Numbers;
 
 public class Bid extends AbstractOffer {
@@ -25,9 +26,10 @@ public class Bid extends AbstractOffer {
 	}
 	
 	@Override
-	public double accept(IAgent acceptingAgent, IStock seller, IStock sellerStock, double targetAmount){
-		assert sellerStock.getAmount() >= targetAmount;
-		double amount = Math.min(targetAmount, getAmount());
+	public double accept(IAgent acceptingAgent, IStock seller, IStock sellerStock, Quantity targetAmount){
+		assert sellerStock.getGood().equals(targetAmount.getGood());
+		assert sellerStock.getAmount() >= targetAmount.getAmount();
+		double amount = Math.min(targetAmount.getAmount(), getAmount());
 		assert amount >= 0;
 		double total = amount * getPrice().getPrice();
 		transfer(acceptingAgent, seller, -total, sellerStock, amount);
@@ -51,7 +53,7 @@ public class Bid extends AbstractOffer {
 	
 	public void match(Ask ask) {
 		if (!ask.getPrice().isAbove(getPrice())){
-			double amount = ask.accept(getOwner(), wallet, stock, getAmount());
+			double amount = ask.accept(getOwner(), wallet, stock, getQuantity());
 			assert amount >= 0;
 		}
 	}

@@ -3,6 +3,7 @@
 package com.agentecon.firm;
 
 import com.agentecon.goods.Good;
+import com.agentecon.goods.Quantity;
 import com.agentecon.goods.Stock;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.Market;
@@ -24,12 +25,12 @@ public class TestConsumer {
 		for (Price value : prices) {
 			IOffer ask = market.getAsk(value.getGood());
 			while (ask != null && value.isAbove(ask.getPrice())) {
-				ask.accept(null, getWallet(), getStock(ask.getGood()), INFINITE);
+				ask.accept(null, getWallet(), getStock(ask.getGood()), new Quantity(ask.getGood(), INFINITE));
 				ask = market.getAsk(value.getGood());
 			}
 			IOffer bid = market.getBid(value.getGood());
 			while (bid != null && bid.getPrice().isAbove(value)) {
-				bid.accept(null, getWallet(), getStock(bid.getGood()), INFINITE);
+				bid.accept(null, getWallet(), getStock(bid.getGood()), new Quantity(bid.getGood(), INFINITE));
 				bid = market.getBid(value.getGood());
 			}
 		}

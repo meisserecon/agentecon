@@ -2,14 +2,16 @@ package com.agentecon.firm.decisions;
 
 public class ExpectedRevenueBasedStrategy implements IFirmDecisions {
 
-	public static final int TYPES = 11;
-
 	private double laborshare;
 	private double profitshare;
 
 	public ExpectedRevenueBasedStrategy(double laborshare) {
 		this.laborshare = laborshare;
 		this.profitshare = 1.0 - laborshare;
+	}
+	
+	protected double getLaborShare(){
+		return laborshare;
 	}
 
 	@Override

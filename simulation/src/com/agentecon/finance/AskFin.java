@@ -4,6 +4,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Price;
 
@@ -21,7 +22,7 @@ public class AskFin extends Ask {
 		if (target == null){
 			target = getStock().createNewPosition();
 		}
-		super.accept(acceptor, payer, target, budget / getPrice().getPrice());
+		super.accept(acceptor, payer, target, new Quantity(target.getGood(), budget / getPrice().getPrice()));
 		return target;
 	}
 

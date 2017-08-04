@@ -31,6 +31,13 @@ public class CobbDouglasProductionWithFixedCost extends CobbDouglasProduction {
 	public double getFixedCosts(IPriceProvider prices) throws PriceUnknownException {
 		return prices.getPriceBelief(fixedCost);
 	}
+	
+	/**
+	 * This does not change with fixed costs as the fixed costs are deducted from profits.
+	 */
+	public double getReturnsToScaleExcludingCapital() {
+		return super.getReturnsToScaleExcludingCapital();
+	}
 
 	@Override
 	public double useInputs(Inventory inventory) {

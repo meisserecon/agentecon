@@ -60,9 +60,7 @@ public class SimulationRunner {
 			// this.stats.add(new ProductionStats());
 			// this.stats.add(new SingleFirmStats());
 			// this.stats.add(new InventoryStats(sim));
-			if (hasAging()) {
-				this.stats.add(new Demographics(agents));
-			}
+			this.stats.add(new Demographics(agents));
 		}
 		this.latestRunStats.addAll(stats);
 		this.output = new ByteArrayOutputStream();
@@ -70,10 +68,6 @@ public class SimulationRunner {
 
 	private boolean hasIterations(ISimulation sim2) {
 		return sim instanceof IIteratedSimulation && ((IIteratedSimulation) sim2).hasNext();
-	}
-
-	private boolean hasAging() {
-		return sim.getConfig().hasAging();
 	}
 
 	public SimulationConfig getConfig() {
@@ -175,5 +169,5 @@ public class SimulationRunner {
 	public String getSystemOutput() {
 		return output.toString();
 	}
-	
+
 }

@@ -97,14 +97,14 @@ public class FirmTest implements IAgentIdGenerator {
 			@Override
 			public void offer(Ask offer) {
 				assert offer.getPrice().getPrice() == 10.0;
-				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getQuantity());
 			}
 			
 			@Override
 			public void offer(Bid offer) {
 				assert offer.getPrice().getPrice() == hourPrice;
 				assert Math.abs(offer.getAmount() - 32.63754535204813) < 0.0001 : "Firm does not seek optimal input amount";
-				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getQuantity());
 			}
 
 			@Override
@@ -143,13 +143,13 @@ public class FirmTest implements IAgentIdGenerator {
 			@Override
 			public void offer(Ask offer) {
 				assert offer.getPrice().getPrice() == fonduePrice;
-				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getQuantity());
 			}
 			
 			@Override
 			public void offer(Bid offer) {
 				assert offer.getPrice().getPrice() == hourPrice1;
-				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getQuantity());
 			}
 
 			@Override
@@ -213,13 +213,13 @@ public class FirmTest implements IAgentIdGenerator {
 			@Override
 			public void offer(Ask offer) {
 				assert offer.getPrice().getPrice() == fonduePrice;
-				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY, 100000), new Stock(offer.getGood()), offer.getQuantity());
 			}
 			
 			@Override
 			public void offer(Bid offer) {
 				assert offer.getPrice().getPrice() == hourPrice1 || offer.getPrice().getPrice() == hourPrice2;
-				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getAmount());
+				offer.accept(null, new Stock(MONEY), new Stock(offer.getGood(), offer.getAmount()), offer.getQuantity());
 			}
 
 			@Override
