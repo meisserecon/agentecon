@@ -26,11 +26,11 @@ export default {
         clickcage: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [1000, 100],
+        firmsTreeOffset: [600, 100],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [700, 100],
+        consumersTreeOffset: [300, 100],
         consumersTreeDirection: -1,
         // Object that stores coordinates of all nodes
         // used to draw links between nodes
@@ -132,11 +132,6 @@ export default {
       function dragged() {
         d3.select(this)
           .attr('transform', `translate(${d3.event.x}, ${d3.event.y})`);
-      }
-
-      function dragended() {
-        d3.select(this)
-          .classed('dragging', false);
 
         self.graph.nodeCoordinates[d3.select(this).attr('id')].x = d3.event.x;
         self.graph.nodeCoordinates[d3.select(this).attr('id')].y = d3.event.y;
@@ -144,6 +139,11 @@ export default {
         self.drawLinks(self.graphdata.edges);
         self.drawNodes(self.graph.firmNodes);
         self.drawNodes(self.graph.consumerNodes);
+      }
+
+      function dragended() {
+        d3.select(this)
+          .classed('dragging', false);
       }
 
       const drag = d3.drag()
@@ -416,6 +416,15 @@ export default {
               .attr('id', `${d.source}-${d.destination}-${i}`)
               .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`);
 
+            // Only sane version is to add an inverse path for
+            // label positioning
+            if (deltaX < 0) {
+              defsGroup
+                .append('path')
+                .attr('id', `${d.source}-${d.destination}-${i}-inverse`)
+                .attr('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx0} ${cy0}, ${x0} ${y0}`);
+            }
+
             group
               .append('use')
               .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
@@ -423,45 +432,27 @@ export default {
               .attr('stroke-width', `${d.weight}px`)
               .attr('marker-end', () => 'url(#marker)');
 
-            group
+            // additional group to set transform-origin for text rotation
+            // when deltaX < 0 (links move from right to left)
+            const textGroup = group
+              .append('g')
+              .attr('class', 'link__label');
+
+            const text = textGroup
               .append('text')
+              .attr('text-anchor', 'middle');
+
+            text
               .append('textPath')
-                .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
-                .text(d.label);
-
-
-            // group
-            //   .append('path')
-            //   .attr('id', `link-${i}`)
-            //   .attr('class', 'link')
-            //   .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
-            //   .attr('stroke-width', `${d.weight}px`)
-            //   .attr('marker-end', () => 'url(#marker)');
-
-            // group
-            //   .append('textPath')
-            //   .attr('xlink:href', `#link-${i}`)
-            //   .text('Text');
-
-            // group
-            //   .append('use')
-            //   .attr('xlink:href', `#link-${i}`);
-
-            // Append the link label
-            // group
-            //   .append('text')
-            //   .attr('text-anchor', 'middle')
-            //   .text('Text');
-
-
-            // svg.append("text")
-            //     .attr("id", "curve-text")
-            //   .append("textPath")
-            //     .attr("xlink:href", "#curve")
-            //     .text("We go up, then we go down, then up again.");
-            // svg.append("use")
-            //     .attr("id", "curve-line")
-            //     .attr("xlink:href", "#curve");
+                // .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+                .attr('xlink:href', () => {
+                  if (deltaX < 0) {
+                    return `#${d.source}-${d.destination}-${i}-inverse`;
+                  }
+                  return `#${d.source}-${d.destination}-${i}`;
+                })
+                .text(d.label)
+                .attr('startOffset', '50%');
           });
       }
     },
@@ -604,6 +595,13 @@ $light-grey:                        rgba(0,0,0,.3)
     animation-delay: 0.1s
   &:nth-child(16)
     animation-delay: 1.9s
+
+  &__label
+    transform-origin: center center
+    transition: transform 1s 1s
+    font-size: 12px
+    &.rot
+      transform: rotate(180deg)
 
 .marker
   fill: $light-grey
