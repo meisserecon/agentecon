@@ -87,6 +87,8 @@ export default {
 
       this.drawNodes(this.graph.firmNodes);
       this.drawNodes(this.graph.consumerNodes);
+
+      this.initDragging();
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
@@ -118,6 +120,39 @@ export default {
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
         d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
       });
+    },
+    initDragging() {
+      const self = this;
+
+      function dragstarted() {
+        d3.select(this)
+          .classed('dragging', true);
+      }
+
+      function dragged() {
+        d3.select(this)
+          .attr('transform', `translate(${d3.event.x}, ${d3.event.y})`);
+      }
+
+      function dragended() {
+        d3.select(this)
+          .classed('dragging', false);
+
+        self.graph.nodeCoordinates[d3.select(this).attr('id')].x = d3.event.x;
+        self.graph.nodeCoordinates[d3.select(this).attr('id')].y = d3.event.y;
+
+        self.drawLinks(self.graphdata.edges);
+        self.drawNodes(self.graph.firmNodes);
+        self.drawNodes(self.graph.consumerNodes);
+      }
+
+      const drag = d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended);
+
+      this.graph.stage.selectAll('.node')
+        .call(drag);
     },
     initClickcage() {
       // Insert click cage as first child of stage
@@ -286,7 +321,7 @@ export default {
     drawLinks(links) {
       // Remove all (groups) and (links in defs)
       d3.selectAll('.links__wrapper').remove();
-      // d3.select('#defs-links').remove();
+      d3.select('#defs-links').remove();
 
       if (links.length > 0) {
         let currentSource = links[0].source;
@@ -448,6 +483,10 @@ $light-grey:                        rgba(0,0,0,.3)
   background-color: #f0f0f0
 
 .node
+
+  &.dragging
+    .node__circle
+      fill: gold
 
   &.active
     .node__circle
