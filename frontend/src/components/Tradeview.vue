@@ -15,8 +15,10 @@
             </el-button>
             <el-button type="primary" v-if="simDay > 0" @click="simDay = 0"><svg width="16" height="9" viewBox="0 0 16 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M15.014 0v8.935L7 4.077z"/><path fill="#fff" d="M8.014 0v8.935L0 4.077z"/></svg></el-button>
           </el-button-group>
-          <el-input class="controls__day" v-model.number="simDay"></el-input>
         </div>
+
+        <el-slider v-model="simDay" :max="simLength" show-input></el-slider>
+
         <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart"  @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
       </div>
       <div class="tradeview__side">
@@ -51,7 +53,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, ButtonGroup, Dropdown, DropdownMenu, DropdownItem, Input } from 'element-ui';
+import { Button, ButtonGroup, Dropdown, DropdownMenu, DropdownItem, Slider } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -64,7 +66,7 @@ Vue.use(ButtonGroup);
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
-Vue.use(Input);
+Vue.use(Slider);
 
 export default {
   name: 'tradeview',
