@@ -62,6 +62,7 @@ h2
   position: absolute
   left: -1000em
   top: 0
+  z-index: 20
   display: inline-block
   max-width: 500px
   padding: 10px

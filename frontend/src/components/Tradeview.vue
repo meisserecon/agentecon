@@ -47,7 +47,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, ButtonGroup, Input, Select } from 'element-ui';
+import { Button, ButtonGroup, Input, Popover, Select } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -58,6 +58,7 @@ import config from '../config';
 Vue.use(Button);
 Vue.use(ButtonGroup);
 Vue.use(Input);
+Vue.use(Popover);
 Vue.use(Select);
 
 export default {
@@ -206,8 +207,8 @@ export default {
       // add chart to the top of the list
       this.miniCharts.unshift(node);
     },
-    handleShowInfo(data) {
-      this.infoOf = data[0];
+    handleShowInfo(node, coordinates) {
+      this.infoOf = node;
       this.showNodeInfo = true;
 
       d3.selectAll('[data-js-context]')
@@ -215,12 +216,12 @@ export default {
         .classed('in', false);
 
       d3.select('#nodeinfo')
-        .style('left', `${data[1].x}px`)
-        .style('top', `${data[1].y}px`)
+        .style('left', `${coordinates.x}px`)
+        .style('top', `${coordinates.y}px`)
         .classed('in', true);
     },
-    handleShowChildren(data) {
-      this.childrenOf = data[0];
+    handleShowChildren(node, coordinates) {
+      this.childrenOf = node;
       this.showChildSelection = true;
 
       d3.selectAll('[data-js-context]')
@@ -228,8 +229,8 @@ export default {
         .classed('in', false);
 
       d3.select('#childselection')
-        .style('left', `${data[1].x}px`)
-        .style('top', `${data[1].y}px`)
+        .style('left', `${coordinates.x}px`)
+        .style('top', `${coordinates.y}px`)
         .classed('in', true);
     },
     handleSetActiveNodes(nodes) {
@@ -273,8 +274,13 @@ $white:                                                 #fff
       background-color: $white
 
   &__tradechart
-    position: relative
-    z-index: 10
+    position: fixed
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
+    width: 100%
+    height: 100%
 
 .sidebar
   flex-basis: 300px

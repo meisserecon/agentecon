@@ -99,16 +99,14 @@ export default {
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
-        // Get element bounding box to correct position with stage offset
-        const rect = this.graph.stageDOM.getBoundingClientRect();
+        const mouseX = d3.event.pageX;
+        const mouseY = d3.event.pageY;
 
         // Emit click to parent to stop simulation
         this.$emit('nodeclicked', el.data.id);
 
         // Hide all open context elements
-        d3.selectAll('[data-js-context]')
-          .style('left', null)
-          .classed('in', false);
+        this.hideContextMenus();
 
         if (this.selectednode !== el.data.id) {
           // Show contextmenu & add data attribute to
@@ -116,17 +114,22 @@ export default {
           d3.select('#contextmenu')
             .attr('data-js-context', '')
             .classed('in', true)
-            .style('left', `${el.data.x}px`)
-            .style('top', `${el.data.y}px`);
+            .style('left', `${mouseX}px`)
+            .style('top', `${mouseY}px`);
 
           // Update clickcage property
           this.graph.rect.contextExists = true;
         }
 
         d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id));
-        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', [el.data.id, { x: el.data.x + rect.left, y: el.data.y + rect.top }]));
+        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY }));
+        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY }));
       });
+    },
+    hideContextMenus() {
+      d3.selectAll('[data-js-context]')
+        .style('left', null)
+        .classed('in', false);
     },
     initDragging() {
       const self = this;
@@ -482,7 +485,7 @@ $grey:                                     #676767
 $light-grey:                        rgba(0,0,0,.3)
 
 .tradegraph
-  position: fixed
+  position: absolute
   left: 0
   right: 0
   top: 0
