@@ -22,6 +22,8 @@ export default {
       graph: {
         stage: null,
         stageDOM: null,
+        global: null,
+        panningRect: null,
         defs: null,
         clickcage: null,
         firmNodes: null,
@@ -48,7 +50,9 @@ export default {
   mounted() {
     this.graph.stage = d3.select('#stage');
     this.graph.stageDOM = document.getElementById('stage');
-    this.graph.defs = this.graph.stage.append('defs');
+    this.graph.rect = this.graph.stage.append('rect');
+    this.graph.global = this.graph.stage.append('g');
+    this.graph.defs = this.graph.global.append('defs');
 
     // Create reference marker
     this.graph.defs
@@ -89,6 +93,7 @@ export default {
       this.drawNodes(this.graph.consumerNodes);
 
       this.initDragging();
+      this.initPanning();
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
@@ -151,8 +156,20 @@ export default {
         .on('drag', dragged)
         .on('end', dragended);
 
-      this.graph.stage.selectAll('.node')
+      this.graph.global.selectAll('.node')
         .call(drag);
+    },
+    initPanning() {
+      this.graph.rect
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'transparent')
+        .call(d3.zoom()
+          .scaleExtent([0.5, 4])
+          .on('zoom', () => {
+            this.graph.global.attr('transform', d3.event.transform);
+          }),
+        );
     },
     initClickcage() {
       // Insert click cage as first child of stage
@@ -235,7 +252,7 @@ export default {
       const type = (nodeData.data.id === 'firms' ? 'firms' : 'consumers');
 
       // Create joins
-      const nodesJoin = this.graph.stage.selectAll(`.node--${nodeData.data.id}`)
+      const nodesJoin = this.graph.global.selectAll(`.node--${nodeData.data.id}`)
         .data(nodeData.descendants());
 
       // Exit join
@@ -342,7 +359,7 @@ export default {
         const defsGroup = this.graph.defs.append('g').attr('id', 'defs-links');
 
         // Create initial group to append links to
-        let group = this.graph.stage.append('g')
+        let group = this.graph.global.append('g')
           .attr('class', 'links__wrapper');
 
         // Create the enter join
@@ -365,7 +382,7 @@ export default {
               // create new svg group
               // note: first group has already been created
               if (i !== 0) {
-                group = this.graph.stage.append('g').attr('class', 'links__wrapper');
+                group = this.graph.global.append('g').attr('class', 'links__wrapper');
               }
 
               globalSourceX = this.graph.nodeCoordinates[d.source].x;
@@ -462,7 +479,7 @@ export default {
 
 <style lang="sass">
 $blue:                                     #33ccff
-$coral:                                    #ff6557
+$coral:                                    #ff4949
 $green:                                    #97e582
 $grey:                                     #676767
 $light-grey:                        rgba(0,0,0,.3)
@@ -471,13 +488,12 @@ $light-grey:                        rgba(0,0,0,.3)
   display: block
   width: 100%
   height: 800px
-  background-color: #f0f0f0
 
 .node
 
   &.dragging
     .node__circle
-      fill: gold
+      fill: $coral
 
   &.active
     .node__circle
@@ -520,9 +536,9 @@ $light-grey:                        rgba(0,0,0,.3)
     .node
       &__circle
         fill: $grey
-        stroke: $coral
+        stroke: $blue
         &--active
-          fill: $coral
+          fill: $blue
       // &__edge
       //   stroke: $coral
 
