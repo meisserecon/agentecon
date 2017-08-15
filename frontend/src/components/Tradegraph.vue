@@ -30,11 +30,11 @@ export default {
         defs: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [600, 100],
+        firmsTreeOffset: [600, 400],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [300, 100],
+        consumersTreeOffset: [300, 400],
         consumersTreeDirection: -1,
         // Object that stores coordinates of all nodes
         // used to draw links between nodes
@@ -482,9 +482,13 @@ $grey:                                     #676767
 $light-grey:                        rgba(0,0,0,.3)
 
 .tradegraph
-  display: block
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
   width: 100%
-  height: 800px
+  height: 100%
 
 .node
 

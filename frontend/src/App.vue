@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <ul class="nolist">
+    <ul class="homenav">
       <li><router-link :to="{name: 'home'}">Simulations</router-link></li>
     </ul>
 
@@ -15,25 +15,48 @@ export default {
 </script>
 
 <style lang="sass">
+@import 'assets/sass/vars'
+@import 'assets/sass/mixins'
+
 body
   margin: 20px
 
+h1, h2, h3
+  text-align: left
+
 h1
-  font: bold 26px/1 Helvetica, Arial, sans-serif
-  text-transform: uppercase
+  font: bold 40px/1 $avenir
+  text-align: left
+
+h2
+  font: 500 14px/1.4 $avenir
 
 #app
+  padding: 25px 50px
   font-family: 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   text-align: center
-  color: #2c3e50
-  margin-top: 60px
+  color: #111
 
 .nolist
   padding: 0
   margin: 0
   list-style-type: none
+
+.homenav
+  padding: 0
+  margin: 0
+  list-style-type: none
+
+  a
+    color: $blue
+    text-decoration: none
+    &:hover
+      color: $blue-hover
+
+  li
+    text-align: left
 
 .context
   position: absolute
@@ -91,4 +114,15 @@ h1
     background-color: #fff
     border-color: #5cb3fd
     outline: 0
+
+.linklist
+  padding: 0
+  margin: 0
+  list-style-type: none
+
+  li
+    text-align: left
+
+  a
+    +link-styling
 </style>

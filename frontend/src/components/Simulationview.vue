@@ -4,7 +4,7 @@
 
     <div v-if="loading">Loading...</div>
 
-    <ul class="nolist" v-if="!loading">
+    <ul class="linklist" v-if="!loading">
       <li>
         <!-- TODO insert proper simulation link on github -->
         <a :href="simDescription" target="_blank">Description</a>
@@ -13,8 +13,8 @@
         <router-link :to="{name: 'trades', query: {sim: this.$route.query.sim, day: 0, agents: 'consumers,firms', step: 1}}">Tradeview</router-link>
       </li>
     </ul>
-
-    <ol v-if="!loadingRanking">
+    <h2>Ranking</h2>
+    <ol class="agentlist" v-if="!loadingRanking">
       <li v-for="rank in ranking">
         {{ `${rank.type}: ${rank.averageUtility}` }}
       </li>
@@ -68,3 +68,16 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+@import '../assets/sass/vars'
+@import '../assets/sass/mixins'
+
+.agentlist
+  padding: 0
+
+  li
+    text-align: left
+
+</style>
+

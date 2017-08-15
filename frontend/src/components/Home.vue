@@ -4,7 +4,7 @@
 
     <div v-if="loading">Loading...</div>
 
-    <ul class="nolist" v-if="!loading">
+    <ul class="linklist" v-if="!loading">
       <li v-for="sim in simulations">
         <router-link :to="{name: 'simulation', query: {sim: sim.path}}">{{ `${sim.owner} / ${sim.path}` }}</router-link>
       </li>
@@ -41,3 +41,11 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+@import '../assets/sass/vars'
+@import '../assets/sass/mixins'
+
+// $black:                                                 #000
+
+</style>
