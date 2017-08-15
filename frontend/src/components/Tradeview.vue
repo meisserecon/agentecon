@@ -123,10 +123,10 @@ export default {
       }
     },
     simDay() {
-      this.goToNewDay();
+      this.goToNewURL();
     },
     simAgents() {
-      this.goToNewDay();
+      this.goToNewURL();
     },
   },
   methods: {
@@ -139,7 +139,7 @@ export default {
     prevStep() {
       this.simDay = Math.max(this.simDay - this.simStep, 0);
     },
-    goToNewDay() {
+    goToNewURL() {
       this.$router.replace({
         name: 'trades',
         query: {
@@ -179,7 +179,7 @@ export default {
       } else {
         this.selectedNode = node;
       }
-      this.goToNewDay();
+      this.goToNewURL();
     },
     handleAddMinichart(node) {
       // remove chart of node if it is already there
