@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="tradeview">
     <h1>Tradeview</h1>
 
@@ -23,12 +23,16 @@
         <div class="controls__download">
         <div class="controls__title">Document download</div>
           <div class="controls__download-wrapper">
-            <el-select  v-model="selectedMetric">
-              <template v-for="option in metrics">
-                <el-option>{{ option }}</el-option>
-              </template>
-            </el-select>
-            <el-button type="primary" v-if="selectedMetric" :href="`${apiURL}/downloadcsv?metric=${selectedMetric}&sim=${simId}&day=${simDay}&agents=${simAgents}&step=${simStep}`" target="_blank">Download</el-button>
+            <el-dropdown @command="handleDownload">
+              <el-button type="primary">
+                Metric<i class="el-icon-caret-bottom el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <template v-for="option in metrics">
+                  <el-dropdown-item :command="option">{{ option }}</el-dropdown-item>
+                </template>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </div>
         <div class="tradeview__minicharts">
@@ -47,7 +51,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, ButtonGroup, Input, Select } from 'element-ui';
+import { Button, ButtonGroup, Dropdown, DropdownMenu, DropdownItem, Input } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -57,8 +61,10 @@ import config from '../config';
 
 Vue.use(Button);
 Vue.use(ButtonGroup);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
 Vue.use(Input);
-Vue.use(Select);
 
 export default {
   name: 'tradeview',
@@ -82,7 +88,6 @@ export default {
       infoOf: null,
       showChildSelection: false,
       childrenOf: null,
-      selectedMetric: '',
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
       simAgents: this.$route.query.agents,
@@ -117,10 +122,7 @@ export default {
     .then(response => response.json())
     .then(
       (response) => {
-        response.metrics.forEach((element, i) => {
-          if (i === 0) {
-            this.selectedMetric = element;
-          }
+        response.metrics.forEach((element) => {
           this.metrics.push(element);
         });
       },
@@ -186,6 +188,9 @@ export default {
         },
       )
       .catch(error => config.alertError(error));
+    },
+    handleDownload(item) {
+      window.open(`${this.apiURL}/downloadcsv?metric=${item}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`, '_blank');
     },
     handleNodeClicked(node) {
       this.playing = false;
