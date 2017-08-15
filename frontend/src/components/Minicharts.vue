@@ -3,7 +3,7 @@
 
     <template v-for="agent in agents">
       <div class="minichart__wrapper" v-if="agent" :key="`minichart-${agent}`">
-        <h4>{{ agent }}</h4>
+        <div class="minichart__title">{{ agent }}</div>
         <div class="minichart" :id="`minichart-${agent}`"></div>
       </div>
     </template>
@@ -100,8 +100,14 @@ export default {
 </script>
 
 <style lang="sass">
+@import '../assets/sass/vars'
+@import '../assets/sass/mixins'
+
 .minichart
 
-  &__wrapper
+  &__title
+    margin: 11px 0
+    font: bold 14px/1.4 $avenir
+    text-align: center
 
 </style>
