@@ -22,10 +22,12 @@ export default {
       graph: {
         stage: null,
         stageDOM: null,
+        // contains all elements except the panning rectangle,
+        // prevents jumping of stage when panning
         global: null,
+        // panning rectangle
         panningRect: null,
         defs: null,
-        clickcage: null,
         firmNodes: null,
         firmsTree: null,
         firmsTreeOffset: [600, 100],
@@ -69,6 +71,7 @@ export default {
       .append('path')
         .attr('d', 'M0,-5L10,0L0,5');
 
+    this.initPanning();
     this.initClickcage();
     this.updateTradegraph();
   },
@@ -93,7 +96,6 @@ export default {
       this.drawNodes(this.graph.consumerNodes);
 
       this.initDragging();
-      this.initPanning();
     },
     addClickToNodes() {
       d3.selectAll('.node').on('click', (el) => {
@@ -118,7 +120,7 @@ export default {
             .style('top', `${el.data.y}px`);
 
           // Update clickcage property
-          this.graph.clickcage.contextExists = true;
+          this.graph.rect.contextExists = true;
         }
 
         d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id));
@@ -172,19 +174,14 @@ export default {
         );
     },
     initClickcage() {
-      // Insert click cage as first child of stage
-      this.graph.clickcage = d3.select('#stage').insert('rect', ':first-child');
+      // Use the panning rectangle as a clickcage
+      this.graph.rect
+        .attr('class', 'clickcage');
 
-      // Add inital attributes for later manipulation
-      this.graph.clickcage
-        .attr('class', 'clickcage')
-        .attr('width', '100%')
-        .attr('height', '100%');
+      this.graph.rect.contextExists = false;
 
-      this.graph.clickcage.contextExists = false;
-
-      this.graph.clickcage.on('click', () => {
-        if (this.graph.clickcage.contextExists) {
+      this.graph.rect.on('click', () => {
+        if (this.graph.rect.contextExists) {
           // Hide context elements
           // (removing the left attribute re-applies css value)
           d3.selectAll('[data-js-context]')
@@ -192,7 +189,7 @@ export default {
             .style('left', null);
 
           // Update clickcage property
-          this.graph.clickcage.contextExists = false;
+          this.graph.rect.contextExists = false;
         } else {
           // Emit empty nodeclided to unselect node
           this.$emit('nodeclicked');
@@ -638,9 +635,6 @@ $light-grey:                        rgba(0,0,0,.3)
   &__btn
     display: block
     width: 100%
-
-.clickcage
-  fill: transparent
 
 @keyframes pulsate
   0%
