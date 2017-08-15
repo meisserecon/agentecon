@@ -41,13 +41,17 @@
       </table>
     </div>
 
-    <button class="btn nodeinfo__btn" @click="closeInfo">Close</button>
+    <el-button class="nodeinfo__btn" @click="closeInfo">Close</el-button>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3';
+import Vue from 'vue';
+import { Button } from 'element-ui';
 import config from '../config';
+
+Vue.use(Button);
 
 export default {
   name: 'nodeinfo',

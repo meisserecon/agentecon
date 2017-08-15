@@ -3,9 +3,9 @@
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="contextmenu" class="context contextmenu">
       <ul class="contextmenu__list">
-        <li class="contextmenu__item"><button id="minichartselection" class="btn contextmenu__btn">Add Minichart</button></li>
-        <li class="contextmenu__item"><button id="infoselection" class="btn contextmenu__btn">Show Info</button></li>
-        <li class="contextmenu__item"><button id="childrenselection" class="btn contextmenu__btn">Expand/Collapse Children</button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="minichartselection">Add Minichart</el-button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="infoselection">Additional Agent Info</el-button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="childrenselection">Expand/Collapse Children</el-button></li>
       </ul>
     </div>
   </div>
@@ -13,6 +13,10 @@
 
 <script>
 import * as d3 from 'd3';
+import Vue from 'vue';
+import { Button } from 'element-ui';
+
+Vue.use(Button);
 
 export default {
   name: 'tradegraph',

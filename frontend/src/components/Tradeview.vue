@@ -4,7 +4,7 @@
 
     <div class="tradeview__wrapper" v-if="loaded">
       <div class="tradeview__main">
-        <h2>Time control</h2>
+        <div class="controls__title">Time control</div>
         <div class="controls__time">
           <el-button-group>
             <el-button type="primary" v-if="simDay > 0" @click="prevStep"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M10.014 0v8.935L2 4.077zM0 0h2v9H0z"/></svg></el-button>
@@ -21,7 +21,7 @@
       </div>
       <div class="tradeview__side">
         <div class="controls__download">
-        <h2>Document download</h2>
+        <div class="controls__title">Document download</div>
           <div class="controls__download-wrapper">
             <el-select  v-model="selectedMetric">
               <template v-for="option in metrics">
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="tradeview__minicharts">
-          <h2>Mini charts</h2>
+          <div class="controls__title">Mini charts</div>
           <div class="tradeview__minicharts-wrapper">
             <minicharts :agents="miniCharts" :simulationday="simDay" :simulationid="simId"></minicharts>
           </div>
@@ -47,7 +47,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, ButtonGroup, Input, Popover, Select } from 'element-ui';
+import { Button, ButtonGroup, Input, Select } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -58,7 +58,6 @@ import config from '../config';
 Vue.use(Button);
 Vue.use(ButtonGroup);
 Vue.use(Input);
-Vue.use(Popover);
 Vue.use(Select);
 
 export default {
@@ -271,7 +270,7 @@ $white:                                                 #fff
       min-height: 300px
       border: 1px solid $border-color
       border-radius: 5px
-      background-color: $white
+      background-color: rgba($white, .95)
 
   &__tradechart
     position: fixed
@@ -288,6 +287,11 @@ $white:                                                 #fff
   border: 3px solid black
 
 .controls
+
+  &__title
+    margin: 11px 0
+    font: 500 14px/1.4 $avenir
+    text-align: left
 
   &__time
     position: relative

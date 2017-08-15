@@ -14,14 +14,18 @@
       </ul>
     </div>
 
-    <button class="btn childselection__btn" v-if="!loading" @click="saveSelection">Save</button>
-    <button class="btn childselection__btn" @click="cancelSelection">Cancel</button>
+    <el-button class="childselection__btn" v-if="!loading" @click="saveSelection">Save</el-button>
+    <el-button class="childselection__btn" @click="cancelSelection">Cancel</el-button>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3';
+import Vue from 'vue';
+import { Button } from 'element-ui';
 import config from '../config';
+
+Vue.use(Button);
 
 export default {
   name: 'childrenselection',
