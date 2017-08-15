@@ -20,9 +20,10 @@ export default {
 
 body
   margin: 20px
-
-h1, h2, h3
-  text-align: left
+  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  color: #111
 
 h1
   font: bold 40px/1 $avenir
@@ -30,11 +31,6 @@ h1
 
 #app
   padding: 25px 50px
-  font-family: 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
-  text-align: center
-  color: #111
 
 .nolist
   padding: 0
