@@ -1,15 +1,13 @@
 <template>
   <div>
+
     <template v-for="agent in agents">
-      <div class="minichart__wrapper" v-if="agent && chartData[agent]">
+      <div class="minichart__wrapper" v-if="agent" :key="`minichart-${agent}`">
         <h4>{{ agent }}</h4>
-        <div class="minichart" v-bind:id="`minichart-${agent}`"></div>
-        <!--{{ chartData[agent].name }}
-        {{ chartData[agent].max }}
-        {{ chartData[agent].min }}
-        {{ chartData[agent].data }}-->
+        <div class="minichart" :id="`minichart-${agent}`"></div>
       </div>
     </template>
+
   </div>
 </template>
 
@@ -27,14 +25,46 @@ export default {
     };
   },
   watch: {
-    agents() {
-      this.fetchCharts();
+    agents(newVal, oldVal) {
+      // find new agents
+      const newCharts = newVal.filter(i => oldVal.indexOf(i) < 0);
+      // wrap in timeout to make sure that template is updated with new nodes
+      // before we init graphs on them
+      setTimeout(() => {
+        newCharts.forEach(agent => this.initChart(agent));
+        this.fetchCharts();
+      }, 1);
     },
     simulationday() {
       this.fetchCharts();
     },
   },
   methods: {
+    initChart(agent) {
+      const layout = {
+        autosize: true,
+        width: 300,
+        height: 150,
+        margin: {
+          l: 30,
+          r: 30,
+          t: 0,
+          b: 0,
+        },
+        xaxis: {
+          zeroline: false,
+          showticklabels: false,
+        },
+      };
+
+      const data = [{
+        y: [],
+        mode: 'lines',
+        type: 'scatter',
+      }];
+
+      Plotly.newPlot(`minichart-${agent}`, data, layout, { displayModeBar: false });
+    },
     fetchCharts() {
       // clear previous chartData
       this.chartData = {};
@@ -55,33 +85,11 @@ export default {
         )
         .then(
           () => {
-            // TODO: Need a way to update the plot without drawing it entirely for each cycle
-            // Updating should prevent the flash when redrawing
-            const layout = {
-              autosize: false,
-              width: 300,
-              height: 150,
-              margin: {
-                l: 30,
-                r: 30,
-                t: 0,
-                b: 0,
-              },
-              xaxis: {
-                zeroline: false,
-                showticklabels: false,
-              },
+            const data = {
+              y: [this.chartData[agent].data],
             };
 
-            const data = [{
-              y: this.chartData[agent].data,
-              type: 'scatter',
-            }];
-
-            Plotly.newPlot(`minichart-${agent}`, data, layout, { displayModeBar: false });
-
-            // TODO: Use restyle to update plot
-            // Plotly.restyle(`minichart-${agent}`, data);
+            Plotly.update(`minichart-${agent}`, data);
           },
         )
         .catch(error => config.alertError(error));
