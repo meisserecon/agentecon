@@ -41,8 +41,6 @@ public class NodeMiniChart extends MiniChart {
 					} else if (t instanceof IFirm){
 						average.add(((IFirm) t).getShareRegister().getAverageDividend());
 						type = ENodeType.FIRM;
-					} else {
-						throw new RuntimeException("Agent " + agent + " not found");
 					}
 				}
 			});
