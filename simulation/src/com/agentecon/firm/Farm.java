@@ -21,20 +21,16 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Quantity;
 import com.agentecon.learning.MarketingDepartment;
-import com.agentecon.market.Bid;
-import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
-import com.agentecon.production.PriceUnknownException;
 import com.agentecon.production.ProducerListeners;
 
 public class Farm extends Firm implements IProducer, IMarketParticipant {
 
-	private static final double SPENDING_FRACTION = 0.2; // let's spend 20% of our money every day
 	private static final double MINIMUM_TARGET_INPUT = 14;
 
 	private IProductionFunction production;
@@ -84,7 +80,7 @@ public class Farm extends Firm implements IProducer, IMarketParticipant {
 	}
 
 	private double calculateBudget() {
-		double defaultBudget = getMoney().getAmount() * SPENDING_FRACTION;
+		double defaultBudget = strategy.calcCogs(getFinancials());
 		double minimumReasonableSpending = MINIMUM_TARGET_INPUT * marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
 		if (getMoney().getAmount() < minimumReasonableSpending) {
 			return 0;
@@ -118,7 +114,8 @@ public class Farm extends Firm implements IProducer, IMarketParticipant {
 	private int daysWithoutProfit = 0;
 
 	@Override
-	public boolean wantsBankruptcy(IStatistics stats) {
+	public boolean considerBankruptcy(IStatistics stats) {
+		super.considerBankruptcy(stats);
 		double profits = getFinancials().getProfits();
 		if (profits <= 0) {
 			daysWithoutProfit++;

@@ -28,7 +28,7 @@ public class StockMarket {
 		for (IFirm firm : ags.getFirms()) {
 			firm.payDividends(day);
 		}
-		Collection<IMarketMaker> mms = ags.getRandomizedMarketMakers();
+		Collection<IMarketMaker> mms = ags.getRandomMarketMakers();
 		runDailyMarket(day, ags, mms);
 	}
 

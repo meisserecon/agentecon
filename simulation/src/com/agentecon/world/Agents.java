@@ -18,6 +18,7 @@ import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Ticker;
+import com.agentecon.production.IGoodsTrader;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.ISimulationListener;
 
@@ -30,7 +31,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	private HashMap<Integer, Agent> all;
 	private ArrayList<IConsumer> consumers;
 	private HashMap<Ticker, IFirm> firms;
-	private ArrayList<IProducer> producers;
+	private ArrayList<IGoodsTrader> producers;
 	// private ArrayList<Fundamentalist> fundies;
 	private ArrayList<IMarketMaker> marketMakers;
 	private ArrayList<IShareholder> shareholders;
@@ -58,15 +59,20 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		return firms.values();
 	}
 
-	public Collection<IProducer> getProducers() {
+	public Collection<IGoodsTrader> getRandomGoodsMarketMakers() {
+		Collections.shuffle(producers, getRand());
 		return producers;
+	}
+
+	public Iterable<IProducer> getProducers() {
+		return producers.stream().filter(t -> t instanceof IProducer).map(t -> (IProducer) t)::iterator;
 	}
 
 	public Collection<IConsumer> getConsumers() {
 		return consumers;
 	}
 
-	public Collection<IMarketMaker> getRandomizedMarketMakers() {
+	public Collection<IMarketMaker> getRandomMarketMakers() {
 		Collections.shuffle(marketMakers, getRand());
 		return marketMakers;
 	}
@@ -99,8 +105,8 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		if (agent instanceof IMarketMaker) {
 			marketMakers.add((IMarketMaker) agent);
 		}
-		if (agent instanceof IProducer) {
-			producers.add((IProducer) agent);
+		if (agent instanceof IGoodsTrader) {
+			producers.add((IGoodsTrader) agent);
 		}
 		if (agent instanceof IConsumer) {
 			consumers.add((IConsumer) agent);
@@ -113,8 +119,8 @@ public class Agents implements IAgents, IAgentIdGenerator {
 
 	public Collection<IMarketParticipant> getRandomMarketParticipants() {
 		ArrayList<IMarketParticipant> parts = new ArrayList<>(all.size());
-		for (IAgent a: all.values()){
-			if (a instanceof IMarketParticipant){
+		for (IAgent a : all.values()) {
+			if (a instanceof IMarketParticipant) {
 				parts.add((IMarketParticipant) a);
 			}
 		}
@@ -128,25 +134,11 @@ public class Agents implements IAgents, IAgentIdGenerator {
 
 	@SuppressWarnings("unchecked")
 	public Collection<IConsumer> getRandomConsumers(int cardinality) {
-		Collections.shuffle(consumers, getRand()); // OPTIMIZABLE in case of
-													// cardinality < size
+		Collections.shuffle(consumers, getRand()); // OPTIMIZABLE in case of cardinality < size
 		if (cardinality == -1 || cardinality >= consumers.size()) {
 			return (Collection<IConsumer>) consumers.clone();
 		} else {
 			return consumers.subList(0, cardinality);
-		}
-	}
-
-	public Collection<IProducer> getRandomFirms() {
-		return getRandomFirms(-1);
-	}
-
-	public Collection<IProducer> getRandomFirms(int cardinality) {
-		Collections.shuffle(producers, getRand());
-		if (cardinality < 0 || cardinality >= producers.size()) {
-			return producers;
-		} else {
-			return producers.subList(0, cardinality);
 		}
 	}
 
@@ -239,7 +231,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 
 	@Override
 	public Collection<IAgent> getAgents(String type) {
-		if (consumerTypes.contains(type)){
+		if (consumerTypes.contains(type)) {
 			return extract(getConsumers(), type);
 		} else {
 			assert firmTypes.contains(type) : "Agent type " + type + " not found";
@@ -249,8 +241,8 @@ public class Agents implements IAgents, IAgentIdGenerator {
 
 	private Collection<IAgent> extract(Collection<? extends IAgent> agents, String type) {
 		ArrayList<IAgent> matches = new ArrayList<>();
-		for (IAgent candidate: agents){
-			if (candidate.getType().equals(type)){
+		for (IAgent candidate : agents) {
+			if (candidate.getType().equals(type)) {
 				matches.add(candidate);
 			}
 		}

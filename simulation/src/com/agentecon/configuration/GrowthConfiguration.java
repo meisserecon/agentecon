@@ -22,6 +22,10 @@ import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
+import com.agentecon.events.SimEvent;
+import com.agentecon.finance.MarketMaker;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.RealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -56,23 +60,25 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 				return new Farmer(id, end, util);
 			}
 		});
-		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
-		addEvent(new GrowthEvent(0, 0.001) {
-			
-			@Override
-			protected void execute(ICountry sim) {
-				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
-			}
-		});
-//		addEvent(new SimEvent(0, MARKET_MAKERS) {
-//
+//		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
+//		addEvent(new GrowthEvent(0, 0.001) {
+//			
 //			@Override
-//			public void execute(int day, ICountry sim) {
-//				for (int i = 0; i < getCardinality(); i++) {
-//					sim.add(new MarketMaker(sim, getMoney(), sim.getAgents().getFirms()));
-//				}
+//			protected void execute(ICountry sim) {
+//				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
 //			}
 //		});
+		addEvent(new SimEvent(0, MARKET_MAKERS) {
+
+			@Override
+			public void execute(int day, ICountry sim) {
+				for (int i = 0; i < getCardinality(); i++) {
+					Stock money = new Stock(getMoney(), 1000);
+					Stock land = new Stock(LAND, 100);
+					sim.add(new RealEstateAgent(sim, (IShareholder)sim.getAgents().getRandomConsumer(), money, land));
+				}
+			}
+		});
 	}
 
 	@Override

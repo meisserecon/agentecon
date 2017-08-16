@@ -10,7 +10,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
 import com.agentecon.configuration.GrowthConfiguration;
-import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;

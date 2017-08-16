@@ -66,8 +66,8 @@ public class MortalConsumer extends Consumer {
 	}
 
 	@Override
-	public Inventory age(Portfolio inheritance) {
-		Inventory inv = super.age(inheritance);
+	public Inventory considerDeath(Portfolio inheritance) {
+		Inventory inv = super.considerDeath(inheritance);
 		assert inv == null; // super is immortal and should never return an inheritance
 		int age = getAge();
 		if (age == getRetirementAge()) {

@@ -97,7 +97,7 @@ public class ExperimentalFarm extends Firm implements IProducer {
 	private int daysWithoutProfit = 0;
 
 	@Override
-	public boolean wantsBankruptcy(IStatistics stats) {
+	public boolean considerBankruptcy(IStatistics stats) {
 		double profits = getFinancials().getProfits();
 		if (profits <= 0) {
 			daysWithoutProfit++;

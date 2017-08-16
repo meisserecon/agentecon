@@ -7,7 +7,7 @@ import com.agentecon.consumer.IConsumer;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Ticker;
-import com.agentecon.production.IProducer;
+import com.agentecon.production.IGoodsTrader;
 
 public interface IAgents {
 	
@@ -17,7 +17,7 @@ public Collection<? extends IAgent> getAgents();
 	
 	public Collection<? extends IFirm> getFirms();
 	
-	public Collection<? extends IProducer> getProducers();
+	public Collection<? extends IGoodsTrader> getRandomGoodsMarketMakers();
 	
 	public Collection<? extends IShareholder> getShareholders();
 	
