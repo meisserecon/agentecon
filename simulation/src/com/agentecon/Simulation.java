@@ -14,6 +14,7 @@ import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.finance.StockMarket;
+import com.agentecon.market.IDiscountRate;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IStatistics;
 import com.agentecon.market.MarketStatistics;
@@ -179,6 +180,11 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	@Override
 	public Average getAverageUtility() {
 		return world.getAverageUtility();
+	}
+
+	@Override
+	public IDiscountRate getDiscountRate() {
+		return config;
 	}
 
 }

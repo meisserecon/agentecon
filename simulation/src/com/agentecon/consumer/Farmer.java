@@ -59,7 +59,7 @@ public class Farmer extends Consumer implements IFounder {
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
 				IStock firmMoney = getMoney().hideRelative(0.5);
-				Firm farm = new Farm(id, owner, firmMoney, myLand, prod, statistics.getGoodsMarketStats());
+				Firm farm = new Farm(id, owner, firmMoney, myLand, prod, statistics);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {

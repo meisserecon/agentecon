@@ -5,22 +5,14 @@ package com.agentecon.consumer;
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Portfolio;
 import com.agentecon.goods.Inventory;
-import com.agentecon.market.IPriceTakerMarket;
 
-public interface IConsumer extends IAgent {
+public interface IConsumer extends IAgent, IMarketParticipant {
 	
 	/**
 	 * Called every morning.
 	 */
 	public void collectDailyEndowment();
 
-	/**
-	 * Buy and sell goods on the market in a hopefully optimal way given the
-	 * offers provided by the market makers of the goods market.
-	 * This method is invoked on all IConsumers before consumption.
-	 */
-	public void tradeGoods(IPriceTakerMarket market);
-	
 	/**
 	 * Time to consume, called once per day in the evening after trading goods.
 	 * @return the utility gained from consumption.

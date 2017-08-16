@@ -13,6 +13,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
@@ -110,8 +111,15 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		}
 	}
 
-	public Collection<IConsumer> getRandomConsumers() {
-		return getRandomConsumers(-1);
+	public Collection<IMarketParticipant> getRandomMarketParticipants() {
+		ArrayList<IMarketParticipant> parts = new ArrayList<>(all.size());
+		for (IAgent a: all.values()){
+			if (a instanceof IMarketParticipant){
+				parts.add((IMarketParticipant) a);
+			}
+		}
+		Collections.shuffle(parts, getRand());
+		return parts;
 	}
 
 	public Collection<? extends IAgent> getAgents() {

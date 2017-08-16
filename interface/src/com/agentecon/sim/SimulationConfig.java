@@ -9,9 +9,10 @@ import java.util.Collection;
 import com.agentecon.ISimulation;
 import com.agentecon.agent.Agent;
 import com.agentecon.goods.Good;
+import com.agentecon.market.IDiscountRate;
 import com.agentecon.research.IInnovation;
 
-public class SimulationConfig {
+public class SimulationConfig implements IDiscountRate {
 
 	private static final Good MONEY = new Good("Taler");
 	
@@ -80,6 +81,11 @@ public class SimulationConfig {
 	}
 
 	public void diagnoseResult(PrintStream out, ISimulation stats) {
+	}
+
+	@Override
+	public double getCurrentDiscountRate() {
+		return 1.0 / getRounds();
 	}
 
 }

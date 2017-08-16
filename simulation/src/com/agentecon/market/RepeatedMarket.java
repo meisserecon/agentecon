@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
+import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.goods.Good;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.SimulationListeners;
@@ -30,7 +31,7 @@ public class RepeatedMarket {
 		while (true) {
 			world.startTransaction();
 			Collection<IProducer> firms = world.getAgents().getRandomFirms();
-			Collection<IConsumer> cons = world.getAgents().getRandomConsumers();
+			Collection<IMarketParticipant> cons = world.getAgents().getRandomMarketParticipants();
 			Market market = new Market(world.getRand());
 			market.addMarketListener(observer);
 			market.addMarketListener(stats);
@@ -38,7 +39,7 @@ public class RepeatedMarket {
 			for (IProducer firm : firms) {
 				firm.offer(market);
 			}
-			for (IConsumer c : cons) {
+			for (IMarketParticipant c : cons) {
 				c.tradeGoods(market);
 			}
 			for (IProducer firm: firms) {

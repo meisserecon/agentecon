@@ -8,6 +8,9 @@
  */
 package com.agentecon.configuration;
 
+import java.io.PrintStream;
+
+import com.agentecon.ISimulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Consumer;
@@ -22,7 +25,13 @@ import com.agentecon.events.IUtilityFactory;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Inventory;
+import com.agentecon.goods.Quantity;
 import com.agentecon.goods.Stock;
+import com.agentecon.market.GoodStats;
+import com.agentecon.market.IStatistics;
+import com.agentecon.production.IProductionFunction;
+import com.agentecon.production.PriceUnknownException;
 import com.agentecon.research.IInnovation;
 import com.agentecon.research.IResearchProject;
 import com.agentecon.sim.SimulationConfig;
@@ -37,7 +46,7 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
 	public GrowthConfiguration() {
-		super(2000);
+		super(1200);
 		IStock[] initialEndowment = new IStock[] { new Stock(LAND, 100), new Stock(getMoney(), 1000) };
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment farmerEndowment = new Endowment(getMoney(), initialEndowment, dailyEndowment);
@@ -47,7 +56,7 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 				return new Farmer(id, end, util);
 			}
 		});
-		final Endowment consumerEndowment = new Endowment(getMoney(), new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT));
+		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
 		addEvent(new GrowthEvent(0, 0.001) {
 			
 			@Override
@@ -67,6 +76,11 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 	}
 
 	@Override
+	public IInnovation getInnovation() {
+		return this;
+	}
+
+	@Override
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
 		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FarmingConfiguration.FIXED_COSTS, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
@@ -82,6 +96,50 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 		return new LogUtilWithFloor(new Weight(POTATOE, 1.0), new Weight(MAN_HOUR, 1.0));
 	}
 	
-	
+	public void diagnoseResult(PrintStream out, ISimulation sim) {
+		try {
+			IStatistics stats = sim.getStatistics();
+			CobbDouglasProductionWithFixedCost prodFun = createProductionFunction(POTATOE);
+			GoodStats manhours = stats.getGoodsMarketStats().getStats(MAN_HOUR);
+			double laborShare = prodFun.getWeight(MAN_HOUR).weight;
+			double optimalNumberOfFirms = manhours.getYesterday().getTotWeight() / FarmingConfiguration.FIXED_COSTS.getAmount() * (1 - laborShare);
+			int numberOfFirms = sim.getAgents().getFirms().size();
+			System.out.println(manhours + " implies optimal number of firms k=" + optimalNumberOfFirms + ", actual number of firms is " + numberOfFirms);
+			System.out.println(stats.getGoodsMarketStats());
 
+			Inventory inv = new Inventory(getMoney(), new Stock(LAND, 100));
+			double optimalCost = prodFun.getCostOfMaximumProfit(inv, stats.getGoodsMarketStats());
+			double optimalManhours = optimalCost / stats.getGoodsMarketStats().getPriceBelief(MAN_HOUR);
+			double fixedCosts = prodFun.getFixedCost(MAN_HOUR) * stats.getGoodsMarketStats().getPriceBelief(MAN_HOUR);
+			inv.getStock(MAN_HOUR).add(optimalManhours);
+			Quantity prod = prodFun.produce(inv);
+			double profits = prod.getAmount() * stats.getGoodsMarketStats().getPriceBelief(POTATOE) - optimalCost;
+
+			double profitShare = 1.0 - laborShare;
+			double profits2 = (optimalCost - fixedCosts) / laborShare * profitShare - fixedCosts;
+			System.out.println("Firm should use " + optimalManhours + " " + MAN_HOUR + " to produce " + prod + " and yield a profit of " + profits + " (" + profits2 + ")");
+
+			double totalInput = manhours.getYesterday().getTotWeight();
+			double perFirm = totalInput / optimalNumberOfFirms;
+			if (perFirm > 0.0) {
+				inv.getStock(MAN_HOUR).add(perFirm);
+				double output = prodFun.produce(inv).getAmount() * optimalNumberOfFirms;
+				System.out.println("With " + optimalNumberOfFirms + " firms the " + totalInput + " manhours could have produced " + output + " instead of "
+						+ stats.getGoodsMarketStats().getStats(POTATOE).getYesterday().getTotWeight());
+			}
+			double altInput = 12;
+			System.out.println("Using only " + altInput + " man-hours would yield a profit of " + getProfits(prodFun, stats, altInput));
+		} catch (PriceUnknownException e) {
+			e.printStackTrace(out);
+		}
+	}
+	
+	private double getProfits(IProductionFunction prodFun, IStatistics sim, double inputAmount) throws PriceUnknownException {
+		Inventory inv = new Inventory(getMoney(), new Stock(LAND, 100));
+		double costs = inputAmount * sim.getGoodsMarketStats().getPriceBelief(MAN_HOUR);
+		inv.getStock(MAN_HOUR).add(inputAmount);
+		Quantity prod = prodFun.produce(inv);
+		return prod.getAmount() * sim.getGoodsMarketStats().getPriceBelief(POTATOE) - costs;
+	}
+	
 }

@@ -27,4 +27,6 @@ public interface IStatistics {
 	
 	public IMarketStatistics getStockMarketStats();
 
+	public IDiscountRate getDiscountRate();
+
 }

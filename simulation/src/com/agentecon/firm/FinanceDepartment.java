@@ -18,6 +18,7 @@ import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.goods.Quantity;
+import com.agentecon.market.IDiscountRate;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceTakerMarket;
 import com.agentecon.production.PriceUnknownException;
@@ -28,21 +29,22 @@ public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements I
 
 	private CobbDouglasProduction prodFun;
 	private double prevInvestment = 0.0;
-	private double discountRate;
+	private IDiscountRate discountRate;
 
-	public FinanceDepartment(CobbDouglasProduction prodFun, double discountRate) {
+	public FinanceDepartment(CobbDouglasProduction prodFun, IDiscountRate iDiscountRate) {
 		super(prodFun.getReturnsToScaleExcludingCapital());
 		this.prodFun = prodFun;
-		this.discountRate = discountRate;
+		this.discountRate = iDiscountRate;
 	}
 
 	public void invest(IAgent agent, Inventory inv, IFinancials financials, IPriceTakerMarket market) {
 		double revenue = financials.getExpectedRevenue();
 		double investments = 0.0;
+		double timeValueFactor = 1 / discountRate.getCurrentDiscountRate();
 		for (Weight input : prodFun.getInputWeigths()) {
 			if (input.capital) {
 				Good inputGood = input.good;
-				investments += invest(agent, inv.getMoney(), inv.getStock(inputGood), revenue * input.weight / discountRate, market);
+				investments += invest(agent, inv.getMoney(), inv.getStock(inputGood), revenue * input.weight * timeValueFactor, market);
 			}
 		}
 		this.prevInvestment = investments;
@@ -57,27 +59,31 @@ public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements I
 	protected double considerBuying(IAgent agent, IStock money, IStock input, double targetLandValue, IPriceTakerMarket market) {
 		double invested = 0.0;
 		IOffer offer = market.getOffer(input.getGood(), true);
-		double additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
-		while (additionalLandNeeded > 0.0) {
-			double moneyBefore = money.getAmount();
-			offer.accept(agent, money, input, new Quantity(input.getGood(), additionalLandNeeded / offer.getPrice().getPrice()));
-			invested += moneyBefore - money.getAmount();
-			offer = market.getOffer(input.getGood(), true);
-			additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
+		if (offer != null) {
+			double additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
+			while (additionalLandNeeded > 0.0) {
+				double moneyBefore = money.getAmount();
+				offer.accept(agent, money, input, new Quantity(input.getGood(), additionalLandNeeded / offer.getPrice().getPrice()));
+				invested += moneyBefore - money.getAmount();
+				offer = market.getOffer(input.getGood(), true);
+				additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
+			}
 		}
 		return invested;
 	}
-	
+
 	protected double considerSelling(IAgent agent, IStock money, IStock input, double targetLandValue, IPriceTakerMarket market) {
 		double divested = 0.0;
 		IOffer offer = market.getOffer(input.getGood(), false);
-		double excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
-		while (excessLand > 0.0) {
-			double moneyBefore = money.getAmount();
-			offer.accept(agent, money, input, new Quantity(input.getGood(), excessLand / offer.getPrice().getPrice()));
-			divested += money.getAmount() - moneyBefore;
-			offer = market.getOffer(input.getGood(), false);
-			excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
+		if (offer != null) {
+			double excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
+			while (excessLand > 0.0) {
+				double moneyBefore = money.getAmount();
+				offer.accept(agent, money, input, new Quantity(input.getGood(), excessLand / offer.getPrice().getPrice()));
+				divested += money.getAmount() - moneyBefore;
+				offer = market.getOffer(input.getGood(), false);
+				excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
+			}
 		}
 		return divested;
 	}

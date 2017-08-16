@@ -22,6 +22,7 @@ import com.agentecon.goods.Quantity;
 import com.agentecon.learning.MarketingDepartment;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
 import com.agentecon.production.IProductionFunction;
@@ -103,18 +104,18 @@ public class AdaptiveFarm extends Firm implements IProducer {
 		return strategy.calcDividend(getFinancials());
 	}
 
-//	private int daysWithoutProfit = 0;
+	private int daysWithoutProfit = 0;
 
-	// @Override
-	// public boolean wantsBankruptcy(IStatistics stats){
-	// double profits = getFinancials().getProfits();
-	// if (profits <= 0){
-	// daysWithoutProfit++;
-	// } else {
-	// daysWithoutProfit = 0;
-	// }
-	// return daysWithoutProfit > 5 && stats.getRandomNumberGenerator().nextDouble() < 0.2;
-	//// return getMoney().getAmount() < 10.0; // we ran out of money, go bankrupt
-	// }
+	@Override
+	public boolean wantsBankruptcy(IStatistics stats) {
+		double profits = getFinancials().getProfits();
+		if (profits <= 0) {
+			daysWithoutProfit++;
+		} else {
+			daysWithoutProfit = 0;
+		}
+		return daysWithoutProfit > 5 && stats.getRandomNumberGenerator().nextDouble() < 0.2;
+		// return getMoney().getAmount() < 10.0; // we ran out of money, go bankrupt
+	}
 
 }
