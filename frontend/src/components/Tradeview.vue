@@ -100,7 +100,7 @@ export default {
       childrenOf: null,
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
-      simAgents: this.$route.query.agents,
+      simAgents: this.$route.query.selection,
       simStep: parseInt(this.$route.query.step, 10),
       simLength: null,
     };
@@ -170,6 +170,7 @@ export default {
       this.simDay = Math.max(this.simDay - this.simStep, 0);
     },
     goToNewURL() {
+      this.showNodeInfo = false;
       this.$router.replace({
         name: 'trades',
         query: {
@@ -184,7 +185,7 @@ export default {
     fetchData() {
       // fetchData has all needed state data in URL
       fetch(
-        `${config.apiURL}/tradegraph?sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`,
+        `${config.apiURL}/tradegraph?sim=${this.simId}&day=${this.simDay}&selection=${this.simAgents}&step=${this.simStep}`,
         config.xhrConfig,
       )
       .then(config.handleFetchErrors)
@@ -203,7 +204,7 @@ export default {
       .catch(error => config.alertError(error));
     },
     handleDownload(item) {
-      window.open(`${config.apiURL}/downloadcsv?metric=${item}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`, '_blank');
+      window.open(`${config.apiURL}/downloadcsv?metric=${item}&sim=${this.simId}&day=${this.simDay}&selection=${this.simAgents}&step=${this.simStep}`, '_blank');
     },
     handleNodeClicked(node) {
       this.playing = false;

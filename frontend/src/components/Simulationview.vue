@@ -10,7 +10,7 @@
         <a :href="simDescription" target="_blank">Description</a>
       </li>
       <li>
-        <router-link :to="{name: 'trades', query: {sim: this.$route.query.sim, day: 0, agents: 'consumers,firms', step: 1}}">Tradeview</router-link>
+        <router-link :to="{name: 'trades', query: {sim: this.$route.query.sim, day: 0, selection: 'consumers,firms', step: 1}}">Tradeview</router-link>
       </li>
     </ul>
     <h2>Ranking</h2>
