@@ -142,22 +142,56 @@ export default {
     },
     initDragging() {
       const self = this;
+      let thisChildren = null;
 
       function dragstarted() {
         d3.select(this)
           .classed('dragging', true);
+
+        thisChildren = d3.event.subject.children;
       }
 
       function dragged() {
         d3.select(this)
           .attr('transform', `translate(${d3.event.x}, ${d3.event.y})`);
 
-        self.graph.nodeCoordinates[d3.select(this).attr('id')].x = d3.event.x;
-        self.graph.nodeCoordinates[d3.select(this).attr('id')].y = d3.event.y;
+        // Watch out for the leading letter n in the id in html
+        self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].x = d3.event.x;
+        self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].y = d3.event.y;
+
+        d3.event.subject.data.x = d3.event.x;
+        d3.event.subject.data.y = d3.event.y;
 
         self.drawLinks(self.graphdata.edges);
-        self.drawNodes(self.graph.firmNodes);
-        self.drawNodes(self.graph.consumerNodes);
+
+        // update this node and corresponding edge
+        if (d3.event.subject.parent) {
+          // TODO: pack into function and use intitally on nodedraw
+
+          d3.select(this).select('.node__edge').attr('d', () => {
+            const localX = d3.event.x;
+            const localY = d3.event.y;
+            const x = d3.event.subject.parent.data.x - localX;
+            const y = d3.event.subject.parent.data.y - localY;
+            const r = d3.event.subject.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+
+            return `M 0 0 L${x - deltaX} ${y - deltaY}`;
+          });
+        }
+
+        // udpate children and corresponding edges
+        if (thisChildren) {
+          thisChildren.forEach((el) => {
+            const x = d3.event.x - el.data.x;
+            const y = d3.event.y - el.data.y;
+            const r = d3.event.subject.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+            d3.select(`#n${el.data.id} .node__edge`).attr('d', () => `M 0 0 L${x - deltaX} ${y - deltaY}`);
+          });
+        }
       }
 
       function dragended() {
@@ -202,6 +236,9 @@ export default {
 
           // Update clickcage property
           this.graph.rect.contextExists = false;
+
+          // Emit empty nodeclided to unselect node
+          this.$emit('nodeclicked');
         } else {
           // Emit empty nodeclided to unselect node
           this.$emit('nodeclicked');
@@ -275,7 +312,7 @@ export default {
 
       const group = nodesEnterJoin
         .append('g')
-        .attr('id', d => d.data.id)
+        .attr('id', d => `n${d.data.id}`)
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
       group
@@ -353,6 +390,7 @@ export default {
             const r = d.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
             const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
             const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+
             return `M 0 0 L${x - deltaX} ${y - deltaY}`;
           }
           return '';
