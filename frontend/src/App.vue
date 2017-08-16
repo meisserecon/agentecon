@@ -38,6 +38,8 @@ h1
   list-style-type: none
 
 .homenav
+  position: relative
+  z-index: 20
   padding: 0
   margin: 0
   list-style-type: none
