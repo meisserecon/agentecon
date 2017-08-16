@@ -48,7 +48,7 @@ public abstract class WebApiMethod {
 		try {
 			return execute(session, params);
 		} finally {
-			clock.time("Executed " + toString() + " with " + params);
+			clock.time("Executed " + session.getUri() + "?" + session.getQueryParameterString());
 		}
 	}
 

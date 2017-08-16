@@ -111,7 +111,10 @@ public class AgentQuery {
 			agents.getAgents(query).forEach(consumer);
 			break;
 		case ID:
-			consumer.accept(agents.getAgent(id));
+			IAgent agent = agents.getAgent(id);
+			if (agent != null){
+				consumer.accept(agent);
+			}
 			break;
 		default:
 		}

@@ -21,7 +21,6 @@ public class Parameters {
 	public static final String DAY = "day";
 	public static final String SIM = "sim";
 	public static final String SELECTION = "selection";
-	public static final String ALT_SELECTION = "agents";
 
 	private Map<String, List<String>> params;
 
@@ -58,9 +57,6 @@ public class Parameters {
 	
 	public String getSelectionString() {
 		String sel = getParam(SELECTION);
-		if (sel == null){
-			sel = getParam(ALT_SELECTION);
-		}
 		return sel == null ? "" : sel;
 	}
 
