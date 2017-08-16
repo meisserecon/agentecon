@@ -41,7 +41,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart"  @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
+        <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart" @showinfo="handleShowInfo" @showchildren="handleShowChildSelection" @hidecontextmenus="hideContextMenus"></tradegraph>
       </div>
       <div class="tradeview__side">
         <div class="tradeview__minicharts">
@@ -51,14 +51,13 @@
           </div>
         </div>
       </div>
-      <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes"></childselection>
-      <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId"></nodeinfo>
+      <childselection :show.sync="showChildSelection" :childrenof="childrenOf" :activenodes="simAgents" :simulationday="simDay" :simulationid="simId" @setactivenodes="handleSetActiveNodes" :style="{left: `${childSelectionLeft}px`, top: `${childSelectionTop}px`}"></childselection>
+      <nodeinfo :show.sync="showNodeInfo" :agent="infoOf" :simulationday="simDay" :simulationid="simId" :style="{left: `${infoLeft}px`, top: `${infoTop}px`}"></nodeinfo>
     </div>
   </div>
 </template>
 
 <script>
-import * as d3 from 'd3';
 import Vue from 'vue';
 import { Button, Dropdown, DropdownMenu, DropdownItem, Option, Select, Slider } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
@@ -96,7 +95,11 @@ export default {
       miniCharts: [],
       showNodeInfo: false,
       infoOf: null,
+      infoLeft: 0,
+      infoTop: 0,
       showChildSelection: false,
+      childSelectionLeft: 0,
+      childSelectionTop: 0,
       childrenOf: null,
       simId: this.$route.query.sim,
       simDay: parseInt(this.$route.query.day, 10),
@@ -158,6 +161,16 @@ export default {
     simStep() {
       this.goToNewURL();
     },
+    showNodeInfo() {
+      if (!this.showNodeInfo) {
+        this.infoLeft = -10000;
+      }
+    },
+    showChildSelection() {
+      if (!this.showChildSelection) {
+        this.childSelectionLeft = -10000;
+      }
+    },
   },
   methods: {
     nextStep() {
@@ -170,7 +183,7 @@ export default {
       this.simDay = Math.max(this.simDay - this.simStep, 0);
     },
     goToNewURL() {
-      this.showNodeInfo = false;
+      this.hideContextMenus();
       this.$router.replace({
         name: 'trades',
         query: {
@@ -226,33 +239,27 @@ export default {
       this.miniCharts.unshift({ id: node, color: coloring });
     },
     handleShowInfo(node, coordinates) {
+      this.hideContextMenus();
+
       this.infoOf = node;
+      this.infoLeft = coordinates.x;
+      this.infoTop = coordinates.y;
       this.showNodeInfo = true;
-
-      d3.selectAll('[data-js-context]')
-        .style('left', null)
-        .classed('in', false);
-
-      d3.select('#nodeinfo')
-        .style('left', `${coordinates.x}px`)
-        .style('top', `${coordinates.y}px`)
-        .classed('in', true);
     },
-    handleShowChildren(node, coordinates) {
+    handleShowChildSelection(node, coordinates) {
+      this.hideContextMenus();
+
       this.childrenOf = node;
+      this.childSelectionLeft = coordinates.x;
+      this.childSelectionTop = coordinates.y;
       this.showChildSelection = true;
-
-      d3.selectAll('[data-js-context]')
-        .style('left', null)
-        .classed('in', false);
-
-      d3.select('#childselection')
-        .style('left', `${coordinates.x}px`)
-        .style('top', `${coordinates.y}px`)
-        .classed('in', true);
     },
     handleSetActiveNodes(nodes) {
       this.simAgents = nodes;
+    },
+    hideContextMenus() {
+      this.showNodeInfo = false;
+      this.showChildSelection = false;
     },
   },
 };

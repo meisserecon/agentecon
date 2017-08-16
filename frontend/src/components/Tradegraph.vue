@@ -1,7 +1,7 @@
 <template>
   <div>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div id="contextmenu" class="context contextmenu">
+    <div id="contextmenu" :class="{context: true, contextmenu: true, in: showContext}" :style="{left: `${contextLeft}px`, top: `${contextTop}px`}">
       <ul class="contextmenu__list">
         <li class="contextmenu__item"><el-button class="contextmenu__btn" id="minichartselection">Add Minichart</el-button></li>
         <li class="contextmenu__item"><el-button class="contextmenu__btn" id="infoselection">Show Info</el-button></li>
@@ -23,6 +23,9 @@ export default {
   props: ['graphdata', 'selectednode'],
   data() {
     return {
+      showContext: false,
+      contextLeft: 0,
+      contextTop: 0,
       colors: {
         // these colors should stay in sync with the ones in SASS
         consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
@@ -88,6 +91,11 @@ export default {
     graphdata() {
       this.updateTradegraph();
     },
+    showContext() {
+      if (!this.showContext) {
+        this.contextLeft = -10000;
+      }
+    },
   },
   methods: {
     updateTradegraph() {
@@ -114,31 +122,35 @@ export default {
         // Emit click to parent to stop simulation
         this.$emit('nodeclicked', el.data.id);
 
-        // Hide all open context elements
-        this.hideContextMenus();
-
         if (this.selectednode !== el.data.id) {
-          // Show contextmenu & add data attribute to
-          // hide context after click on clickcage
-          d3.select('#contextmenu')
-            .attr('data-js-context', '')
-            .classed('in', true)
-            .style('left', `${mouseX}px`)
-            .style('top', `${mouseY}px`);
+          // Show contextmenu
+          this.contextLeft = mouseX;
+          this.contextTop = mouseY;
+          this.showContext = true;
 
           // Update clickcage property
           this.graph.rect.contextExists = true;
         }
 
-        d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]));
-        d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY }));
-        d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY }));
+        d3.selectAll('#minichartselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]);
+          },
+        );
+        d3.selectAll('#infoselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY });
+          },
+        );
+        d3.selectAll('#childrenselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY });
+          },
+        );
       });
-    },
-    hideContextMenus() {
-      d3.selectAll('[data-js-context]')
-        .style('left', null)
-        .classed('in', false);
     },
     initDragging() {
       const self = this;
@@ -194,16 +206,14 @@ export default {
 
       this.graph.rect.on('click', () => {
         if (this.graph.rect.contextExists) {
-          // Hide context elements
-          // (removing the left attribute re-applies css value)
-          d3.selectAll('[data-js-context]')
-            .classed('in', false)
-            .style('left', null);
+          // Hide contextMenu
+          this.showContext = false;
+          this.$emit('hidecontextmenus');
 
           // Update clickcage property
           this.graph.rect.contextExists = false;
         } else {
-          // Emit empty nodeclided to unselect node
+          // Emit empty nodeclicked to unselect node
           this.$emit('nodeclicked');
         }
       });
