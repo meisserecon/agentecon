@@ -85,8 +85,14 @@ export default {
         )
         .then(
           () => {
+            // rescale to max/min range
+            const scale = this.chartData[agent].max - this.chartData[agent].min;
             const data = {
-              y: [this.chartData[agent].data],
+              y: [
+                this.chartData[agent].data.map(
+                  datapoint => (datapoint * scale) + this.chartData[agent].min,
+                ),
+              ],
             };
 
             Plotly.update(`minichart-${agent}`, data);
