@@ -20,27 +20,24 @@
       <div class="tradeview__main">
         <div class="controls__title">Controls</div>
         <div class="controls">
-          <div class="controls__row">
-            <el-button-group>
-              <el-button type="primary" v-if="simDay < simLength" @click="playing = !playing">
-                <svg v-if="playing" width="9" height="9" viewBox="0 0 6 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M0 0h2v9H0zM4 0h2v9H4z"/></svg>
-                <svg v-if="!playing" width="9" height="9" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M.986 0v8.935L9 4.077z" /></svg>
-              </el-button>
-              <el-button type="primary" v-if="simDay > 0" @click="simDay = 0"><svg width="16" height="9" viewBox="0 0 16 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M15.014 0v8.935L7 4.077z"/><path fill="#fff" d="M8.014 0v8.935L0 4.077z"/></svg></el-button>
-            </el-button-group>
-            <!-- <el-input class="controls__day" v-model.number="simDay"></el-input> -->
-            <el-dropdown trigger="click" @command="handleDownload">
-              <el-button type="primary">
-                Download Metric<i class="el-icon-caret-bottom el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <template v-for="option in metrics">
-                  <el-dropdown-item :command="option">{{ option }}</el-dropdown-item>
-                </template>
-              </el-dropdown-menu>
-            </el-dropdown>
-            </div>
+          <el-button type="primary" v-if="simDay < simLength" @click="playing = !playing">
+            <svg v-if="playing" width="9" height="9" viewBox="0 0 6 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M0 0h2v9H0zM4 0h2v9H4z"/></svg>
+            <svg v-if="!playing" width="9" height="9" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M.986 0v8.935L9 4.077z" /></svg>
+          </el-button>
+          <!-- <el-input class="controls__day" v-model.number="simDay"></el-input> -->
           <el-slider v-model="simDay" :max="simLength" show-input></el-slider>
+        </div>
+        <div class="controls controls--ur">
+          <el-dropdown trigger="click" @command="handleDownload">
+            <el-button type="primary">
+              Download Metric<i class="el-icon-caret-bottom el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <template v-for="option in metrics">
+                <el-dropdown-item :command="option">{{ option }}</el-dropdown-item>
+              </template>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
         <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart"  @showinfo="handleShowInfo" @showchildren="handleShowChildren"></tradegraph>
       </div>
@@ -61,7 +58,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, ButtonGroup, Dropdown, DropdownMenu, DropdownItem, Slider } from 'element-ui';
+import { Button, Dropdown, DropdownMenu, DropdownItem, Slider } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -70,7 +67,6 @@ import Minicharts from '@/components/Minicharts';
 import config from '../config';
 
 Vue.use(Button);
-Vue.use(ButtonGroup);
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
@@ -304,25 +300,28 @@ $white:                                                 #fff
 .controls
   position: relative
   z-index: 20
+  display: flex
 
-  &__row
-    display: flex
-
-    > div
-      margin-right: 7px
+  > div,
+  > button
+    margin-right: 10px
 
   &__title
     margin: 11px 0
     font: 500 14px/1.4 $avenir
 
-// when only 1 btn is present in btn-group
-// readd the border
-.el-button-group .el-button:last-child:first-child
-  border-radius: 4px
+  &--ur
+    position: fixed
+    z-index: 20
+    right: 50px
+    top: 25px
+
+    > div,
+    > button
+      margin-right: 0
 
 .el-slider
   width: 413px
-  margin-top: 10px
 
 .b
   display: inline-block
