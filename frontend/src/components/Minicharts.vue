@@ -2,9 +2,9 @@
   <div>
 
     <template v-for="agent in agents">
-      <div class="minichart__wrapper" v-if="agent" :key="`minichart-${agent}`">
-        <div class="minichart__title">{{ agent }}</div>
-        <div class="minichart" :id="`minichart-${agent}`"></div>
+      <div class="minichart__wrapper" v-if="agent" :key="`minichart-${agent.id}`">
+        <div class="minichart__title">{{ agent.id }}</div>
+        <div class="minichart" :id="`minichart-${agent.id}`"></div>
       </div>
     </template>
 
@@ -57,10 +57,13 @@ export default {
         x: [],
         y: [],
         mode: 'lines',
+        line: {
+          color: agent.color,
+        },
         type: 'scatter',
       }];
 
-      Plotly.newPlot(`minichart-${agent}`, data, layout, { displayModeBar: false });
+      Plotly.newPlot(`minichart-${agent.id}`, data, layout, { displayModeBar: false });
     },
     fetchCharts() {
       // clear previous chartData
@@ -69,7 +72,7 @@ export default {
       // get chartData for each active agent
       this.agents.forEach((agent) => {
         fetch(
-          `${config.apiURL}/minichart?sim=${this.simulationid}&day=${this.simulationday}&selection=${agent}&height=${config.miniCharts.height}`,
+          `${config.apiURL}/minichart?sim=${this.simulationid}&day=${this.simulationday}&selection=${agent.id}&height=${config.miniCharts.height}`,
           config.xhrConfig,
         )
         .then(config.handleFetchErrors)
@@ -97,7 +100,7 @@ export default {
               ],
             };
 
-            Plotly.update(`minichart-${agent}`, data);
+            Plotly.update(`minichart-${agent.id}`, data);
           },
         )
         .catch(error => config.alertError(error));

@@ -214,15 +214,15 @@ export default {
       }
       this.goToNewURL();
     },
-    handleAddMinichart(node) {
+    handleAddMinichart(node, coloring) {
       // remove chart of node if it is already there
-      this.miniCharts = this.miniCharts.filter(el => el !== node);
+      this.miniCharts = this.miniCharts.filter(el => el.agent !== node);
       // remove last chart if there would be more than configured
       if (this.miniCharts.length >= config.miniCharts.noOfChartsInSidebar) {
         this.miniCharts.pop();
       }
       // add chart to the top of the list
-      this.miniCharts.unshift(node);
+      this.miniCharts.unshift({ id: node, color: coloring });
     },
     handleShowInfo(node, coordinates) {
       this.infoOf = node;

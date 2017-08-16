@@ -23,6 +23,11 @@ export default {
   props: ['graphdata', 'selectednode'],
   data() {
     return {
+      colors: {
+        // these colors should stay in sync with the ones in SASS
+        consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
+        firms: ['#0a7138', '#13ce66', '#86f4b7'],
+      },
       graph: {
         stage: null,
         stageDOM: null,
@@ -125,7 +130,7 @@ export default {
           this.graph.rect.contextExists = true;
         }
 
-        d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id));
+        d3.selectAll('#minichartselection').on('click', () => this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]));
         d3.selectAll('#infoselection').on('click', () => this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY }));
         d3.selectAll('#childrenselection').on('click', () => this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY }));
       });
@@ -243,6 +248,9 @@ export default {
           // Set y coordinate
           d.data.y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
 
+          // Save type for coloring minicharts based on it
+          d.data.type = nodeData.data.id;
+
           // Update previousDepth
           previousDepth = d.depth;
 
@@ -288,7 +296,7 @@ export default {
           if (i === 0) {
             return 'node__circle c0';
           }
-          return `node__circle c${Math.floor(Math.random() * 4) + 1}`;
+          return `node__circle c${d.depth}`;
         })
         .attr('cx', 0)
         .attr('cy', 0);
@@ -571,15 +579,11 @@ $tradegraph-extra-dark-green:              $extra-dark-green
         fill: $tradegraph-green
         stroke: $tradegraph-coral
         &.c0
-          fill: $tradegraph-green
-        &.c1
-          fill: $tradegraph-light-green
-        &.c2
-          fill: $tradegraph-extra-light-green
-        &.c3
           fill: $tradegraph-dark-green
-        &.c4
-          fill: $tradegraph-extra-dark-green
+        &.c1
+          fill: $tradegraph-green
+        &.c2
+          fill: $tradegraph-light-green
         &--active
           fill: $tradegraph-coral
       // &__edge
@@ -591,15 +595,11 @@ $tradegraph-extra-dark-green:              $extra-dark-green
         fill: $tradegraph-blue
         stroke: $tradegraph-coral
         &.c0
-          fill: $tradegraph-blue
-        &.c1
-          fill: $tradegraph-light-blue
-        &.c2
-          fill: $tradegraph-extra-light-blue
-        &.c3
           fill: $tradegraph-dark-blue
-        &.c4
-          fill: $tradegraph-extra-dark-blue
+        &.c1
+          fill: $tradegraph-blue
+        &.c2
+          fill: $tradegraph-light-blue
         &--active
           fill: $tradegraph-coral
       // &__edge
