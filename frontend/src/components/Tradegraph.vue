@@ -4,7 +4,7 @@
     <div id="contextmenu" class="context contextmenu">
       <ul class="contextmenu__list">
         <li class="contextmenu__item"><el-button class="contextmenu__btn" id="minichartselection">Add Minichart</el-button></li>
-        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="infoselection">Additional Agent Info</el-button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="infoselection">Show Info</el-button></li>
         <li class="contextmenu__item"><el-button class="contextmenu__btn" id="childrenselection">Expand/Collapse Children</el-button></li>
       </ul>
     </div>
@@ -284,7 +284,12 @@ export default {
       // Append node to node group
       group
         .append('circle')
-        .attr('class', 'node__circle')
+        .attr('class', (d, i) => {
+          if (i === 0) {
+            return 'node__circle c0';
+          }
+          return `node__circle c${Math.floor(Math.random() * 4) + 1}`;
+        })
         .attr('cx', 0)
         .attr('cy', 0);
 
@@ -482,11 +487,27 @@ export default {
 </script>
 
 <style lang="sass">
-$blue:                                     #33ccff
-$coral:                                    #ff4949
-$green:                                    #97e582
-$grey:                                     #676767
-$light-grey:                        rgba(0,0,0,.3)
+@import '../assets/sass/vars'
+@import '../assets/sass/mixins'
+
+$tradegraph-coral:                                    $coral
+$grey:                                               #676767
+$light-grey:                                  rgba(0,0,0,.3)
+
+$tradegraph-black:                                    $black
+$tradegraph-light-black:                        $light-black
+
+$tradegraph-blue:                                      $blue
+$tradegraph-light-blue:                          $light-blue
+$tradegraph-extra-light-blue:              $extra-light-blue
+$tradegraph-dark-blue:                            $dark-blue
+$tradegraph-extra-dark-blue:                $extra-dark-blue
+
+$tradegraph-green:                                    $green
+$tradegraph-light-green:                        $light-green
+$tradegraph-extra-light-green:            $extra-light-green
+$tradegraph-dark-green:                          $dark-green
+$tradegraph-extra-dark-green:              $extra-dark-green
 
 .tradegraph
   position: absolute
@@ -501,13 +522,17 @@ $light-grey:                        rgba(0,0,0,.3)
 
   &.dragging
     .node__circle
-      fill: $coral
+      @for $i from 0 through 4
+        &.c#{$i}
+          fill: $tradegraph-coral
 
   &.active
     .node__circle
       stroke-width: 4px
-      fill: transparent
       r: 30px
+      @for $i from 0 through 4
+        &.c#{$i}
+          fill: transparent
 
       &--active
         r: 15px
@@ -526,7 +551,7 @@ $light-grey:                        rgba(0,0,0,.3)
     font: normal 12px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
     text-decoration: underline
-    fill: $blue
+    fill: $tradegraph-blue
 
   &__circle
     position: relative
@@ -543,22 +568,42 @@ $light-grey:                        rgba(0,0,0,.3)
   &--firms
     .node
       &__circle
-        fill: $grey
-        stroke: $blue
+        fill: $tradegraph-green
+        stroke: $tradegraph-coral
+        &.c0
+          fill: $tradegraph-green
+        &.c1
+          fill: $tradegraph-light-green
+        &.c2
+          fill: $tradegraph-extra-light-green
+        &.c3
+          fill: $tradegraph-dark-green
+        &.c4
+          fill: $tradegraph-extra-dark-green
         &--active
-          fill: $blue
+          fill: $tradegraph-coral
       // &__edge
-      //   stroke: $coral
+      //   stroke: $tradegraph-coral
 
   &--consumers
     .node
       &__circle
-        fill: $grey
-        stroke: $blue
+        fill: $tradegraph-blue
+        stroke: $tradegraph-coral
+        &.c0
+          fill: $tradegraph-blue
+        &.c1
+          fill: $tradegraph-light-blue
+        &.c2
+          fill: $tradegraph-extra-light-blue
+        &.c3
+          fill: $tradegraph-dark-blue
+        &.c4
+          fill: $tradegraph-extra-dark-blue
         &--active
-          fill: $blue
+          fill: $tradegraph-coral
       // &__edge
-      //   stroke: $blue
+      //   stroke: $tradegraph-blue
 
   &--out
     fill-opacity: .1
@@ -585,7 +630,7 @@ $light-grey:                        rgba(0,0,0,.3)
   // animation: pulsate 3s
   animation-iteration-count: infinite
   &:hover
-    stroke: $green
+    stroke: $tradegraph-green
     cursor: pointer
   &:nth-child(1)
     animation-delay: 0.2s

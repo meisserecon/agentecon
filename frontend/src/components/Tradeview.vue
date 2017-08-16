@@ -1,6 +1,20 @@
  <template>
   <div class="tradeview">
     <h1>Tradeview</h1>
+    <div>
+      <div class="b b1"></div>
+      <div class="b b2"></div>
+      <div class="b b3"></div>
+      <div class="b b4"></div>
+      <div class="b b5"></div>
+    </div>
+    <div>
+      <div class="g g1"></div>
+      <div class="g g2"></div>
+      <div class="g g3"></div>
+      <div class="g g4"></div>
+      <div class="g g5"></div>
+    </div>
 
     <div class="tradeview__wrapper" v-if="loaded">
       <div class="tradeview__main">
@@ -309,4 +323,35 @@ $white:                                                 #fff
 .el-slider
   width: 413px
   margin-top: 10px
+
+.b
+  display: inline-block
+  float: left
+  width: 50px
+  height: 50px
+  &.b1
+    background: $extra-light-blue
+  &.b2
+    background: $light-blue
+  &.b3
+    background: $blue
+  &.b4
+    background: $dark-blue
+  &.b5
+    background: $extra-dark-blue
+.g
+  display: inline-block
+  float: left
+  width: 50px
+  height: 50px
+  &.g1
+    background: $extra-light-green
+  &.g2
+    background: $light-green
+  &.g3
+    background: $green
+  &.g4
+    background: $dark-green
+  &.g5
+    background: $extra-dark-green
 </style>
