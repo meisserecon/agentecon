@@ -48,16 +48,13 @@ export default {
         margin: {
           l: 30,
           r: 30,
-          t: 0,
-          b: 0,
-        },
-        xaxis: {
-          zeroline: false,
-          showticklabels: false,
+          t: 10,
+          b: 30,
         },
       };
 
       const data = [{
+        x: [],
         y: [],
         mode: 'lines',
         type: 'scatter',
@@ -88,6 +85,11 @@ export default {
             // rescale to max/min range
             const scale = this.chartData[agent].max - this.chartData[agent].min;
             const data = {
+              x: [
+                [...Array(this.chartData[agent].data.length).keys()].map(
+                  i => this.simulationday - this.chartData[agent].data.length + 1 + i,
+                ),
+              ],
               y: [
                 this.chartData[agent].data.map(
                   datapoint => (datapoint * scale) + this.chartData[agent].min,
