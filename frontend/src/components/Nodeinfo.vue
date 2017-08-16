@@ -1,5 +1,5 @@
 <template>
-  <div id="nodeinfo" class="context nodeinfo" data-js-context>
+  <div id="nodeinfo" :class="{context: true, nodeinfo: true, in: show}">
 
     <h2 class="nodeinfo__title">{{ agent }} on day {{ simulationday }}</h2>
 
@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3';
 import Vue from 'vue';
 import { Button } from 'element-ui';
 import config from '../config';
@@ -86,9 +85,6 @@ export default {
   },
   methods: {
     closeInfo() {
-      d3.select('#nodeinfo')
-        .classed('in', false)
-        .style('left', null);
       this.$emit('update:show', false);
     },
   },

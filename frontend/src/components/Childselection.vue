@@ -1,5 +1,5 @@
 <template>
-  <div id="childselection" class="context childselection" data-js-context>
+  <div id="childselection" :class="{context: true, childselection: true, in: show}">
 
     <h2 class="childselection__title">{{ childrenof }} on day {{ simulationday }}</h2>
 
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3';
 import Vue from 'vue';
 import { Button } from 'element-ui';
 import config from '../config';
@@ -95,17 +94,10 @@ export default {
 
       this.$emit('setactivenodes', newActiveNodes.join());
 
-      this.hideChildselection();
       this.$emit('update:show', false);
     },
     cancelSelection() {
-      this.hideChildselection();
       this.$emit('update:show', false);
-    },
-    hideChildselection() {
-      d3.select('#childselection')
-        .classed('in', false)
-        .style('left', null);
     },
   },
 };
