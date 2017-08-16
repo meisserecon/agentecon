@@ -176,7 +176,7 @@ export default {
         query: {
           sim: this.simId,
           day: this.simDay,
-          agents: this.simAgents,
+          selection: this.simAgents,
           step: this.simStep,
           selected: this.selectedNode,
         },
