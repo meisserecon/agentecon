@@ -24,8 +24,10 @@
             <svg v-if="playing" width="9" height="9" viewBox="0 0 6 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M0 0h2v9H0zM4 0h2v9H4z"/></svg>
             <svg v-if="!playing" width="9" height="9" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M.986 0v8.935L9 4.077z" /></svg>
           </el-button>
-          <!-- <el-input class="controls__day" v-model.number="simDay"></el-input> -->
-          <el-slider v-model="simDay" :max="simLength" show-input></el-slider>
+          <el-slider v-model="simDay" :max="simLength" :step="simStep" show-input></el-slider>
+          <el-select v-model="simStep">
+            <el-option v-for="item in config.stepSizeOptions" :key="item" :value="item"></el-option>
+          </el-select>
         </div>
         <div class="controls controls--ur">
           <el-dropdown trigger="click" @command="handleDownload">
@@ -58,7 +60,7 @@
 <script>
 import * as d3 from 'd3';
 import Vue from 'vue';
-import { Button, Dropdown, DropdownMenu, DropdownItem, Slider } from 'element-ui';
+import { Button, Dropdown, DropdownMenu, DropdownItem, Option, Select, Slider } from 'element-ui';
 // import Plotly from 'plotly.js/dist/plotly';
 import Tradegraph from '@/components/Tradegraph';
 import Childselection from '@/components/Childselection';
@@ -70,6 +72,8 @@ Vue.use(Button);
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
+Vue.use(Option);
+Vue.use(Select);
 Vue.use(Slider);
 
 export default {
@@ -82,7 +86,7 @@ export default {
   },
   data() {
     return {
-      apiURL: config.apiURL,
+      config,
       tradeGraphData: null,
       loaded: false,
       playing: false,
@@ -151,6 +155,9 @@ export default {
     simAgents() {
       this.goToNewURL();
     },
+    simStep() {
+      this.goToNewURL();
+    },
   },
   methods: {
     nextStep() {
@@ -196,7 +203,7 @@ export default {
       .catch(error => config.alertError(error));
     },
     handleDownload(item) {
-      window.open(`${this.apiURL}/downloadcsv?metric=${item}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`, '_blank');
+      window.open(`${config.apiURL}/downloadcsv?metric=${item}&sim=${this.simId}&day=${this.simDay}&agents=${this.simAgents}&step=${this.simStep}`, '_blank');
     },
     handleNodeClicked(node) {
       this.playing = false;
@@ -207,15 +214,15 @@ export default {
       }
       this.goToNewURL();
     },
-    handleAddMinichart(node) {
+    handleAddMinichart(node, coloring) {
       // remove chart of node if it is already there
-      this.miniCharts = this.miniCharts.filter(el => el !== node);
+      this.miniCharts = this.miniCharts.filter(el => el.agent !== node);
       // remove last chart if there would be more than configured
       if (this.miniCharts.length >= config.miniCharts.noOfChartsInSidebar) {
         this.miniCharts.pop();
       }
       // add chart to the top of the list
-      this.miniCharts.unshift(node);
+      this.miniCharts.unshift({ id: node, color: coloring });
     },
     handleShowInfo(node, coordinates) {
       this.infoOf = node;
