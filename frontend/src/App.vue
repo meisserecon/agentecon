@@ -40,6 +40,7 @@ h1
 .homenav
   position: relative
   z-index: 20
+  width: 50%
   padding: 0
   margin: 0
   list-style-type: none

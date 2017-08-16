@@ -46,7 +46,7 @@ export default {
         DEFAULT_NODE_RADIUS: 50,
         // Multiplies with node weight from data
         // TODO: remove and use weight only => reduces complexity
-        NODE_RADIUS_FACTOR: 2,
+        NODE_RADIUS_FACTOR: 3,
         INTER_LAYER_GAP: 50,
         INTRA_LAYER_GAP: 10,
         HORIZONTAL_GAP: 50,
@@ -270,16 +270,9 @@ export default {
         .attr('id', d => d.data.id)
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
-      // Append node edges
       group
         .append('path')
-        .attr('class', 'node__edge')
-        .attr('d', (d, i) => {
-          if (i > 0) {
-            return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
-          }
-          return '';
-        });
+        .attr('class', 'node__edge');
 
       // Append node to node group
       group
@@ -340,6 +333,22 @@ export default {
         })
         .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_FACTOR * d.data.data.size)))
         .text(d => d.data.id);
+
+      groupJoin
+        .select('.node__edge')
+        .attr('d', (d, i) => {
+          if (i > 0) {
+            const localX = this.graph.nodeCoordinates[d.data.id].x;
+            const localY = this.graph.nodeCoordinates[d.data.id].y;
+            const x = d.parent.data.x - localX;
+            const y = d.parent.data.y - localY;
+            const r = d.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+            return `M 0 0 L${x - deltaX} ${y - deltaY}`;
+          }
+          return '';
+        });
 
       // Add click events to nodes
       this.addClickToNodes();
@@ -524,6 +533,7 @@ $tradegraph-extra-dark-green:              $extra-dark-green
     .node__circle
       @for $i from 0 through 4
         &.c#{$i}
+          opacity: 1
           fill: $tradegraph-coral
 
   &.active
@@ -539,7 +549,8 @@ $tradegraph-extra-dark-green:              $extra-dark-green
 
   &__edge
     stroke-width: 1px
-    opacity: .3
+    stroke: $tradegraph-light-black
+    opacity: 1
 
   &__text
     font: bold 14px/1 Helvetica, Arial, sans-serif
@@ -582,8 +593,6 @@ $tradegraph-extra-dark-green:              $extra-dark-green
           fill: $tradegraph-extra-dark-green
         &--active
           fill: $tradegraph-coral
-      // &__edge
-      //   stroke: $tradegraph-coral
 
   &--consumers
     .node
@@ -602,8 +611,6 @@ $tradegraph-extra-dark-green:              $extra-dark-green
           fill: $tradegraph-extra-dark-blue
         &--active
           fill: $tradegraph-coral
-      // &__edge
-      //   stroke: $tradegraph-blue
 
   &--out
     fill-opacity: .1
