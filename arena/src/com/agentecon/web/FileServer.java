@@ -78,8 +78,11 @@ public class FileServer extends NanoHTTPD {
 	protected void run() throws IOException, InterruptedException {
 		start();
 		try {
+			URI uri = new URI("http://" + (getHostname() == null ? "localhost" : getHostname()) + ":" + getListeningPort());
 			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().browse(new URI("http://" + (getHostname() == null ? "localhost" : getHostname()) + ":" + getListeningPort()));
+				Desktop.getDesktop().browse(uri);
+			} else {
+				System.out.println("Listening on " + uri);
 			}
 			while (true) {
 				Thread.sleep(60000);
