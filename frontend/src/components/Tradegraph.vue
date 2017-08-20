@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       showContext: false,
-      contextLeft: 0,
+      contextLeft: -10000,
       contextTop: 0,
       colors: {
         // these colors should stay in sync with the ones in SASS
