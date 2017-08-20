@@ -30,5 +30,10 @@
 			<artifactId>nanohttpd</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.agentecon.interface</groupId>
+			<artifactId>interface</artifactId>
+			<version>0.1</version>
+		</dependency>
 	</dependencies>
 </project>
