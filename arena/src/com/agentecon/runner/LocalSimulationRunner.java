@@ -15,7 +15,6 @@ import java.net.SocketTimeoutException;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.export.ExcelWriter;
 import com.agentecon.metric.variants.DividendStats;
@@ -47,13 +46,13 @@ public class LocalSimulationRunner {
 		// stats.print(System.out);
 		ranking.print(System.out);
 
-		System.out.println();
-		try {
-			writer.export(prices);
-			System.out.println();
-		} catch (NoInterestingTimeSeriesFoundException e) {
-			System.out.println("Not creating an excel file for " + stats.getName() + " as there is no interesting data");
-		}
+//		System.out.println();
+//		try {
+//			writer.export(prices);
+//			System.out.println();
+//		} catch (NoInterestingTimeSeriesFoundException e) {
+//			System.out.println("Not creating an excel file for " + stats.getName() + " as there is no interesting data");
+//		}
 		sim.getConfig().diagnoseResult(System.out, sim);
 	}
 

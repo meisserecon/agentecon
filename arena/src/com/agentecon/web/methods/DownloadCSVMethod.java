@@ -8,21 +8,23 @@
  */
 package com.agentecon.web.methods;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.nanohttpd.protocols.http.IHTTPSession;
-import org.nanohttpd.protocols.http.response.Response;
-import org.nanohttpd.protocols.http.response.Status;
-
 import com.agentecon.ISimulation;
 import com.agentecon.metric.EMetrics;
 import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 import com.agentecon.runner.SimulationStepper;
+
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class DownloadCSVMethod extends SimSpecificMethod {
 
@@ -60,7 +62,8 @@ public class DownloadCSVMethod extends SimSpecificMethod {
 				writer.println("Or the simulation might be disfunctional, e.g. no trade taking place.");
 			}
 		}
-		Response resp = Response.newFixedLengthResponse(Status.OK, "text/csv", csvData.toByteArray());
+		byte[] data = csvData.toByteArray();
+		Response resp = NanoHTTPD.newFixedLengthResponse(Status.OK, "text/csv", new ByteArrayInputStream(data), data.length);
 		String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		String simName = params.getSimulation();
 		resp.addHeader("Content-Disposition", "inline; filename=\"" + dateString + " " + simName + " " + metric.getName() + ".csv\"");

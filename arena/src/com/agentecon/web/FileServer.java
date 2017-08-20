@@ -9,11 +9,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.nanohttpd.protocols.http.IHTTPSession;
-import org.nanohttpd.protocols.http.NanoHTTPD;
-import org.nanohttpd.protocols.http.request.Method;
-import org.nanohttpd.protocols.http.response.Response;
-import org.nanohttpd.protocols.http.response.Status;
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class FileServer extends NanoHTTPD {
 
@@ -56,7 +53,7 @@ public class FileServer extends NanoHTTPD {
 		File child = new File(baseFolder, uri);
 		if (child.isFile() && child.getAbsolutePath().startsWith(baseFolder.getAbsolutePath())) {
 			try {
-				return Response.newChunkedResponse(Status.OK, getMimeTypeForFile(uri), new FileInputStream(child));
+				return NanoHTTPD.newChunkedResponse(Status.OK, getMimeTypeForFile(uri), new FileInputStream(child));
 			} catch (FileNotFoundException e) {
 				throw new java.lang.RuntimeException(e);
 			}
@@ -71,7 +68,7 @@ public class FileServer extends NanoHTTPD {
 
 			msg += "</body></html>\n";
 
-			return Response.newFixedLengthResponse(msg);
+			return NanoHTTPD.newFixedLengthResponse(msg);
 		}
 	}
 	
