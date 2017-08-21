@@ -54,7 +54,7 @@ export default {
         DEFAULT_NODE_RADIUS: 50,
         // Multiplies with node weight from data
         // TODO: remove and use weight only => reduces complexity
-        NODE_RADIUS_FACTOR: 3,
+        NODE_RADIUS_FACTOR: 3.5,
         INTER_LAYER_GAP: 50,
         INTRA_LAYER_GAP: 10,
         HORIZONTAL_GAP: 50,
@@ -103,7 +103,6 @@ export default {
       this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
 
       // Clear and update global nodeCoordinates
-      this.graph.nodeCoordinates = {};
       this.calculateNodeCoordinates(this.graph.firmNodes);
       this.calculateNodeCoordinates(this.graph.consumerNodes);
 
@@ -171,9 +170,6 @@ export default {
         self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].x = d3.event.x;
         self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].y = d3.event.y;
 
-        d3.event.subject.data.x = d3.event.x;
-        d3.event.subject.data.y = d3.event.y;
-
         self.drawLinks(self.graphdata.edges);
 
         // update this node and corresponding edge
@@ -183,8 +179,8 @@ export default {
           d3.select(this).select('.node__edge').attr('d', () => {
             const localX = d3.event.x;
             const localY = d3.event.y;
-            const x = d3.event.subject.parent.data.x - localX;
-            const y = d3.event.subject.parent.data.y - localY;
+            const x = self.graph.nodeCoordinates[d3.event.subject.parent.data.id].x - localX;
+            const y = self.graph.nodeCoordinates[d3.event.subject.parent.data.id].y - localY;
             const r = d3.event.subject.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
             const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
             const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
@@ -196,8 +192,8 @@ export default {
         // udpate children and corresponding edges
         if (thisChildren) {
           thisChildren.forEach((el) => {
-            const x = d3.event.x - el.data.x;
-            const y = d3.event.y - el.data.y;
+            const x = d3.event.x - self.graph.nodeCoordinates[el.data.id].x;
+            const y = d3.event.y - self.graph.nodeCoordinates[el.data.id].y;
             const r = d3.event.subject.data.data.size * self.graph.NODE_RADIUS_FACTOR;
             const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
             const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
@@ -209,6 +205,8 @@ export default {
       function dragended() {
         d3.select(this)
           .classed('dragging', false);
+
+        self.graph.nodeCoordinates[d3.event.subject.data.id].dragged = true;
       }
 
       const drag = d3.drag()
@@ -283,17 +281,19 @@ export default {
 
       nodeData.descendants()
         .forEach((d, i) => {
+          let x;
+
           // Set x coordinate
           if (d.depth === previousDepth && i !== 0) {
             layerIterator += 1;
-            d.data.x = rootOffset[0] + (layerIterator * horizontalDistance);
+            x = rootOffset[0] + (layerIterator * horizontalDistance);
           } else {
-            d.data.x = rootOffset[0];
+            x = rootOffset[0];
             layerIterator = 0;
             accumulatedLayerGap += 15;
           }
           // Set y coordinate
-          d.data.y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
+          const y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
 
           // Save type for coloring minicharts based on it
           d.data.type = nodeData.data.id;
@@ -301,9 +301,12 @@ export default {
           // Update previousDepth
           previousDepth = d.depth;
 
-          // Update nodeCoordinates for later use in drawLinks function
-          this.graph
-            .nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: d.data.data.size };
+          if (!(d.data.id in this.graph.nodeCoordinates)
+              || !this.graph.nodeCoordinates[d.data.id].dragged) {
+            // Update nodeCoordinates for later use in drawLinks function
+            this.graph
+              .nodeCoordinates[d.data.id] = { x, y, size: d.data.data.size, dragged: false };
+          }
         });
     },
     drawNodes(nodeData) {
@@ -322,7 +325,6 @@ export default {
 
       const group = nodesEnterJoin
         .append('g')
-        .attr('id', d => `n${d.data.id}`)
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
       group
@@ -364,9 +366,11 @@ export default {
       // transform nodes to calculated position
       const groupJoin = nodesJoin
         .merge(group)
+        .raise()
+        .attr('id', d => `n${d.data.id}`)
         .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
-            ${self.graph.nodeCoordinates[d.data.id].y})`);
+          ${self.graph.nodeCoordinates[d.data.id].y})`);
 
       groupJoin
         .select('.node__circle')
@@ -395,8 +399,8 @@ export default {
           if (i > 0) {
             const localX = this.graph.nodeCoordinates[d.data.id].x;
             const localY = this.graph.nodeCoordinates[d.data.id].y;
-            const x = d.parent.data.x - localX;
-            const y = d.parent.data.y - localY;
+            const x = this.graph.nodeCoordinates[d.parent.data.id].x - localX;
+            const y = this.graph.nodeCoordinates[d.parent.data.id].y - localY;
             const r = d.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
             const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
             const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
@@ -520,7 +524,7 @@ export default {
               .append('use')
               .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
               .attr('class', 'link')
-              .attr('stroke-width', `${d.weight}px`)
+              .attr('stroke-width', `${d.weight * 1.5}px`)
               .attr('marker-end', () => 'url(#marker)');
 
             // additional group to set transform-origin for text rotation
@@ -559,8 +563,8 @@ $tradegraph-coral:                                    $coral
 $grey:                                               #676767
 $light-grey:                                  rgba(0,0,0,.3)
 
-$tradegraph-black:                                    $black
 $tradegraph-light-black:                        $light-black
+$tradegraph-extra-light-black:            $extra-light-black
 
 $tradegraph-blue:                                      $blue
 $tradegraph-light-blue:                          $light-blue
@@ -605,13 +609,13 @@ $tradegraph-extra-dark-green:              $extra-dark-green
 
   &__edge
     stroke-width: 1px
-    stroke: $tradegraph-light-black
-    opacity: 1
+    stroke: $tradegraph-extra-light-black
+    opacity: .2
 
   &__text
-    font: bold 14px/1 Helvetica, Arial, sans-serif
+    font: bold 12px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
-    fill: $grey
+    fill: $tradegraph-light-black
     cursor: pointer
 
   &__action
@@ -724,6 +728,7 @@ $tradegraph-extra-dark-green:              $extra-dark-green
     transform-origin: center center
     transition: transform 1s 1s
     font-size: 12px
+    fill: $tradegraph-light-black
     &.rot
       transform: rotate(180deg)
 

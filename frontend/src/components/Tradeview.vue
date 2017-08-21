@@ -1,24 +1,8 @@
  <template>
   <div class="tradeview">
     <h1>Tradeview</h1>
-    <div>
-      <div class="b b1"></div>
-      <div class="b b2"></div>
-      <div class="b b3"></div>
-      <div class="b b4"></div>
-      <div class="b b5"></div>
-    </div>
-    <div>
-      <div class="g g1"></div>
-      <div class="g g2"></div>
-      <div class="g g3"></div>
-      <div class="g g4"></div>
-      <div class="g g5"></div>
-    </div>
-
     <div class="tradeview__wrapper" v-if="loaded">
       <div class="tradeview__main">
-        <div class="controls__title">Controls</div>
         <div class="controls">
           <el-button type="primary" v-if="simDay < simLength" @click="playing = !playing">
             <svg v-if="playing" width="9" height="9" viewBox="0 0 6 9" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M0 0h2v9H0zM4 0h2v9H4z"/></svg>
@@ -45,7 +29,6 @@
       </div>
       <div class="tradeview__side">
         <div class="tradeview__minicharts">
-          <div class="controls__title">Mini Chart Panel</div>
           <div class="tradeview__minicharts-wrapper">
             <minicharts :agents="miniCharts" :simulationday="simDay" :simulationid="simId"></minicharts>
           </div>
@@ -95,10 +78,10 @@ export default {
       miniCharts: [],
       showNodeInfo: false,
       infoOf: null,
-      infoLeft: 0,
+      infoLeft: -10000,
       infoTop: 0,
       showChildSelection: false,
-      childSelectionLeft: 0,
+      childSelectionLeft: -10000,
       childSelectionTop: 0,
       childrenOf: null,
       simId: this.$route.query.sim,
@@ -321,6 +304,12 @@ $white:                                                 #fff
   > button
     margin-right: 10px
 
+  .el-select input
+    width: 80px
+
+  .el-input--small .el-input__inner
+    height: 36px
+
   &__title
     margin: 11px 0
     font: 500 14px/1.4 $avenir
@@ -338,34 +327,10 @@ $white:                                                 #fff
 .el-slider
   width: 413px
 
-.b
-  display: inline-block
-  float: left
-  width: 50px
-  height: 50px
-  &.b1
-    background: $extra-light-blue
-  &.b2
-    background: $light-blue
-  &.b3
-    background: $blue
-  &.b4
-    background: $dark-blue
-  &.b5
-    background: $extra-dark-blue
-.g
-  display: inline-block
-  float: left
-  width: 50px
-  height: 50px
-  &.g1
-    background: $extra-light-green
-  &.g2
-    background: $light-green
-  &.g3
-    background: $green
-  &.g4
-    background: $dark-green
-  &.g5
-    background: $extra-dark-green
+  &__input
+    margin-top: 0
+
+.el-input-number--small .el-input-number__decrease,
+.el-input-number--small .el-input-number__increase
+  line-height: 34px
 </style>
