@@ -3,7 +3,7 @@
 
     <template v-for="agent in agents">
       <div class="minichart__wrapper" v-if="agent" :key="`minichart-${agent.id}`">
-        <div class="minichart__title">{{ agent.id }}</div>
+        <div class="minichart__title">{{ graphTitle[agent.id] }}</div>
         <div class="minichart" :id="`minichart-${agent.id}`"></div>
       </div>
     </template>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       chartData: {},
+      graphTitle: {},
     };
   },
   watch: {
@@ -80,22 +81,23 @@ export default {
         .then(
           (response) => {
             // we have to use vue's $set in order to trigger reactive updates in the view
-            this.$set(this.chartData, agent, response);
+            this.$set(this.chartData, agent.id, response);
+            this.$set(this.graphTitle, agent.id, response.name);
           },
         )
         .then(
           () => {
             // rescale to max/min range
-            const scale = this.chartData[agent].max - this.chartData[agent].min;
+            const scale = this.chartData[agent.id].max - this.chartData[agent.id].min;
             const data = {
               x: [
-                [...Array(this.chartData[agent].data.length).keys()].map(
-                  i => this.simulationday - this.chartData[agent].data.length + 1 + i,
+                [...Array(this.chartData[agent.id].data.length).keys()].map(
+                  i => this.simulationday - this.chartData[agent.id].data.length + 1 + i,
                 ),
               ],
               y: [
-                this.chartData[agent].data.map(
-                  datapoint => (datapoint * scale) + this.chartData[agent].min,
+                this.chartData[agent.id].data.map(
+                  datapoint => (datapoint * scale) + this.chartData[agent.id].min,
                 ),
               ],
             };
