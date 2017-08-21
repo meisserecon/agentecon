@@ -11,22 +11,22 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/vis',
       name: 'home',
       component: Home,
     },
     {
-      path: '/simulation',
+      path: '/vis/simulation',
       name: 'simulation',
       component: Simulationview,
     },
     {
-      path: '/trades',
+      path: '/vis/trades',
       name: 'trades',
       component: Tradeview,
     },
     {
-      path: '/dragndrop',
+      path: '/vis/dragndrop',
       name: 'dragndrop',
       component: Dragndrop,
     },
