@@ -1,32 +1,60 @@
 <template>
   <div>
     <svg id="stage" class="tradegraph" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="contextmenu" :class="{context: true, contextmenu: true, in: showContext}" :style="{left: `${contextLeft}px`, top: `${contextTop}px`}">
+      <ul class="contextmenu__list">
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="minichartselection">Add Minichart</el-button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="infoselection">Show Info</el-button></li>
+        <li class="contextmenu__item"><el-button class="contextmenu__btn" id="childrenselection">Expand/Collapse Children</el-button></li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3';
+import Vue from 'vue';
+import { Button } from 'element-ui';
+
+Vue.use(Button);
 
 export default {
   name: 'tradegraph',
   props: ['graphdata', 'selectednode'],
   data() {
     return {
+      showContext: false,
+      contextLeft: -10000,
+      contextTop: 0,
+      colors: {
+        // these colors should stay in sync with the ones in SASS
+        consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
+        firms: ['#0a7138', '#13ce66', '#86f4b7'],
+      },
       graph: {
         stage: null,
+        stageDOM: null,
+        // contains all elements except the panning rectangle,
+        // prevents jumping of stage when panning
+        global: null,
+        // panning rectangle
+        panningRect: null,
+        defs: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [1000, 100],
+        firmsTreeOffset: [600, 400],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [700, 100],
+        consumersTreeOffset: [300, 400],
         consumersTreeDirection: -1,
-        // object that stores coordinates of all nodes
+        // Object that stores coordinates of all nodes
         // used to draw links between nodes
         nodeCoordinates: {},
-        NODE_RADIUS: 50,
-        NODE_RADIUS_BASE: 2,
+        DEFAULT_NODE_RADIUS: 50,
+        // Multiplies with node weight from data
+        // TODO: remove and use weight only => reduces complexity
+        NODE_RADIUS_FACTOR: 3.5,
         INTER_LAYER_GAP: 50,
         INTRA_LAYER_GAP: 10,
         HORIZONTAL_GAP: 50,
@@ -35,11 +63,38 @@ export default {
   },
   mounted() {
     this.graph.stage = d3.select('#stage');
+    this.graph.stageDOM = document.getElementById('stage');
+    this.graph.rect = this.graph.stage.append('rect');
+    this.graph.global = this.graph.stage.append('g');
+    this.graph.defs = this.graph.global.append('defs');
+
+    // Create reference marker
+    this.graph.defs
+      .append('marker')
+        .attr('id', 'marker')
+        .attr('class', 'marker')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 0)
+        .attr('refY', 0)
+        .attr('markerWidth', 10)
+        .attr('markerHeight', 10)
+        .attr('orient', 'auto')
+        .attr('markerUnits', 'userSpaceOnUse')
+      .append('path')
+        .attr('d', 'M0,-5L10,0L0,5');
+
+    this.initPanning();
+    this.initClickcage();
     this.updateTradegraph();
   },
   watch: {
     graphdata() {
       this.updateTradegraph();
+    },
+    showContext() {
+      if (!this.showContext) {
+        this.contextLeft = -10000;
+      }
     },
   },
   methods: {
@@ -47,8 +102,7 @@ export default {
       this.graph.firmNodes = this.stratifyData(this.graphdata.firms);
       this.graph.consumerNodes = this.stratifyData(this.graphdata.consumers);
 
-      // clear and updates global nodeCoordinates
-      this.graph.nodeCoordinates = {};
+      // Clear and update global nodeCoordinates
       this.calculateNodeCoordinates(this.graph.firmNodes);
       this.calculateNodeCoordinates(this.graph.consumerNodes);
 
@@ -56,19 +110,156 @@ export default {
 
       this.drawNodes(this.graph.firmNodes);
       this.drawNodes(this.graph.consumerNodes);
+
+      this.initDragging();
     },
     addClickToNodes() {
-      d3.selectAll('.node').on('click', el => this.$emit('nodeclicked', el.data.id));
-      d3.selectAll('.childrenselection').on('click', el => this.$emit('showchildren', el.data.id));
-      d3.selectAll('.infoselection').on('click', el => this.$emit('showinfo', el.data.id));
+      d3.selectAll('.node').on('click', (el) => {
+        const mouseX = d3.event.pageX;
+        const mouseY = d3.event.pageY;
+
+        // Emit click to parent to stop simulation
+        this.$emit('nodeclicked', el.data.id);
+
+        if (this.selectednode !== el.data.id) {
+          // Show contextmenu
+          this.contextLeft = mouseX;
+          this.contextTop = mouseY;
+          this.showContext = true;
+
+          // Update clickcage property
+          this.graph.rect.contextExists = true;
+        }
+
+        d3.selectAll('#minichartselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]);
+          },
+        );
+        d3.selectAll('#infoselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY });
+          },
+        );
+        d3.selectAll('#childrenselection').on('click',
+          () => {
+            this.showContext = false;
+            this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY });
+          },
+        );
+      });
+    },
+    initDragging() {
+      const self = this;
+      let thisChildren = null;
+
+      function dragstarted() {
+        d3.select(this)
+          .classed('dragging', true);
+
+        thisChildren = d3.event.subject.children;
+      }
+
+      function dragged() {
+        d3.select(this)
+          .attr('transform', `translate(${d3.event.x}, ${d3.event.y})`);
+
+        // Watch out for the leading letter n in the id in html
+        self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].x = d3.event.x;
+        self.graph.nodeCoordinates[d3.select(this).attr('id').substr(1)].y = d3.event.y;
+
+        self.drawLinks(self.graphdata.edges);
+
+        // update this node and corresponding edge
+        if (d3.event.subject.parent) {
+          // TODO: pack into function and use intitally on nodedraw
+
+          d3.select(this).select('.node__edge').attr('d', () => {
+            const localX = d3.event.x;
+            const localY = d3.event.y;
+            const x = self.graph.nodeCoordinates[d3.event.subject.parent.data.id].x - localX;
+            const y = self.graph.nodeCoordinates[d3.event.subject.parent.data.id].y - localY;
+            const r = d3.event.subject.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+
+            return `M 0 0 L${x - deltaX} ${y - deltaY}`;
+          });
+        }
+
+        // udpate children and corresponding edges
+        if (thisChildren) {
+          thisChildren.forEach((el) => {
+            const x = d3.event.x - self.graph.nodeCoordinates[el.data.id].x;
+            const y = d3.event.y - self.graph.nodeCoordinates[el.data.id].y;
+            const r = d3.event.subject.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+            d3.select(`#n${el.data.id} .node__edge`).attr('d', () => `M 0 0 L${x - deltaX} ${y - deltaY}`);
+          });
+        }
+      }
+
+      function dragended() {
+        d3.select(this)
+          .classed('dragging', false);
+
+        self.graph.nodeCoordinates[d3.event.subject.data.id].dragged = true;
+      }
+
+      const drag = d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended);
+
+      this.graph.global.selectAll('.node')
+        .call(drag);
+    },
+    initPanning() {
+      this.graph.rect
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'transparent')
+        .call(d3.zoom()
+          .scaleExtent([0.5, 4])
+          .on('zoom', () => {
+            this.graph.global.attr('transform', d3.event.transform);
+          }),
+        );
+    },
+    initClickcage() {
+      // Use the panning rectangle as a clickcage
+      this.graph.rect
+        .attr('class', 'clickcage');
+
+      this.graph.rect.contextExists = false;
+
+      this.graph.rect.on('click', () => {
+        if (this.graph.rect.contextExists) {
+          // Hide contextMenu
+          this.showContext = false;
+          this.$emit('hidecontextmenus');
+
+          // Update clickcage property
+          this.graph.rect.contextExists = false;
+
+          // Emit empty nodeclided to unselect node
+          this.$emit('nodeclicked');
+        } else {
+          // Emit empty nodeclicked to unselect node
+          this.$emit('nodeclicked');
+        }
+      });
     },
     stratifyData(nodeData) {
-      // stratify data
+      // Prepare data for hierarchical layout
       const treeData = d3.stratify()
         .id(d => d.label)
         .parentId(d => d.parent)(nodeData);
 
-      // get nodes in hierarchical structure
+      // Get nodes in hierarchical structure
       return d3.hierarchy(treeData, d => d.children);
     },
     calculateNodeCoordinates(nodeData) {
@@ -78,7 +269,7 @@ export default {
       let horizontalDistance;
       let accumulatedLayerGap = -this.graph.INTRA_LAYER_GAP;
 
-      // check what tree we are updating and
+      // Check what tree we are updating and
       // set corresponding offset and horizontal distance
       if (nodeData.data.id === 'firms') {
         rootOffset = this.graph.firmsTreeOffset;
@@ -90,69 +281,69 @@ export default {
 
       nodeData.descendants()
         .forEach((d, i) => {
-          // set x coordinate
+          let x;
+
+          // Set x coordinate
           if (d.depth === previousDepth && i !== 0) {
             layerIterator += 1;
-            d.data.x = rootOffset[0] + (layerIterator * horizontalDistance);
+            x = rootOffset[0] + (layerIterator * horizontalDistance);
           } else {
-            d.data.x = rootOffset[0];
+            x = rootOffset[0];
             layerIterator = 0;
             accumulatedLayerGap += 15;
           }
-          // set y coordinate
-          d.data.y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
+          // Set y coordinate
+          const y = (this.graph.INTER_LAYER_GAP * i) + accumulatedLayerGap + rootOffset[1];
 
-          // update previousDepth
+          // Save type for coloring minicharts based on it
+          d.data.type = nodeData.data.id;
+
+          // Update previousDepth
           previousDepth = d.depth;
 
-          // update nodeCoordinates for later use
-          // in drawLinks function
-          this.graph
-            .nodeCoordinates[d.data.id] = { x: d.data.x, y: d.data.y, size: d.data.data.size };
+          if (!(d.data.id in this.graph.nodeCoordinates)
+              || !this.graph.nodeCoordinates[d.data.id].dragged) {
+            // Update nodeCoordinates for later use in drawLinks function
+            this.graph
+              .nodeCoordinates[d.data.id] = { x, y, size: d.data.data.size, dragged: false };
+          }
         });
     },
     drawNodes(nodeData) {
       const self = this;
       const type = (nodeData.data.id === 'firms' ? 'firms' : 'consumers');
 
-      // d3.selectAll(`.node--${nodeData.data.id}`).remove();
-
-      // create joins
-      const nodesJoin = this.graph.stage.selectAll(`.node--${nodeData.data.id}`)
+      // Create joins
+      const nodesJoin = this.graph.global.selectAll(`.node--${nodeData.data.id}`)
         .data(nodeData.descendants());
 
-      // exit join
+      // Exit join
       nodesJoin.exit().remove();
 
-      // add group elements in enter join
+      // Add group elements in enter join
       const nodesEnterJoin = nodesJoin.enter();
 
       const group = nodesEnterJoin
         .append('g')
-        .attr('id', d => d.data.id)
         .attr('class', d => `node node--${nodeData.data.id} ${(d.children ? 'branch' : 'leaf')}`);
 
-      // append node edges
       group
         .append('path')
-        .attr('class', 'node__edge')
-        .attr('d', (d, i) => {
-          if (i > 0) {
-            return `M 0 0 L${d.parent.data.x - d.data.x} ${d.parent.data.y - d.data.y}`;
-          }
-          return '';
-        });
+        .attr('class', 'node__edge');
 
-      // append node to node group
-      const color = d3.scaleOrdinal(d3.schemeCategory10);
+      // Append node to node group
       group
         .append('circle')
-        .attr('class', 'node__circle')
+        .attr('class', (d, i) => {
+          if (i === 0) {
+            return 'node__circle c0';
+          }
+          return `node__circle c${d.depth}`;
+        })
         .attr('cx', 0)
-        .attr('cy', 0)
-        .attr('fill', (d, i) => color(i));
+        .attr('cy', 0);
 
-      // append labels to node group
+      // Append labels to node group
       group
         .append('text')
         .attr('class', 'node__text')
@@ -163,36 +354,28 @@ export default {
           return 'end';
         });
 
-      // TODO: add proper UI element to select children
+      // Append circle to animate on click
       group
         .append('circle')
-        .attr('class', 'childrenselection')
-        .attr('r', '4px')
-        .attr('cx', '-20px')
-        .attr('cy', '-10px');
+        .attr('class', 'node__circle--active')
+        .attr('r', 0)
+        .attr('cx', 0)
+        .attr('cy', 0);
 
-      // TODO: add proper UI element to select info
-      group
-        .append('circle')
-        .attr('class', 'infoselection')
-        .attr('r', '4px')
-        .attr('cx', '-20px')
-        .attr('cy', '10px');
-
-
-      // merge enter join with update
+      // Merge enter join with update &
       // transform nodes to calculated position
       const groupJoin = nodesJoin
         .merge(group)
-        // classed accepts true or false as second argument
-        .classed('node--out', d => this.selectednode && d.data.id !== this.selectednode)
+        .raise()
+        .attr('id', d => `n${d.data.id}`)
+        .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
-            ${self.graph.nodeCoordinates[d.data.id].y})`);
+          ${self.graph.nodeCoordinates[d.data.id].y})`);
 
       groupJoin
         .select('.node__circle')
         .transition()
-        .attr('r', d => self.graph.NODE_RADIUS_BASE * d.data.data.size);
+        .attr('r', d => self.graph.NODE_RADIUS_FACTOR * d.data.data.size);
 
       groupJoin
         .select('.node__text')
@@ -204,19 +387,36 @@ export default {
             offsetCoefficient = 0.5;
             offsetConstant = 0.5;
           }
-          return ((self.graph.NODE_RADIUS_BASE * d.data.data.size) * offsetCoefficient)
+          return ((self.graph.NODE_RADIUS_FACTOR * d.data.data.size) * offsetCoefficient)
             + offsetConstant;
         })
-        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_BASE * d.data.data.size)))
+        .attr('dy', d => -5 + (-1 * (self.graph.NODE_RADIUS_FACTOR * d.data.data.size)))
         .text(d => d.data.id);
 
-      // add click events to nodes
+      groupJoin
+        .select('.node__edge')
+        .attr('d', (d, i) => {
+          if (i > 0) {
+            const localX = this.graph.nodeCoordinates[d.data.id].x;
+            const localY = this.graph.nodeCoordinates[d.data.id].y;
+            const x = this.graph.nodeCoordinates[d.parent.data.id].x - localX;
+            const y = this.graph.nodeCoordinates[d.parent.data.id].y - localY;
+            const r = d.parent.data.data.size * self.graph.NODE_RADIUS_FACTOR;
+            const deltaX = r * x / Math.sqrt((y ** 2) + (x ** 2));
+            const deltaY = r * y / Math.sqrt((y ** 2) + (x ** 2));
+
+            return `M 0 0 L${x - deltaX} ${y - deltaY}`;
+          }
+          return '';
+        });
+
+      // Add click events to nodes
       this.addClickToNodes();
     },
     drawLinks(links) {
-      // remove all groups and defs
+      // Remove all (groups) and (links in defs)
       d3.selectAll('.links__wrapper').remove();
-      d3.selectAll('defs').remove();
+      d3.select('#defs-links').remove();
 
       if (links.length > 0) {
         let currentSource = links[0].source;
@@ -233,15 +433,18 @@ export default {
         const ySource = 0;
         let localEdgeCount = 0;
 
-        // create initial group to append links to
-        let group = this.graph.stage.append('g')
+        // Create group in defs to define links
+        const defsGroup = this.graph.defs.append('g').attr('id', 'defs-links');
+
+        // Create initial group to append links to
+        let group = this.graph.global.append('g')
           .attr('class', 'links__wrapper');
 
-        // create the enter join
+        // Create the enter join
         const linksJoin = group.selectAll('.link')
           .data(links);
 
-        // exit join
+        // Exit join
         linksJoin.exit().remove();
 
         const linksEnterJoin = linksJoin
@@ -257,7 +460,7 @@ export default {
               // create new svg group
               // note: first group has already been created
               if (i !== 0) {
-                group = this.graph.stage.append('g').attr('class', 'links__wrapper');
+                group = this.graph.global.append('g').attr('class', 'links__wrapper');
               }
 
               globalSourceX = this.graph.nodeCoordinates[d.source].x;
@@ -284,10 +487,10 @@ export default {
               currentDestination = d.destination;
             }
 
-            const radiusSource = this.graph.NODE_RADIUS_BASE
+            const radiusSource = this.graph.NODE_RADIUS_FACTOR
               * this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
-            const radiusDestination = this.graph.NODE_RADIUS_BASE
-              * this.graph.nodeCoordinates[d.destination].size || this.graph.NODE_RADIUS;
+            const radiusDestination = this.graph.NODE_RADIUS_FACTOR
+              * this.graph.nodeCoordinates[d.destination].size || this.graph.DEFAULT_NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
@@ -302,29 +505,50 @@ export default {
             const cy0 = j * y0;
             const cy1 = j * y1;
 
-            // append the bezier curve and marker
-            group
+            // Append the bezier curve and marker
+            defsGroup
               .append('path')
-              .attr('class', 'link')
-              .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`)
-              .attr('stroke-width', `${d.weight}px`)
-              .attr('marker-end', () => 'url(#marker)');
-          });
+              .attr('id', `${d.source}-${d.destination}-${i}`)
+              .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`);
 
-        // create reference marker
-        this.graph.stage.append('defs')
-          .append('marker')
-            .attr('id', 'marker')
-            .attr('class', 'marker')
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 0)
-            .attr('refY', 0)
-            .attr('markerWidth', 10)
-            .attr('markerHeight', 10)
-            .attr('orient', 'auto')
-            .attr('markerUnits', 'userSpaceOnUse')
-          .append('path')
-            .attr('d', 'M0,-5L10,0L0,5');
+            // Only sane version is to add an inverse path for
+            // label positioning
+            if (deltaX < 0) {
+              defsGroup
+                .append('path')
+                .attr('id', `${d.source}-${d.destination}-${i}-inverse`)
+                .attr('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx0} ${cy0}, ${x0} ${y0}`);
+            }
+
+            group
+              .append('use')
+              .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+              .attr('class', 'link')
+              .attr('stroke-width', `${d.weight * 1.5}px`)
+              .attr('marker-end', () => 'url(#marker)');
+
+            // additional group to set transform-origin for text rotation
+            // when deltaX < 0 (links move from right to left)
+            const textGroup = group
+              .append('g')
+              .attr('class', 'link__label');
+
+            const text = textGroup
+              .append('text')
+              .attr('text-anchor', 'middle');
+
+            text
+              .append('textPath')
+                // .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+                .attr('xlink:href', () => {
+                  if (deltaX < 0) {
+                    return `#${d.source}-${d.destination}-${i}-inverse`;
+                  }
+                  return `#${d.source}-${d.destination}-${i}`;
+                })
+                .text(d.label)
+                .attr('startOffset', '50%');
+          });
       }
     },
   },
@@ -332,68 +556,132 @@ export default {
 </script>
 
 <style lang="sass">
-$blue:                                     #33ccff
-$coral:                                    #ff6557
-$green:                                    #97e582
-$grey:                                     #676767
-$light-grey:                        rgba(0,0,0,.3)
+@import '../assets/sass/vars'
+@import '../assets/sass/mixins'
 
-body
-  margin: 20px
-  background-color: #f0f0f0
+$tradegraph-coral:                                    $coral
+$grey:                                               #676767
+$light-grey:                                  rgba(0,0,0,.3)
 
-h1
-  font: bold 26px/1 Helvetica, Arial, sans-serif
-  text-transform: uppercase
+$tradegraph-light-black:                        $light-black
+$tradegraph-extra-light-black:            $extra-light-black
+
+$tradegraph-blue:                                      $blue
+$tradegraph-light-blue:                          $light-blue
+$tradegraph-extra-light-blue:              $extra-light-blue
+$tradegraph-dark-blue:                            $dark-blue
+$tradegraph-extra-dark-blue:                $extra-dark-blue
+
+$tradegraph-green:                                    $green
+$tradegraph-light-green:                        $light-green
+$tradegraph-extra-light-green:            $extra-light-green
+$tradegraph-dark-green:                          $dark-green
+$tradegraph-extra-dark-green:              $extra-dark-green
 
 .tradegraph
+  position: absolute
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
   width: 100%
-  height: 1000px
-  background-color: white
+  height: 100%
 
 .node
 
+  &.dragging
+    .node__circle
+      @for $i from 0 through 4
+        &.c#{$i}
+          opacity: 1
+          fill: $tradegraph-coral
+
+  &.active
+    .node__circle
+      stroke-width: 4px
+      r: 30px
+      @for $i from 0 through 4
+        &.c#{$i}
+          fill: transparent
+
+      &--active
+        r: 15px
+
   &__edge
     stroke-width: 1px
-    opacity: .3
+    stroke: $tradegraph-extra-light-black
+    opacity: .2
 
   &__text
-    font: bold 14px/1 Helvetica, Arial sans-serif
+    font: bold 12px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
-    fill: $grey
+    fill: $tradegraph-light-black
+    cursor: pointer
+
+  &__action
+    font: normal 12px/1 Helvetica, Arial, sans-serif
+    text-transform: uppercase
+    text-decoration: underline
+    fill: $tradegraph-blue
+
+  &__circle
+    position: relative
+    transition: all .2s ease-out
+    cursor: pointer
+    stroke-width: 0
+    &:hover
+      opacity: .8
+
+    &--active
+      transition: all .2s
+      pointer-events: none
 
   &--firms
     .node
       &__circle
-        // fill: $coral
-      &__edge
-        stroke: $coral
+        fill: $tradegraph-green
+        stroke: $tradegraph-coral
+        &.c0
+          fill: $tradegraph-dark-green
+        &.c1
+          fill: $tradegraph-green
+        &.c2
+          fill: $tradegraph-light-green
+        &--active
+          fill: $tradegraph-coral
 
   &--consumers
     .node
       &__circle
-        fill: $blue
-      &__edge
-        stroke: $blue
+        fill: $tradegraph-blue
+        stroke: $tradegraph-coral
+        &.c0
+          fill: $tradegraph-dark-blue
+        &.c1
+          fill: $tradegraph-blue
+        &.c2
+          fill: $tradegraph-light-blue
+        &--active
+          fill: $tradegraph-coral
 
   &--out
     fill-opacity: .1
     stroke-opacity: .1
 
   &.branch
-    cursor: pointer
-    .node
-      &__circle
-        stroke-width: 2px
-    &.node
-      &--firms
-        .node
-          &__circle
-            stroke: darken($coral, 10%)
-      &--consumers
-        .node
-          &__circle
-            stroke: darken($blue, 15%)
+    // cursor: pointer
+    // .node
+    //   &__circle
+    //     stroke-width: 2px
+    // &.node
+    //   &--firms
+    //     .node
+    //       &__circle
+    //         stroke: darken($coral, 10%)
+    //   &--consumers
+    //     .node
+    //       &__circle
+    //         stroke: darken($blue, 15%)
 
 .link
   fill: none
@@ -401,7 +689,7 @@ h1
   // animation: pulsate 3s
   animation-iteration-count: infinite
   &:hover
-    stroke: $green
+    stroke: $tradegraph-green
     cursor: pointer
   &:nth-child(1)
     animation-delay: 0.2s
@@ -436,9 +724,33 @@ h1
   &:nth-child(16)
     animation-delay: 1.9s
 
+  &__label
+    transform-origin: center center
+    transition: transform 1s 1s
+    font-size: 12px
+    fill: $tradegraph-light-black
+    &.rot
+      transform: rotate(180deg)
+
 .marker
   fill: $light-grey
   stroke-width: 2px
+
+.contextmenu
+
+  &__list
+    padding: 0
+    margin: 0
+    list-style-type: none
+
+  &__item
+    display: block
+    + .contextmenu__item
+      margin-top: 5px
+
+  &__btn
+    display: block
+    width: 100%
 
 @keyframes pulsate
   0%
