@@ -54,13 +54,7 @@ public abstract class WebApiMethod {
 
 	public Response execute(IHTTPSession session, Parameters params) throws IOException {
 		JsonData answer = getJsonAnswer(params);
-		return serveJson(session, answer);
-	}
-
-	protected Response serveJson(IHTTPSession session, JsonData json) {
-		Response res = Response.newFixedLengthResponse(Status.OK, "application/json", json.getJson());
-		res.addHeader("Access-Control-Allow-Origin", "*");
-		return res;
+		return Response.newFixedLengthResponse(Status.OK, "application/json", answer.getJson());
 	}
 
 	protected JsonData getJsonAnswer(Parameters params) throws IOException {

@@ -61,6 +61,7 @@ public class FileServer extends NanoHTTPD {
 				throw new java.lang.RuntimeException(e);
 			}
 		} else {
+			System.out.println(child.getAbsolutePath() + " not found, serving hello world page");
 			String msg = "<html><body><h1>Hello server</h1>\n";
 			Map<String, String> parms = session.getParms();
 			if (parms.get("username") == null) {

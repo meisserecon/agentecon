@@ -56,6 +56,12 @@ public class SimulationServer extends FileServer {
 		Method method = session.getMethod();
 		assert method == Method.GET : "Received a " + method;
 		String uri = session.getUri();
+		Response res = createResponse(session, uri);
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		return res;
+	}
+
+	private Response createResponse(IHTTPSession session, String uri) {
 		StringTokenizer tok = new StringTokenizer(uri, "\\/");
 		if (tok.hasMoreTokens()) {
 			try {
