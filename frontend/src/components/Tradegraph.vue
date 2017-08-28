@@ -114,43 +114,51 @@ export default {
       this.initDragging();
     },
     addClickToNodes() {
-      d3.selectAll('.node').on('click', (el) => {
-        const mouseX = d3.event.pageX;
-        const mouseY = d3.event.pageY;
+      d3.selectAll('.node')
+        .on('mousedown', () => this.$emit('simstopped'))
+        .on('click', (el) => {
+          const mouseX = d3.event.pageX;
+          const mouseY = d3.event.pageY;
 
-        // Emit click to parent to stop simulation
-        this.$emit('nodeclicked', el.data.id);
+          // Emit click to parent to stop simulation
+          this.$emit('nodeclicked', el.data.id);
 
-        if (this.selectednode !== el.data.id) {
-          // Show contextmenu
-          this.contextLeft = mouseX;
-          this.contextTop = mouseY;
-          this.showContext = true;
+          if (this.selectednode !== el.data.id) {
+            // Show contextmenu
+            this.contextLeft = mouseX;
+            this.contextTop = mouseY;
+            this.showContext = true;
 
-          // Update clickcage property
-          this.graph.rect.contextExists = true;
-        }
-
-        d3.selectAll('#minichartselection').on('click',
-          () => {
+            // Update clickcage property
+            this.graph.rect.contextExists = true;
+          } else {
+            // hide contextmenu
             this.showContext = false;
-            this.$emit('nodeclicked');
-            this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]);
-          },
-        );
-        d3.selectAll('#infoselection').on('click',
-          () => {
-            this.showContext = false;
-            this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY });
-          },
-        );
-        d3.selectAll('#childrenselection').on('click',
-          () => {
-            this.showContext = false;
-            this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY });
-          },
-        );
-      });
+
+            // Update clickcage property
+            this.graph.rect.contextExists = false;
+          }
+
+          d3.selectAll('#minichartselection').on('click',
+            () => {
+              this.showContext = false;
+              this.$emit('nodeclicked');
+              this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]);
+            },
+          );
+          d3.selectAll('#infoselection').on('click',
+            () => {
+              this.showContext = false;
+              this.$emit('showinfo', el.data.id, { x: mouseX, y: mouseY });
+            },
+          );
+          d3.selectAll('#childrenselection').on('click',
+            () => {
+              this.showContext = false;
+              this.$emit('showchildren', el.data.id, { x: mouseX, y: mouseY });
+            },
+          );
+        });
     },
     initDragging() {
       const self = this;

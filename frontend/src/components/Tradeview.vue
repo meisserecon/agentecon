@@ -25,7 +25,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart" @showinfo="handleShowInfo" @showchildren="handleShowChildSelection" @hidecontextmenus="hideContextMenus"></tradegraph>
+        <tradegraph class="tradeview__tradechart" :graphdata="tradeGraphData" :selectednode="selectedNode" @simstopped="handleSimStopped" @nodeclicked="handleNodeClicked" @addminichart="handleAddMinichart" @showinfo="handleShowInfo" @showchildren="handleShowChildSelection" @hidecontextmenus="hideContextMenus"></tradegraph>
       </div>
       <div class="tradeview__side">
         <div class="tradeview__minicharts">
@@ -147,13 +147,15 @@ export default {
     showNodeInfo() {
       if (!this.showNodeInfo) {
         this.infoLeft = -10000;
-        this.handleNodeClicked(null);
+        this.selectedNode = false;
+        this.goToNewURL();
       }
     },
     showChildSelection() {
       if (!this.showChildSelection) {
         this.childSelectionLeft = -10000;
-        this.handleNodeClicked(null);
+        this.selectedNode = false;
+        this.goToNewURL();
       }
     },
   },
@@ -208,6 +210,8 @@ export default {
       this.playing = false;
       if (this.selectedNode && this.selectedNode === node) {
         this.selectedNode = null;
+        this.showchildren = false;
+        this.showinfo = false;
       } else {
         this.selectedNode = node;
       }
@@ -241,6 +245,9 @@ export default {
     },
     handleSetActiveNodes(nodes) {
       this.simAgents = nodes;
+    },
+    handleSimStopped() {
+      this.playing = false;
     },
     hideContextMenus() {
       this.showNodeInfo = false;
