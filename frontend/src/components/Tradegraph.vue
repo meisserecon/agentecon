@@ -30,6 +30,7 @@ export default {
         // these colors should stay in sync with the ones in SASS
         consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
         firms: ['#0a7138', '#13ce66', '#86f4b7'],
+        links: '#475669',
       },
       graph: {
         stage: null,
@@ -159,6 +160,11 @@ export default {
             },
           );
         });
+    },
+    addClickToLinks() {
+      d3.selectAll('.links__wrapper').on('click', (d, i) => {
+        this.$emit('addminichart', `${this.graphdata.edges[i].source},${this.graphdata.edges[i].destination},${this.graphdata.edges[i].type}`, this.colors.links);
+      });
     },
     initDragging() {
       const self = this;
@@ -559,6 +565,8 @@ export default {
                 .attr('startOffset', '50%');
           });
       }
+
+      this.addClickToLinks();
     },
   },
 };
@@ -572,6 +580,7 @@ $tradegraph-coral:                                    $coral
 $grey:                                               #676767
 $light-grey:                                  rgba(0,0,0,.3)
 
+$tradegraph-black:                                    $black
 $tradegraph-light-black:                        $light-black
 $tradegraph-extra-light-black:            $extra-light-black
 
@@ -625,6 +634,7 @@ $tradegraph-extra-dark-green:              $extra-dark-green
     font: bold 12px/1 Helvetica, Arial, sans-serif
     text-transform: uppercase
     fill: $tradegraph-light-black
+    transition: all .2s
     cursor: pointer
 
   &__action
@@ -692,14 +702,20 @@ $tradegraph-extra-dark-green:              $extra-dark-green
     //       &__circle
     //         stroke: darken($blue, 15%)
 
+.links
+  &__wrapper
+    cursor: pointer
+    &:hover
+      text
+        fill: $tradegraph-black
+      .link
+        stroke: $tradegraph-green
+
 .link
   fill: none
   stroke: $light-grey
   // animation: pulsate 3s
   animation-iteration-count: infinite
-  &:hover
-    stroke: $tradegraph-green
-    cursor: pointer
   &:nth-child(1)
     animation-delay: 0.2s
   &:nth-child(2)
@@ -743,7 +759,6 @@ $tradegraph-extra-dark-green:              $extra-dark-green
 
 .marker
   fill: $light-grey
-  stroke-width: 2px
 
 .contextmenu
 
