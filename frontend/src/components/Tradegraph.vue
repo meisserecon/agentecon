@@ -27,37 +27,41 @@ export default {
       contextLeft: -10000,
       contextTop: 0,
       colors: {
-        // these colors should stay in sync with the ones in SASS
+        // these colors should stay in sync with the ones in
+        // ./assets/sass/_vars.sass
         consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
         firms: ['#0a7138', '#13ce66', '#86f4b7'],
       },
       graph: {
+        // Offset of firms root node from svg origo
+        FIRMS_TREE_OFFSET: [600, 400],
+        // Offset of consumers root node from svg origo
+        CONSUMERS_TREE_OFFSET: [300, 400],
+        DEFAULT_NODE_RADIUS: 50,
+        // Multiplies with node weight from data
+        NODE_RADIUS_FACTOR: 3.5,
+        // Offset of links from nodes
+        RADIUS_OFFSET: 10,
+        INTER_LAYER_GAP: 50,
+        INTRA_LAYER_GAP: 10,
+        HORIZONTAL_GAP: 50,
         stage: null,
         stageDOM: null,
-        // contains all elements except the panning rectangle,
+        // Object that stores coordinates of all nodes
+        // used to draw links between nodes
+        nodeCoordinates: {},
+        // Contains all elements except the panning rectangle,
         // prevents jumping of stage when panning
         global: null,
-        // panning rectangle
+        // Panning rectangle used for zooming and panning
         panningRect: null,
         defs: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [600, 400],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [300, 400],
         consumersTreeDirection: -1,
-        // Object that stores coordinates of all nodes
-        // used to draw links between nodes
-        nodeCoordinates: {},
-        DEFAULT_NODE_RADIUS: 50,
-        // Multiplies with node weight from data
-        // TODO: remove and use weight only => reduces complexity
-        NODE_RADIUS_FACTOR: 3.5,
-        INTER_LAYER_GAP: 50,
-        INTRA_LAYER_GAP: 10,
-        HORIZONTAL_GAP: 50,
       },
     };
   },
@@ -272,10 +276,10 @@ export default {
       // Check what tree we are updating and
       // set corresponding offset and horizontal distance
       if (nodeData.data.id === 'firms') {
-        rootOffset = this.graph.firmsTreeOffset;
+        rootOffset = this.graph.FIRMS_TREE_OFFSET;
         horizontalDistance = this.graph.firmsTreeDirection * this.graph.HORIZONTAL_GAP;
       } else if (nodeData.data.id === 'consumers') {
-        rootOffset = this.graph.consumersTreeOffset;
+        rootOffset = this.graph.CONSUMERS_TREE_OFFSET;
         horizontalDistance = this.graph.consumersTreeDirection * this.graph.HORIZONTAL_GAP;
       }
 
@@ -494,11 +498,17 @@ export default {
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
-            const x0 = xSource + (radiusSource * Math.cos((localEdgeCount + 1) * 0.3));
-            const y0 = ySource - (radiusSource * Math.sin((localEdgeCount + 1) * 0.3));
+            const x0 = xSource
+              + ((radiusSource + this.graph.RADIUS_OFFSET)
+              * Math.cos((localEdgeCount + 1) * 0.3));
+            const y0 = ySource
+              - ((radiusSource + this.graph.RADIUS_OFFSET)
+              * Math.sin((localEdgeCount + 1) * 0.3));
             let x1 = deltaXLocal;
-            x1 -= ((radiusDestination + 8) * Math.cos((localEdgeCount + 1) * 0.3));
-            const y1 = -(radiusDestination + 8) * Math.sin((localEdgeCount + 1) * 0.3);
+            x1 -= ((radiusDestination + this.graph.RADIUS_OFFSET + 8)
+              * Math.cos((localEdgeCount + 1) * 0.3));
+            const y1 = -(radiusDestination + this.graph.RADIUS_OFFSET + 8)
+              * Math.sin((localEdgeCount + 1) * 0.3);
 
             const cx0 = j * x0;
             const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
