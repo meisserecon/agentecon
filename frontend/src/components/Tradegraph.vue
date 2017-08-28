@@ -383,7 +383,11 @@ export default {
         .attr('id', d => `n${d.data.id}`)
         .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
-          ${self.graph.nodeCoordinates[d.data.id].y})`);
+          ${self.graph.nodeCoordinates[d.data.id].y})`)
+        .each((d) => {
+          // Update size in nodeCoordinates
+          self.graph.nodeCoordinates[d.data.id].size = d.data.data.size;
+        });
 
       groupJoin
         .select('.node__circle')
@@ -501,9 +505,11 @@ export default {
             }
 
             const radiusSource = this.graph.NODE_RADIUS_FACTOR
-              * this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
+              * this.graph.nodeCoordinates[currentSource].size
+              || this.graph.NODE_RADIUS;
             const radiusDestination = this.graph.NODE_RADIUS_FACTOR
-              * this.graph.nodeCoordinates[d.destination].size || this.graph.DEFAULT_NODE_RADIUS;
+              * this.graph.nodeCoordinates[currentDestination].size
+              || this.graph.DEFAULT_NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
@@ -527,7 +533,7 @@ export default {
             // Append the bezier curve and marker
             defsGroup
               .append('path')
-              .attr('id', `${d.source}-${d.destination}-${i}`)
+              .attr('id', `${currentSource}-${currentDestination}-${i}`)
               .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`);
 
             // Only sane version is to add an inverse path for
@@ -535,13 +541,13 @@ export default {
             if (deltaX < 0) {
               defsGroup
                 .append('path')
-                .attr('id', `${d.source}-${d.destination}-${i}-inverse`)
+                .attr('id', `${currentSource}-${currentDestination}-${i}-inverse`)
                 .attr('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx0} ${cy0}, ${x0} ${y0}`);
             }
 
             group
               .append('use')
-              .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+              .attr('xlink:href', `#${currentSource}-${currentDestination}-${i}`)
               .attr('class', 'link')
               .attr('stroke-width', `${d.weight * 1.5}px`)
               .attr('marker-end', () => 'url(#marker)');
@@ -558,15 +564,15 @@ export default {
 
             text
               .append('textPath')
-                // .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
-                .attr('xlink:href', () => {
-                  if (deltaX < 0) {
-                    return `#${d.source}-${d.destination}-${i}-inverse`;
-                  }
-                  return `#${d.source}-${d.destination}-${i}`;
-                })
-                .text(d.label)
-                .attr('startOffset', '50%');
+              // .attr('xlink:href', `#${currentSource}-${currentDestination}-${i}`)
+              .attr('xlink:href', () => {
+                if (deltaX < 0) {
+                  return `#${currentSource}-${currentDestination}-${i}-inverse`;
+                }
+                return `#${currentSource}-${currentDestination}-${i}`;
+              })
+              .text(d.label)
+              .attr('startOffset', '50%');
           });
       }
     },
