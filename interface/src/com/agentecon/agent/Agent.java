@@ -18,7 +18,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	private final String type;
 	private final Endowment end;
 	private Inventory inv;
-	private boolean alive;
+	private int age;
 
 	private AgentRef ref;
 
@@ -27,7 +27,7 @@ public abstract class Agent implements IAgent, Cloneable {
 		this.inv = end.getInitialInventory();
 		this.number = agentRegistry.createUniqueAgentId();
 		this.end = end;
-		this.alive = true;
+		this.age = 0;
 		this.ref = new AgentRef(this);
 		assert type != null;
 	}
@@ -75,7 +75,15 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public boolean isAlive() {
-		return alive;
+		return age >= 0;
+	}
+	
+	public void age() {
+		this.age++;
+	}
+	
+	public int getAge(){
+		return age;
 	}
 
 	public String getName() {
@@ -96,8 +104,8 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public Inventory dispose() {
-		assert alive;
-		alive = false;
+		assert isAlive();
+		age = -1;
 		Inventory old = this.inv;
 		this.inv = new Inventory(old.getMoney().getGood());
 		return old;
@@ -121,7 +129,7 @@ public abstract class Agent implements IAgent, Cloneable {
 	}
 
 	public final void collectDailyEndowment() {
-		assert alive;
+		assert isAlive();
 		inv.deprecate();
 		inv.receive(end.getDaily());
 	}

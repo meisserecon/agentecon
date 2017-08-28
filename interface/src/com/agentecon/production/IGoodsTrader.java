@@ -13,5 +13,7 @@ import com.agentecon.market.IPriceMakerMarket;
 public interface IGoodsTrader {
 
 	public void offer(IPriceMakerMarket market);
+
+	public void adaptPrices();
 	
 }

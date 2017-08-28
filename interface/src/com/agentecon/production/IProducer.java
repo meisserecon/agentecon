@@ -11,8 +11,6 @@ public interface IProducer extends IFirm, IGoodsTrader {
 	
 	public void addProducerMonitor(IProducerListener listener);
 
-	public void adaptPrices();
-	
 	public void produce();
 
 }

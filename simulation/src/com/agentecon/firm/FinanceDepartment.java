@@ -21,11 +21,8 @@ import com.agentecon.goods.Quantity;
 import com.agentecon.market.IDiscountRate;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceTakerMarket;
-import com.agentecon.production.PriceUnknownException;
 
 public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements IFirmDecisions {
-
-	private static final double DELTA = 0.1;
 
 	private CobbDouglasProduction prodFun;
 	private double prevInvestment = 0.0;
@@ -40,64 +37,64 @@ public class FinanceDepartment extends ExpectedRevenueBasedStrategy implements I
 	public void invest(IAgent agent, Inventory inv, IFinancials financials, IPriceTakerMarket market) {
 		double revenue = financials.getExpectedRevenue();
 		double investments = 0.0;
-		double timeValueFactor = 1 / discountRate.getCurrentDiscountRate();
 		for (Weight input : prodFun.getInputWeigths()) {
 			if (input.capital) {
 				Good inputGood = input.good;
-				investments += invest(agent, inv.getMoney(), inv.getStock(inputGood), revenue * input.weight * timeValueFactor, market);
+				investments += invest(agent, inv.getMoney(), inv.getStock(inputGood), revenue * input.weight, market);
 			}
 		}
 		this.prevInvestment = investments;
 	}
 
-	private double invest(IAgent agent, IStock money, IStock input, double targetLandValue, IPriceTakerMarket market) {
-		double invested = considerBuying(agent, money, input, targetLandValue, market);
-		double divested = considerSelling(agent, money, input, targetLandValue, market);
-		return invested - divested;
+	private double invest(IAgent agent, IStock money, IStock input, double targetDailySpending, IPriceTakerMarket market) {
+		if (agent.getAge() > 100) {
+			double invested = considerBuying(agent, money, input, targetDailySpending, market);
+			double divested = considerSelling(agent, money, input, targetDailySpending, market);
+			return invested - divested;
+		} else {
+			return 0.0;
+		}
 	}
 
-	protected double considerBuying(IAgent agent, IStock money, IStock input, double targetLandValue, IPriceTakerMarket market) {
-		double invested = 0.0;
-		IOffer offer = market.getOffer(input.getGood(), true);
-		if (offer != null) {
-			double additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
-			while (additionalLandNeeded > 0.0) {
-				double moneyBefore = money.getAmount();
-				offer.accept(agent, money, input, new Quantity(input.getGood(), additionalLandNeeded / offer.getPrice().getPrice()));
-				invested += moneyBefore - money.getAmount();
-				offer = market.getOffer(input.getGood(), true);
-				additionalLandNeeded = targetLandValue - offer.getPrice().getPrice() * input.getAmount();
+	protected double considerBuying(IAgent agent, IStock money, IStock input, double targetDailySpending, IPriceTakerMarket market) {
+		double actuallyInvested = 0.0;
+		while (money.getAmount() > 100) {
+			IOffer offer = market.getOffer(input.getGood(), false);
+			if (offer != null) {
+				double dailyDiscounting = offer.getPrice().getPrice() * input.getAmount() * discountRate.getCurrentDiscountRate();
+				double targetInvestment = targetDailySpending - dailyDiscounting;
+				if (targetInvestment > actuallyInvested) {
+					double moneyBefore = money.getAmount();
+					offer.accept(agent, money, input, new Quantity(input.getGood(), (targetInvestment - actuallyInvested) / offer.getPrice().getPrice()));
+					actuallyInvested += moneyBefore - money.getAmount();
+				} else {
+					break;
+				}
+			} else {
+				break;
 			}
 		}
-		return invested;
+		return actuallyInvested;
 	}
 
-	protected double considerSelling(IAgent agent, IStock money, IStock input, double targetLandValue, IPriceTakerMarket market) {
-		double divested = 0.0;
-		IOffer offer = market.getOffer(input.getGood(), false);
-		if (offer != null) {
-			double excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
-			while (excessLand > 0.0) {
-				double moneyBefore = money.getAmount();
-				offer.accept(agent, money, input, new Quantity(input.getGood(), excessLand / offer.getPrice().getPrice()));
-				divested += money.getAmount() - moneyBefore;
-				offer = market.getOffer(input.getGood(), false);
-				excessLand = input.getAmount() - targetLandValue / offer.getPrice().getPrice();
+	protected double considerSelling(IAgent agent, IStock money, IStock input, double targetDailySpending, IPriceTakerMarket market) {
+		double actuallyDivested = 0.0;
+		while (true) {
+			IOffer offer = market.getOffer(input.getGood(), true);
+			if (offer != null) {
+				double dailyDiscounting = offer.getPrice().getPrice() * input.getAmount() * discountRate.getCurrentDiscountRate();
+				double targetDivestment = dailyDiscounting - targetDailySpending;
+				if (targetDivestment > actuallyDivested) {
+					double moneyBefore = money.getAmount();
+					offer.accept(agent, money, input, new Quantity(input.getGood(), (targetDivestment - actuallyDivested) / offer.getPrice().getPrice()));
+					actuallyDivested += money.getAmount() - moneyBefore;
+				} else {
+					return actuallyDivested;
+				}
+			} else {
+				return actuallyDivested;
 			}
 		}
-		return divested;
-	}
-
-	/**
-	 * Returns whether owning more land would increase the return on capital
-	 */
-	protected boolean shouldInvest(Quantity laborInput, Quantity availableLand) throws PriceUnknownException {
-		Quantity productionNow = prodFun.calculateOutput(availableLand, laborInput);
-		Quantity moreLand = new Quantity(availableLand.getGood(), availableLand.getAmount() + DELTA);
-		Quantity productionWithMoreLand = prodFun.calculateOutput(moreLand, laborInput);
-		double marginalProductivity = (productionWithMoreLand.getAmount() - productionNow.getAmount()) / DELTA;
-		double overallProductivity = productionNow.getAmount() / availableLand.getAmount();
-		return marginalProductivity > overallProductivity;
 	}
 
 	@Override

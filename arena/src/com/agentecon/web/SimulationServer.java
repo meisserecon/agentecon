@@ -3,11 +3,6 @@ package com.agentecon.web;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.nanohttpd.protocols.http.IHTTPSession;
-import org.nanohttpd.protocols.http.request.Method;
-import org.nanohttpd.protocols.http.response.Response;
-import org.nanohttpd.protocols.http.response.Status;
-
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.web.methods.AgentsMethod;
@@ -22,6 +17,9 @@ import com.agentecon.web.methods.RankingMethod;
 import com.agentecon.web.methods.SizeTypesMethod;
 import com.agentecon.web.methods.TradeGraphMethod;
 import com.agentecon.web.methods.WebApiMethod;
+
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class SimulationServer extends FileServer {
 
@@ -73,7 +71,7 @@ public class SimulationServer extends FileServer {
 					return super.serve(session);
 				}
 			} catch (IOException e) {
-				return Response.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), "Failed to handle call due to " + e.toString());
+				return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), "Failed to handle call due to " + e.toString());
 			}
 		} else {
 			return super.serve(session);

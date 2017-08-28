@@ -15,10 +15,10 @@ import java.net.SocketTimeoutException;
 import com.agentecon.ISimulation;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.classloader.SimulationHandle;
-import com.agentecon.metric.NoInterestingTimeSeriesFoundException;
 import com.agentecon.metric.SimStats;
 import com.agentecon.metric.export.ExcelWriter;
 import com.agentecon.metric.variants.DividendStats;
+import com.agentecon.metric.variants.MarketStats;
 import com.agentecon.metric.variants.ProductionStats;
 import com.agentecon.production.PriceUnknownException;
 import com.agentecon.web.methods.UtilityRanking;
@@ -37,6 +37,8 @@ public class LocalSimulationRunner {
 		UtilityRanking ranking = new UtilityRanking();
 		SimStats prodStats = new ProductionStats();
 		SimStats stats = new DividendStats(sim.getAgents());
+		SimStats prices = new MarketStats(true);
+		sim.addListener(prices);
 		sim.addListener(stats);
 		sim.addListener(ranking);
 		sim.addListener(prodStats);
@@ -44,13 +46,13 @@ public class LocalSimulationRunner {
 		// stats.print(System.out);
 		ranking.print(System.out);
 
-		System.out.println();
-		try {
-			writer.export(stats);
-			System.out.println();
-		} catch (NoInterestingTimeSeriesFoundException e) {
-			System.out.println("Not creating an excel file for " + stats.getName() + " as there is no interesting data");
-		}
+//		System.out.println();
+//		try {
+//			writer.export(prices);
+//			System.out.println();
+//		} catch (NoInterestingTimeSeriesFoundException e) {
+//			System.out.println("Not creating an excel file for " + stats.getName() + " as there is no interesting data");
+//		}
 		sim.getConfig().diagnoseResult(System.out, sim);
 	}
 

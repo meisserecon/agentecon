@@ -21,7 +21,7 @@ public interface IFirm extends IAgent {
 	/**
 	 * Returns true if this firm wants to go bankrupt and distribute all its belongings to its shareholders.
 	 */
-	public boolean wantsBankruptcy(IStatistics stats);
+	public boolean considerBankruptcy(IStatistics stats);
 
 	public double dispose(Inventory inv, Portfolio shares);
 	

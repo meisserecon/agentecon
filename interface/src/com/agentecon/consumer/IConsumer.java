@@ -24,9 +24,7 @@ public interface IConsumer extends IAgent, IMarketParticipant {
 	 * In case of death, the inventory must be returned and the remaining
 	 * portfolio transferred to the 'inheritance' portfolio.
 	 */
-	public Inventory age(Portfolio inheritance);
-	
-	public int getAge();
+	public Inventory considerDeath(Portfolio inheritance);
 	
 	public boolean isRetired();
 	

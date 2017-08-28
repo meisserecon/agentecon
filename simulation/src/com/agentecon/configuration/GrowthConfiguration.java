@@ -9,19 +9,22 @@
 package com.agentecon.configuration;
 
 import java.io.PrintStream;
+import java.util.Collection;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.Endowment;
+import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.Farmer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
-import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
+import com.agentecon.events.SimEvent;
+import com.agentecon.firm.IShareholder;
+import com.agentecon.firm.RealEstateAgent;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -56,23 +59,25 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 				return new Farmer(id, end, util);
 			}
 		});
-		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
-		addEvent(new GrowthEvent(0, 0.001) {
-			
-			@Override
-			protected void execute(ICountry sim) {
-				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
-			}
-		});
-//		addEvent(new SimEvent(0, MARKET_MAKERS) {
-//
+//		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
+//		addEvent(new GrowthEvent(0, 0.001) {
+//			
 //			@Override
-//			public void execute(int day, ICountry sim) {
-//				for (int i = 0; i < getCardinality(); i++) {
-//					sim.add(new MarketMaker(sim, getMoney(), sim.getAgents().getFirms()));
-//				}
+//			protected void execute(ICountry sim) {
+//				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
 //			}
 //		});
+		addEvent(new SimEvent(0, MARKET_MAKERS) {
+
+			@Override
+			public void execute(int day, ICountry sim) {
+				for (int i = 0; i < getCardinality(); i++) {
+					Stock money = new Stock(getMoney(), 1000);
+					Stock land = new Stock(LAND, 100);
+					sim.add(new RealEstateAgent(sim, (IShareholder)sim.getAgents().getRandomConsumer(), money, land));
+				}
+			}
+		});
 	}
 
 	@Override
@@ -107,7 +112,8 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 			System.out.println(manhours + " implies optimal number of firms k=" + optimalNumberOfFirms + ", actual number of firms is " + numberOfFirms);
 			System.out.println(stats.getGoodsMarketStats());
 
-			Inventory inv = new Inventory(getMoney(), new Stock(LAND, 100));
+			Inventory inv = new Inventory(getMoney());
+			double totalLand = getTotalLand(sim.getAgents().getAgents());
 			double optimalCost = prodFun.getCostOfMaximumProfit(inv, stats.getGoodsMarketStats());
 			double optimalManhours = optimalCost / stats.getGoodsMarketStats().getPriceBelief(MAN_HOUR);
 			double fixedCosts = prodFun.getFixedCost(MAN_HOUR) * stats.getGoodsMarketStats().getPriceBelief(MAN_HOUR);
@@ -123,17 +129,33 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 			double perFirm = totalInput / optimalNumberOfFirms;
 			if (perFirm > 0.0) {
 				inv.getStock(MAN_HOUR).add(perFirm);
+				inv.getStock(LAND).add(totalLand / optimalNumberOfFirms);
 				double output = prodFun.produce(inv).getAmount() * optimalNumberOfFirms;
 				System.out.println("With " + optimalNumberOfFirms + " firms the " + totalInput + " manhours could have produced " + output + " instead of "
 						+ stats.getGoodsMarketStats().getStats(POTATOE).getYesterday().getTotWeight());
 			}
 			double altInput = 12;
 			System.out.println("Using only " + altInput + " man-hours would yield a profit of " + getProfits(prodFun, stats, altInput));
+			
+			for (IAgent a: sim.getAgents().getAgents()){
+				IStock land = a.getInventory().getStock(LAND);
+				if (!land.isEmpty()){
+					System.out.println(a + " owns " + land);
+				}
+			}
 		} catch (PriceUnknownException e) {
 			e.printStackTrace(out);
 		}
 	}
 	
+	private double getTotalLand(Collection<? extends IAgent> agents) {
+		double totalLand = 0.0;
+		for (IAgent a: agents){
+			totalLand += a.getInventory().getStock(LAND).getAmount();
+		}
+		return totalLand;
+	}
+
 	private double getProfits(IProductionFunction prodFun, IStatistics sim, double inputAmount) throws PriceUnknownException {
 		Inventory inv = new Inventory(getMoney(), new Stock(LAND, 100));
 		double costs = inputAmount * sim.getGoodsMarketStats().getPriceBelief(MAN_HOUR);

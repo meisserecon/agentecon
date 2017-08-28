@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.nanohttpd.protocols.http.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 
 public class Parameters {
 
@@ -22,10 +22,10 @@ public class Parameters {
 	public static final String SIM = "sim";
 	public static final String SELECTION = "selection";
 
-	private Map<String, List<String>> params;
+	private Map<String, String> params;
 
 	public Parameters(IHTTPSession session) {
-		this.params = session.getParameters();
+		this.params = session.getParms();
 	}
 
 	public String getSimulation() {
@@ -51,8 +51,8 @@ public class Parameters {
 	}
 
 	public String getParam(String key) {
-		List<String> values = params.get(key);
-		return values != null && values.size() == 1 ? values.get(0) : "";
+		String values = params.get(key);
+		return values == null ? "" : values;
 	}
 	
 	public String getSelectionString() {

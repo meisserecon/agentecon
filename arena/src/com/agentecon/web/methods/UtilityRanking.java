@@ -20,7 +20,6 @@ import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IConsumerListener;
 import com.agentecon.goods.Inventory;
 import com.agentecon.sim.SimulationListenerAdapter;
-import com.agentecon.util.Average;
 import com.agentecon.util.IAverage;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.MovingAverage;

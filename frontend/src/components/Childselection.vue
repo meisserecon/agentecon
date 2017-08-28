@@ -1,26 +1,30 @@
 <template>
-  <div v-if="show">
+  <div id="childselection" :class="{context: true, childselection: true, in: show}">
 
-    <h2>Childselection {{ childrenof }} on day {{ simulationday }}</h2>
+    <h2 class="childselection__title">{{ childrenof }} on day {{ simulationday }}</h2>
 
     <div v-if="loading">Loading ...</div>
 
     <div v-if="!loading">
-      <ul>
-        <li v-for="child in children">
-          <input type="checkbox" name="selection" :value="child" v-model="activeChildren"></input> {{ child }}
+      <label><input type="checkbox" v-model="allSelected"></input> all</label>
+      <ul class="nolist childselection__list">
+        <li class="childselection__item" v-for="child in children">
+          <label><input type="checkbox" :value="child" v-model="activeChildren"></input> {{ child }}</label>
         </li>
       </ul>
-      <div>{{ activeNodeArray }}</div>
     </div>
 
-    <button v-if="!loading" @click="saveSelection">Save</button>
-    <button @click="cancelSelection">Cancel</button>
+    <el-button class="childselection__btn" v-if="!loading" @click="saveSelection">Save</el-button>
+    <el-button class="childselection__btn" @click="cancelSelection">Cancel</el-button>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import { Button } from 'element-ui';
 import config from '../config';
+
+Vue.use(Button);
 
 export default {
   name: 'childrenselection',
@@ -30,6 +34,7 @@ export default {
       loading: true,
       children: [],
       selectedChildren: [],
+      allSelected: false,
     };
   },
   computed: {
@@ -58,10 +63,24 @@ export default {
             // set activeChildren
             this.activeChildren = this.children.filter(x => this.activeNodeArray.includes(x));
 
+            // set proper state of toggle all checkbox
+            if (this.activeChildren.length === this.children.length) {
+              this.allSelected = true;
+            } else {
+              this.allSelected = false;
+            }
+
             this.loading = false;
           },
         )
         .catch(error => config.alertError(error));
+      }
+    },
+    allSelected() {
+      if (this.allSelected) {
+        this.activeChildren = this.children;
+      } else {
+        this.activeChildren = [];
       }
     },
   },
@@ -83,3 +102,21 @@ export default {
   },
 };
 </script>
+<style lang="sass">
+.childselection
+  min-width: 280px
+  padding: 20px 30px
+
+  &__title
+    margin: 0 0 10px
+
+  &__list
+    display: flex
+    flex-wrap: wrap
+
+  &__item
+    display: inline-block
+
+  &__btn
+    margin-top: 20px
+</style>

@@ -10,12 +10,13 @@ package com.agentecon.web.methods;
 
 import java.io.IOException;
 
-import org.nanohttpd.protocols.http.IHTTPSession;
-import org.nanohttpd.protocols.http.response.Response;
-import org.nanohttpd.protocols.http.response.Status;
-
 import com.agentecon.util.LogClock;
 import com.agentecon.web.data.JsonData;
+
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public abstract class WebApiMethod {
 
@@ -54,7 +55,7 @@ public abstract class WebApiMethod {
 
 	public Response execute(IHTTPSession session, Parameters params) throws IOException {
 		JsonData answer = getJsonAnswer(params);
-		return Response.newFixedLengthResponse(Status.OK, "application/json", answer.getJson());
+		return NanoHTTPD.newFixedLengthResponse(Status.OK, "application/json", answer.getJson());
 	}
 
 	protected JsonData getJsonAnswer(Parameters params) throws IOException {

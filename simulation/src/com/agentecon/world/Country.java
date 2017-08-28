@@ -66,7 +66,7 @@ public class Country implements ICountry {
 
 	private void dismantleFirms(IStatistics stats) {
 		for (IFirm firm : agents.getFirms()) {
-			if (firm.wantsBankruptcy(stats)) {
+			if (firm.considerBankruptcy(stats)) {
 				Inventory inv = new Inventory(getMoney());
 				Portfolio port = new Portfolio(inv.getMoney());
 				double totalshares = firm.dispose(inv, port);
@@ -125,7 +125,7 @@ public class Country implements ICountry {
 			assert c.isAlive();
 			double util = c.consume();
 			utility.add(util);
-			c.age(inheritance);
+			c.considerDeath(inheritance);
 		}
 		for (Position pos : inheritance.getPositions()) {
 			agents.getCompany(pos.getTicker()).inherit(pos);

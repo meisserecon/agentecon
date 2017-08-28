@@ -2,6 +2,8 @@
 
 > A Vue.js project
 
+Attention: App is supposed to run in subdirectory 'vis' of Domain. Therefore, the starting URL of the app in development is localhost:8080/vis and the dist directory output from the build step has to be uploaded to the /vis directory on the server.
+
 ## Build Setup
 
 ``` bash

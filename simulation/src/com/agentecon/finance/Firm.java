@@ -61,7 +61,8 @@ public abstract class Firm extends Agent implements IFirm {
 
 	protected abstract double calculateDividends(int day);
 	
-	public boolean wantsBankruptcy(IStatistics stats){
+	public boolean considerBankruptcy(IStatistics stats){
+		super.age();
 		return false;
 	}
 

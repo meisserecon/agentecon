@@ -3,7 +3,7 @@
 <project name="Agentecon Simulation" default="createjar">
 	<property name="projectHome" location="." />
 	<target name="createjar">
-		<jar destfile="${projectHome}/jar/simulation.jar" basedir="${projectHome}/bin" />
+		<jar destfile="${projectHome}/jar/simulation.jar" basedir="${projectHome}/target/classes" />
 	</target>
 </project>
 

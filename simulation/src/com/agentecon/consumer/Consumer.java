@@ -22,7 +22,6 @@ import com.agentecon.util.Numbers;
 
 public class Consumer extends Agent implements IConsumer, IShareholder {
 
-	private int age;
 	private Good soldGood;
 	private IUtility utility;
 	protected TradingPortfolio portfolio;
@@ -30,7 +29,6 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 
 	public Consumer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end);
-		this.age = 0;
 		this.soldGood = end.getDaily()[0].getGood();
 		this.utility = utility;
 		this.portfolio = new TradingPortfolio(getMoney());
@@ -150,7 +148,8 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		return false;
 	}
 
-	public Inventory age(Portfolio inheritance) {
+	public Inventory considerDeath(Portfolio inheritance) {
+		super.age();
 		return null;
 	}
 
@@ -158,11 +157,6 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		return false;
 	}
 
-	@Override
-	public int getAge() {
-		return age;
-	}
-	
 	public Portfolio getPortfolio() {
 		return portfolio;
 	}

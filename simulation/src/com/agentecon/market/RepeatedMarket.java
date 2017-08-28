@@ -8,6 +8,7 @@ import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.goods.Good;
+import com.agentecon.production.IGoodsTrader;
 import com.agentecon.production.IProducer;
 import com.agentecon.sim.SimulationListeners;
 import com.agentecon.util.Average;
@@ -30,19 +31,19 @@ public class RepeatedMarket {
 		MarketObserver observer = new MarketObserver(iterations);
 		while (true) {
 			world.startTransaction();
-			Collection<IProducer> firms = world.getAgents().getRandomFirms();
+			Collection<IGoodsTrader> firms = world.getAgents().getRandomGoodsMarketMakers();
 			Collection<IMarketParticipant> cons = world.getAgents().getRandomMarketParticipants();
 			Market market = new Market(world.getRand());
 			market.addMarketListener(observer);
 			market.addMarketListener(stats);
 			listeners.notifyGoodsMarketOpened(market);
-			for (IProducer firm : firms) {
+			for (IGoodsTrader firm : firms) {
 				firm.offer(market);
 			}
 			for (IMarketParticipant c : cons) {
 				c.tradeGoods(market);
 			}
-			for (IProducer firm: firms) {
+			for (IGoodsTrader firm: firms) {
 				firm.adaptPrices();
 			}
 			if (observer.shouldTryAgain()){
