@@ -241,9 +241,10 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	public Collection<IAgent> getAgents(String type) {
 		if (consumerTypes.contains(type)){
 			return extract(getConsumers(), type);
-		} else {
-			assert firmTypes.contains(type) : "Agent type " + type + " not found";
+		} else if (firmTypes.contains(type)){
 			return extract(getFirms(), type);
+		} else {
+			return Collections.emptyList();
 		}
 	}
 
