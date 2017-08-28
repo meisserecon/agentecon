@@ -147,11 +147,13 @@ export default {
     showNodeInfo() {
       if (!this.showNodeInfo) {
         this.infoLeft = -10000;
+        this.handleNodeClicked(null);
       }
     },
     showChildSelection() {
       if (!this.showChildSelection) {
         this.childSelectionLeft = -10000;
+        this.handleNodeClicked(null);
       }
     },
   },
