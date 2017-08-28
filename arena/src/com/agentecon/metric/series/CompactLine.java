@@ -15,6 +15,7 @@ public class CompactLine extends Line {
 		super(line);
 	}
 
+	@Override
 	public void add(Point newpoint, int agg) {
 		int count = points.size();
 		if (count >= 2) {

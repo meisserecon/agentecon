@@ -25,12 +25,18 @@ public class MiniChartMethod extends SimSpecificMethod {
 	public JsonData getJsonAnswer(Parameters params) throws IOException {
 		SimulationStepper stepper = getSimulation(params);
 		String cacheKey = KEY_PREFIX + params.getSelectionString();
-		MiniChart chart = (MiniChart) stepper.getCachedItem(cacheKey);
-		if (chart == null) {
-			chart = MiniChart.create(params.getSelection());
-			stepper.putCached(cacheKey, chart);
+		MiniChart cached = (MiniChart) stepper.getCachedItem(cacheKey);
+		MiniChart created = MiniChart.create(params.getSelection());
+		if (cached == null) {
+			JsonData data = created.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
+			stepper.putCached(cacheKey, created);
+			return data;
+		} else {
+			JsonData cachedData = cached.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
+			JsonData createdData = created.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
+//			assert cachedData.equals(createdData);
+			return createdData;
 		}
-		return chart.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
 	}
 
 }
