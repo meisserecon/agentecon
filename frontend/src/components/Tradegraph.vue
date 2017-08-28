@@ -134,6 +134,7 @@ export default {
         d3.selectAll('#minichartselection').on('click',
           () => {
             this.showContext = false;
+            this.$emit('nodeclicked');
             this.$emit('addminichart', el.data.id, this.colors[el.data.type][el.depth]);
           },
         );
