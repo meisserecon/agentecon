@@ -27,38 +27,42 @@ export default {
       contextLeft: -10000,
       contextTop: 0,
       colors: {
-        // these colors should stay in sync with the ones in SASS
+        // these colors should stay in sync with the ones in
+        // ./assets/sass/_vars.sass
         consumers: ['#0063a4', '#0b9eff', '#a4dbff'],
         firms: ['#0a7138', '#13ce66', '#86f4b7'],
         links: '#475669',
       },
       graph: {
+        // Offset of firms root node from svg origo
+        FIRMS_TREE_OFFSET: [600, 400],
+        // Offset of consumers root node from svg origo
+        CONSUMERS_TREE_OFFSET: [300, 400],
+        DEFAULT_NODE_RADIUS: 50,
+        // Multiplies with node weight from data
+        NODE_RADIUS_FACTOR: 3.5,
+        // Offset of links from nodes
+        RADIUS_OFFSET: 10,
+        INTER_LAYER_GAP: 50,
+        INTRA_LAYER_GAP: 10,
+        HORIZONTAL_GAP: 50,
         stage: null,
         stageDOM: null,
-        // contains all elements except the panning rectangle,
+        // Object that stores coordinates of all nodes
+        // used to draw links between nodes
+        nodeCoordinates: {},
+        // Contains all elements except the panning rectangle,
         // prevents jumping of stage when panning
         global: null,
-        // panning rectangle
+        // Panning rectangle used for zooming and panning
         panningRect: null,
         defs: null,
         firmNodes: null,
         firmsTree: null,
-        firmsTreeOffset: [600, 400],
         firmsTreeDirection: +1,
         consumersNodes: null,
         consumersTree: null,
-        consumersTreeOffset: [300, 400],
         consumersTreeDirection: -1,
-        // Object that stores coordinates of all nodes
-        // used to draw links between nodes
-        nodeCoordinates: {},
-        DEFAULT_NODE_RADIUS: 50,
-        // Multiplies with node weight from data
-        // TODO: remove and use weight only => reduces complexity
-        NODE_RADIUS_FACTOR: 3.5,
-        INTER_LAYER_GAP: 50,
-        INTRA_LAYER_GAP: 10,
-        HORIZONTAL_GAP: 50,
       },
     };
   },
@@ -287,10 +291,10 @@ export default {
       // Check what tree we are updating and
       // set corresponding offset and horizontal distance
       if (nodeData.data.id === 'firms') {
-        rootOffset = this.graph.firmsTreeOffset;
+        rootOffset = this.graph.FIRMS_TREE_OFFSET;
         horizontalDistance = this.graph.firmsTreeDirection * this.graph.HORIZONTAL_GAP;
       } else if (nodeData.data.id === 'consumers') {
-        rootOffset = this.graph.consumersTreeOffset;
+        rootOffset = this.graph.CONSUMERS_TREE_OFFSET;
         horizontalDistance = this.graph.consumersTreeDirection * this.graph.HORIZONTAL_GAP;
       }
 
@@ -385,7 +389,11 @@ export default {
         .attr('id', d => `n${d.data.id}`)
         .classed('active', d => d.data.id === this.selectednode)
         .attr('transform', d => `translate(${self.graph.nodeCoordinates[d.data.id].x},
-          ${self.graph.nodeCoordinates[d.data.id].y})`);
+          ${self.graph.nodeCoordinates[d.data.id].y})`)
+        .each((d) => {
+          // Update size in nodeCoordinates
+          self.graph.nodeCoordinates[d.data.id].size = d.data.data.size;
+        });
 
       groupJoin
         .select('.node__circle')
@@ -503,17 +511,25 @@ export default {
             }
 
             const radiusSource = this.graph.NODE_RADIUS_FACTOR
-              * this.graph.nodeCoordinates[d.source].size || this.graph.NODE_RADIUS;
+              * this.graph.nodeCoordinates[currentSource].size
+              || this.graph.NODE_RADIUS;
             const radiusDestination = this.graph.NODE_RADIUS_FACTOR
-              * this.graph.nodeCoordinates[d.destination].size || this.graph.DEFAULT_NODE_RADIUS;
+              * this.graph.nodeCoordinates[currentDestination].size
+              || this.graph.DEFAULT_NODE_RADIUS;
             const j = localEdgeCount + 2;
             const deltaXLocal = deltaX / Math.cos(alpha * Math.PI / 180);
             // 0.3 rad ^= 17.2 deg
-            const x0 = xSource + (radiusSource * Math.cos((localEdgeCount + 1) * 0.3));
-            const y0 = ySource - (radiusSource * Math.sin((localEdgeCount + 1) * 0.3));
+            const x0 = xSource
+              + ((radiusSource + this.graph.RADIUS_OFFSET)
+              * Math.cos((localEdgeCount + 1) * 0.3));
+            const y0 = ySource
+              - ((radiusSource + this.graph.RADIUS_OFFSET)
+              * Math.sin((localEdgeCount + 1) * 0.3));
             let x1 = deltaXLocal;
-            x1 -= ((radiusDestination + 8) * Math.cos((localEdgeCount + 1) * 0.3));
-            const y1 = -(radiusDestination + 8) * Math.sin((localEdgeCount + 1) * 0.3);
+            x1 -= ((radiusDestination + this.graph.RADIUS_OFFSET + 8)
+              * Math.cos((localEdgeCount + 1) * 0.3));
+            const y1 = -(radiusDestination + this.graph.RADIUS_OFFSET + 8)
+              * Math.sin((localEdgeCount + 1) * 0.3);
 
             const cx0 = j * x0;
             const cx1 = (j * (x1 - deltaXLocal)) + deltaXLocal;
@@ -523,7 +539,7 @@ export default {
             // Append the bezier curve and marker
             defsGroup
               .append('path')
-              .attr('id', `${d.source}-${d.destination}-${i}`)
+              .attr('id', `${currentSource}-${currentDestination}-${i}`)
               .attr('d', `M ${x0} ${y0} C ${cx0} ${cy0}, ${cx1} ${cy1}, ${x1} ${y1}`);
 
             // Only sane version is to add an inverse path for
@@ -531,13 +547,13 @@ export default {
             if (deltaX < 0) {
               defsGroup
                 .append('path')
-                .attr('id', `${d.source}-${d.destination}-${i}-inverse`)
+                .attr('id', `${currentSource}-${currentDestination}-${i}-inverse`)
                 .attr('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx0} ${cy0}, ${x0} ${y0}`);
             }
 
             group
               .append('use')
-              .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
+              .attr('xlink:href', `#${currentSource}-${currentDestination}-${i}`)
               .attr('class', 'link')
               .attr('stroke-width', `${d.weight * 1.5}px`)
               .attr('marker-end', () => 'url(#marker)');
@@ -554,15 +570,15 @@ export default {
 
             text
               .append('textPath')
-                // .attr('xlink:href', `#${d.source}-${d.destination}-${i}`)
-                .attr('xlink:href', () => {
-                  if (deltaX < 0) {
-                    return `#${d.source}-${d.destination}-${i}-inverse`;
-                  }
-                  return `#${d.source}-${d.destination}-${i}`;
-                })
-                .text(d.label)
-                .attr('startOffset', '50%');
+              // .attr('xlink:href', `#${currentSource}-${currentDestination}-${i}`)
+              .attr('xlink:href', () => {
+                if (deltaX < 0) {
+                  return `#${currentSource}-${currentDestination}-${i}-inverse`;
+                }
+                return `#${currentSource}-${currentDestination}-${i}`;
+              })
+              .text(d.label)
+              .attr('startOffset', '50%');
           });
       }
 
