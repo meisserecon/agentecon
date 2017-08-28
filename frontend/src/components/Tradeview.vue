@@ -219,7 +219,7 @@ export default {
     },
     handleAddMinichart(node, coloring) {
       // remove chart of node if it is already there
-      this.miniCharts = this.miniCharts.filter(el => el.agent !== node);
+      this.miniCharts = this.miniCharts.filter(el => el.id !== node);
       // remove last chart if there would be more than configured
       if (this.miniCharts.length >= config.miniCharts.noOfChartsInSidebar) {
         this.miniCharts.pop();
