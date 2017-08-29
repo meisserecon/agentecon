@@ -41,7 +41,7 @@ public class Portfolio implements Cloneable {
 			myPosition.transfer(p, p.getAmount() * ratio);
 		}
 	}
-
+	
 	public void addPosition(Position pos) {
 		if (pos != null) {
 			Position prev = inv.put(pos.getTicker(), pos);

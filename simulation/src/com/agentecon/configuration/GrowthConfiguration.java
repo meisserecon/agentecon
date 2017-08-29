@@ -18,6 +18,7 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Farmer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.consumer.LandSeller;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
@@ -49,14 +50,20 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
 	public GrowthConfiguration() {
-		super(1200);
+		super(100000);
 		IStock[] initialEndowment = new IStock[] { new Stock(LAND, 100), new Stock(getMoney(), 1000) };
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment farmerEndowment = new Endowment(getMoney(), initialEndowment, dailyEndowment);
-		addEvent(new ConsumerEvent(30, farmerEndowment, this){
+		addEvent(new ConsumerEvent(10, farmerEndowment, this){
 			@Override
 			protected IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility util){
 				return new Farmer(id, end, util);
+			}
+		});
+		addEvent(new ConsumerEvent(20, farmerEndowment, this){
+			@Override
+			protected IConsumer createConsumer(IAgentIdGenerator id, Endowment end, IUtility util){
+				return new LandSeller(id, end, util);
 			}
 		});
 //		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
@@ -88,7 +95,7 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 	@Override
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
-		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FarmingConfiguration.FIXED_COSTS, new Weight(LAND, 0.25, true), new Weight(MAN_HOUR, 0.75));
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0, FarmingConfiguration.FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
 	}
 
 	@Override
@@ -162,6 +169,10 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 		inv.getStock(MAN_HOUR).add(inputAmount);
 		Quantity prod = prodFun.produce(inv);
 		return prod.getAmount() * sim.getGoodsMarketStats().getPriceBelief(POTATOE) - costs;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("asdasd");
 	}
 	
 }

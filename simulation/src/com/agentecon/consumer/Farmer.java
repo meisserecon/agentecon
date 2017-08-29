@@ -40,7 +40,7 @@ import com.agentecon.research.IInnovation;
  */
 public class Farmer extends Consumer implements IFounder {
 
-	private static final double MINIMUM_WORKING_HOURS = 5;
+	public static final double MINIMUM_WORKING_HOURS = 5;
 
 	private Good manhours;
 

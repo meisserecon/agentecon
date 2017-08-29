@@ -157,7 +157,7 @@ public class Consumer extends Agent implements IConsumer, IShareholder {
 		return false;
 	}
 
-	public Portfolio getPortfolio() {
+	public TradingPortfolio getPortfolio() {
 		return portfolio;
 	}
 	
