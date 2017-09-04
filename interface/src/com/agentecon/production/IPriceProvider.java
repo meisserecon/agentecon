@@ -14,6 +14,8 @@ public interface IPriceProvider {
 	 * Convenience method for
 	 * getPriceBelief(quantity.getGood()) * quantity.getAmount()
 	 */
-	public double getPriceBelief(Quantity quantity) throws PriceUnknownException;
+	public default double getPriceBelief(Quantity quantity) throws PriceUnknownException {
+		return getPriceBelief(quantity.getGood()) * quantity.getAmount();
+	}
 
 }

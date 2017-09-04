@@ -16,7 +16,6 @@ import com.agentecon.goods.Quantity;
 import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.learning.IBelief;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.production.AbstractPriceProvider;
 import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProducer;
 import com.agentecon.production.IProducerListener;
@@ -64,8 +63,8 @@ public class Producer extends Firm implements IProducer {
 	}
 
 	private IPriceProvider getPrices() {
-		return new AbstractPriceProvider() {
-
+		return new IPriceProvider() {
+			
 			@Override
 			public double getPriceBelief(Good good) throws PriceUnknownException {
 				return Producer.this.getFactor(good).getPrice();

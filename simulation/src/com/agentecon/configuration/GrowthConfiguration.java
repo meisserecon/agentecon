@@ -50,7 +50,7 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
 	public GrowthConfiguration() {
-		super(100000);
+		super(10000);
 		IStock[] initialEndowment = new IStock[] { new Stock(LAND, 100), new Stock(getMoney(), 1000) };
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment farmerEndowment = new Endowment(getMoney(), initialEndowment, dailyEndowment);

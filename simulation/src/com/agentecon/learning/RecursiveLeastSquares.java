@@ -33,7 +33,7 @@ public class RecursiveLeastSquares {
 		
 		Matrix xT = x.transpose();
 		
-		System.out.println(xT + "\t" + weights.transpose() + "\t" + xT.multiply(weights).getSingleValue() + "\t" + y);
+//		System.out.println(xT + "\t" + weights.transpose() + "\t" + xT.multiply(weights).getSingleValue() + "\t" + y);
 		
 		Matrix numerator = this.covarianceMatrix.multiply(x);
 		double divisor = memory + xT.multiply(this.covarianceMatrix).multiply(x).getSingleValue();

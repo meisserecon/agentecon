@@ -35,6 +35,7 @@ public class MarketMakerPrice {
 		double low = floor.getPrice();
 		double high = ceiling.getPrice();
 		double middle = (low + high) / 2;
+//		System.out.println("Price offers\t" + low + "\t" + high);
 		if (Numbers.isBigger(budget, 0.0)) {
 			floor.adapt(middle / SPREAD_MULTIPLIER);
 			floor.createOffers(dsm, owner, wallet, budget / floor.getPrice());

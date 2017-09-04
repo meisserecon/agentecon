@@ -3,7 +3,7 @@ package com.agentecon.goods;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.agentecon.market.IMarketStatistics;
+import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.PriceUnknownException;
 
 public class Inventory {
@@ -82,7 +82,7 @@ public class Inventory {
 		return inv.values();
 	}
 
-	public double calculateValue(IMarketStatistics stats) {
+	public double calculateValue(IPriceProvider stats) {
 		double value = 0.0;
 		for (IStock stock : inv.values()) {
 			if (stock.getGood().equals(money)) {

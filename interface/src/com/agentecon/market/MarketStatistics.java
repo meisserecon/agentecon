@@ -8,12 +8,11 @@ import java.util.function.BiConsumer;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
-import com.agentecon.production.AbstractPriceProvider;
 import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.MovingAverage;
 
-public class MarketStatistics extends AbstractPriceProvider implements IMarketStatistics, IMarketListener {
+public class MarketStatistics implements IMarketStatistics, IMarketListener {
 
 	private HashMap<Good, GoodStats> prices;
 

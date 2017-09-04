@@ -12,11 +12,11 @@ import com.agentecon.goods.IStock;
 import com.agentecon.goods.Inventory;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IPriceMakerMarket;
-import com.agentecon.production.AbstractPriceProvider;
+import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.production.PriceUnknownException;
 
-public class MarketingDepartment extends AbstractPriceProvider {
+public class MarketingDepartment implements IPriceProvider {
 
 	private IStock money;
 	private InputFactor input;
