@@ -36,6 +36,7 @@ public class RemoteJarLoader extends RemoteLoader {
 
 	public RemoteJarLoader(SimulationHandle source) throws SocketTimeoutException, IOException {
 		super(RemoteJarLoader.class.getClassLoader(), source);
+		System.out.println("Created remote jar loader to read from " + source.getBrowsableURL(""));
 		this.date = source.getJarDate();
 		this.data = new HashMap<String, byte[]>();
 		try (InputStream is = source.openJar()) {

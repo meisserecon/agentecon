@@ -75,7 +75,7 @@ public class RealEstateAgent extends Firm implements IGoodsTrader {
 		double profits = currentCapital - prevCapital;
 //		this.profitModel.update(prevCapital, profits);
 		this.capital = currentCapital;
-		System.out.println(prevCapital + "\t" + profits);
+//		System.out.println(prevCapital + "\t" + profits);
 		return profits;
 	}
 
