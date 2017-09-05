@@ -48,6 +48,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	public Simulation(IConfiguration metaConfig) {
 		this(metaConfig.createNextConfig());
 		this.metaConfig = metaConfig;
+		System.out.println("Instantiated simulation from " + metaConfig.getClass().getSimpleName());
 	}
 
 	public Simulation(SimulationConfig config) {

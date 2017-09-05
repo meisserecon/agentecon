@@ -37,7 +37,7 @@ public class WealthMeter extends AgentSize {
 				average.add(wealth);
 			}
 		});
-		System.out.println("Calculated wealth " + average.getAverage() + ", log: " + Math.log(average.getAverage()));
+//		System.out.println("Calculated wealth " + average.getAverage() + ", log: " + Math.log(average.getAverage()));
 		return Numbers.normalize(Math.log(average.getAverage()));
 	}
 
