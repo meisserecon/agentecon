@@ -45,7 +45,7 @@ export default {
       const layout = {
         autosize: true,
         width: 300,
-        height: 150,
+        height: config.miniCharts.internalHeight,
         margin: {
           l: 30,
           r: 30,
@@ -88,7 +88,8 @@ export default {
         .then(
           () => {
             // rescale to max/min range
-            const scale = this.chartData[agent.id].max - this.chartData[agent.id].min;
+            const height = config.miniCharts.internalHeight;
+            const scale = (this.chartData[agent.id].max - this.chartData[agent.id].min) / height;
             const data = {
               x: [
                 [...Array(this.chartData[agent.id].data.length).keys()].map(
