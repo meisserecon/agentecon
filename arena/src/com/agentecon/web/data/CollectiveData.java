@@ -8,9 +8,11 @@
  */
 package com.agentecon.web.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.agentecon.agent.Agent;
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.Inventory;
@@ -32,19 +34,20 @@ public class CollectiveData extends JsonData {
 		this.inventory = AgentData.toStringArray(base.getAll());
 	}
 
+	@SuppressWarnings("unchecked")
 	private SourceData findCommonType(Collection<? extends IAgent> agents) {
-		if (agents.isEmpty()) {
-			return null;
-		} else {
-			Iterator<? extends IAgent> iter = agents.iterator();
-			String commonType = iter.next().getType();
-			while (iter.hasNext()){
-				if (!iter.next().getType().equals(commonType)){
-					return null;
+		Class<? extends IAgent> mostSpecificCommon = null;
+		for (IAgent agent : agents) {
+			Class<? extends IAgent> current = agent.getClass();
+			if (mostSpecificCommon == null) {
+				mostSpecificCommon = current;
+			} else {
+				while (!mostSpecificCommon.isInstance(agent)) {
+					mostSpecificCommon = (Class<? extends IAgent>) mostSpecificCommon.getSuperclass();
 				}
 			}
-			return new SourceData(agents.iterator().next());
 		}
+		return new SourceData(mostSpecificCommon == null ? Agent.class : mostSpecificCommon);
 	}
 
 }

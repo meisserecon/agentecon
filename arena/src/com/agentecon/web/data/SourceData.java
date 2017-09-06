@@ -16,20 +16,23 @@ import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.classloader.SimulationHandle;
 
 public class SourceData {
-	
-//	public long date;
+
+	// public long date;
 	public String owner;
 	public String codeLink;
-	
+
 	public SourceData(IAgent agent) {
-		Class<? extends IAgent> clazz = agent.getClass();
+		this(agent.getClass());
+	}
+
+	public SourceData(Class<? extends IAgent> clazz) {
 		ClassLoader loader = clazz.getClassLoader();
 		if (loader instanceof RemoteLoader) {
 			RemoteLoader agentLoader = (RemoteLoader) loader;
 			SimulationHandle handle = agentLoader.getSource();
 //			this.date = agentLoader.getDate();
 			this.owner = agentLoader.getOwner();
-			this.codeLink = handle.getBrowsableURL(agent.getClass().getName()).toExternalForm();
+			this.codeLink = handle.getBrowsableURL(clazz.getName()).toExternalForm();
 		} else {
 			URL url = loader.getResource(clazz.getName().replace('.', File.separatorChar) + ".class");
 			File sourceFile = new File(url.toExternalForm().substring("file://".length()).replace(".class", ".java").replace("/bin/", "/src/"));
@@ -38,5 +41,5 @@ public class SourceData {
 			this.codeLink = "file://" + sourceFile;
 		}
 	}
-	
+
 }

@@ -71,7 +71,9 @@ public class SimulationServer extends FileServer {
 					return super.serve(session);
 				}
 			} catch (IOException e) {
-				return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), "Failed to handle call due to " + e.toString());
+				String msg = "Failed to handle call due to " + e.toString();
+				System.out.println(msg);
+				return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), msg);
 			}
 		} else {
 			return super.serve(session);
