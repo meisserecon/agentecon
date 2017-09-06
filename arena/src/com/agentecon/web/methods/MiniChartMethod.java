@@ -26,16 +26,16 @@ public class MiniChartMethod extends SimSpecificMethod {
 		SimulationStepper stepper = getSimulation(params);
 		String cacheKey = KEY_PREFIX + params.getSelectionString();
 		MiniChart cached = (MiniChart) stepper.getCachedItem(cacheKey);
-		MiniChart created = MiniChart.create(params.getSelection());
 		if (cached == null) {
+			MiniChart created = MiniChart.create(params.getSelection());
 			JsonData data = created.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
 			stepper.putCached(cacheKey, created);
 			return data;
 		} else {
 			JsonData cachedData = cached.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
-			JsonData createdData = created.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
+//			JsonData createdData = created.getData(params.getDay(), stepper, params.getIntParam(HEIGHT_PARAMETER, 200));
 //			assert cachedData.equals(createdData);
-			return createdData;
+			return cachedData;
 		}
 	}
 
