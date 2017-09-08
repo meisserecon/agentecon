@@ -1,6 +1,7 @@
  <template>
   <div class="tradeview">
     <h1>Tradeview</h1>
+    <p>This view visualizes the trading of goods between consumers and firms in a sequence economy.</p>
     <div class="tradeview__wrapper" v-if="loaded">
       <div class="tradeview__main">
         <div class="controls">
