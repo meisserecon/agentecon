@@ -68,14 +68,14 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 				return new LandSeller(id, end, util);
 			}
 		});
-		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
-		addEvent(new GrowthEvent(0, 0.001) {
-			
-			@Override
-			protected void execute(ICountry sim) {
-				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
-			}
-		});
+//		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
+//		addEvent(new GrowthEvent(0, 0.001) {
+//			
+//			@Override
+//			protected void execute(ICountry sim) {
+//				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
+//			}
+//		});
 		addEvent(new SimEvent(0, MARKET_MAKERS) {
 
 			@Override
