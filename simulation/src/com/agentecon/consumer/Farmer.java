@@ -16,7 +16,7 @@ import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.configuration.FarmingConfiguration;
-import com.agentecon.configuration.HermitConfiguration;
+import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
 import com.agentecon.firm.Farm;
 import com.agentecon.firm.IFirm;

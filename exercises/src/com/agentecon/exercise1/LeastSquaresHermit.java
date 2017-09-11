@@ -10,8 +10,8 @@ package com.agentecon.exercise1;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.configuration.HermitConfiguration;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.goods.IStock;
 import com.agentecon.learning.QuadraticMaximizer;
 import com.agentecon.research.IFounder;

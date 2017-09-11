@@ -11,7 +11,7 @@ package com.agentecon.consumer;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.configuration.FarmingConfiguration;
-import com.agentecon.configuration.HermitConfiguration;
+import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;

@@ -25,6 +25,7 @@ import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
 import com.agentecon.events.IUtilityFactory;
+import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -63,7 +64,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 			}
 
 		}, new LimitingAgentFactory(1, new CompilingAgentFactory(EXPERIMENTAL_FARMER, new File("../exercises/src"))),
-				new LimitingAgentFactory(1, new CompilingAgentFactory(HermitConfiguration.ALT_AGENT_CLASS_NAME, new File("../exercises/src"))),
+				new LimitingAgentFactory(1, new CompilingAgentFactory(HermitConfiguration.AGENT_CLASS_NAME, new File("../exercises/src"))),
 				new LimitingAgentFactory(30, new CompilingAgentFactory(FARMER, new File("../exercises/src")))), 60);
 	}
 
