@@ -15,6 +15,7 @@ import com.agentecon.ISimulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgent;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.Farmer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
@@ -22,6 +23,7 @@ import com.agentecon.consumer.LandSeller;
 import com.agentecon.consumer.LogUtilWithFloor;
 import com.agentecon.consumer.Weight;
 import com.agentecon.events.ConsumerEvent;
+import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
 import com.agentecon.events.SimEvent;
 import com.agentecon.firm.IShareholder;
@@ -66,14 +68,14 @@ public class GrowthConfiguration extends SimulationConfig implements IUtilityFac
 				return new LandSeller(id, end, util);
 			}
 		});
-//		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
-//		addEvent(new GrowthEvent(0, 0.001) {
-//			
-//			@Override
-//			protected void execute(ICountry sim) {
-//				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
-//			}
-//		});
+		final Endowment consumerEndowment = new Endowment(getMoney(), dailyEndowment);
+		addEvent(new GrowthEvent(0, 0.001) {
+			
+			@Override
+			protected void execute(ICountry sim) {
+				sim.add(new Consumer(sim.getAgents(), consumerEndowment, create(0)));
+			}
+		});
 		addEvent(new SimEvent(0, MARKET_MAKERS) {
 
 			@Override
