@@ -3,22 +3,22 @@
     <h1>Simulation '{{ this.$route.query.sim }}'</h1>
 
     <div v-if="loading">Loading...</div>
-
-    <ul class="linklist" v-if="!loading">
-      <li>
-        <!-- TODO insert proper simulation link on github -->
-        <a :href="simDescription" target="_blank">Description</a>
-      </li>
-      <li>
-        <router-link :to="{name: 'trades', query: {sim: this.$route.query.sim, day: 0, selection: 'consumers,firms', step: 1}}">Tradeview</router-link>
-      </li>
-    </ul>
     <h2>Ranking</h2>
     <ol class="agentlist" v-if="!loadingRanking">
       <li v-for="rank in ranking">
         {{ `${rank.type}: ${rank.averageUtility}` }}
       </li>
     </ol>
+    <h2>Visualizations</h2>
+    <ul class="linklist" v-if="!loading">
+      <!-- <li>
+        // TODO insert proper simulation link on github
+        <a :href="simDescription" target="_blank">Description</a>
+      </li> -->
+      <li>
+        <router-link :to="{name: 'trades', query: {sim: this.$route.query.sim, day: 0, selection: 'consumers,firms', step: 1}}">Trade</router-link>
+      </li>
+    </ul>     
   </div>
 </template>
 
