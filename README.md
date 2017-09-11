@@ -1,18 +1,13 @@
-# Mastering Agent-Based Economics
-
-This is the master branch of the agent-based model created by Luzius Meisser.
+# Agent-Based Financial Economics
 
 There are branches for different configurations of the base simulation.
+The contents for the course can be found in the master branch.
 
-Releases that correspond to formal papers come with their own DOI. So far, there is one, namely:
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.580607.svg)](https://doi.org/10.5281/zenodo.580607)
+You should regularly pull updates new exercises from:
+https://github.com/meisserecon/agentecon.git
 
-###General instructions
+Then, push your own changes and agent implementation to your private repository, e.g.
+https://github.com/meissere/team000.git
 
-In order to modify and run the model yourself, you should follow these steps:
-
-1. Make sure a git client is installed. I am using SourceTree: https://www.sourcetreeapp.com/
-2. Make sure an IDE for Java is installed. I am using eclipse for Java EE developers, obtainable from https://eclipse.org/downloads/ .
-3. Add this repository (https://github.com/meisserecon/agentecon.git) in your git and checkout the tag or branch from the title.
-4. Import the project to eclipse. In case you are using a different IDE, make sure to add jar\agenteconinterface.jar and jar\jacop-4.3.0.jar library to the classpath.
-5. Run the class mentioned above.
+More information can be found on the course page:
+http://course.meissereconomics.com
