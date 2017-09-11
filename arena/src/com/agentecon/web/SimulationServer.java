@@ -32,9 +32,12 @@ public class SimulationServer extends FileServer {
 		String repo = "agentecon";
 
 		this.simulations = new ListMethod();
-		this.simulations.add(new LocalSimulationHandle());
+		LocalSimulationHandle local = new LocalSimulationHandle();
+		if (local.isPresent()) {
+			this.simulations.add(new LocalSimulationHandle());
+		}
 		this.simulations.add(new GitSimulationHandle(owner, repo, "master"));
-		this.simulations.add(new GitSimulationHandle(owner, repo, "multigoodtag"));
+		// this.simulations.add(new GitSimulationHandle(owner, repo, "multigoodtag"));
 
 		this.methods = new MethodsMethod();
 		this.methods.add(this.simulations);
@@ -80,19 +83,19 @@ public class SimulationServer extends FileServer {
 		}
 	}
 
-//	protected Response serveSimulation(IHTTPSession session, String uri, StringTokenizer tok) throws IOException {
-//		if (tok.hasMoreTokens()) {
-//			String methodName = tok.nextToken();
-//			WebApiMethod calledMethod = methods.getMethod(methodName);
-//			if (calledMethod != null) {
-//				return serve(session, calledMethod.execute(new StringTokenizer(uri, "\\/"), new Parameters(session)));
-//			} else {
-//				return super.serve(session, "sim.html");
-//			}
-//		} else {
-//			return super.serve(session, "sim.html");
-//		}
-//	}
+	// protected Response serveSimulation(IHTTPSession session, String uri, StringTokenizer tok) throws IOException {
+	// if (tok.hasMoreTokens()) {
+	// String methodName = tok.nextToken();
+	// WebApiMethod calledMethod = methods.getMethod(methodName);
+	// if (calledMethod != null) {
+	// return serve(session, calledMethod.execute(new StringTokenizer(uri, "\\/"), new Parameters(session)));
+	// } else {
+	// return super.serve(session, "sim.html");
+	// }
+	// } else {
+	// return super.serve(session, "sim.html");
+	// }
+	// }
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		SimulationServer server = new SimulationServer(8080);

@@ -36,6 +36,10 @@ public class LocalSimulationHandle extends SimulationHandle {
 	public String getAuthor() {
 		return getOwner();
 	}
+	
+	public boolean isPresent(){
+		return getJarfile().exists();
+	}
 
 	private File getJarfile() {
 		return new File(basePath, JAR_PATH.replace('/', File.separatorChar));

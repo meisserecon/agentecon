@@ -7,6 +7,7 @@ import java.util.Collection;
 import com.agentecon.agent.IAgent;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
 
 public interface IPriceTakerMarket extends IMarket {
 
@@ -34,15 +35,19 @@ public interface IPriceTakerMarket extends IMarket {
 	public Collection<IOffer> getOffers(IPriceFilter bidAskFilter);
 
 	public IOffer getOffer(Good good, boolean bid);
+	
+	public default void sellSome(IAgent who, IStock wallet, IStock good) {
+		sellSome(who, wallet, good, 1.0);
+	}
 
 	/**
 	 * Convenience method to sell some of the good if possible
 	 */
-	public default void sellSome(IAgent who, IStock wallet, IStock good) {
+	public default void sellSome(IAgent who, IStock wallet, IStock good, double fraction) {
 		if (good.hasSome()) {
 			IOffer offer = getOffer(good.getGood(), true);
 			if (offer != null) {
-				offer.accept(who, wallet, good, good.getQuantity());
+				offer.accept(who, wallet, good, new Quantity(good.getGood(), good.getAmount() * fraction));
 			}
 		}
 	}
