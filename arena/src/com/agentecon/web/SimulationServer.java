@@ -21,7 +21,7 @@ import com.agentecon.web.methods.WebApiMethod;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
-public class SimulationServer extends FileServer {
+public class SimulationServer extends BasicServer {
 
 	private MethodsMethod methods;
 	private ListMethod simulations;
