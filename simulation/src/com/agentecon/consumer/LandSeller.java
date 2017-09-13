@@ -11,7 +11,7 @@ package com.agentecon.consumer;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.configuration.FarmingConfiguration;
-import com.agentecon.configuration.HermitConfiguration;
+import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
@@ -26,7 +26,6 @@ public class LandSeller extends Consumer {
 	private static final double MINIMUM_WORKING_HOURS = Farmer.MINIMUM_WORKING_HOURS;
 
 	private Good manhours;
-	private double moneyToInvest;
 
 	public LandSeller(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -37,20 +36,17 @@ public class LandSeller extends Consumer {
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-		IStock myLand = getStock(FarmingConfiguration.LAND);
-		IStock wallet = getMoney();
-		double money = wallet.getAmount();
-		market.sellSome(this, wallet, myLand);
-		moneyToInvest += wallet.getAmount() - money;
 		
 		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		super.trade(reducedInv, market);
+		
+		IStock myLand = getStock(FarmingConfiguration.LAND);
+		market.sellSome(this, getMoney(), myLand, 0.01);
 	}
 	
 	@Override
 	public void managePortfolio(IStockMarket dsm) {
-		double invested = getPortfolio().invest(dsm, this, moneyToInvest);
-		this.moneyToInvest -= invested;
+		getPortfolio().invest(dsm, this, getMoney().getAmount() * 0.05);
 	}
 
 	@Override

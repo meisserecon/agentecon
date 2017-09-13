@@ -14,11 +14,17 @@ import java.util.HashSet;
 public class GitSimulationHandle extends SimulationHandle {
 
 	private String repo;
+	private String project;
 	private HashMap<String, HashSet<String>> cachedTree;
+	
+	public GitSimulationHandle(String owner, String repo, String project) {
+		this(owner, repo, project, "master");
+	}
 
-	public GitSimulationHandle(String owner, String repo, String name) {
-		super(owner, name);
+	public GitSimulationHandle(String owner, String repo, String project, String branchOrTag) {
+		super(owner, branchOrTag);
 		this.repo = repo;
+		this.project = project;
 		this.cachedTree = new HashMap<>();
 	}
 
@@ -29,7 +35,7 @@ public class GitSimulationHandle extends SimulationHandle {
 	@Override
 	public URL getBrowsableURL(String classname) {
 		try {
-			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/simulation/src/" + classname.replace(".", "/") + ".java");
+			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/" + project +"/src/" + classname.replace(".", "/") + ".java");
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
@@ -65,7 +71,7 @@ public class GitSimulationHandle extends SimulationHandle {
 		if (dollar >= 0) {
 			path = path.substring(0, dollar);
 		}
-		URL url = getURL("exercises/src/" + path + ".java");
+		URL url = getURL(project + "/src/" + path + ".java");
 		return url.openStream();
 	}
 
@@ -77,7 +83,7 @@ public class GitSimulationHandle extends SimulationHandle {
 			ArrayList<String> names = new ArrayList<>();
 			HashSet<String> subfolders = new HashSet<>();
 			try {
-				String answer = WebUtil.readGitApi(getOwner(), repo, "contents", "exercises/src/" + packageName.replace('.', '/'), getName());
+				String answer = WebUtil.readGitApi(getOwner(), repo, "contents", project + "/src/" + packageName.replace('.', '/'), getName());
 				int[] pos = new int[] { 0 };
 				while (true) {
 					String name = WebUtil.extract(answer, "name", pos);
