@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,17 +15,15 @@ import java.util.HashSet;
 public class GitSimulationHandle extends SimulationHandle {
 
 	private String repo;
-	private String project;
 	private HashMap<String, HashSet<String>> cachedTree;
-	
-	public GitSimulationHandle(String owner, String repo, String project) {
-		this(owner, repo, project, "master");
+
+	public GitSimulationHandle(String owner, String repo) {
+		this(owner, repo, "master");
 	}
 
-	public GitSimulationHandle(String owner, String repo, String project, String branchOrTag) {
-		super(owner, branchOrTag);
+	public GitSimulationHandle(String owner, String repo, String branch) {
+		super(owner, branch);
 		this.repo = repo;
-		this.project = project;
 		this.cachedTree = new HashMap<>();
 	}
 
@@ -35,19 +34,22 @@ public class GitSimulationHandle extends SimulationHandle {
 	@Override
 	public URL getBrowsableURL(String classname) {
 		try {
-			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/" + project +"/src/" + classname.replace(".", "/") + ".java");
+			return new URL("https://github.com/" + getOwner() + "/" + repo + "/blob/" + getName() + "/simulation/src/" + classname.replace(".", "/") + ".java");
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
 	}
 
-	public URL getJarURL() {
-		return getURL(JAR_PATH);
+	public URLConnection getJarURLConnection() throws IOException {
+		return openContentConnection(JAR_PATH);
 	}
 
-	private URL getURL(String path) {
+	private URLConnection openContentConnection(String path) throws IOException {
 		try {
-			return new URL("https://raw.githubusercontent.com/" + getOwner() + "/" + repo + "/" + getName() + "/" + path);
+			URL url = new URL(WebUtil.addSecret("https://api.github.com/repos/" + getOwner() + "/" + repo + "/contents/" + path + "?ref=" + getName()));
+			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Accept", "application/vnd.github.VERSION.raw");
+			return conn;
 		} catch (MalformedURLException e) {
 			throw new java.lang.RuntimeException(e);
 		}
@@ -55,13 +57,12 @@ public class GitSimulationHandle extends SimulationHandle {
 
 	@Override
 	public long getJarDate() throws IOException {
-		URL url = getJarURL();
-		return url.openConnection().getDate();
+		return getJarURLConnection().getDate();
 	}
 
 	@Override
 	public InputStream openJar() throws IOException {
-		return getJarURL().openStream();
+		return getJarURLConnection().getInputStream();
 	}
 
 	@Override
@@ -71,19 +72,19 @@ public class GitSimulationHandle extends SimulationHandle {
 		if (dollar >= 0) {
 			path = path.substring(0, dollar);
 		}
-		URL url = getURL(project + "/src/" + path + ".java");
-		return url.openStream();
+		URLConnection url = openContentConnection("exercises/src/" + path + ".java");
+		return url.getInputStream();
 	}
 
 	@Override
 	public Collection<String> listSourceFiles(String packageName) throws IOException {
 		if (cachedTree.containsKey(packageName)) {
 			return cachedTree.get(packageName);
-		} else if (couldExist(packageName)){
+		} else if (couldExist(packageName)) {
 			ArrayList<String> names = new ArrayList<>();
 			HashSet<String> subfolders = new HashSet<>();
 			try {
-				String answer = WebUtil.readGitApi(getOwner(), repo, "contents", project + "/src/" + packageName.replace('.', '/'), getName());
+				String answer = WebUtil.readGitApi(getOwner(), repo, "contents", "exercises/src/" + packageName.replace('.', '/'), getName());
 				int[] pos = new int[] { 0 };
 				while (true) {
 					String name = WebUtil.extract(answer, "name", pos);
@@ -92,7 +93,7 @@ public class GitSimulationHandle extends SimulationHandle {
 					} else if (name.endsWith(JAVA_SUFFIX)) {
 						name = name.substring(0, name.length() - JAVA_SUFFIX.length());
 						names.add(packageName + "." + name);
-					} else if (!name.contains(".")){
+					} else if (!name.contains(".")) {
 						subfolders.add(name);
 					}
 				}
@@ -107,14 +108,14 @@ public class GitSimulationHandle extends SimulationHandle {
 	}
 
 	private boolean couldExist(String packageName) {
-		while (true){
+		while (true) {
 			int dot = packageName.lastIndexOf('.');
-			if (dot == -1){
+			if (dot == -1) {
 				return true;
 			} else {
 				String parent = packageName.substring(0, dot);
 				HashSet<String> children = cachedTree.get(parent);
-				if (children != null && !children.contains(packageName.substring(dot + 1))){
+				if (children != null && !children.contains(packageName.substring(dot + 1))) {
 					return false;
 				}
 				packageName = parent;
@@ -126,16 +127,16 @@ public class GitSimulationHandle extends SimulationHandle {
 	public String getVersion() throws IOException {
 		String commitUrl = "https://api.github.com/repos/" + getOwner() + "/" + repo + "/commits/" + getName();
 		String commitDesc = WebUtil.readHttp(commitUrl);
-		String hash = WebUtil.extract(commitDesc, "sha", new int[]{0});
-//		String name = WebUtil.extract(commitDesc, "name", new int[]{0});
-//		String email = WebUtil.extract(commitDesc, "email", new int[]{0});
+		String hash = WebUtil.extract(commitDesc, "sha", new int[] { 0 });
+		// String name = WebUtil.extract(commitDesc, "name", new int[]{0});
+		// String email = WebUtil.extract(commitDesc, "email", new int[]{0});
 		return hash;
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		if (o instanceof GitSimulationHandle){
-			return super.equals(o) && ((GitSimulationHandle)o).repo.equals(repo);
+	public boolean equals(Object o) {
+		if (o instanceof GitSimulationHandle) {
+			return super.equals(o) && ((GitSimulationHandle) o).repo.equals(repo);
 		} else {
 			return false;
 		}

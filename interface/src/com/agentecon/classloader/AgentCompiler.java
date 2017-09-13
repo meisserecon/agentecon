@@ -49,7 +49,7 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 
 	@Override
 	public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-		System.err.println("Problem with " + diagnostic.toString());
+		throw new RuntimeException(diagnostic.toString());
 	}
 
 }

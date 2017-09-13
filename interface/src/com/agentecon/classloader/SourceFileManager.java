@@ -15,6 +15,7 @@ import java.util.function.BiConsumer;
 import javax.tools.DiagnosticListener;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
@@ -29,10 +30,19 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 	private RemoteJarLoader simulationJar;
 
 	public SourceFileManager(RemoteJarLoader simulationJar, SimulationHandle handle, DiagnosticListener<JavaFileObject> listener) {
-		super(ToolProvider.getSystemJavaCompiler().getStandardFileManager(listener, null, null));
+		super(findCompiler(listener).getStandardFileManager(listener, null, null));
 		this.handle = handle;
 		this.simulationJar = simulationJar;
 		this.byteCode = new HashMap<>();
+	}
+
+	private static JavaCompiler findCompiler(DiagnosticListener<JavaFileObject> listener) {
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) {
+			throw new RuntimeException("Java compiler not found. This is needed to dynamically load agents. See meissereconomics.com/course/setup for how to properly setup the JDK in eclipse.");
+		} else {
+			return compiler;
+		}
 	}
 
 	@Override

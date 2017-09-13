@@ -14,14 +14,10 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import com.agentecon.IAgentFactory;
-import com.agentecon.agent.Endowment;
-import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.classloader.LocalSimulationHandle;
 import com.agentecon.configuration.AgentFactoryMultiplex;
 import com.agentecon.configuration.CompilingAgentFactory;
-import com.agentecon.consumer.IConsumer;
-import com.agentecon.consumer.IUtility;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 	
@@ -34,18 +30,13 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 	private static IAgentFactory[] createFactories(String classname) throws SocketTimeoutException, IOException {
 		ArrayList<CompilingAgentFactory> factories = new ArrayList<>();
 		for (String team: TEAMS){
-			factories.add(new CompilingAgentFactory(classname, new GitSimulationHandle("meisser", team, "exercises")));
+			factories.add(new CompilingAgentFactory(classname, new GitSimulationHandle("meisser", team)));
 		}
 		LocalSimulationHandle local = new LocalSimulationHandle(new File("../exercises/src"));
 		if (local.isPresent()){
 			factories.add(new CompilingAgentFactory(classname, local));
 		}
 		return factories.toArray(new IAgentFactory[factories.size()]);
-	}
-
-	@Override
-	public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-		throw new RuntimeException("Not implemented");
 	}
 
 }

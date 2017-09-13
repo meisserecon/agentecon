@@ -17,7 +17,11 @@ public class CompilingClassLoader extends RemoteLoader {
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		byte[] data = this.compiler.findClass(name);
-		return super.defineClass(name, data, 0, data.length);
+		if (data == null) {
+			throw new ClassNotFoundException(name + " could not be found on " + getSource());
+		} else {
+			return super.defineClass(name, data, 0, data.length);
+		}
 	}
 
 }

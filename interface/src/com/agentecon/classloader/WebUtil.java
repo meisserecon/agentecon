@@ -17,14 +17,29 @@ public class WebUtil {
 	private final static String API_ADDRESS = "https://api.github.com";
 	private final static String ACCESS_SECRETS = loadSecrets();
 
-	public static String readHttp(String address) throws FileNotFoundException, IOException {
-		if (address.contains(API_ADDRESS)) {
-			if (address.contains("?")){
-				address += "&" + ACCESS_SECRETS.substring(1);
-			} else {
-				address += ACCESS_SECRETS;
-			}
+	private static String loadSecrets() {
+		Path path = FileSystems.getDefault().getPath("../..", "github-secret.txt");
+		try {
+			return Files.readAllLines(path, Charset.defaultCharset()).get(0);
+		} catch (IOException e) {
+			return "";
 		}
+	}
+	
+	public static String addSecret(String address) {
+		if (address.contains(API_ADDRESS)) {
+			if (address.contains("?")) {
+				return address + "&" + ACCESS_SECRETS.substring(1);
+			} else {
+				return address + ACCESS_SECRETS;
+			}
+		} else {
+			return address;
+		}
+	}
+	
+	public static String readHttp(String address) throws FileNotFoundException, IOException {
+		address = addSecret(address);
 		String content = "";
 		String nextPage = null;
 		while (address != null) {
@@ -50,19 +65,9 @@ public class WebUtil {
 		if (next != null && next.contains("next")) {
 			int open = next.indexOf('<');
 			int close = next.indexOf('>');
-			next = next.substring(open + 1, close);
+			return next.substring(open + 1, close);
 		} else {
-			next = null;
-		}
-		return next;
-	}
-
-	private static String loadSecrets() {
-		Path path = FileSystems.getDefault().getPath("../..", "github-secret.txt");
-		try {
-			return Files.readAllLines(path, Charset.defaultCharset()).get(0);
-		} catch (IOException e) {
-			return "";
+			return null;
 		}
 	}
 
