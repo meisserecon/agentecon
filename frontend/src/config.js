@@ -1,11 +1,10 @@
 export default {
-  apiURL: 'http://localhost:8080',
   // apiURL: 'http://dedi2328.your-server.de:8080',
+  apiURL: `${window.location.hostname}:8080`,
   stepSizeOptions: [1, 2, 5, 10, 100],
   miniCharts: {
     noOfChartsInSidebar: 5,
     height: 300,
-    internalHeight: 150,
   },
   xhrConfig: {
     mode: 'cors',
