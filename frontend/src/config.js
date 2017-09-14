@@ -5,6 +5,7 @@ export default {
   miniCharts: {
     noOfChartsInSidebar: 5,
     height: 300,
+    internalHeight: 150,
   },
   xhrConfig: {
     mode: 'cors',
