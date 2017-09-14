@@ -21,7 +21,7 @@ import com.agentecon.web.methods.WebApiMethod;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
-public class SimulationServer extends BasicServer {
+public class SimulationServer extends VisServer {
 
 	private MethodsMethod methods;
 	private ListMethod simulations;
@@ -74,6 +74,10 @@ public class SimulationServer extends BasicServer {
 				} else {
 					return super.serve(session);
 				}
+			} catch (RuntimeException e) {
+				String msg = "Failed to handle call due to " + e.toString();
+				System.out.println(msg);
+				return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, getMimeTypeForFile(".html"), msg);
 			} catch (IOException e) {
 				String msg = "Failed to handle call due to " + e.toString();
 				System.out.println(msg);

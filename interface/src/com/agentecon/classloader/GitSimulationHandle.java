@@ -41,7 +41,10 @@ public class GitSimulationHandle extends SimulationHandle {
 	}
 
 	public URLConnection getJarURLConnection() throws IOException {
-		return openContentConnection(JAR_PATH);
+		// only works when the jar is publicly available. Cannot use openContentConnection because that only works up to 1 MB.
+		// Alternative would be to use blob api, but that api only works with file hashes, not with pathes.
+		URL url = new URL("https://raw.githubusercontent.com/" + getOwner() + "/" + repo + "/" + getName() + "/" + JAR_PATH);
+		return url.openConnection();
 	}
 
 	private URLConnection openContentConnection(String path) throws IOException {

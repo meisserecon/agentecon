@@ -50,7 +50,7 @@ public class BasicServer extends NanoHTTPD {
 	public void run() throws IOException, InterruptedException {
 		start();
 		try {
-			URI uri = new URI("http://" + (getHostname() == null ? "localhost" : getHostname()) + ":" + getListeningPort());
+			URI uri = new URI("http://" + (getHostname() == null ? "localhost" : getHostname()) + ":" + getListeningPort() + "/vis");
 			if (Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().browse(uri);
 			} else {
