@@ -22,6 +22,7 @@ public class WebUtil {
 		try {
 			return Files.readAllLines(path, Charset.defaultCharset()).get(0);
 		} catch (IOException e) {
+			System.out.println("Could not find api secrets file on " + path.toAbsolutePath());
 			return "";
 		}
 	}
